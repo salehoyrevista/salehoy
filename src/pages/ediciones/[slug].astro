@@ -1,0 +1,173 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const ediciones = await getCollection('ediciones');
+  return ediciones.map(edicion => ({
+    params: { slug: edicion.id },
+    props: { edicion },
+  }));
+}
+
+const { edicion } = Astro.props;
+const { Content } = await render(edicion);
+
+const articulos = await getCollection('articulos');
+const articulosEdicion = articulos.filter(a => a.data.edicion === edicion.data.numero);
+
+const cartas = await getCollection('cartas');
+const carta = cartas.find(c => c.data.edicion === edicion.data.numero);
+
+const voces = await getCollection('voces');
+const vocesEdicion = voces.find(v => v.data.edicion === edicion.data.numero);
+
+const narradores = await getCollection('narradores');
+const narradorMap = new Map(narradores.map(n => [n.data.slug, n.data.nombre]));
+
+const fechaStr = edicion.data.fecha.toLocaleDateString('es-AR', {
+  month: 'long', year: 'numeric'
+});
+---
+
+<BaseLayout
+  title={`#${edicion.data.numero} · ${edicion.data.titulo}`}
+  description={edicion.data.bajada}
+  type="article"
+>
+  <article class="edition">
+    <header class="edition__hero container-narrow">
+      <div class="edition__numero">
+        <span class="data-num-large">#{edicion.data.numero}</span>
+        <span class="meta-label">{fechaStr}</span>
+      </div>
+      <h1 class="hero-title">{edicion.data.titulo}</h1>
+      <p class="hero-lead">{edicion.data.bajada}</p>
+    </header>
+
+    <section class="container-prose edition__intro">
+      <Content />
+    </section>
+
+    {carta && (
+      <section id="carta" class="edition__carta container-narrow">
+        <span class="meta-label">Carta del editor</span>
+        <h2 class="edition__section-title">Antes de empezar</h2>
+        <p class="edition__carta-firma">
+          Por <strong>{carta.data.firma}</strong>
+        </p>
+        <a href={`/ediciones/${edicion.id}/carta`} class="btn-secondary">
+          Leer la carta completa →
+        </a>
+      </section>
+    )}
+
+    <section class="edition__articles container-wide">
+      <span class="meta-label">Los artículos del número</span>
+      <h2 class="edition__section-title">Cinco voces sobre el azar</h2>
+      <div class="articles-grid">
+        {articulosEdicion.map(articulo => (
+          <ArticleCard articulo={articulo} narradorNombre={narradorMap.get(articulo.data.narrador)} size="md" />
+        ))}
+      </div>
+    </section>
+
+    {vocesEdicion && (
+      <section class="edition__voces container-narrow">
+        <span class="meta-label">Mini-sección coral</span>
+        <h2 class="edition__section-title">Voces del número {vocesEdicion.data.numero} · {vocesEdicion.data.nombre}</h2>
+        <p>Los cinco narradores comentan, en formato breve, el número de la quincena.</p>
+        <a href={`/voces/${vocesEdicion.id}`} class="btn-secondary">
+          Leer Voces del número →
+        </a>
+      </section>
+    )}
+  </article>
+</BaseLayout>
+
+<style>
+  .edition {
+    padding-block: var(--space-3xl);
+  }
+
+  .edition__hero {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+  }
+
+  .edition__numero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-xl);
+  }
+
+  .edition__numero .data-num-large {
+    color: var(--color-accent-gold);
+    font-size: var(--text-6xl);
+  }
+
+  .edition__intro {
+    padding-block: var(--space-xl);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-xl);
+    color: var(--color-text-secondary);
+    text-align: center;
+  }
+
+  .edition__carta,
+  .edition__articles,
+  .edition__voces {
+    padding-block: var(--space-2xl);
+  }
+
+  .edition__section-title {
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    font-weight: var(--font-semibold);
+    margin-block: var(--space-md);
+  }
+
+  .edition__carta-firma {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-md);
+  }
+
+  .edition__carta-firma strong {
+    color: var(--color-accent-gold);
+  }
+
+  .articles-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+    margin-top: var(--space-xl);
+  }
+
+  @media (min-width: 768px) {
+    .articles-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (min-width: 1024px) {
+    .articles-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    padding: var(--space-md) var(--space-xl);
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-line-strong);
+    color: var(--color-text);
+    font-size: var(--text-sm);
+    margin-top: var(--space-md);
+    transition: all var(--transition-fast);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--color-accent-gold);
+    color: var(--color-accent-gold);
+  }
+</style>

@@ -1,0 +1,357 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ShareButtons from '../../components/ShareButtons.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const articulos = await getCollection('articulos');
+  return articulos.map(articulo => ({
+    params: { slug: articulo.id },
+    props: { articulo },
+  }));
+}
+
+const { articulo } = Astro.props;
+const { Content } = await render(articulo);
+
+const narradores = await getCollection('narradores');
+const narrador = narradores.find(n => n.data.slug === articulo.data.narrador);
+
+const ediciones = await getCollection('ediciones');
+const edicion = ediciones.find(e => e.data.numero === articulo.data.edicion);
+
+// Más artículos del mismo narrador (excluyendo este)
+const todosArticulos = await getCollection('articulos');
+const otrosDelNarrador = todosArticulos
+  .filter(a => a.data.narrador === articulo.data.narrador && a.id !== articulo.id)
+  .slice(0, 2);
+const otrosDeLaEdicion = todosArticulos
+  .filter(a => a.data.edicion === articulo.data.edicion && a.id !== articulo.id)
+  .slice(0, 3);
+
+const formatFecha = (d: Date) => d.toLocaleDateString('es-AR', {
+  year: 'numeric', month: 'long', day: 'numeric'
+});
+
+const ogImage = `/og/articulo-${articulo.id}.png`;
+
+// JSON-LD schema.org Article
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: articulo.data.title,
+  description: articulo.data.subtitle || '',
+  author: {
+    '@type': 'Person',
+    name: narrador?.data.nombre || articulo.data.narrador,
+    url: narrador ? new URL(`/narradores/${narrador.data.slug}`, Astro.site).toString() : undefined,
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'SaleHoy',
+    url: Astro.site?.toString(),
+  },
+  datePublished: articulo.data.fecha.toISOString(),
+  dateModified: articulo.data.fecha.toISOString(),
+  inLanguage: 'es-AR',
+  articleSection: articulo.data.categoria,
+  isPartOf: edicion ? {
+    '@type': 'PublicationIssue',
+    issueNumber: edicion.data.numero,
+    name: `SaleHoy #${edicion.data.numero} · ${edicion.data.titulo}`,
+  } : undefined,
+};
+---
+
+<BaseLayout
+  title={articulo.data.title}
+  description={articulo.data.subtitle || `Artículo de ${narrador?.data.nombre} en SaleHoy.`}
+  type="article"
+  image={ogImage}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  <article class="article">
+    <header class="article__header container-narrow">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">SaleHoy</a>
+        <span>›</span>
+        {edicion && (
+          <>
+            <a href={`/ediciones/${edicion.id}`}>#{edicion.data.numero}</a>
+            <span>›</span>
+          </>
+        )}
+        {narrador && <a href={`/narradores/${narrador.data.slug}`}>{narrador.data.nombre}</a>}
+      </nav>
+
+      <div class="article__tags">
+        <span class={`tag tag-categoria tag--${articulo.data.categoria}`}>{articulo.data.categoria}</span>
+        {articulo.data.tema && <span class="meta">· {articulo.data.tema}</span>}
+      </div>
+
+      <h1 class="article__title hero-title">{articulo.data.title}</h1>
+
+      {articulo.data.subtitle && (
+        <p class="article__subtitle hero-lead">{articulo.data.subtitle}</p>
+      )}
+
+      <div class="article__meta">
+        {narrador && (
+          <a href={`/narradores/${narrador.data.slug}`} class="article__autor">
+            Por <strong>{narrador.data.nombre}</strong>
+          </a>
+        )}
+        <span class="meta">
+          {formatFecha(articulo.data.fecha)}
+          {articulo.data.tiempoLectura && ` · ${articulo.data.tiempoLectura} min lectura`}
+        </span>
+      </div>
+    </header>
+
+    <div class="article__body prose has-drop-cap">
+      <Content />
+    </div>
+
+    <div class="container-narrow">
+      <ShareButtons
+        title={articulo.data.title}
+        description={articulo.data.subtitle}
+      />
+    </div>
+
+    {narrador && (
+      <aside class="article__autor-box container-narrow">
+        <h3 class="autor-box__title">Sobre el narrador</h3>
+        <p class="autor-box__name">{narrador.data.nombre}</p>
+        <p class="autor-box__bio">{narrador.data.bio}</p>
+        <a href={`/narradores/${narrador.data.slug}`} class="autor-box__link">
+          Ver todos los artículos de {narrador.data.nombre} →
+        </a>
+      </aside>
+    )}
+
+    {(otrosDeLaEdicion.length > 0 || otrosDelNarrador.length > 0) && (
+      <aside class="article__related container-wide">
+        {otrosDeLaEdicion.length > 0 && (
+          <div>
+            <h3 class="related__title">En la misma edición</h3>
+            <ul class="related__list">
+              {otrosDeLaEdicion.map(a => (
+                <li>
+                  <a href={`/articulos/${a.id}`} class="related__link">
+                    <span class="related__cat">{a.data.categoria}</span>
+                    <span class="related__name">{a.data.title}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </aside>
+    )}
+
+    <aside class="article__cta container-narrow">
+      <h3>Si te gustó, sumate al newsletter</h3>
+      <p>Cada quincena, el número nuevo en tu mail. Sin spam.</p>
+      <a href="/newsletter" class="btn-primary">Suscribirme</a>
+    </aside>
+  </article>
+</BaseLayout>
+
+<style>
+  .article {
+    padding-block: var(--space-3xl);
+  }
+
+  .article__header {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--color-text-tertiary);
+    margin-bottom: var(--space-lg);
+  }
+
+  .breadcrumb a {
+    color: var(--color-text-secondary);
+    transition: color var(--transition-fast);
+  }
+
+  .breadcrumb a:hover {
+    color: var(--color-accent-gold);
+  }
+
+  .article__tags {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+  }
+
+  .article__title {
+    margin-bottom: var(--space-md);
+  }
+
+  .article__subtitle {
+    margin-bottom: var(--space-xl);
+  }
+
+  .article__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-line);
+    font-size: var(--text-sm);
+  }
+
+  .article__autor {
+    color: var(--color-text);
+  }
+
+  .article__autor strong {
+    color: var(--color-accent-gold);
+  }
+
+  .article__body {
+    padding-block: var(--space-xl);
+  }
+
+  .article__autor-box {
+    margin-block: var(--space-3xl);
+    padding: var(--space-xl);
+    background: var(--color-bg-elevated);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-line);
+  }
+
+  .autor-box__title {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-text-tertiary);
+    margin-bottom: var(--space-sm);
+  }
+
+  .autor-box__name {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-semibold);
+    color: var(--color-accent-gold);
+    margin-bottom: var(--space-sm);
+  }
+
+  .autor-box__bio {
+    font-size: var(--text-md);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+    margin-bottom: var(--space-md);
+  }
+
+  .autor-box__link {
+    color: var(--color-text);
+    font-weight: var(--font-medium);
+  }
+
+  .autor-box__link:hover {
+    color: var(--color-accent-gold);
+  }
+
+  .article__related {
+    margin-block: var(--space-3xl);
+  }
+
+  .related__title {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-text-tertiary);
+    margin-bottom: var(--space-md);
+  }
+
+  .related__list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+
+  @media (min-width: 768px) {
+    .related__list { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .related__link {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-md);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    transition: border-color var(--transition-fast);
+  }
+
+  .related__link:hover {
+    border-color: var(--color-accent-gold);
+  }
+
+  .related__cat {
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-tertiary);
+  }
+
+  .related__name {
+    font-family: var(--font-display);
+    font-size: var(--text-md);
+    font-weight: var(--font-medium);
+    color: var(--color-text);
+  }
+
+  .article__cta {
+    text-align: center;
+    padding-block: var(--space-3xl);
+    border-top: 1px solid var(--color-line);
+  }
+
+  .article__cta h3 {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-semibold);
+    margin-bottom: var(--space-sm);
+  }
+
+  .article__cta p {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-lg);
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    padding: var(--space-md) var(--space-xl);
+    border-radius: var(--radius-full);
+    background: var(--color-accent-gold);
+    color: var(--color-bg);
+    border: 1px solid var(--color-accent-gold);
+    transition: all var(--transition-fast);
+  }
+
+  .btn-primary:hover {
+    background: transparent;
+    color: var(--color-accent-gold);
+  }
+</style>

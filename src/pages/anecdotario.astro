@@ -1,0 +1,301 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SalaHeader from '../components/SalaHeader.astro';
+
+const ejemplos = [
+  {
+    titulo: 'El 17 de mi vieja',
+    cuerpo: 'Mi vieja juega el 17 desde 1984. Lo eligió porque era la edad de mi viejo cuando se conocieron en un bar de La Boca. Mi viejo murió en el 99. Mi vieja siguió jugando el 17 cada viernes durante veintidós años más. Cuando le pregunto por qué, me mira y dice: «porque algún día sale». Pero yo creo que no juega para que salga. Juega para que no se vaya del todo.',
+    firma: 'Marisa, Lomas de Zamora',
+  },
+  {
+    titulo: 'Tres truquito y una verdad',
+    cuerpo: 'En la fábrica, todos los viernes a las cinco, armábamos truco con el Negro, el Polaco y el Tano. El Tano cantaba envido siempre con la misma cara —no se le movía un músculo, daba igual si tenía 33 o 20—. Tres meses ganando como si fuera magia. Hasta que un día el Polaco le dijo: «Tano, jugás de memoria». Y el Tano contestó: «no, juego de oficio». Se levantó, se fue, no volvió más a la fábrica. Después supimos que había heredado. Truco sin trampa, dijo el Negro. Truco con plata heredada, dije yo.',
+    firma: 'Anónimo',
+  },
+  {
+    titulo: 'La quiniela del cura',
+    cuerpo: 'En mi pueblo, allá por los noventa, el cura jugaba a la quiniela. Lo hacía a escondidas, mandando al sacristán a comprar. Un día el sacristán se confunde, juega los números mal, y al día siguiente sale exactamente lo que el cura había anotado. Pero el ticket era de los otros números. El cura se enteró cuando vinieron a felicitarlo por «la suerte de la parroquia». No dijo nada. Pagó la rifa del comedor barrial. La gente entendió que era un milagro. Capaz lo fue.',
+    firma: 'F. R., Tres Arroyos',
+  },
+];
+---
+
+<BaseLayout
+  title="El Anecdotario"
+  description="Sección abierta: mandanos tu historia sobre juego, azar, apuestas, cábala. Tono callejero, cotidiano. Anónimo o con nombre."
+>
+  <section class="page container-narrow">
+    <SalaHeader
+      titulo="El Anecdotario"
+      bajada="Sección abierta. Mandanos tu historia sobre juego, azar, apuestas, cábala. Anónima o con nombre."
+      vibe="amber"
+    />
+
+    <section class="anecdotas">
+      <h2 class="anecdotas__title">Algunos ejemplos del tono</h2>
+      <p class="anecdotas__intro">
+        Estas tres son inventadas, para mostrar la cancha. Las próximas las van a escribir los lectores.
+      </p>
+
+      <div class="anecdotas__grid">
+        {ejemplos.map(a => (
+          <article class="anecdota">
+            <h3 class="anecdota__titulo">{a.titulo}</h3>
+            <p class="anecdota__cuerpo">{a.cuerpo}</p>
+            <footer class="anecdota__firma">— {a.firma}</footer>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="form-section">
+      <h2 class="form-section__title">Mandanos la tuya</h2>
+      <p class="form-section__intro">
+        Sin reglas estrictas. Sin máximo de palabras (pero tres páginas es mucho). Si tu historia tiene algo —humor, herida, cábala, dignidad, vergüenza, ternura— la queremos.
+      </p>
+
+      <form
+        name="anecdotario"
+        method="POST"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        class="anecdota-form"
+      >
+        <input type="hidden" name="form-name" value="anecdotario" />
+        <p hidden>
+          <label>No completar: <input name="bot-field" /></label>
+        </p>
+
+        <div class="field">
+          <label for="firma" class="field__label">¿Cómo querés firmar?</label>
+          <input id="firma" name="firma" type="text" placeholder="Tu nombre, un apodo, o dejá en blanco para que vaya como Anónimo" class="field__input" />
+        </div>
+
+        <div class="field">
+          <label for="lugar" class="field__label">Desde dónde escribís (opcional)</label>
+          <input id="lugar" name="lugar" type="text" placeholder="Avellaneda, Mendoza, Tucumán, tu barrio…" class="field__input" />
+        </div>
+
+        <div class="field">
+          <label for="email" class="field__label">Tu mail (opcional)</label>
+          <input id="email" name="email" type="email" placeholder="Para avisarte cuando se publique" class="field__input" />
+          <span class="field__hint">No lo publicamos. Solo lo usamos para avisarte.</span>
+        </div>
+
+        <div class="field">
+          <label for="titulo" class="field__label">Si tu historia tiene título</label>
+          <input id="titulo" name="titulo" type="text" placeholder="Si no se te ocurre, lo ponemos nosotros" class="field__input" />
+        </div>
+
+        <div class="field">
+          <label for="historia" class="field__label">La historia <span class="field__required">*</span></label>
+          <textarea id="historia" name="historia" rows="10" required placeholder="Contala como te salga. Si lo necesitás, leéla en voz alta antes de mandarla — los detalles que te hacen reír o doler son los que la hacen valer." class="field__textarea"></textarea>
+        </div>
+
+        <div class="field field--check">
+          <label class="field__check">
+            <input type="checkbox" name="acepta-edicion" value="si" />
+            <span>Sé y acepto que un editor (con ayuda de IA) puede ajustar la prosa de mi historia para que fluya mejor, preservando mi voz original. Si no querés que se edite, marcalo abajo.</span>
+          </label>
+        </div>
+
+        <div class="field field--check">
+          <label class="field__check">
+            <input type="checkbox" name="sin-edicion" value="si" />
+            <span>Prefiero que se publique como la escribí, sin edición.</span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn-primary">Mandar mi anécdota</button>
+
+        <p class="form-legal">
+          Al enviar aceptás que tu historia puede ser publicada en SaleHoy. Si en algún momento querés que la sacamos, escribinos a <a href="/contacto">contacto</a> y la bajamos. Tu mail nunca se comparte.
+        </p>
+      </form>
+    </section>
+
+    <section class="manifiesto-mini">
+      <h2>Por qué hacemos esto</h2>
+      <p>
+        La quiniela, el truco, el casino, las carreras: la mitad del país tiene una historia. Una abuela que jugaba el 33, un tío que ganó la lotería y la perdió en una semana, un domingo de hipódromo que terminó mal o terminó bien. Esas historias normalmente se cuentan en una sobremesa, mueren ahí, y nadie las escribe.
+      </p>
+      <p>
+        El Anecdotario es el lugar donde no mueren. Las publicamos editadas con respeto a la voz original. Las firmás vos, o las firma «Anónimo». Las leemos entre todos.
+      </p>
+      <p>
+        <strong>Sobre la IA y la edición:</strong> sí, usamos IA para pulir prosa cuando hace falta. Lo decimos para no engañar. La idea es que tu historia llegue al lector con la voz que vos pusiste, no con la voz de la máquina.
+      </p>
+    </section>
+  </section>
+</BaseLayout>
+
+<style>
+  .page { padding-block: var(--space-3xl); }
+  .page__header { text-align: center; margin-bottom: var(--space-2xl); }
+  .page__header .hero-lead { margin-top: var(--space-md); margin-inline: auto; max-width: 640px; }
+
+  /* ====== EJEMPLOS ====== */
+  .anecdotas { padding-block: var(--space-2xl); }
+  .anecdotas__title {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-semibold);
+    margin-bottom: var(--space-sm);
+  }
+  .anecdotas__intro {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-xl);
+    font-style: italic;
+  }
+  .anecdotas__grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+  .anecdota {
+    padding: var(--space-xl);
+    background: var(--color-bg-elevated);
+    border-left: 3px solid var(--color-accent-gold);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  }
+  .anecdota__titulo {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: var(--font-semibold);
+    color: var(--color-accent-gold);
+    margin-bottom: var(--space-md);
+  }
+  .anecdota__cuerpo {
+    font-family: var(--font-display);
+    font-size: var(--text-md);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text);
+    margin-bottom: var(--space-md);
+  }
+  .anecdota__firma {
+    font-size: var(--text-sm);
+    color: var(--color-text-tertiary);
+    text-align: right;
+    font-style: italic;
+  }
+
+  /* ====== FORM ====== */
+  .form-section {
+    padding-block: var(--space-2xl);
+    padding-top: var(--space-3xl);
+    border-top: 1px solid var(--color-line);
+  }
+  .form-section__title {
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    font-weight: var(--font-semibold);
+    margin-bottom: var(--space-md);
+  }
+  .form-section__intro {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-xl);
+    max-width: 640px;
+  }
+
+  .anecdota-form {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    padding: var(--space-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .field { display: flex; flex-direction: column; gap: var(--space-xs); }
+
+  .field__label {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--color-text-secondary);
+  }
+  .field__required { color: var(--color-accent-red); }
+  .field__hint {
+    font-size: var(--text-xs);
+    color: var(--color-text-tertiary);
+    margin-top: var(--space-xs);
+  }
+
+  .field__input,
+  .field__textarea {
+    padding: var(--space-md);
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: var(--text-md);
+    transition: border-color var(--transition-fast);
+  }
+  .field__textarea {
+    font-family: var(--font-display);
+    line-height: var(--leading-relaxed);
+    resize: vertical;
+    min-height: 200px;
+  }
+  .field__input:focus,
+  .field__textarea:focus {
+    outline: none;
+    border-color: var(--color-accent-gold);
+  }
+
+  .field--check { flex-direction: row; }
+  .field__check {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: flex-start;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+  }
+  .field__check input { margin-top: 4px; flex-shrink: 0; accent-color: var(--color-accent-gold); }
+
+  .btn-primary {
+    align-self: flex-start;
+    padding: var(--space-md) var(--space-2xl);
+    background: var(--color-accent-gold);
+    color: var(--color-bg);
+    border: 1px solid var(--color-accent-gold);
+    border-radius: var(--radius-full);
+    font-family: var(--font-body);
+    font-weight: var(--font-medium);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+  .btn-primary:hover { background: transparent; color: var(--color-accent-gold); }
+
+  .form-legal {
+    font-size: var(--text-xs);
+    color: var(--color-text-tertiary);
+    line-height: var(--leading-relaxed);
+  }
+  .form-legal a { color: var(--color-accent-gold); text-decoration: underline; text-underline-offset: 0.2em; }
+
+  /* ====== MANIFIESTO MINI ====== */
+  .manifiesto-mini {
+    padding-block: var(--space-2xl);
+    padding-top: var(--space-3xl);
+    border-top: 1px solid var(--color-line);
+    margin-top: var(--space-2xl);
+  }
+  .manifiesto-mini h2 {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    color: var(--color-accent-gold);
+    margin-bottom: var(--space-md);
+  }
+  .manifiesto-mini p {
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+    margin-bottom: var(--space-md);
+  }
+  .manifiesto-mini strong { color: var(--color-text); }
+</style>

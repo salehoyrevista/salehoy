@@ -1,0 +1,106 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  articulo: CollectionEntry<'articulos'>;
+  narradorNombre?: string;
+  size?: 'sm' | 'md' | 'lg';
+}
+
+const { articulo, narradorNombre, size = 'md' } = Astro.props;
+const { title, subtitle, narrador, categoria, fecha, tiempoLectura } = articulo.data;
+const href = `/articulos/${articulo.id}`;
+
+const formatFecha = (d: Date) => d.toLocaleDateString('es-AR', {
+  year: 'numeric', month: 'long', day: 'numeric'
+});
+---
+
+<article class={`card card--${size}`}>
+  <a href={href} class="card__link">
+    <div class="card__meta">
+      <span class={`tag tag-categoria tag--${categoria}`}>{categoria}</span>
+      {tiempoLectura && (
+        <span class="meta">· {tiempoLectura} min lectura</span>
+      )}
+    </div>
+
+    <h2 class="card__title">{title}</h2>
+
+    {subtitle && size !== 'sm' && (
+      <p class="card__subtitle">{subtitle}</p>
+    )}
+
+    <div class="card__footer">
+      <span class="card__autor">{narradorNombre || narrador.replace('-', ' ')}</span>
+      <time class="card__fecha" datetime={fecha.toISOString()}>{formatFecha(fecha)}</time>
+    </div>
+  </a>
+</article>
+
+<style>
+  .card {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    transition: border-color var(--transition-fast), transform var(--transition-fast);
+  }
+
+  .card:hover {
+    border-color: var(--color-accent-gold);
+    transform: translateY(-2px);
+  }
+
+  .card__link {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    color: inherit;
+  }
+
+  .card__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: var(--text-sm);
+    color: var(--color-text-tertiary);
+  }
+
+  .card__title {
+    font-family: var(--font-display);
+    font-weight: var(--font-semibold);
+    line-height: var(--leading-snug);
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .card--sm .card__title { font-size: var(--text-xl); }
+  .card--md .card__title { font-size: var(--text-2xl); }
+  .card--lg .card__title { font-size: var(--text-3xl); }
+
+  .card__subtitle {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-md);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-normal);
+  }
+
+  .card__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: var(--space-sm);
+    padding-top: var(--space-sm);
+    border-top: 1px solid var(--color-line);
+    font-size: var(--text-sm);
+    color: var(--color-text-tertiary);
+  }
+
+  .card__autor {
+    text-transform: capitalize;
+    font-weight: var(--font-medium);
+    color: var(--color-text-secondary);
+  }
+</style>

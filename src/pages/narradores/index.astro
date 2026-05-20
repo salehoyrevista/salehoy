@@ -1,0 +1,145 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const narradores = await getCollection('narradores');
+const articulos = await getCollection('articulos');
+
+// Count artículos por narrador
+const counts = new Map<string, number>();
+articulos.forEach(a => {
+  counts.set(a.data.narrador, (counts.get(a.data.narrador) ?? 0) + 1);
+});
+---
+
+<BaseLayout title="Los narradores" description="Los cinco que escriben SaleHoy: El Matemático, La Científica, La Pitonisa, El Cronista, El Historiador.">
+  <section class="page container-wide">
+    <header class="page__header">
+      <span class="meta-label">Redacción</span>
+      <h1 class="hero-title">Los cinco que escriben SaleHoy</h1>
+      <p class="hero-lead">
+        Cinco firmas con disciplina propia que cruzan su mirada con el universo del azar. No son cinco picks: son cinco columnas regulares.
+      </p>
+    </header>
+
+    <ul class="narradores-list">
+      {narradores.map(n => (
+        <li>
+          <a href={`/narradores/${n.data.slug}`} class="narrador-row">
+            <img
+              src={`/narradores/${n.data.slug}.jpg`}
+              alt=""
+              class="narrador-row__avatar"
+              width="120"
+              height="120"
+              loading="lazy"
+            />
+            <div class="narrador-row__body">
+              <div class="narrador-row__head">
+                <h2 class="narrador-row__name">{n.data.nombre}</h2>
+                <span class="narrador-row__count">
+                  {counts.get(n.data.slug) ?? 0} {(counts.get(n.data.slug) ?? 0) === 1 ? 'artículo' : 'artículos'}
+                </span>
+              </div>
+              <p class="narrador-row__disc">{n.data.disciplina}</p>
+              <p class="narrador-row__q"><em>{n.data.preguntaDeFondo}</em></p>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .page { padding-block: var(--space-3xl); }
+  .page__header { margin-bottom: var(--space-2xl); }
+  .page__header .hero-lead { margin-top: var(--space-md); max-width: 640px; }
+
+  .narradores-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .narrador-row {
+    display: flex;
+    flex-direction: row;
+    gap: var(--space-lg);
+    padding: var(--space-xl);
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    color: inherit;
+    transition: all var(--transition-fast);
+    align-items: center;
+  }
+
+  .narrador-row:hover {
+    border-color: var(--color-accent-gold);
+  }
+
+  .narrador-row__avatar {
+    flex-shrink: 0;
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--color-line);
+    transition: border-color var(--transition-fast);
+  }
+
+  .narrador-row:hover .narrador-row__avatar {
+    border-color: var(--color-accent-gold);
+  }
+
+  .narrador-row__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    min-width: 0;
+  }
+
+  @media (max-width: 480px) {
+    .narrador-row { flex-direction: column; align-items: flex-start; }
+    .narrador-row__avatar { width: 72px; height: 72px; }
+  }
+
+  .narrador-row__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  .narrador-row__name {
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    font-weight: var(--font-semibold);
+    color: var(--color-accent-gold);
+  }
+
+  .narrador-row__count {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    color: var(--color-text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .narrador-row__disc {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    text-transform: lowercase;
+    color: var(--color-text-secondary);
+  }
+
+  .narrador-row__q {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    color: var(--color-text);
+    line-height: var(--leading-normal);
+  }
+</style>

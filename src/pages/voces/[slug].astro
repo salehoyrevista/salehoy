@@ -1,0 +1,116 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const voces = await getCollection('voces');
+  return voces.map(v => ({
+    params: { slug: v.id },
+    props: { voces: v },
+  }));
+}
+
+const { voces } = Astro.props;
+const { Content } = await render(voces);
+
+const ediciones = await getCollection('ediciones');
+const edicion = ediciones.find(e => e.data.numero === voces.data.edicion);
+---
+
+<BaseLayout
+  title={`Voces del número ${voces.data.numero} · ${voces.data.nombre}`}
+  description={voces.data.intro || `Cinco lecturas del número ${voces.data.numero}, ${voces.data.nombre}.`}
+>
+  <article class="voces">
+    <header class="voces__hero container-narrow">
+      <span class="meta-label">Voces del número</span>
+      <div class="voces__numero">
+        <span class="data-num-large">{voces.data.numero}</span>
+        <span class="voces__nombre">{voces.data.nombre}</span>
+      </div>
+      {voces.data.intro && (
+        <p class="hero-lead voces__intro">{voces.data.intro}</p>
+      )}
+      {edicion && (
+        <p class="voces__edicion">
+          De la edición <a href={`/ediciones/${edicion.id}`}>#{edicion.data.numero} · {edicion.data.titulo}</a>
+        </p>
+      )}
+    </header>
+
+    <div class="voces__body prose container-narrow">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .voces { padding-block: var(--space-3xl); }
+
+  .voces__hero {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+  }
+
+  .voces__numero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    margin-block: var(--space-lg);
+  }
+
+  .voces__numero .data-num-large {
+    color: var(--color-accent-gold);
+    font-size: var(--text-7xl);
+    line-height: 1;
+  }
+
+  .voces__nombre {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-3xl);
+    color: var(--color-text);
+  }
+
+  .voces__intro {
+    max-width: 640px;
+    margin-inline: auto;
+  }
+
+  .voces__edicion {
+    font-size: var(--text-sm);
+    color: var(--color-text-tertiary);
+    margin-top: var(--space-lg);
+  }
+
+  .voces__edicion a {
+    color: var(--color-accent-gold);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .voces__body {
+    padding-block: var(--space-xl);
+  }
+
+  /* Cada bloque de narrador en Voces tiene un H2 que actúa como nombre */
+  .voces__body :global(h2) {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: var(--font-semibold);
+    color: var(--color-accent-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: var(--space-2xl);
+    margin-bottom: var(--space-md);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--color-line);
+  }
+
+  .voces__body :global(h2:first-of-type) {
+    border-top: none;
+    padding-top: 0;
+    margin-top: 0;
+  }
+</style>

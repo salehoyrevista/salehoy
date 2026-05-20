@@ -1,0 +1,272 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SalaHeader from '../components/SalaHeader.astro';
+---
+
+<BaseLayout
+  title="Ruleta"
+  description="Generador de número aleatorio. Sin método, sin análisis. Solo azar puro. Elegí rango y tirá."
+>
+  <section class="page container-narrow">
+    <SalaHeader
+      titulo="Ruleta"
+      bajada="Generador de número aleatorio. Sin método, sin análisis. Solo azar puro."
+      vibe="green"
+    />
+
+    <div class="ruleta-wrap">
+      <div class="rango">
+        <label class="rango__field">
+          <span class="rango__label">DESDE</span>
+          <input id="rango-min" type="number" value="0" class="rango__input" />
+        </label>
+        <label class="rango__field">
+          <span class="rango__label">HASTA</span>
+          <input id="rango-max" type="number" value="99" class="rango__input" />
+        </label>
+      </div>
+
+      <div class="display">
+        <div class="display__scanlines" aria-hidden="true"></div>
+        <div id="numero" class="display__numero">—</div>
+        <div class="display__hint" id="display-hint">PRESIONÁ PARA TIRAR</div>
+      </div>
+
+      <button id="tirar" class="tirar-btn">
+        <span class="tirar-btn__inner">★ TIRAR ★</span>
+      </button>
+
+      <div class="historial">
+        <span class="historial__label">ÚLTIMOS:</span>
+        <ul id="historial-list" class="historial__list"></ul>
+      </div>
+
+      <p class="legal">
+        El resultado es completamente aleatorio (función nativa del navegador). Sin pesos, sin influencias, sin "calientes" ni "fríos". Azar puro, como tiene que ser.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const btn = document.getElementById('tirar') as HTMLButtonElement;
+  const minIn = document.getElementById('rango-min') as HTMLInputElement;
+  const maxIn = document.getElementById('rango-max') as HTMLInputElement;
+  const numEl = document.getElementById('numero') as HTMLElement;
+  const hintEl = document.getElementById('display-hint') as HTMLElement;
+  const histEl = document.getElementById('historial-list') as HTMLUListElement;
+
+  const historia: number[] = [];
+
+  function tirar() {
+    const min = parseInt(minIn.value || '0', 10);
+    const max = parseInt(maxIn.value || '99', 10);
+    if (isNaN(min) || isNaN(max) || min >= max) {
+      numEl.textContent = 'ERR';
+      hintEl.textContent = 'RANGO INVÁLIDO';
+      return;
+    }
+
+    btn.disabled = true;
+    hintEl.textContent = '...';
+
+    let count = 0;
+    const total = 15;
+    const interval = setInterval(() => {
+      numEl.textContent = String(Math.floor(Math.random() * (max - min + 1)) + min).padStart(2, '0');
+      count++;
+      if (count >= total) {
+        clearInterval(interval);
+        const final = Math.floor(Math.random() * (max - min + 1)) + min;
+        numEl.textContent = String(final).padStart(2, '0');
+        hintEl.textContent = '★ SALIÓ ★';
+
+        historia.unshift(final);
+        if (historia.length > 8) historia.pop();
+        histEl.innerHTML = historia.map(n => `<li>${String(n).padStart(2, '0')}</li>`).join('');
+
+        btn.disabled = false;
+      }
+    }, 60);
+  }
+
+  btn?.addEventListener('click', tirar);
+  document.addEventListener('keydown', e => {
+    if (e.code === 'Space' && document.activeElement?.tagName !== 'INPUT') {
+      e.preventDefault();
+      if (!btn.disabled) tirar();
+    }
+  });
+</script>
+
+<style>
+  .page { padding-block: var(--space-2xl) var(--space-3xl); }
+
+  .ruleta-wrap {
+    max-width: 540px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .rango {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+    margin-bottom: var(--space-xl);
+  }
+  .rango__field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+  }
+  .rango__label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    color: var(--color-text-tertiary);
+    letter-spacing: 0.15em;
+  }
+  .rango__input {
+    width: 80px;
+    max-width: 100%;
+    padding: 8px 10px;
+    background: #04050a;
+    border: 1px solid #1a1d24;
+    border-radius: 4px;
+    color: #4fff8d;
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    text-align: center;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.7);
+    /* Quitar las flechitas nativas en mobile */
+    -moz-appearance: textfield;
+  }
+  .rango__input::-webkit-outer-spin-button,
+  .rango__input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .rango__input:focus {
+    outline: none;
+    border-color: #4fff8d;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.7), 0 0 8px rgba(79,255,141,0.4);
+  }
+
+  .display {
+    position: relative;
+    background: radial-gradient(ellipse at center, #0a1f0a 0%, #020805 100%);
+    border-radius: 18px / 22px;
+    padding: var(--space-2xl) var(--space-xl);
+    margin-bottom: var(--space-xl);
+    box-shadow:
+      inset 0 0 80px rgba(0, 100, 40, 0.35),
+      inset 0 0 6px rgba(0,0,0,0.9),
+      inset 0 4px 8px rgba(0,0,0,0.6),
+      0 6px 0 #050709,
+      0 12px 30px -8px rgba(0,0,0,0.5);
+    border: 3px solid #1a1f2e;
+    overflow: hidden;
+  }
+  .display__scanlines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(to bottom, transparent 0, transparent 2px, rgba(0,0,0,0.2) 2px, rgba(0,0,0,0.2) 3px);
+    pointer-events: none;
+  }
+  .display__numero {
+    position: relative;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(48px, 12vw, 96px);
+    color: #4fff8d;
+    text-shadow: 0 0 16px #4fff8d, 0 0 32px rgba(79, 255, 141, 0.6);
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-md);
+    min-height: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .display__hint {
+    position: relative;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    color: rgba(79, 255, 141, 0.6);
+    letter-spacing: 0.15em;
+    text-shadow: 0 0 6px rgba(79, 255, 141, 0.5);
+    animation: rblink 1s steps(2) infinite;
+  }
+  @keyframes rblink { 50% { opacity: 0.3; } }
+
+  .tirar-btn {
+    display: inline-block;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+    background: transparent;
+    margin-bottom: var(--space-xl);
+    transition: transform 0.1s;
+  }
+  .tirar-btn:active { transform: translateY(3px); }
+  .tirar-btn:disabled { cursor: wait; opacity: 0.5; }
+  .tirar-btn__inner {
+    display: inline-block;
+    padding: var(--space-md) var(--space-2xl);
+    background: linear-gradient(180deg, #ff4444 0%, #a00d20 100%);
+    border: 3px solid #1a0510;
+    border-radius: 10px;
+    color: #fff;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 16px;
+    letter-spacing: 0.15em;
+    text-shadow: 0 2px 0 rgba(0,0,0,0.5);
+    box-shadow:
+      0 5px 0 #1a0510,
+      0 8px 12px -4px rgba(0,0,0,0.5),
+      inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+  .tirar-btn:active .tirar-btn__inner {
+    box-shadow: 0 2px 0 #1a0510, 0 4px 6px -2px rgba(0,0,0,0.5);
+  }
+
+  .historial {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-2xl);
+    min-height: 40px;
+  }
+  .historial__label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    color: var(--color-text-tertiary);
+    letter-spacing: 0.15em;
+  }
+  .historial__list {
+    display: flex;
+    gap: var(--space-sm);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .historial__list li {
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    color: rgba(79, 255, 141, 0.6);
+    padding: 2px 8px;
+    background: rgba(79, 255, 141, 0.08);
+    border-radius: 4px;
+  }
+  .historial__list li:first-child {
+    color: #4fff8d;
+    background: rgba(79, 255, 141, 0.15);
+    text-shadow: 0 0 4px #4fff8d;
+  }
+
+  .legal {
+    font-size: var(--text-sm);
+    color: var(--color-text-tertiary);
+    line-height: var(--leading-normal);
+    font-style: italic;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+</style>

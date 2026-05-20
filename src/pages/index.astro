@@ -1,0 +1,370 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import { getCollection } from 'astro:content';
+
+const articulos = await getCollection('articulos');
+const ediciones = await getCollection('ediciones');
+const narradores = await getCollection('narradores');
+
+// Edición actual (la más reciente)
+const edicionActual = ediciones.sort((a, b) =>
+  b.data.fecha.valueOf() - a.data.fecha.valueOf()
+)[0];
+
+// Artículos de la edición actual
+const articulosDelNumero = articulos.filter(
+  a => a.data.edicion === edicionActual.data.numero
+);
+
+// Destacados (los 3 primeros marcados como destacados)
+const destacados = articulosDelNumero.filter(a => a.data.destacado).slice(0, 3);
+const resto = articulosDelNumero.filter(a => !a.data.destacado);
+
+// Map narrador → nombre (lo necesita ArticleCard)
+const narradorMap = new Map(narradores.map(n => [n.data.slug, n.data.nombre]));
+---
+
+<BaseLayout title="SaleHoy" description="Revista cultural del juego y el azar. Quiniela, casino, póker, caballos, online: pensados con seriedad.">
+  <!-- HERO: tapa del número actual -->
+  <section class="hero">
+    <div class="container-narrow">
+      <div class="hero__tag">
+        <span class="meta-label">Número {edicionActual.data.numero} · {edicionActual.data.fecha.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })}</span>
+      </div>
+      <h1 class="hero-title">{edicionActual.data.titulo}</h1>
+      <p class="hero-lead">{edicionActual.data.bajada}</p>
+      <div class="hero__cta">
+        <a href={`/ediciones/${edicionActual.id}`} class="btn-primary">Entrar al número</a>
+        <a href={`/ediciones/${edicionActual.id}#carta`} class="btn-secondary">Leer la carta del editor →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- DESTACADOS DEL NÚMERO -->
+  <section class="section">
+    <div class="container-wide">
+      <h2 class="section__title">En esta edición</h2>
+      <div class="grid-3">
+        {destacados.map(articulo => (
+          <ArticleCard articulo={articulo} narradorNombre={narradorMap.get(articulo.data.narrador)} size="md" />
+        ))}
+      </div>
+
+      {resto.length > 0 && (
+        <div class="grid-2 grid-2--more">
+          {resto.map(articulo => (
+            <ArticleCard articulo={articulo} narradorNombre={narradorMap.get(articulo.data.narrador)} size="sm" />
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- ZONA VIVA -->
+  <section class="section section--alt">
+    <div class="container-wide">
+      <span class="meta-label">El registro vivo</span>
+      <h2 class="section__title">Quiniela del día</h2>
+      <p class="section__intro">
+        Mientras la revista respira lento, el motor estadístico actualiza candidatos, terminaciones en deuda y números calientes. La quiniela del día.
+      </p>
+      <div class="cta-row">
+        <a href="/quiniela" class="btn-primary">Ver candidatos de hoy</a>
+        <a href="/quiniela/voces-del-numero" class="btn-secondary">Voces del número de la semana →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ENTRÁ A LA SALA -->
+  <section class="section section--alt">
+    <div class="container-wide">
+      <a href="/la-sala" class="sala-cta">
+        <div class="sala-cta__left">
+          <span class="meta-label">El otro registro</span>
+          <h2 class="sala-cta__title">Entrá a La sala</h2>
+          <p class="sala-cta__desc">
+            Donde la revista se vuelve juego. Quiniela del día, Anecdotario, Máquina de Frases y Ruleta.
+          </p>
+          <span class="sala-cta__btn">Pasar a La sala →</span>
+        </div>
+        <div class="sala-cta__icons" aria-hidden="true">
+          <!-- Mini-previews de los 4 íconos pixel -->
+          <span class="sala-cta__icon sala-cta__icon--red">
+            <svg viewBox="0 0 16 16" shape-rendering="crispEdges">
+              <rect x="5" y="2" width="6" height="1" fill="currentColor"/>
+              <rect x="3" y="3" width="2" height="1" fill="currentColor"/>
+              <rect x="11" y="3" width="2" height="1" fill="currentColor"/>
+              <rect x="2" y="4" width="1" height="8" fill="currentColor"/>
+              <rect x="13" y="4" width="1" height="8" fill="currentColor"/>
+              <rect x="3" y="12" width="2" height="1" fill="currentColor"/>
+              <rect x="11" y="12" width="2" height="1" fill="currentColor"/>
+              <rect x="5" y="13" width="6" height="1" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="sala-cta__icon sala-cta__icon--amber">
+            <svg viewBox="0 0 16 16" shape-rendering="crispEdges">
+              <rect x="3" y="2" width="11" height="1" fill="currentColor"/>
+              <rect x="3" y="13" width="11" height="1" fill="currentColor"/>
+              <rect x="14" y="3" width="1" height="10" fill="currentColor"/>
+              <rect x="3" y="3" width="1" height="10" fill="currentColor"/>
+              <rect x="5" y="6" width="7" height="1" fill="currentColor"/>
+              <rect x="5" y="9" width="6" height="1" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="sala-cta__icon sala-cta__icon--gold">
+            <svg viewBox="0 0 16 16" shape-rendering="crispEdges">
+              <rect x="3" y="13" width="10" height="2" fill="currentColor"/>
+              <rect x="7" y="5" width="2" height="8" fill="currentColor"/>
+              <rect x="6" y="3" width="4" height="1" fill="currentColor"/>
+              <rect x="5" y="4" width="6" height="2" fill="currentColor"/>
+              <rect x="6" y="6" width="4" height="1" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="sala-cta__icon sala-cta__icon--green">
+            <svg viewBox="0 0 16 16" shape-rendering="crispEdges">
+              <rect x="5" y="2" width="6" height="1" fill="currentColor"/>
+              <rect x="3" y="3" width="2" height="1" fill="currentColor"/>
+              <rect x="11" y="3" width="2" height="1" fill="currentColor"/>
+              <rect x="1" y="6" width="1" height="4" fill="currentColor"/>
+              <rect x="14" y="6" width="1" height="4" fill="currentColor"/>
+              <rect x="5" y="13" width="6" height="1" fill="currentColor"/>
+              <rect x="7" y="4" width="2" height="9" fill="currentColor"/>
+              <rect x="3" y="7" width="10" height="2" fill="currentColor"/>
+            </svg>
+          </span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="section section--alt">
+    <div class="container-narrow center">
+      <h2 class="section__title">Suscribite al newsletter</h2>
+      <p class="section__intro">
+        Te llegan los números nuevos a tu mail apenas salen. Sin spam. Sin promesas. Una vez por quincena.
+      </p>
+      <a href="/newsletter" class="btn-primary">Suscribirme</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-block: var(--space-4xl);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .hero__tag {
+    margin-bottom: var(--space-md);
+  }
+
+  .hero-lead {
+    margin-top: var(--space-md);
+    max-width: 640px;
+  }
+
+  .hero__cta {
+    margin-top: var(--space-xl);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    align-items: center;
+  }
+
+  .section {
+    padding-block: var(--space-3xl);
+  }
+
+  .section--alt {
+    background: var(--color-bg-elevated);
+    border-block: 1px solid var(--color-line);
+  }
+
+  .section__title {
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    font-weight: var(--font-semibold);
+    margin-bottom: var(--space-md);
+  }
+
+  .section__intro {
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    max-width: 640px;
+    margin-bottom: var(--space-xl);
+  }
+
+  .center { text-align: center; }
+  .center .section__intro { margin-inline: auto; }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+    margin-top: var(--space-xl);
+  }
+
+  @media (min-width: 768px) {
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+    margin-top: var(--space-lg);
+  }
+
+  @media (min-width: 768px) {
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin-top: var(--space-xl);
+  }
+
+  .btn-primary, .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    padding: var(--space-md) var(--space-xl);
+    border-radius: var(--radius-full);
+    border: 1px solid;
+    transition: all var(--transition-fast);
+  }
+
+  .btn-primary {
+    background: var(--color-accent-gold);
+    color: var(--color-bg);
+    border-color: var(--color-accent-gold);
+  }
+
+  .btn-primary:hover {
+    background: transparent;
+    color: var(--color-accent-gold);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--color-text);
+    border-color: var(--color-line-strong);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--color-accent-gold);
+    color: var(--color-accent-gold);
+  }
+
+  /* === CTA grande a La sala === */
+  .sala-cta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+    padding: var(--space-2xl);
+    background: linear-gradient(135deg, #1a1f2e 0%, #0a0d14 100%);
+    border: 2px solid #2a2f3a;
+    border-radius: var(--radius-md);
+    color: inherit;
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+      0 6px 0 #050709,
+      0 14px 36px -10px rgba(0,0,0,0.5);
+  }
+
+  @media (min-width: 768px) {
+    .sala-cta { flex-direction: row; align-items: center; justify-content: space-between; gap: var(--space-3xl); }
+  }
+
+  .sala-cta:hover {
+    border-color: var(--color-accent-gold);
+    transform: translateY(-2px);
+    box-shadow:
+      0 6px 0 #050709,
+      0 18px 48px -10px rgba(212,175,55,0.35);
+  }
+
+  .sala-cta__left {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .sala-cta__title {
+    font-family: var(--font-display);
+    font-size: var(--text-4xl);
+    font-weight: var(--font-semibold);
+    color: #ffd700;
+    margin-block: var(--space-sm) var(--space-md);
+    line-height: 1.1;
+  }
+
+  .sala-cta__desc {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    color: rgba(255,255,255,0.75);
+    line-height: var(--leading-normal);
+    margin-bottom: var(--space-lg);
+    max-width: 500px;
+  }
+
+  .sala-cta__btn {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #ffd700;
+    padding: var(--space-sm) var(--space-lg);
+    border: 1px solid #ffd700;
+    border-radius: var(--radius-full);
+    transition: all var(--transition-fast);
+  }
+
+  .sala-cta:hover .sala-cta__btn {
+    background: #ffd700;
+    color: #0a0d14;
+  }
+
+  /* Mini-íconos pixel-art a la derecha */
+  .sala-cta__icons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+    flex-shrink: 0;
+  }
+
+  @media (min-width: 768px) {
+    .sala-cta__icons { grid-template-columns: repeat(2, 56px); }
+  }
+
+  .sala-cta__icon {
+    width: 56px;
+    height: 56px;
+    padding: 10px;
+    background: rgba(0,0,0,0.5);
+    border-radius: 8px;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sala-cta__icon svg { width: 100%; height: 100%; display: block; }
+
+  .sala-cta__icon--red    { color: #ff5050; }
+  .sala-cta__icon--amber  { color: #ffb000; }
+  .sala-cta__icon--gold   { color: #ffd700; }
+  .sala-cta__icon--green  { color: #4fff8d; }
+
+  .sala-cta__icon { text-shadow: 0 0 6px currentColor; }
+</style>

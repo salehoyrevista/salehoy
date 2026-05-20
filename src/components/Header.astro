@@ -1,0 +1,461 @@
+---
+import { getCollection } from 'astro:content';
+
+const ediciones = (await getCollection('ediciones'))
+  .sort((a, b) => b.data.numero - a.data.numero);
+
+const navItems = [
+  {
+    label: 'Ediciones',
+    href: '/ediciones',
+    submenu: [
+      ...ediciones.map(e => ({
+        label: `#${String(e.data.numero).padStart(2, '0')} · ${e.data.titulo}`,
+        href: `/ediciones/${e.id}`,
+      })),
+      { label: '— Los narradores —', href: '/narradores' },
+    ],
+  },
+  {
+    label: 'La sala',
+    href: '/la-sala',
+    submenu: [
+      { label: 'Quiniela del día', href: '/quiniela' },
+      { label: 'El Anecdotario', href: '/anecdotario' },
+      { label: 'Máquina de Frases', href: '/maquina-de-frases' },
+      { label: 'Ruleta', href: '/ruleta' },
+    ],
+  },
+  { label: 'Sobre', href: '/sobre' },
+];
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a href="/" class="logo" aria-label="SaleHoy — Revista cultural del juego y el azar">
+      <img src="/img/logo-wordmark-dark.png" alt="SaleHoy" class="logo__wordmark logo__wordmark--for-light" />
+      <img src="/img/logo-wordmark-light.png" alt="" class="logo__wordmark logo__wordmark--for-dark" aria-hidden="true" />
+    </a>
+
+    <nav class="nav" aria-label="Navegación principal">
+      <ul class="nav__list">
+        {navItems.map(item => (
+          <li class={`nav__item${item.submenu ? ' nav__item--has-submenu' : ''}`}>
+            <a href={item.href} class="nav__link">{item.label}</a>
+            {item.submenu && (
+              <ul class="nav__sublist">
+                {item.submenu.map(sub => (
+                  <li><a href={sub.href} class="nav__sublink">{sub.label}</a></li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="actions">
+      <a href="/newsletter" class="btn btn--ghost">Newsletter</a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Cambiar modo de color">
+        <span class="theme-toggle__icon theme-toggle__icon--moon">☾</span>
+        <span class="theme-toggle__icon theme-toggle__icon--sun">☀</span>
+      </button>
+      <button id="menu-toggle" class="menu-toggle" aria-label="Abrir menú" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mega-menú desplegable desde arriba (full width) -->
+  <nav id="mobile-menu" class="mobile-menu" aria-label="Navegación móvil" hidden>
+    <div class="mobile-menu__inner">
+      {navItems.map(item => (
+        <section class="mm-section">
+          <a href={item.href} class="mm-section__title">{item.label}</a>
+          {item.submenu && (
+            <ul class="mm-section__list">
+              {item.submenu.map(sub => (
+                <li><a href={sub.href} class="mm-section__link">{sub.label}</a></li>
+              ))}
+            </ul>
+          )}
+        </section>
+      ))}
+      <section class="mm-section mm-section--cta">
+        <a href="/newsletter" class="mm-cta">Suscribirme al newsletter</a>
+      </section>
+    </div>
+  </nav>
+</header>
+
+<script>
+  // Theme toggle
+  const toggle = document.getElementById('theme-toggle');
+  toggle?.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  });
+
+  // Mobile menu (mega-menú desplegable hacia abajo)
+  const menuToggle = document.getElementById('menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  function openMenu() {
+    mobileMenu?.removeAttribute('hidden');
+    requestAnimationFrame(() => {
+      mobileMenu?.classList.add('mobile-menu--open');
+    });
+    menuToggle?.setAttribute('aria-expanded', 'true');
+  }
+  function closeMenu() {
+    mobileMenu?.classList.remove('mobile-menu--open');
+    menuToggle?.setAttribute('aria-expanded', 'false');
+    setTimeout(() => mobileMenu?.setAttribute('hidden', ''), 250);
+  }
+
+  menuToggle?.addEventListener('click', () => {
+    const isOpen = mobileMenu?.classList.contains('mobile-menu--open');
+    if (isOpen) closeMenu(); else openMenu();
+  });
+
+  // Escape cierra
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && mobileMenu?.classList.contains('mobile-menu--open')) closeMenu();
+  });
+
+  // Cerrar al hacer click en cualquier link
+  mobileMenu?.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => closeMenu());
+  });
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: color-mix(in srgb, var(--color-bg) 92%, transparent);
+    backdrop-filter: saturate(180%) blur(12px);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-lg);
+    padding-block: var(--space-md);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--color-text);
+  }
+
+  .logo__wordmark {
+    display: block;
+    height: 38px;
+    width: auto;
+  }
+
+  .logo__wordmark--for-light { display: block; }
+  .logo__wordmark--for-dark { display: none; }
+  [data-theme='dark'] .logo__wordmark--for-light { display: none; }
+  [data-theme='dark'] .logo__wordmark--for-dark { display: block; }
+
+  @media (max-width: 480px) {
+    .logo__wordmark { height: 30px; }
+  }
+
+  /* ============================================== */
+  /* NAV DESKTOP — con dropdowns en hover            */
+  /* ============================================== */
+  .nav { display: none; }
+
+  @media (min-width: 768px) {
+    .nav { display: block; }
+  }
+
+  .nav__list {
+    display: flex;
+    gap: var(--space-xl);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav__item {
+    position: relative;
+  }
+
+  .nav__link {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding-block: var(--space-xs);
+    border-bottom: 1px solid transparent;
+    transition: color var(--transition-fast), border-color var(--transition-fast);
+    display: inline-block;
+  }
+
+  .nav__item--has-submenu .nav__link::after {
+    content: ' ▾';
+    font-size: 10px;
+    opacity: 0.5;
+  }
+
+  .nav__link:hover {
+    color: var(--color-text);
+    border-bottom-color: var(--color-accent-gold);
+  }
+
+  /* Sub-lista (dropdown) */
+  .nav__sublist {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    min-width: 220px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-line);
+    border-radius: 8px;
+    padding: var(--space-xs);
+    list-style: none;
+    margin: 0;
+    box-shadow: 0 12px 36px -8px rgba(0,0,0,0.25);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 150ms ease, transform 150ms ease;
+  }
+
+  .nav__item:hover .nav__sublist,
+  .nav__item:focus-within .nav__sublist {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .nav__sublink {
+    display: block;
+    padding: var(--space-sm) var(--space-md);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    border-radius: 4px;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+  }
+
+  .nav__sublink:hover {
+    color: var(--color-accent-gold);
+    background: var(--color-bg-elevated);
+  }
+
+  /* ============================================== */
+  /* ACTIONS                                         */
+  /* ============================================== */
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-full);
+    transition: all var(--transition-fast);
+    border: 1px solid transparent;
+    cursor: pointer;
+  }
+
+  .btn--ghost {
+    background: transparent;
+    border-color: var(--color-line-strong);
+    color: var(--color-text-secondary);
+  }
+
+  .btn--ghost:hover {
+    background: var(--color-bg-elevated);
+    color: var(--color-text);
+    border-color: var(--color-accent-gold);
+  }
+
+  @media (max-width: 767px) {
+    .btn--ghost { display: none; }
+  }
+
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-line);
+    color: var(--color-text-secondary);
+    transition: all var(--transition-fast);
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .theme-toggle:hover {
+    color: var(--color-accent-gold);
+    border-color: var(--color-accent-gold);
+  }
+
+  .theme-toggle__icon { font-size: var(--text-md); }
+  .theme-toggle__icon--sun { display: none; }
+  [data-theme='light'] .theme-toggle__icon--moon { display: none; }
+  [data-theme='light'] .theme-toggle__icon--sun { display: inline; }
+
+  .menu-toggle {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 36px;
+    height: 36px;
+    padding: 9px 8px;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    border: 1px solid var(--color-line);
+    cursor: pointer;
+  }
+
+  .menu-toggle span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: var(--color-text);
+    border-radius: 1px;
+  }
+
+  @media (min-width: 768px) {
+    .menu-toggle { display: none; }
+  }
+
+  /* ============================================== */
+  /* MOBILE MENU — mega-menú desplegable desde arriba */
+  /* ============================================== */
+  .mobile-menu {
+    position: fixed;
+    top: 64px; /* debajo del header */
+    left: 0;
+    right: 0;
+    max-height: calc(100vh - 64px);
+    background: var(--color-bg);
+    z-index: 999;
+    overflow-y: auto;
+    border-top: 1px solid var(--color-line);
+    border-bottom: 1px solid var(--color-line);
+    box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.18);
+    transform: translateY(-8px);
+    opacity: 0;
+    transition: transform 220ms ease, opacity 220ms ease;
+  }
+  .mobile-menu--open {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .mobile-menu__inner {
+    padding: var(--space-md) var(--space-lg) var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    max-width: 720px;
+    margin-inline: auto;
+  }
+
+  /* Cada sección (Ediciones, La sala, Sobre) */
+  .mm-section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--color-line);
+  }
+  .mm-section:last-of-type {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  .mm-section--cta {
+    border: none;
+    padding: 0;
+    margin-top: var(--space-sm);
+  }
+
+  /* Título de sección — el item principal */
+  .mm-section__title {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: var(--font-semibold);
+    color: var(--color-text);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 6px 0;
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+  .mm-section__title:hover { color: var(--color-accent-gold); }
+
+  /* Sub-items: lista limpia, compacta, indentada */
+  .mm-section__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mm-section__link {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    padding: 5px 0 5px var(--space-md);
+    text-decoration: none;
+    border-left: 2px solid var(--color-line);
+    transition: all var(--transition-fast);
+    line-height: 1.35;
+  }
+  .mm-section__link:hover {
+    color: var(--color-accent-gold);
+    border-left-color: var(--color-accent-gold);
+    background: var(--color-bg-elevated);
+  }
+
+  /* CTA newsletter */
+  .mm-cta {
+    display: block;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: var(--font-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-accent-gold);
+    border: 1px solid var(--color-accent-gold);
+    border-radius: var(--radius-full);
+    padding: 10px 16px;
+    text-decoration: none;
+    transition: all var(--transition-fast);
+  }
+  .mm-cta:hover {
+    background: var(--color-accent-gold);
+    color: var(--color-bg);
+  }
+</style>

@@ -1,0 +1,227 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const ediciones = (await getCollection('ediciones'))
+  .sort((a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf());
+
+const narradores = await getCollection('narradores');
+---
+
+<BaseLayout title="Ediciones" description="Archivo de ediciones de SaleHoy y los cinco narradores que la escriben.">
+  <section class="page container-wide">
+    <header class="page__header">
+      <span class="meta-label">Archivo</span>
+      <h1 class="hero-title">Ediciones</h1>
+      <p class="hero-lead">
+        Todos los números publicados de SaleHoy. Cada número, una mirada al universo del juego argentino desde sus cinco voces.
+      </p>
+    </header>
+
+    <ul class="editions-grid">
+      {ediciones.map(e => (
+        <li>
+          <a href={`/ediciones/${e.id}`} class="edition-card">
+            <span class="edition-card__num">#{e.data.numero}</span>
+            <h2 class="edition-card__title">{e.data.titulo}</h2>
+            <p class="edition-card__bajada">{e.data.bajada}</p>
+            <time class="edition-card__fecha">
+              {e.data.fecha.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })}
+            </time>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <!-- =============================================== -->
+    <!-- NARRADORES — los cinco que escriben SaleHoy      -->
+    <!-- =============================================== -->
+    <section class="narradores-section">
+      <div class="narradores-section__head">
+        <span class="meta-label">Redacción</span>
+        <h2 class="section-title">Los cinco que escriben SaleHoy</h2>
+        <p class="section-intro">
+          Cinco firmas con disciplina propia que cruzan su mirada con el universo del azar. Cada uno tiene su columna en cada número.
+        </p>
+      </div>
+
+      <div class="narradores-grid">
+        {narradores.map(n => (
+          <a href={`/narradores/${n.data.slug}`} class="narrador-mini">
+            <img
+              src={`/narradores/${n.data.slug}.jpg`}
+              alt=""
+              class="narrador-mini__avatar"
+              width="96"
+              height="96"
+              loading="lazy"
+            />
+            <h3 class="narrador-mini__name">{n.data.nombre}</h3>
+            <p class="narrador-mini__disc">{n.data.disciplina}</p>
+            <p class="narrador-mini__q"><em>{n.data.preguntaDeFondo}</em></p>
+          </a>
+        ))}
+      </div>
+    </section>
+  </section>
+</BaseLayout>
+
+<style>
+  .page { padding-block: var(--space-3xl); }
+  .page__header { margin-bottom: var(--space-2xl); }
+  .page__header .hero-lead { margin-top: var(--space-md); max-width: 640px; }
+
+  .editions-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+
+  @media (min-width: 768px) {
+    .editions-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (min-width: 1024px) {
+    .editions-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .edition-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: var(--space-xl);
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    color: inherit;
+    transition: all var(--transition-fast);
+    min-height: 260px;
+  }
+
+  .edition-card:hover {
+    border-color: var(--color-accent-gold);
+    transform: translateY(-2px);
+  }
+
+  .edition-card__num {
+    font-family: var(--font-mono);
+    font-size: var(--text-5xl);
+    font-weight: var(--font-medium);
+    color: var(--color-accent-gold);
+    line-height: 1;
+  }
+
+  .edition-card__title {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-semibold);
+    margin-top: var(--space-md);
+  }
+
+  .edition-card__bajada {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-normal);
+    flex-grow: 1;
+  }
+
+  .edition-card__fecha {
+    font-size: var(--text-xs);
+    color: var(--color-text-tertiary);
+    text-transform: capitalize;
+    margin-top: var(--space-sm);
+  }
+
+  /* === Sección Narradores === */
+  .narradores-section {
+    margin-top: var(--space-4xl);
+    padding-top: var(--space-3xl);
+    border-top: 1px solid var(--color-line);
+  }
+
+  .narradores-section__head {
+    margin-bottom: var(--space-2xl);
+    max-width: 640px;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    font-weight: var(--font-semibold);
+    margin-block: var(--space-sm) var(--space-md);
+  }
+
+  .section-intro {
+    font-size: var(--text-md);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-normal);
+  }
+
+  .narradores-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+
+  @media (min-width: 640px) {
+    .narradores-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (min-width: 1024px) {
+    .narradores-grid { grid-template-columns: repeat(5, 1fr); }
+  }
+
+  .narrador-mini {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-sm);
+    padding: var(--space-lg);
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    color: inherit;
+    transition: all var(--transition-fast);
+  }
+
+  .narrador-mini:hover {
+    border-color: var(--color-accent-gold);
+    transform: translateY(-2px);
+  }
+
+  .narrador-mini__avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--color-line);
+    transition: border-color var(--transition-fast);
+  }
+
+  .narrador-mini:hover .narrador-mini__avatar {
+    border-color: var(--color-accent-gold);
+  }
+
+  .narrador-mini__name {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    color: var(--color-text);
+  }
+
+  .narrador-mini__disc {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    color: var(--color-text-tertiary);
+    text-transform: lowercase;
+  }
+
+  .narrador-mini__q {
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-normal);
+    margin-top: var(--space-xs);
+  }
+</style>

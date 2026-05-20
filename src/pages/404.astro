@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="404 — Página no encontrada" description="La página que buscás no existe.">
+  <section class="page container-narrow">
+    <div class="center">
+      <span class="data-num-large">404</span>
+      <h1 class="hero-title">Esta página no salió hoy</h1>
+      <p class="hero-lead">
+        El número que estabas buscando no existe en nuestra bolillera. Probá con otro.
+      </p>
+      <div class="links">
+        <a href="/" class="btn-primary">Volver al inicio</a>
+        <a href="/ediciones" class="btn-secondary">Ver las ediciones →</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page { padding-block: var(--space-4xl); }
+  .center { text-align: center; }
+  .center .data-num-large {
+    color: var(--color-accent-gold);
+    font-size: var(--text-7xl);
+    line-height: 1;
+    display: block;
+    margin-bottom: var(--space-lg);
+  }
+  .center .hero-lead { max-width: 480px; margin: var(--space-md) auto var(--space-2xl); }
+  .links { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-md); }
+  .btn-primary {
+    padding: var(--space-md) var(--space-xl);
+    background: var(--color-accent-gold);
+    color: var(--color-bg);
+    border-radius: var(--radius-full);
+    font-weight: var(--font-medium);
+  }
+  .btn-secondary {
+    padding: var(--space-md) var(--space-xl);
+    border: 1px solid var(--color-line-strong);
+    color: var(--color-text);
+    border-radius: var(--radius-full);
+  }
+  .btn-secondary:hover { color: var(--color-accent-gold); border-color: var(--color-accent-gold); }
+</style>

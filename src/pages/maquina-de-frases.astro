@@ -1,0 +1,1185 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { FRASES } from '../data/frases.ts';
+
+const frasesPool = FRASES.map(f => ({
+  texto: f.texto,
+  autor: f.autor,
+  obra: f.obra ?? '',
+  tier: f.tier,
+}));
+---
+
+<BaseLayout
+  title="Máquina de Frases"
+  description="Tirá la palanca y descubrí frases sobre el azar, el juego y la suerte. Borges, Discépolo, refranes, jackpots ocultos."
+>
+  <link slot="head" rel="preconnect" href="https://fonts.googleapis.com" />
+  <link slot="head" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" />
+
+  <section class="page container-narrow">
+    <!-- Breadcrumb arriba (la marquesina principal está en el gabinete mismo) -->
+    <nav class="mf-crumbs" aria-label="Migas de pan">
+      <a href="/la-sala" class="mf-crumb">★ LA SALA</a>
+      <span class="mf-crumb-sep">›</span>
+      <span class="mf-crumb mf-crumb--current">MÁQUINA DE FRASES</span>
+    </nav>
+    <p class="mf-intro">
+      Tirá la palanca y descubrí una cita sobre el azar, la suerte, el juego o el destino. Algunas son clásicas. Algunas son refranes. Y en alguna parte hay <em>jackpots</em> escondidos.
+    </p>
+
+    <!-- =================================================== -->
+    <!-- MÁQUINA — la palanca queda INTEGRADA al lateral     -->
+    <!-- =================================================== -->
+    <div class="machine-wrap">
+      <div class="machine" id="machine">
+
+        <!-- MARQUESINA SUPERIOR -->
+        <div class="marquee">
+          <div class="bulbs">
+            {Array.from({length: 11}).map((_, i) => (
+              <span class="bulb" style={`animation-delay:${i * 0.13}s`}></span>
+            ))}
+          </div>
+          <div class="title-plate">
+            <span class="title-mark">★</span>
+            <span class="title-text">MÁQUINA DE FRASES</span>
+            <span class="title-mark">★</span>
+          </div>
+          <div class="subtitle">SALEHOY · SINCE 2026</div>
+        </div>
+
+        <!-- CUERPO PRINCIPAL: una sola columna integrada -->
+        <div class="body">
+          <!-- LEDs panel -->
+          <div class="led-strip">
+            <span class="led led--green"><b>●</b><span>PWR</span></span>
+            <span class="led led--amber"><b>●</b><span>READY</span></span>
+            <span class="led led--red" id="led-jck"><b>●</b><span>JACKPOT</span></span>
+          </div>
+
+          <!-- TV / CRT -->
+          <div class="tv">
+            <div class="tv__bezel">
+              <div class="tv__screen" id="screen">
+                <div class="tv__content" id="display">
+                  <div class="boot">
+                    <p>&gt; SALEHOY · MÁQUINA DE FRASES v1.0</p>
+                    <p>&gt; SYSTEM READY_</p>
+                    <p class="boot__hint">[ TIRÁ LA PALANCA → ]</p>
+                  </div>
+                </div>
+                <div class="tv__scanlines"></div>
+                <div class="tv__glow"></div>
+                <div class="tv__flicker"></div>
+              </div>
+              <!-- Tornillos del bisel -->
+              <span class="screw screw--tl"></span>
+              <span class="screw screw--tr"></span>
+              <span class="screw screw--bl"></span>
+              <span class="screw screw--br"></span>
+            </div>
+            <div class="tv__brand">★ SALEHOY ★ ALL-PURPOSE QUOTE MACHINE</div>
+          </div>
+
+          <!-- Panel inferior con contador y controles -->
+          <div class="control-panel">
+            <div class="counter">
+              <div class="counter__label">DESCUBIERTAS</div>
+              <div class="counter__digits" id="counter-digits">000</div>
+              <div class="counter__total">/ {FRASES.length.toString().padStart(3, '0')}</div>
+            </div>
+            <div class="ctrls">
+              <button id="reset" class="ctrl-btn" title="Reiniciar colección">RESET</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- BASE -->
+        <div class="base">
+          <div class="bulbs bulbs--small">
+            {Array.from({length: 9}).map((_, i) => (
+              <span class="bulb bulb--small" style={`animation-delay:${i * 0.18}s`}></span>
+            ))}
+          </div>
+        </div>
+
+        <!-- ============================================= -->
+        <!-- PALANCA — SVG, vertical, montada al lateral     -->
+        <!-- ============================================= -->
+        <button id="lever" class="lever" aria-label="Tirar la palanca">
+          <svg class="lever__svg" viewBox="0 0 240 360" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <!-- Cromo del brazo: gradiente vertical (luz arriba, sombra abajo) -->
+              <linearGradient id="chromeShaft" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#1a1d24"/>
+                <stop offset="12%" stop-color="#6a7280"/>
+                <stop offset="38%" stop-color="#f5f7fa"/>
+                <stop offset="52%" stop-color="#e8ecf2"/>
+                <stop offset="72%" stop-color="#8a92a0"/>
+                <stop offset="100%" stop-color="#0a0d14"/>
+              </linearGradient>
+
+              <!-- Cromo del collar/anillo (más brillante en el centro) -->
+              <linearGradient id="chromeCollar" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#0a0d14"/>
+                <stop offset="20%" stop-color="#7a8290"/>
+                <stop offset="45%" stop-color="#ffffff"/>
+                <stop offset="55%" stop-color="#f0f3f8"/>
+                <stop offset="80%" stop-color="#5a6068"/>
+                <stop offset="100%" stop-color="#0a0d14"/>
+              </linearGradient>
+
+              <!-- Bola roja: gradiente esférico con highlight -->
+              <radialGradient id="ballGrad" cx="0.3" cy="0.25" r="0.95">
+                <stop offset="0%" stop-color="#ffb0b0"/>
+                <stop offset="18%" stop-color="#ee5050"/>
+                <stop offset="55%" stop-color="#a40d20"/>
+                <stop offset="90%" stop-color="#5a0510"/>
+                <stop offset="100%" stop-color="#2a0008"/>
+              </radialGradient>
+              <radialGradient id="ballHighlight" cx="0.5" cy="0.5" r="0.5">
+                <stop offset="0%" stop-color="rgba(255,255,255,0.9)"/>
+                <stop offset="60%" stop-color="rgba(255,255,255,0.2)"/>
+                <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+              </radialGradient>
+
+              <!-- Escudo metálico: aluminio cepillado oscuro -->
+              <radialGradient id="plateGrad" cx="0.35" cy="0.3" r="0.85">
+                <stop offset="0%" stop-color="#d4d8e0"/>
+                <stop offset="30%" stop-color="#7a8290"/>
+                <stop offset="65%" stop-color="#2a2f3a"/>
+                <stop offset="100%" stop-color="#050709"/>
+              </radialGradient>
+
+              <!-- Agujero central donde "entra" el brazo -->
+              <radialGradient id="plateHole" cx="0.5" cy="0.4" r="0.7">
+                <stop offset="0%" stop-color="#000000"/>
+                <stop offset="65%" stop-color="#050609"/>
+                <stop offset="100%" stop-color="#1a1d24"/>
+              </radialGradient>
+
+              <!-- Tornillo dorado -->
+              <radialGradient id="screwGold" cx="0.3" cy="0.3" r="0.7">
+                <stop offset="0%" stop-color="#ffe8a8"/>
+                <stop offset="40%" stop-color="#d4af37"/>
+                <stop offset="100%" stop-color="#6a4a10"/>
+              </radialGradient>
+
+              <!-- Sombra proyectada del brazo -->
+              <filter id="armShadow" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="3" dy="6" stdDeviation="5" flood-color="#000" flood-opacity="0.55"/>
+              </filter>
+            </defs>
+
+            <!-- ESCUDO/PLACA (FIJO, no rota — atornillado al cabinete) -->
+            <g class="lever__plate">
+              <!-- Sombra ambiente bajo el escudo -->
+              <ellipse cx="50" cy="270" rx="56" ry="14" fill="rgba(0,0,0,0.6)" opacity="0.55"/>
+              <!-- Escudo principal (forma de óvalo vertical, estilo escudete) -->
+              <ellipse cx="50" cy="260" rx="52" ry="62" fill="url(#plateGrad)"/>
+              <!-- Borde dorado fino -->
+              <ellipse cx="50" cy="260" rx="52" ry="62" fill="none" stroke="#d4af37" stroke-width="1.2" opacity="0.55"/>
+              <!-- Reflejo superior -->
+              <ellipse cx="42" cy="220" rx="32" ry="10" fill="rgba(255,255,255,0.15)"/>
+              <!-- Tornillos en las 4 esquinas del escudo -->
+              <g class="lever__screws">
+                <circle cx="18" cy="222" r="4.5" fill="url(#screwGold)"/>
+                <line x1="14.5" y1="222" x2="21.5" y2="222" stroke="#3a2510" stroke-width="1.2" stroke-linecap="round"/>
+                <circle cx="18" cy="298" r="4.5" fill="url(#screwGold)"/>
+                <line x1="15" y1="295" x2="21" y2="301" stroke="#3a2510" stroke-width="1.2" stroke-linecap="round"/>
+                <circle cx="82" cy="222" r="4.5" fill="url(#screwGold)"/>
+                <line x1="79" y1="219" x2="85" y2="225" stroke="#3a2510" stroke-width="1.2" stroke-linecap="round"/>
+                <circle cx="82" cy="298" r="4.5" fill="url(#screwGold)"/>
+                <line x1="78.5" y1="298" x2="85.5" y2="298" stroke="#3a2510" stroke-width="1.2" stroke-linecap="round"/>
+              </g>
+              <!-- Agujero central donde entra el brazo -->
+              <ellipse cx="50" cy="260" rx="24" ry="30" fill="url(#plateHole)"/>
+              <!-- Brillo interior del agujero (sugiere profundidad) -->
+              <ellipse cx="50" cy="248" rx="18" ry="5" fill="rgba(255,255,255,0.1)"/>
+              <!-- Pequeño rótulo "PULL" debajo del agujero -->
+              <text x="50" y="288" text-anchor="middle" fill="#d4af37" opacity="0.6" font-family="'Press Start 2P', monospace" font-size="6" letter-spacing="1">PULL</text>
+            </g>
+
+            <!-- BRAZO (rota alrededor del pivote en x=50, y=260) -->
+            <g class="lever__arm" filter="url(#armShadow)">
+              <!-- Collar/buje cromado donde el brazo se une al escudo -->
+              <ellipse cx="50" cy="260" rx="20" ry="16" fill="url(#chromeCollar)"/>
+              <ellipse cx="50" cy="254" rx="14" ry="4" fill="rgba(255,255,255,0.55)"/>
+              <!-- Brazo principal: rectángulo cromado vertical -->
+              <rect x="40" y="55" width="20" height="210" rx="5" fill="url(#chromeShaft)"/>
+              <!-- Línea de luz central del brazo -->
+              <rect x="48" y="55" width="2" height="210" fill="rgba(255,255,255,0.4)"/>
+              <!-- Anillo decorativo a 1/3 del brazo -->
+              <rect x="34" y="150" width="32" height="11" rx="3" fill="url(#chromeCollar)"/>
+              <rect x="34" y="159" width="32" height="2" fill="rgba(0,0,0,0.4)"/>
+              <!-- Segundo anillo más arriba (más fino) -->
+              <rect x="36" y="95" width="28" height="6" rx="2" fill="url(#chromeCollar)"/>
+              <!-- BOLA ROJA arriba -->
+              <circle cx="50" cy="40" r="32" fill="url(#ballGrad)" stroke="#1a0308" stroke-width="1.5"/>
+              <!-- Highlight grande -->
+              <ellipse cx="38" cy="28" rx="13" ry="10" fill="url(#ballHighlight)"/>
+              <!-- Punto de brillo intenso -->
+              <circle cx="40" cy="28" r="3.5" fill="rgba(255,255,255,0.95)"/>
+              <!-- Sombra inferior de la bola -->
+              <ellipse cx="56" cy="58" rx="14" ry="5" fill="rgba(0,0,0,0.35)"/>
+            </g>
+          </svg>
+
+          <span class="lever__hint">TIRAR ↓</span>
+        </button>
+
+        <!-- Overlay de JACKPOT -->
+        <div class="jackpot" id="jackpot-overlay" hidden>
+          <div class="jackpot__bg"></div>
+          <div class="jackpot__text">★ JACKPOT ★</div>
+          {Array.from({length: 30}).map((_, i) => (
+            <span class="confetti" style={`--i:${i}; --delay:${i * 0.05}s`}>★</span>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Compartir abajo -->
+    <div class="share-row" id="share-row" hidden>
+      <span class="share-label">Compartir esta frase</span>
+      <div class="share-row__btns" id="share-btns"></div>
+    </div>
+
+    <aside class="legend">
+      <h2>Sobre la mecánica</h2>
+      <ul>
+        <li><strong>Clásicas</strong> — las que aparecen con más frecuencia. Refranes, citas conocidas.</li>
+        <li><strong>Curiosidades</strong> — las del medio. Tango, dichos argentinos, autores menos sonados.</li>
+        <li><strong>★ Jackpot ★</strong> — las raras. Borges en Babilonia, Pessoa, Dostoievski. Aparecen 1 de cada 10 tiradas y la máquina lo celebra.</li>
+      </ul>
+      <p class="legend__note">
+        La colección crece. Si tenés una frase para sumar, escribinos a <a href="/contacto">contacto</a>.
+      </p>
+    </aside>
+  </section>
+
+  <canvas id="ig-canvas" width="1080" height="1080" style="display:none;"></canvas>
+</BaseLayout>
+
+<script define:vars={{ frasesPool }}>
+  const STORAGE_KEY = 'salehoy:frases-descubiertas';
+  const TIER_LABELS = { 1: 'CLÁSICA', 2: 'CURIOSIDAD', 3: '★ JACKPOT ★' };
+
+  const display = document.getElementById('display');
+  const lever = document.getElementById('lever');
+  const screen = document.getElementById('screen');
+  const counterDigits = document.getElementById('counter-digits');
+  const resetBtn = document.getElementById('reset');
+  const jackpotOverlay = document.getElementById('jackpot-overlay');
+  const shareRow = document.getElementById('share-row');
+  const shareBtns = document.getElementById('share-btns');
+  const ledJck = document.getElementById('led-jck');
+  const machine = document.getElementById('machine');
+  const igCanvas = document.getElementById('ig-canvas');
+
+  let fraseActual = null;
+
+  function getDescubiertas() {
+    try { const raw = localStorage.getItem(STORAGE_KEY); return raw ? new Set(JSON.parse(raw)) : new Set(); }
+    catch { return new Set(); }
+  }
+  function saveDescubiertas(set) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify([...set])); } catch {}
+  }
+  function updateCounter() {
+    counterDigits.textContent = String(getDescubiertas().size).padStart(3, '0');
+  }
+
+  function fraseAlAzar() {
+    const r = Math.random() * 100;
+    let tier = 1;
+    if (r < 10) tier = 3;
+    else if (r < 40) tier = 2;
+    const pool = frasesPool.filter(f => f.tier === tier);
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+
+  function render(frase) {
+    fraseActual = frase;
+    screen.classList.remove('tv__screen--tier1', 'tv__screen--tier2', 'tv__screen--tier3');
+    screen.classList.add(`tv__screen--tier${frase.tier}`);
+    const obraHtml = frase.obra ? `<div class="quote-obra">— ${frase.obra}</div>` : '';
+    display.innerHTML = `
+      <div class="quote-tier">${TIER_LABELS[frase.tier]}</div>
+      <p class="quote-text">"${frase.texto}"</p>
+      <div class="quote-author">— ${frase.autor.toUpperCase()}</div>
+      ${obraHtml}
+    `;
+    shareRow.removeAttribute('hidden');
+    renderShareButtons();
+    if (frase.tier === 3) triggerJackpot();
+  }
+
+  function renderShareButtons() {
+    shareBtns.innerHTML = `
+      <button class="share-btn share-btn--wa" data-action="whatsapp">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg> WhatsApp
+      </button>
+      <button class="share-btn share-btn--ig" data-action="instagram">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zM5.838 12a6.162 6.162 0 1112.324 0 6.162 6.162 0 01-12.324 0zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg> Instagram
+      </button>
+      <button class="share-btn" data-action="copy">Copiar</button>
+      <button class="share-btn" data-action="native">Más…</button>
+    `;
+    shareBtns.querySelectorAll('[data-action]').forEach(btn => {
+      btn.addEventListener('click', () => handleShare(btn.dataset.action, btn));
+    });
+  }
+
+  async function handleShare(action, btn) {
+    if (!fraseActual) return;
+    const txt = `"${fraseActual.texto}" — ${fraseActual.autor}`;
+    const vianota = txt + '\n— vía SaleHoy';
+    if (action === 'whatsapp') window.open(`https://wa.me/?text=${encodeURIComponent(vianota)}`, '_blank');
+    else if (action === 'copy') { try { await navigator.clipboard.writeText(vianota); const o = btn.textContent; btn.textContent = 'Copiada ✓'; setTimeout(() => btn.textContent = o, 1600); } catch {} }
+    else if (action === 'native') { if (navigator.share) { try { await navigator.share({ text: vianota, title: 'SaleHoy' }); } catch {} } }
+    else if (action === 'instagram') await downloadInstagramImage(fraseActual);
+  }
+
+  function triggerJackpot() {
+    jackpotOverlay.removeAttribute('hidden');
+    ledJck.classList.add('led--blinking');
+    machine.classList.add('machine--shaking');
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) {
+        const ctx = new AudioCtx();
+        [523, 659, 784, 1047].forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.frequency.value = freq;
+          osc.type = 'square';
+          gain.gain.value = 0.05;
+          osc.connect(gain).connect(ctx.destination);
+          osc.start(ctx.currentTime + i * 0.12);
+          osc.stop(ctx.currentTime + i * 0.12 + 0.1);
+        });
+      }
+    } catch {}
+    setTimeout(() => {
+      jackpotOverlay.setAttribute('hidden', '');
+      machine.classList.remove('machine--shaking');
+      setTimeout(() => ledJck.classList.remove('led--blinking'), 4000);
+    }, 2400);
+  }
+
+  async function downloadInstagramImage(frase) {
+    const ctx = igCanvas.getContext('2d');
+    const W = 1080, H = 1080;
+    ctx.fillStyle = '#0B1220'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#D4AF37'; ctx.font = 'bold 36px Georgia, serif'; ctx.textBaseline = 'top';
+    ctx.fillText('SH', 80, 80);
+    ctx.fillStyle = '#F5F0E1'; ctx.font = '500 28px Georgia, serif'; ctx.fillText('SaleHoy', 140, 90);
+    ctx.font = 'bold 20px Helvetica, Arial, sans-serif';
+    ctx.fillStyle = frase.tier === 3 ? '#D4AF37' : '#7A7368';
+    ctx.textAlign = 'right'; ctx.fillText(TIER_LABELS[frase.tier], W - 80, 96);
+    ctx.textAlign = 'center'; ctx.fillStyle = '#F5F0E1';
+    const fraseTxt = '"' + frase.texto + '"';
+    const maxFontSize = frase.texto.length > 180 ? 36 : frase.texto.length > 120 ? 44 : frase.texto.length > 60 ? 52 : 60;
+    ctx.font = `italic ${maxFontSize}px Georgia, serif`;
+    const lines = wrapText(ctx, fraseTxt, W - 200);
+    const startY = (H - lines.length * (maxFontSize + 14)) / 2 - 40;
+    lines.forEach((line, i) => ctx.fillText(line, W / 2, startY + i * (maxFontSize + 14)));
+    ctx.fillStyle = '#D4AF37'; ctx.font = '500 32px Georgia, serif';
+    const autorY = startY + lines.length * (maxFontSize + 14) + 60;
+    ctx.fillText('— ' + frase.autor, W / 2, autorY);
+    if (frase.obra) { ctx.fillStyle = '#B8B0A0'; ctx.font = 'italic 24px Georgia, serif'; ctx.fillText(frase.obra, W / 2, autorY + 44); }
+    ctx.strokeStyle = '#23293A'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(80, H - 140); ctx.lineTo(W - 80, H - 140); ctx.stroke();
+    ctx.textAlign = 'left'; ctx.fillStyle = '#7A7368'; ctx.font = '500 22px Helvetica, Arial, sans-serif';
+    ctx.fillText('Máquina de Frases', 80, H - 100);
+    ctx.textAlign = 'right'; ctx.fillText('salehoy.com.ar', W - 80, H - 100);
+    igCanvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url;
+      a.download = `salehoy-frase-${(frase.autor.split(' ')[0] || 'cita').toLowerCase()}.png`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }, 'image/png');
+  }
+
+  function wrapText(ctx, text, maxWidth) {
+    const words = text.split(' '); const lines = []; let current = '';
+    for (const word of words) {
+      const test = current ? current + ' ' + word : word;
+      if (ctx.measureText(test).width > maxWidth && current) { lines.push(current); current = word; }
+      else current = test;
+    }
+    if (current) lines.push(current); return lines;
+  }
+
+  function animateAndPick() {
+    lever.disabled = true;
+    lever.classList.add('lever--pulling');
+    screen.classList.add('tv__screen--spinning');
+    let ticks = 0;
+    const ticker = setInterval(() => {
+      const temp = frasesPool[Math.floor(Math.random() * frasesPool.length)];
+      display.innerHTML = `<p class="quote-rolling">&gt; ${temp.texto.slice(0, 50)}…_</p>`;
+      ticks++;
+      if (ticks >= 10) {
+        clearInterval(ticker);
+        const elegida = fraseAlAzar();
+        const set = getDescubiertas(); set.add(elegida.texto); saveDescubiertas(set);
+        screen.classList.remove('tv__screen--spinning');
+        render(elegida); updateCounter();
+        lever.classList.remove('lever--pulling');
+        lever.disabled = false;
+      }
+    }, 75);
+  }
+
+  lever.addEventListener('click', animateAndPick);
+  resetBtn.addEventListener('click', () => {
+    if (confirm('¿Reiniciar tu colección de frases descubiertas?')) {
+      localStorage.removeItem(STORAGE_KEY); updateCounter();
+    }
+  });
+
+  updateCounter();
+</script>
+
+<style>
+  /* ========== TIPOGRAFÍA INTERNA DE LA MÁQUINA ========== */
+  .machine, .machine * { font-family: 'VT323', monospace; }
+
+  .page { padding-block: var(--space-2xl) var(--space-3xl); }
+
+  /* Breadcrumb arcade */
+  .mf-crumbs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    margin-bottom: var(--space-lg);
+  }
+  .mf-crumb {
+    color: var(--color-text-tertiary);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+  .mf-crumb:hover { color: #ffd700; text-shadow: 0 0 6px #ffd700; }
+  .mf-crumb--current { color: var(--color-text-secondary); }
+  .mf-crumb-sep { color: var(--color-text-tertiary); opacity: 0.6; }
+
+  .mf-intro {
+    text-align: center;
+    margin-inline: auto;
+    max-width: 640px;
+    margin-bottom: var(--space-xl);
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+  }
+
+  /* ============================================== */
+  /* WRAPPER — necesario para que la palanca pueda  */
+  /* salirse del gabinete sin romper el layout      */
+  /* ============================================== */
+  .machine-wrap {
+    position: relative;
+    max-width: 720px;
+    margin: var(--space-2xl) auto;
+    padding-right: 120px; /* espacio para que sobresalga la palanca */
+  }
+
+  @media (max-width: 640px) {
+    .machine-wrap { padding-right: 80px; }
+  }
+
+  /* ============================================== */
+  /* GABINETE                                       */
+  /* ============================================== */
+  .machine {
+    position: relative;
+    background: linear-gradient(180deg, #1a1f2e 0%, #0a0d14 100%);
+    border: 3px solid #2a2f3a;
+    border-radius: 18px;
+    box-shadow:
+      0 30px 60px -20px rgba(0,0,0,0.8),
+      0 0 0 1px rgba(212, 175, 55, 0.18),
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      inset 0 -3px 12px rgba(0,0,0,0.6),
+      inset 8px 0 0 -3px rgba(255,255,255,0.04);
+    overflow: visible; /* IMPORTANTE: que la palanca pueda salirse */
+  }
+
+  .machine--shaking { animation: shake 0.4s ease-in-out 0s 4; }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px) rotate(-0.5deg); }
+    75% { transform: translateX(6px) rotate(0.5deg); }
+  }
+
+  /* ============================================== */
+  /* MARQUESINA                                     */
+  /* ============================================== */
+  .marquee {
+    background:
+      linear-gradient(180deg, #2d1810 0%, #1a0d08 100%);
+    padding: var(--space-md) var(--space-lg) var(--space-lg);
+    border-bottom: 4px solid #0a0d14;
+    text-align: center;
+    border-radius: 15px 15px 0 0;
+    position: relative;
+  }
+
+  .bulbs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: var(--space-md);
+    padding: 0 var(--space-md);
+  }
+  .bulbs--small { margin-bottom: 0; }
+
+  .bulb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #fff7a8, #ffd700 40%, #b8860b 80%, #5a3d00);
+    box-shadow:
+      0 0 10px rgba(255, 215, 0, 0.7),
+      0 0 20px rgba(255, 215, 0, 0.4),
+      inset 0 1px 2px rgba(255,255,255,0.5);
+    animation: bulbBlink 1.5s ease-in-out infinite;
+  }
+  .bulb--small { width: 10px; height: 10px; }
+
+  @keyframes bulbBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; box-shadow: 0 0 4px rgba(255,215,0,0.3); }
+  }
+
+  .title-plate {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-xs) var(--space-xl);
+    background: linear-gradient(180deg, #3a1f12 0%, #2a160a 100%);
+    border: 2px solid #d4af37;
+    border-radius: 6px;
+    box-shadow:
+      0 0 16px rgba(212, 175, 55, 0.5),
+      inset 0 1px 0 rgba(255,255,255,0.15);
+  }
+  .title-text {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(11px, 2vw, 18px);
+    color: #ffd700;
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.7), 0 2px 0 #5a3d00;
+  }
+  .title-mark {
+    font-size: clamp(14px, 2.5vw, 20px);
+    color: #ff4444;
+    text-shadow: 0 0 6px #ff4444;
+    animation: starPulse 1s ease-in-out infinite;
+  }
+  @keyframes starPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+  .subtitle {
+    margin-top: var(--space-sm);
+    font-size: 14px;
+    color: #d4af37;
+    letter-spacing: 0.3em;
+    opacity: 0.7;
+  }
+
+  /* ============================================== */
+  /* CUERPO                                         */
+  /* ============================================== */
+  .body {
+    padding: var(--space-lg) var(--space-lg) var(--space-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  /* LEDs */
+  .led-strip {
+    display: flex;
+    gap: var(--space-xl);
+    padding: var(--space-xs) var(--space-md);
+    background: #04050a;
+    border: 1px solid #1a1d24;
+    border-radius: 4px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.7);
+  }
+
+  .led {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #5a5f6a;
+    letter-spacing: 0.12em;
+  }
+  .led b {
+    font-style: normal;
+    font-size: 14px;
+    color: #2a2f3a;
+    text-shadow: none;
+  }
+  .led--green b { color: #4fff8d; text-shadow: 0 0 6px #4fff8d; }
+  .led--amber b { color: #ffb000; text-shadow: 0 0 6px #ffb000; }
+  .led--red b { color: #5a1a1a; text-shadow: none; }
+  .led--blinking b {
+    color: #ff3333;
+    animation: ledBlink 0.4s ease-in-out infinite;
+  }
+  @keyframes ledBlink {
+    0%, 100% { text-shadow: 0 0 14px #ff3333, 0 0 28px #ff3333; }
+    50% { text-shadow: 0 0 2px #ff3333; }
+  }
+
+  /* ============================================== */
+  /* TV / CRT                                       */
+  /* ============================================== */
+  .tv {
+    position: relative;
+  }
+
+  .tv__bezel {
+    position: relative;
+    padding: 18px;
+    background:
+      linear-gradient(180deg, #3a4050 0%, #1a1f2e 100%);
+    border-radius: 16px;
+    box-shadow:
+      0 6px 0 #050709,
+      inset 0 2px 0 rgba(255,255,255,0.1),
+      inset 0 -2px 4px rgba(0,0,0,0.6);
+  }
+
+  /* Tornillos en las esquinas del bisel */
+  .screw {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #d4af37 0%, #8a6c1f 80%);
+    box-shadow:
+      inset 0 -1px 2px rgba(0,0,0,0.5),
+      0 1px 2px rgba(0,0,0,0.4);
+  }
+  .screw::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70%; height: 2px;
+    background: #4a3812;
+    border-radius: 1px;
+  }
+  .screw--tl { top: 6px; left: 6px; }
+  .screw--tr { top: 6px; right: 6px; }
+  .screw--bl { bottom: 6px; left: 6px; }
+  .screw--br { bottom: 6px; right: 6px; }
+
+  /* PANTALLA */
+  .tv__screen {
+    position: relative;
+    background: radial-gradient(ellipse at center, #0a1a08 0%, #050d04 100%);
+    /* Curvatura asimétrica para simular CRT bombée */
+    border-radius: 24px / 30px;
+    padding: var(--space-lg);
+    min-height: 280px;
+    overflow: hidden;
+    box-shadow:
+      inset 0 0 80px rgba(0, 80, 30, 0.35),
+      inset 0 0 6px rgba(0,0,0,0.9),
+      inset 0 4px 8px rgba(0,0,0,0.6);
+    transition: background 0.4s ease;
+  }
+
+  .tv__screen--tier3 {
+    background: radial-gradient(ellipse at center, #2a1a05 0%, #0a0500 100%);
+    box-shadow:
+      inset 0 0 100px rgba(255, 200, 0, 0.5),
+      inset 0 0 6px rgba(0,0,0,0.9),
+      0 0 40px rgba(255, 215, 0, 0.6);
+  }
+
+  .tv__screen--spinning {
+    background: radial-gradient(ellipse at center, #001a0a 0%, #000800 100%);
+  }
+
+  .tv__content {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 220px;
+    color: #4fff8d;
+    text-shadow: 0 0 6px #4fff8d, 0 0 12px rgba(79, 255, 141, 0.5);
+    font-size: 22px;
+    line-height: 1.4;
+  }
+  .tv__screen--tier3 .tv__content {
+    color: #ffd700;
+    text-shadow: 0 0 8px #ffd700, 0 0 16px rgba(255, 215, 0, 0.6);
+  }
+
+  .boot p { margin-bottom: 6px; }
+  .boot__hint {
+    margin-top: var(--space-md);
+    text-align: center;
+    font-size: 20px;
+    animation: blink 1s steps(2) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0.25; } }
+
+  .quote-tier {
+    text-align: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: inherit;
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-xs);
+    border-bottom: 1px dashed currentColor;
+    opacity: 0.85;
+  }
+  .tv__screen--tier3 .quote-tier {
+    animation: tierPulse 0.5s ease-in-out infinite;
+    opacity: 1;
+  }
+  @keyframes tierPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  .quote-text {
+    font-size: clamp(18px, 3vw, 26px);
+    line-height: 1.3;
+    text-align: center;
+    margin: var(--space-sm) 0;
+    text-wrap: balance;
+  }
+  .quote-author {
+    text-align: right;
+    margin-top: var(--space-md);
+    font-size: 18px;
+    letter-spacing: 0.1em;
+  }
+  .quote-obra {
+    text-align: right;
+    font-size: 15px;
+    margin-top: 4px;
+    opacity: 0.7;
+  }
+  .quote-rolling {
+    text-align: left;
+    font-size: 20px;
+    opacity: 0.9;
+  }
+
+  /* SCANLINES, GLOW, FLICKER */
+  .tv__scanlines, .tv__glow, .tv__flicker {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: 24px / 30px;
+  }
+  .tv__scanlines {
+    background: repeating-linear-gradient(to bottom, transparent 0, transparent 2px, rgba(0,0,0,0.2) 2px, rgba(0,0,0,0.2) 3px);
+    z-index: 4;
+  }
+  .tv__glow {
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.45) 100%);
+    z-index: 2;
+  }
+  .tv__flicker {
+    background: rgba(79, 255, 141, 0.03);
+    z-index: 5;
+    animation: flicker 0.15s infinite alternate;
+  }
+  @keyframes flicker { 0% { opacity: 0.4; } 100% { opacity: 0.75; } }
+
+  .tv__brand {
+    margin-top: var(--space-sm);
+    text-align: center;
+    font-size: 11px;
+    color: #6a7080;
+    letter-spacing: 0.3em;
+  }
+
+  /* ============================================== */
+  /* CONTROL PANEL                                  */
+  /* ============================================== */
+  .control-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-md);
+    padding-top: var(--space-sm);
+  }
+
+  .counter {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    background: #04050a;
+    border: 2px solid #1a1d24;
+    border-radius: 6px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.7);
+  }
+  .counter__label {
+    font-size: 12px;
+    color: #5a5f6a;
+    letter-spacing: 0.1em;
+  }
+  .counter__digits {
+    font-family: 'VT323', monospace;
+    font-size: 30px;
+    color: #ff3333;
+    text-shadow: 0 0 8px #ff3333;
+    background: #1a0505;
+    padding: 0 10px;
+    border-radius: 2px;
+    min-width: 64px;
+    text-align: center;
+    border: 1px solid rgba(255, 51, 51, 0.3);
+  }
+  .counter__total {
+    font-size: 16px;
+    color: #5a5f6a;
+  }
+
+  .ctrl-btn {
+    padding: 8px 16px;
+    background: linear-gradient(180deg, #3a3f4a 0%, #1a1d24 100%);
+    border: 2px solid #2a2f3a;
+    border-radius: 4px;
+    color: #6a7080;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    cursor: pointer;
+    box-shadow: 0 3px 0 #050709, inset 0 1px 0 rgba(255,255,255,0.1);
+    transition: all 0.1s;
+  }
+  .ctrl-btn:hover { color: #d4af37; border-color: #d4af37; }
+  .ctrl-btn:active { transform: translateY(3px); box-shadow: 0 0 0 #050709; }
+
+  /* ============================================== */
+  /* BASE                                           */
+  /* ============================================== */
+  .base {
+    padding: var(--space-md) var(--space-lg) var(--space-md);
+    background: linear-gradient(180deg, #0a0d14 0%, #050609 100%);
+    border-top: 4px solid #2a2f3a;
+    border-radius: 0 0 15px 15px;
+  }
+
+  /* ============================================== */
+  /* PALANCA — sale del lateral derecho             */
+  /* ============================================== */
+
+  /* Anillo metálico donde el brazo "entra" al gabinete */
+  .lever-mount {
+    /* (lever-mount viejo eliminado — el escudo ahora vive dentro del SVG) */
+    display: none;
+  }
+
+  /* ============================================== */
+  /* PALANCA — SVG vertical                          */
+  /* ============================================== */
+  .lever {
+    position: absolute;
+    top: 50%;
+    right: -110px;
+    width: 180px;
+    height: 270px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    z-index: 6;
+    transform: translateY(-45%);
+    outline: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .lever:focus-visible { outline: 2px solid var(--color-accent-gold); outline-offset: 4px; border-radius: 8px; }
+  .lever:disabled { cursor: wait; }
+
+  .lever__svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    overflow: visible;
+    /* El escudo (en viewBox x≈50) queda apenas embebido en el lateral del cabinete */
+    margin-left: 8px;
+  }
+
+  /* El brazo rota alrededor del pivote en (50, 260) del viewBox */
+  .lever__arm {
+    transform-origin: 50px 260px;
+    transform: rotate(28deg); /* reposo: arriba-derecha */
+    transition: transform 350ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* Hover: la palanca se levanta un poco más (más vertical) */
+  .lever:not(:disabled):hover .lever__arm {
+    transform: rotate(18deg);
+  }
+
+  /* Tirón: arranca arriba, baja 100° hasta posición de jugada, rebota y vuelve */
+  .lever--pulling .lever__arm {
+    animation: leverPull 900ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes leverPull {
+    0%   { transform: rotate(28deg); }
+    35%  { transform: rotate(108deg); } /* tirada completa hacia abajo */
+    55%  { transform: rotate(100deg); } /* rebote sutil */
+    80%  { transform: rotate(20deg); }  /* regresa con un overshoot suave */
+    100% { transform: rotate(28deg); }
+  }
+
+  /* El escudo vibra muy levemente cuando se tira (efecto mecánico) */
+  .lever--pulling .lever__plate {
+    animation: plateRattle 0.2s ease-in-out 2;
+  }
+  @keyframes plateRattle {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(0.5px, -0.5px); }
+  }
+
+  /* Texto TIRAR debajo de la palanca */
+  .lever__hint {
+    margin-top: -20px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    color: #d4af37;
+    text-shadow: 0 0 6px rgba(212,175,55,0.5);
+    letter-spacing: 0.15em;
+    pointer-events: none;
+    text-align: center;
+    animation: blink 1.2s steps(2) infinite;
+  }
+
+  @media (max-width: 640px) {
+    .lever {
+      width: 110px;
+      height: 165px;
+      right: -65px;
+    }
+    .lever__svg { margin-left: 4px; }
+    .lever__hint { font-size: 7px; margin-top: -14px; }
+  }
+
+  /* ====================================================== */
+  /* MOBILE — todo el interior de la máquina a escala chica  */
+  /* ====================================================== */
+  @media (max-width: 640px) {
+    /* Marquesina: padding chico, título compacto, todo en una línea */
+    .marquee {
+      padding: var(--space-sm) var(--space-md) var(--space-md);
+    }
+    .bulbs { gap: 4px; margin-bottom: var(--space-sm); }
+    .bulb { width: 9px; height: 9px; }
+    .title-plate {
+      padding: var(--space-xs) var(--space-md);
+      gap: var(--space-sm);
+    }
+    .title-text { font-size: 12px; letter-spacing: 0.06em; white-space: nowrap; }
+    .title-mark { font-size: 14px; }
+    .subtitle {
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      margin-top: 4px;
+      white-space: nowrap;
+    }
+
+    /* LEDs en una sola fila compacta */
+    .led-strip { gap: var(--space-md); padding: 4px 8px; }
+    .led { font-size: 10px; gap: 4px; }
+    .led b { font-size: 12px; }
+
+    /* CRT: mucho más chico */
+    .tv__bezel { padding: 10px; }
+    .tv__screen {
+      min-height: 180px;
+      padding: var(--space-md);
+      border-radius: 18px / 22px;
+    }
+    .tv__content {
+      min-height: 140px;
+      font-size: 15px;
+      line-height: 1.3;
+    }
+
+    /* Texto de la frase: mucho más chico */
+    .quote-tier { font-size: 9px; margin-bottom: var(--space-sm); }
+    .quote-text {
+      font-size: 14px !important;
+      line-height: 1.25;
+      margin: var(--space-xs) 0;
+    }
+    .quote-author { font-size: 12px; letter-spacing: 0.08em; margin-top: var(--space-sm); }
+    .quote-obra { font-size: 10px; }
+    .quote-rolling { font-size: 14px; }
+
+    /* Boot screen */
+    .boot p { font-size: 13px; margin-bottom: 4px; }
+    .boot__hint { font-size: 13px; margin-top: var(--space-sm); }
+
+    /* Brand del TV */
+    .tv__brand { font-size: 9px !important; letter-spacing: 0.1em; }
+
+    /* Panel de control inferior */
+    .control-panel { padding: var(--space-sm); gap: var(--space-sm); }
+    .counter__label { font-size: 8px; }
+    .counter__digits { font-size: 22px; }
+    .counter__total { font-size: 12px; }
+    .ctrl-btn { font-size: 8px; padding: 6px 10px; }
+
+    /* Body interior con padding más chico */
+    .body { padding: var(--space-md) var(--space-md) var(--space-sm); gap: var(--space-sm); }
+
+    /* Base con bombitas más chicas */
+    .bulbs--small { gap: 3px; }
+    .bulb--small { width: 7px; height: 7px; }
+  }
+
+  /* ============================================== */
+  /* JACKPOT                                        */
+  /* ============================================== */
+  .jackpot {
+    position: absolute;
+    inset: 0;
+    z-index: 99;
+    pointer-events: none;
+    overflow: visible;
+    border-radius: 18px;
+    animation: jpFadeOut 0.4s ease-in 1.6s forwards;
+  }
+  @keyframes jpFadeOut {
+    to { opacity: 0; }
+  }
+
+  /* Resplandor dorado: corto y solo en los bordes, no tapa el centro */
+  .jackpot__bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at top, rgba(255, 215, 0, 0.55) 0%, transparent 45%),
+      radial-gradient(ellipse at bottom, rgba(255, 215, 0, 0.35) 0%, transparent 45%);
+    animation: jpFlash 0.25s ease-in-out 3;
+  }
+  @keyframes jpFlash { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
+
+  /* Banner JACKPOT: se posa sobre la marquesina, no sobre el CRT */
+  .jackpot__text {
+    position: absolute;
+    top: 4%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(20px, 4vw, 38px);
+    color: #ffd700;
+    text-shadow:
+      0 0 12px #ffd700,
+      0 0 24px #ff9d00,
+      0 3px 0 #5a3d00,
+      0 6px 10px rgba(0,0,0,0.8);
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    animation: jpZoom 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 2;
+  }
+  @keyframes jpZoom {
+    0% { transform: translateX(-50%) scale(0) rotate(-12deg); opacity: 0; }
+    50% { transform: translateX(-50%) scale(1.15) rotate(0deg); opacity: 1; }
+    100% { transform: translateX(-50%) scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  /* Confetti: salen disparadas hacia arriba y los costados, escapando del gabinete */
+  .confetti {
+    position: absolute;
+    top: 6%;
+    left: 50%;
+    font-size: 14px;
+    color: #ffd700;
+    text-shadow: 0 0 6px #ffd700;
+    animation: confetti 1.4s ease-out var(--delay) forwards;
+  }
+  @keyframes confetti {
+    0% {
+      transform: translate(0, 0) rotate(0deg) scale(0.3);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(
+        calc((var(--i) - 15) * 28px),
+        calc(-140px - (var(--i) * 3px))
+      ) rotate(720deg) scale(0.9);
+      opacity: 0;
+    }
+  }
+
+  /* ============================================== */
+  /* SHARE ROW + LEGEND                             */
+  /* ============================================== */
+  .share-row {
+    max-width: 720px;
+    margin: 0 auto var(--space-xl);
+    padding: var(--space-md);
+    text-align: center;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    font-family: var(--font-body);
+  }
+  .share-label {
+    display: block;
+    font-size: var(--text-xs);
+    color: var(--color-text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: var(--space-md);
+  }
+  .share-row__btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    justify-content: center;
+  }
+  .share-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: var(--space-xs) var(--space-md);
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-full);
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+  .share-btn:hover { color: var(--color-accent-gold); border-color: var(--color-accent-gold); }
+  .share-btn--ig:hover {
+    color: #fff;
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    border-color: transparent;
+  }
+
+  .legend {
+    padding: var(--space-xl);
+    background: var(--color-bg-elevated);
+    bo

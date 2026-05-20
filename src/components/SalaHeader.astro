@@ -1,0 +1,129 @@
+---
+/**
+ * Header arcade leve para páginas adentro de La sala.
+ * Marca visualmente que estás dentro del "registro vivo".
+ */
+interface Props {
+  titulo: string;
+  bajada?: string;
+  /** Color del LED y del título: red/amber/gold/green */
+  vibe?: 'red' | 'amber' | 'gold' | 'green';
+}
+const { titulo, bajada, vibe = 'gold' } = Astro.props;
+---
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" />
+
+<header class={`sala-header sala-header--${vibe}`}>
+  <nav class="sala-header__crumbs" aria-label="Migas de pan">
+    <a href="/la-sala" class="sala-header__crumb">★ LA SALA</a>
+    <span class="sala-header__crumb-sep">›</span>
+    <span class="sala-header__crumb sala-header__crumb--current">{titulo.toUpperCase()}</span>
+  </nav>
+
+  <div class="sala-header__marquee">
+    <div class="sala-header__bulbs" aria-hidden="true">
+      {Array.from({length: 9}).map((_, i) => (
+        <span class="sala-header__bulb" style={`animation-delay:${i * 0.14}s`}></span>
+      ))}
+    </div>
+    <h1 class="sala-header__title">{titulo}</h1>
+    {bajada && <p class="sala-header__bajada">{bajada}</p>}
+  </div>
+</header>
+
+<style>
+  .sala-header {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+    padding-block: var(--space-xl) var(--space-lg);
+  }
+
+  .sala-header__crumbs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    margin-bottom: var(--space-lg);
+  }
+  .sala-header__crumb {
+    color: var(--color-text-tertiary);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+  .sala-header__crumb:hover { color: #ffd700; text-shadow: 0 0 6px #ffd700; }
+  .sala-header__crumb--current { color: var(--color-text-secondary); }
+  .sala-header__crumb-sep { color: var(--color-text-tertiary); opacity: 0.6; }
+
+  .sala-header__marquee {
+    display: inline-block;
+    padding: var(--space-md) var(--space-xl) var(--space-lg);
+    background: linear-gradient(180deg, #2d1810 0%, #1a0d08 100%);
+    border-radius: 10px;
+    border: 1px solid #d4af37;
+    box-shadow: 0 6px 20px -8px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.08);
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  @media (max-width: 480px) {
+    .sala-header__marquee { padding: var(--space-sm) var(--space-md) var(--space-md); }
+    .sala-header__bulbs { gap: 4px; }
+    .sala-header__crumbs { font-size: 9px; gap: 6px; flex-wrap: wrap; }
+  }
+
+  .sala-header__bulbs {
+    display: flex;
+    justify-content: space-around;
+    gap: 6px;
+    margin-bottom: var(--space-sm);
+  }
+  .sala-header__bulb {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #fff7a8, #ffd700 40%, #b8860b 80%, #5a3d00);
+    box-shadow: 0 0 6px rgba(255, 215, 0, 0.65);
+    animation: shBulb 1.5s ease-in-out infinite;
+  }
+  @keyframes shBulb {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+
+  .sala-header__title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(14px, 2.4vw, 22px);
+    color: #ffd700;
+    letter-spacing: 0.08em;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.7), 0 2px 0 #5a3d00;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .sala-header__bajada {
+    margin-top: var(--space-md);
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    color: rgba(255, 215, 0, 0.7);
+    line-height: 1.25;
+    max-width: 560px;
+    margin-inline: auto;
+  }
+
+  /* Variantes por color */
+  .sala-header--red .sala-header__title { color: #ff6060; text-shadow: 0 0 10px rgba(255,80,80,0.7), 0 2px 0 #4a0000; }
+  .sala-header--red .sala-header__marquee { border-color: #ff6060; }
+  .sala-header--red .sala-header__bajada { color: rgba(255, 96, 96, 0.7); }
+
+  .sala-header--amber .sala-header__title { color: #ffb000; text-shadow: 0 0 10px rgba(255,176,0,0.7), 0 2px 0 #5a3a00; }
+  .sala-header--amber .sala-header__marquee { border-color: #ffb000; }
+  .sala-header--amber .sala-header__bajada { color: rgba(255, 176, 0, 0.7); }
+
+  .sala-header--green .sala-header__title { color: #4fff8d; text-shadow: 0 0 10px rgba(79,255,141,0.7), 0 2px 0 #003a14; }
+  .sala-header--green .sala-header__marquee { border-color: #4fff8d; }
+  .sala-header--green .sala-header__bajada { color: rgba(79, 255, 141, 0.7); }
+</style>

@@ -1,0 +1,457 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const cards = [
+  {
+    slug: 'quiniela',
+    href: '/quiniela',
+    titulo: 'Quiniela del día',
+    bajada: 'Candidatos, terminaciones en deuda, números calientes. El motor estadístico, leído.',
+    tag: 'EL REGISTRO VIVO',
+    color: 'red',
+  },
+  {
+    slug: 'anecdotario',
+    href: '/anecdotario',
+    titulo: 'El Anecdotario',
+    bajada: 'Mandanos tu historia sobre juego, azar, cábala o apuesta. Anónima o con tu nombre.',
+    tag: 'SECCIÓN ABIERTA',
+    color: 'amber',
+  },
+  {
+    slug: 'frases',
+    href: '/maquina-de-frases',
+    titulo: 'Máquina de Frases',
+    bajada: 'Tirá la palanca y descubrí una cita sobre el azar. Clásicas, refranes, jackpots.',
+    tag: 'MINI JUEGO',
+    color: 'gold',
+  },
+  {
+    slug: 'ruleta',
+    href: '/ruleta',
+    titulo: 'Ruleta',
+    bajada: 'Generador de número aleatorio. Sin método, sin análisis. Solo azar puro.',
+    tag: 'PARA JUGAR',
+    color: 'green',
+  },
+];
+---
+
+<BaseLayout
+  title="La sala"
+  description="La sala de SaleHoy: la quiniela del día, la Máquina de Frases, el Anecdotario y la Ruleta. La zona viva de la revista."
+>
+  <link slot="head" rel="preconnect" href="https://fonts.googleapis.com" />
+  <link slot="head" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" />
+
+  <section class="sala-page">
+    <div class="sala-hero">
+      <!-- Marquesina -->
+      <div class="marquee">
+        <div class="bulbs">
+          {Array.from({length: 13}).map((_, i) => (
+            <span class="bulb" style={`animation-delay:${i * 0.12}s`}></span>
+          ))}
+        </div>
+        <div class="title-plate">
+          <span class="title-mark">★</span>
+          <span class="title-text">LA SALA</span>
+          <span class="title-mark">★</span>
+        </div>
+        <div class="subtitle">SALEHOY · ARCADE</div>
+      </div>
+
+      <p class="sala-lead">
+        Donde la revista se vuelve juego. Tirá la palanca, mirá los candidatos del día, mandá una anécdota o probá suerte en la ruleta. La sala está siempre abierta.
+      </p>
+    </div>
+
+    <div class="cards-grid">
+      {cards.map(card => (
+        <a href={card.href} class={`arcade-card arcade-card--${card.color}`}>
+          <div class="arcade-card__bezel">
+            <span class="screw screw--tl"></span>
+            <span class="screw screw--tr"></span>
+            <span class="screw screw--bl"></span>
+            <span class="screw screw--br"></span>
+
+            <div class="arcade-card__screen">
+              <div class="arcade-card__icon">
+                {card.slug === 'quiniela' && (
+                  <!-- BOLILLA pixel-art -->
+                  <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+                    <rect x="5" y="2" width="6" height="1" fill="currentColor"/>
+                    <rect x="3" y="3" width="2" height="1" fill="currentColor"/>
+                    <rect x="11" y="3" width="2" height="1" fill="currentColor"/>
+                    <rect x="2" y="4" width="1" height="1" fill="currentColor"/>
+                    <rect x="13" y="4" width="1" height="1" fill="currentColor"/>
+                    <rect x="2" y="5" width="1" height="6" fill="currentColor"/>
+                    <rect x="13" y="5" width="1" height="6" fill="currentColor"/>
+                    <rect x="3" y="11" width="1" height="1" fill="currentColor"/>
+                    <rect x="12" y="11" width="1" height="1" fill="currentColor"/>
+                    <rect x="3" y="12" width="2" height="1" fill="currentColor"/>
+                    <rect x="11" y="12" width="2" height="1" fill="currentColor"/>
+                    <rect x="5" y="13" width="6" height="1" fill="currentColor"/>
+                    <!-- Número 22 -->
+                    <rect x="5" y="6" width="2" height="1" fill="currentColor"/>
+                    <rect x="7" y="6" width="1" height="1" fill="currentColor"/>
+                    <rect x="7" y="7" width="1" height="1" fill="currentColor"/>
+                    <rect x="6" y="8" width="1" height="1" fill="currentColor"/>
+                    <rect x="5" y="9" width="3" height="1" fill="currentColor"/>
+                    <rect x="9" y="6" width="2" height="1" fill="currentColor"/>
+                    <rect x="11" y="6" width="1" height="1" fill="currentColor"/>
+                    <rect x="11" y="7" width="1" height="1" fill="currentColor"/>
+                    <rect x="10" y="8" width="1" height="1" fill="currentColor"/>
+                    <rect x="9" y="9" width="3" height="1" fill="currentColor"/>
+                  </svg>
+                )}
+                {card.slug === 'anecdotario' && (
+                  <!-- LIBRETA pixel-art -->
+                  <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+                    <!-- Espirales -->
+                    <rect x="2" y="2" width="1" height="1" fill="currentColor"/>
+                    <rect x="2" y="5" width="1" height="1" fill="currentColor"/>
+                    <rect x="2" y="8" width="1" height="1" fill="currentColor"/>
+                    <rect x="2" y="11" width="1" height="1" fill="currentColor"/>
+                    <!-- Cuerpo libreta -->
+                    <rect x="3" y="2" width="11" height="1" fill="currentColor"/>
+                    <rect x="3" y="13" width="11" height="1" fill="currentColor"/>
+                    <rect x="14" y="3" width="1" height="10" fill="currentColor"/>
+                    <rect x="3" y="3" width="1" height="10" fill="currentColor"/>
+                    <!-- Líneas escritas -->
+                    <rect x="5" y="5" width="7" height="1" fill="currentColor"/>
+                    <rect x="5" y="7" width="8" height="1" fill="currentColor"/>
+                    <rect x="5" y="9" width="6" height="1" fill="currentColor"/>
+                    <rect x="5" y="11" width="7" height="1" fill="currentColor"/>
+                  </svg>
+                )}
+                {card.slug === 'frases' && (
+                  <!-- PALANCA pixel-art -->
+                  <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+                    <!-- Base/escudo -->
+                    <rect x="5" y="11" width="6" height="1" fill="currentColor"/>
+                    <rect x="4" y="12" width="8" height="1" fill="currentColor"/>
+                    <rect x="3" y="13" width="10" height="1" fill="currentColor"/>
+                    <rect x="3" y="14" width="10" height="1" fill="currentColor"/>
+                    <!-- Brazo (vertical) -->
+                    <rect x="7" y="5" width="2" height="6" fill="currentColor"/>
+                    <!-- Bola arriba -->
+                    <rect x="6" y="3" width="4" height="1" fill="currentColor"/>
+                    <rect x="5" y="4" width="6" height="2" fill="currentColor"/>
+                    <rect x="6" y="6" width="4" height="1" fill="currentColor"/>
+                  </svg>
+                )}
+                {card.slug === 'ruleta' && (
+                  <!-- RULETA pixel-art -->
+                  <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+                    <rect x="5" y="2" width="6" height="1" fill="currentColor"/>
+                    <rect x="3" y="3" width="2" height="1" fill="currentColor"/>
+                    <rect x="11" y="3" width="2" height="1" fill="currentColor"/>
+                    <rect x="2" y="4" width="1" height="2" fill="currentColor"/>
+                    <rect x="13" y="4" width="1" height="2" fill="currentColor"/>
+                    <rect x="1" y="6" width="1" height="4" fill="currentColor"/>
+                    <rect x="14" y="6" width="1" height="4" fill="currentColor"/>
+                    <rect x="2" y="10" width="1" height="2" fill="currentColor"/>
+                    <rect x="13" y="10" width="1" height="2" fill="currentColor"/>
+                    <rect x="3" y="12" width="2" height="1" fill="currentColor"/>
+                    <rect x="11" y="12" width="2" height="1" fill="currentColor"/>
+                    <rect x="5" y="13" width="6" height="1" fill="currentColor"/>
+                    <!-- Cruz interna (sectores) -->
+                    <rect x="7" y="4" width="2" height="9" fill="currentColor"/>
+                    <rect x="3" y="7" width="10" height="2" fill="currentColor"/>
+                    <!-- Centro -->
+                    <rect x="7" y="7" width="2" height="2" fill="currentColor"/>
+                  </svg>
+                )}
+              </div>
+
+              <div class="arcade-card__led">● {card.tag}</div>
+              <h2 class="arcade-card__title">{card.titulo}</h2>
+              <p class="arcade-card__desc">{card.bajada}</p>
+              <div class="arcade-card__cta">JUGAR →</div>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <p class="sala-foot">
+      ¿Te falta algo en La sala? <a href="/contacto">Sugerinos</a> un juego, herramienta o sección.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .sala-page {
+    padding-block: var(--space-2xl) var(--space-4xl);
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-inline: var(--space-lg);
+  }
+
+  .sala-hero {
+    text-align: center;
+    margin-bottom: var(--space-3xl);
+  }
+
+  /* === MARQUESINA (mismo lenguaje que la Máquina de Frases) === */
+  .marquee {
+    display: inline-block;
+    background: linear-gradient(180deg, #2d1810 0%, #1a0d08 100%);
+    padding: var(--space-md) var(--space-2xl) var(--space-lg);
+    border-radius: 12px;
+    border: 2px solid #d4af37;
+    box-shadow:
+      0 8px 30px -10px rgba(0,0,0,0.6),
+      inset 0 1px 0 rgba(255,255,255,0.1);
+    position: relative;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  @media (max-width: 480px) {
+    .marquee { padding: var(--space-sm) var(--space-lg) var(--space-md); }
+    .bulbs { gap: 4px; }
+  }
+
+  .bulbs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: var(--space-md);
+    gap: 8px;
+  }
+
+  .bulb {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #fff7a8, #ffd700 40%, #b8860b 80%, #5a3d00);
+    box-shadow:
+      0 0 8px rgba(255, 215, 0, 0.7),
+      0 0 16px rgba(255, 215, 0, 0.4);
+    animation: bulbBlink 1.5s ease-in-out infinite;
+  }
+
+  @keyframes bulbBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .title-plate {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-xs) var(--space-xl);
+  }
+
+  .title-text {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(20px, 3.5vw, 32px);
+    color: #ffd700;
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 12px rgba(255, 215, 0, 0.7), 0 3px 0 #5a3d00;
+  }
+
+  .title-mark {
+    font-size: clamp(18px, 2.5vw, 24px);
+    color: #ff4444;
+    text-shadow: 0 0 6px #ff4444;
+    animation: starPulse 1s ease-in-out infinite;
+  }
+
+  @keyframes starPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+  }
+
+  .subtitle {
+    margin-top: var(--space-sm);
+    font-size: 12px;
+    color: #d4af37;
+    letter-spacing: 0.3em;
+    opacity: 0.75;
+    font-family: 'Press Start 2P', monospace;
+  }
+
+  .sala-lead {
+    max-width: 600px;
+    margin: var(--space-xl) auto 0;
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+  }
+
+  /* === GRID DE 4 TARJETAS ARCADE === */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+    margin-bottom: var(--space-3xl);
+  }
+
+  @media (min-width: 720px) {
+    .cards-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .arcade-card {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: transform 200ms ease, filter 200ms ease;
+  }
+
+  .arcade-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .arcade-card__bezel {
+    position: relative;
+    background: linear-gradient(180deg, #3a4050 0%, #1a1f2e 100%);
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow:
+      0 6px 0 #050709,
+      0 12px 30px -6px rgba(0,0,0,0.55),
+      inset 0 2px 0 rgba(255,255,255,0.1),
+      inset 0 -2px 6px rgba(0,0,0,0.6);
+  }
+
+  .arcade-card:hover .arcade-card__bezel {
+    box-shadow:
+      0 6px 0 #050709,
+      0 14px 36px -6px rgba(212,175,55,0.4),
+      inset 0 2px 0 rgba(255,255,255,0.12);
+  }
+
+  .arcade-card__screen {
+    position: relative;
+    padding: var(--space-xl) var(--space-lg);
+    border-radius: 8px;
+    min-height: 260px;
+    overflow: hidden;
+    box-shadow:
+      inset 0 0 60px rgba(0,0,0,0.55),
+      inset 0 0 4px rgba(0,0,0,0.85);
+  }
+
+  /* === Tornillos del bisel === */
+  .screw {
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #d4af37 0%, #8a6c1f 80%);
+    box-shadow: inset 0 -1px 2px rgba(0,0,0,0.5), 0 1px 1px rgba(0,0,0,0.3);
+    z-index: 2;
+  }
+  .screw::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 65%; height: 1.5px;
+    background: #4a3812;
+  }
+  .screw--tl { top: 4px; left: 4px; }
+  .screw--tr { top: 4px; right: 4px; }
+  .screw--bl { bottom: 4px; left: 4px; }
+  .screw--br { bottom: 4px; right: 4px; }
+
+  /* === Variantes de color por sección === */
+  .arcade-card--red .arcade-card__screen {
+    background: radial-gradient(ellipse at center, #2a0a08 0%, #0d0302 100%);
+  }
+  .arcade-card--red .arcade-card__icon { color: #ff5050; text-shadow: 0 0 8px #ff5050; }
+  .arcade-card--red .arcade-card__led { color: #ff5050; }
+  .arcade-card--red .arcade-card__title { color: #ffaaaa; }
+
+  .arcade-card--amber .arcade-card__screen {
+    background: radial-gradient(ellipse at center, #2a1a02 0%, #0d0500 100%);
+  }
+  .arcade-card--amber .arcade-card__icon { color: #ffb000; text-shadow: 0 0 8px #ffb000; }
+  .arcade-card--amber .arcade-card__led { color: #ffb000; }
+  .arcade-card--amber .arcade-card__title { color: #ffe4a0; }
+
+  .arcade-card--gold .arcade-card__screen {
+    background: radial-gradient(ellipse at center, #2a1f05 0%, #0d0700 100%);
+  }
+  .arcade-card--gold .arcade-card__icon { color: #ffd700; text-shadow: 0 0 8px #ffd700; }
+  .arcade-card--gold .arcade-card__led { color: #ffd700; }
+  .arcade-card--gold .arcade-card__title { color: #fff0a8; }
+
+  .arcade-card--green .arcade-card__screen {
+    background: radial-gradient(ellipse at center, #0a1f0a 0%, #020805 100%);
+  }
+  .arcade-card--green .arcade-card__icon { color: #4fff8d; text-shadow: 0 0 8px #4fff8d; }
+  .arcade-card--green .arcade-card__led { color: #4fff8d; }
+  .arcade-card--green .arcade-card__title { color: #b0ffc0; }
+
+  /* === Contenido === */
+  .arcade-card__icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: var(--space-md);
+  }
+  .arcade-card__icon svg { width: 100%; height: 100%; display: block; }
+
+  .arcade-card__led {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    margin-bottom: var(--space-sm);
+    text-shadow: 0 0 6px currentColor;
+  }
+
+  .arcade-card__title {
+    font-family: 'VT323', monospace;
+    font-size: 32px;
+    letter-spacing: 0.04em;
+    margin-bottom: var(--space-sm);
+    line-height: 1.05;
+    text-shadow: 0 0 8px currentColor;
+  }
+
+  .arcade-card__desc {
+    font-family: 'VT323', monospace;
+    font-size: 19px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.35;
+    margin-bottom: var(--space-md);
+  }
+
+  .arcade-card__cta {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.15em;
+    transition: color 200ms ease;
+  }
+
+  .arcade-card:hover .arcade-card__cta {
+    color: #fff;
+    text-shadow: 0 0 6px #fff;
+  }
+
+  /* Scanlines sutiles en cada pantalla (CRT feel) */
+  .arcade-card__screen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(to bottom, transparent 0, transparent 2px, rgba(0,0,0,0.18) 2px, rgba(0,0,0,0.18) 3px);
+    pointer-events: none;
+    border-radius: 8px;
+  }
+
+  .sala-foot {
+    text-align: center;
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--color-text-tertiary);
+    font-size: var(--text-md);
+  }
+  .sala-foot a {
+    color: var(--color-accent-gold);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+</style>

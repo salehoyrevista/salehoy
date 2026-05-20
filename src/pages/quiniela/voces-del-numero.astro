@@ -1,0 +1,142 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const voces = (await getCollection('voces'))
+  .sort((a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf());
+
+const actual = voces[0];
+const anteriores = voces.slice(1);
+---
+
+<BaseLayout title="Voces del número" description="La mini-sección semanal: los cinco narradores comentan el número de la quincena.">
+  <section class="page container-wide">
+    <header class="page__header">
+      <span class="meta-label">Mini-sección semanal</span>
+      <h1 class="hero-title">Voces del número</h1>
+      <p class="hero-lead">
+        Los cinco narradores comentan el mismo número desde su disciplina. No son cinco picks: son cinco lecturas.
+      </p>
+    </header>
+
+    {actual && (
+      <div class="actual">
+        <span class="meta-label">El número de esta semana</span>
+        <a href={`/voces/${actual.id}`} class="actual-card">
+          <span class="data-num-large">{actual.data.numero}</span>
+          <span class="actual-card__name">{actual.data.nombre}</span>
+          <span class="actual-card__cta">Leer las cinco voces →</span>
+        </a>
+      </div>
+    )}
+
+    {anteriores.length > 0 && (
+      <div class="anteriores">
+        <h2>Anteriores</h2>
+        <ul>
+          {anteriores.map(v => (
+            <li>
+              <a href={`/voces/${v.id}`}>
+                <span class="data">{v.data.numero}</span>
+                <span class="name">{v.data.nombre}</span>
+                <time>{v.data.fecha.toLocaleDateString('es-AR', { month: 'short', year: 'numeric' })}</time>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .page { padding-block: var(--space-3xl); }
+  .page__header { margin-bottom: var(--space-2xl); }
+  .page__header .hero-lead { margin-top: var(--space-md); max-width: 640px; }
+
+  .actual { margin-block: var(--space-2xl); }
+  .actual .meta-label { display: block; margin-bottom: var(--space-md); }
+
+  .actual-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-3xl);
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+    color: inherit;
+    text-align: center;
+    transition: all var(--transition-fast);
+  }
+
+  .actual-card:hover { border-color: var(--color-accent-gold); transform: translateY(-2px); }
+
+  .actual-card .data-num-large {
+    color: var(--color-accent-gold);
+    font-size: var(--text-7xl);
+    line-height: 1;
+  }
+
+  .actual-card__name {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-3xl);
+    color: var(--color-text);
+  }
+
+  .actual-card__cta {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--color-accent-gold);
+    margin-top: var(--space-md);
+  }
+
+  .anteriores { margin-top: var(--space-3xl); }
+  .anteriores h2 {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    margin-bottom: var(--space-lg);
+  }
+
+  .anteriores ul {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-sm);
+  }
+
+  @media (min-width: 768px) {
+    .anteriores ul { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .anteriores li a {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    color: inherit;
+    transition: border-color var(--transition-fast);
+  }
+
+  .anteriores li a:hover { border-color: var(--color-accent-gold); }
+
+  .anteriores .data {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xl);
+    color: var(--color-accent-gold);
+    min-width: 60px;
+  }
+
+  .anteriores .name {
+    font-family: var(--font-display);
+    flex: 1;
+  }
+
+  .anteriores time {
+    font-size: var(--text-xs);
+    color: var(--color-text-tertiary);
+  }
+</style>

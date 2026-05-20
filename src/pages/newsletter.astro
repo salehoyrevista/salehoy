@@ -1,0 +1,150 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Newsletter" description="Suscribite al newsletter quincenal de SaleHoy.">
+  <section class="page container-narrow">
+    <header class="page__header">
+      <span class="meta-label">Newsletter</span>
+      <h1 class="hero-title">El número nuevo en tu mail</h1>
+      <p class="hero-lead">
+        Cada quincena, cuando sale una nueva edición de SaleHoy, te llega un mail breve: el sumario del número, el destacado del editor y un fragmento corto. Sin spam. Sin promesas. Sin publicidad de juego.
+      </p>
+    </header>
+
+    <div class="newsletter-form">
+      <!--
+        Beehiiv embed placeholder. Cuando esté la cuenta creada, se reemplaza por:
+
+        <iframe
+          src="https://embeds.beehiiv.com/[FORM-ID]"
+          data-test-id="beehiiv-embed"
+          width="100%"
+          height="320"
+          frameborder="0"
+          scrolling="no"
+          style="border-radius:8px;background:transparent;">
+        </iframe>
+      -->
+      <form class="form" id="newsletter-form" onsubmit="event.preventDefault(); alert('Suscripción simulada — falta configurar Beehiiv');">
+        <label for="email" class="form__label">Tu mail</label>
+        <div class="form__row">
+          <input type="email" id="email" name="email" required class="form__input" placeholder="tunombre@dominio.com" />
+          <button type="submit" class="btn-primary">Suscribirme</button>
+        </div>
+        <p class="form__legal">
+          Solo te escribimos para mandarte la revista nueva. Podés desuscribirte cuando quieras.
+        </p>
+      </form>
+    </div>
+
+    <div class="newsletter-info">
+      <h2>¿Qué vas a recibir?</h2>
+      <ul>
+        <li>Cada 15 días, el sumario de la edición nueva.</li>
+        <li>Un fragmento corto seleccionado por el editor.</li>
+        <li>Avisos cuando aparece contenido especial (cruces entre narradores, números especiales).</li>
+      </ul>
+
+      <h2>¿Y qué <em>no</em> vas a recibir?</h2>
+      <ul>
+        <li>Picks de números. SaleHoy no es un soplo.</li>
+        <li>Promociones de juego, casinos online o agencias.</li>
+        <li>Mails diarios o spam.</li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page { padding-block: var(--space-3xl); }
+  .page__header { text-align: center; margin-bottom: var(--space-2xl); }
+  .page__header .hero-lead { margin-top: var(--space-md); margin-inline: auto; }
+
+  .newsletter-form {
+    padding-block: var(--space-xl);
+  }
+
+  .form {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    padding: var(--space-xl);
+  }
+
+  .form__label {
+    display: block;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-sm);
+  }
+
+  .form__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  .form__input {
+    flex: 1;
+    min-width: 240px;
+    padding: var(--space-md);
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-size: var(--text-md);
+  }
+
+  .form__input:focus {
+    outline: none;
+    border-color: var(--color-accent-gold);
+  }
+
+  .btn-primary {
+    padding: var(--space-md) var(--space-xl);
+    background: var(--color-accent-gold);
+    color: var(--color-bg);
+    border: 1px solid var(--color-accent-gold);
+    border-radius: var(--radius-sm);
+    font-weight: var(--font-medium);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .btn-primary:hover {
+    background: transparent;
+    color: var(--color-accent-gold);
+  }
+
+  .form__legal {
+    font-size: var(--text-xs);
+    color: var(--color-text-tertiary);
+    margin-top: var(--space-md);
+  }
+
+  .newsletter-info {
+    padding-block: var(--space-2xl);
+  }
+
+  .newsletter-info h2 {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-semibold);
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-md);
+  }
+
+  .newsletter-info ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    color: var(--color-text-secondary);
+    list-style: disc;
+    padding-left: var(--space-xl);
+  }
+
+  .newsletter-info ul li { line-height: var(--leading-relaxed); }
+</style>

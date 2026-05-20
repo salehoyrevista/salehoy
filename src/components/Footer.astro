@@ -1,0 +1,185 @@
+---
+const year = new Date().getFullYear();
+
+const cols = [
+  {
+    title: 'Editorial',
+    links: [
+      { label: 'Ediciones', href: '/ediciones' },
+      { label: 'Los narradores', href: '/narradores' },
+      { label: 'Newsletter', href: '/newsletter' },
+    ],
+  },
+  {
+    title: 'La sala',
+    links: [
+      { label: 'Quiniela del día', href: '/quiniela' },
+      { label: 'Anecdotario', href: '/anecdotario' },
+      { label: 'Máquina de Frases', href: '/maquina-de-frases' },
+      { label: 'Ruleta', href: '/ruleta' },
+    ],
+  },
+  {
+    title: 'Info',
+    links: [
+      { label: 'Sobre SaleHoy', href: '/sobre' },
+      { label: 'Contacto', href: '/contacto' },
+      { label: 'Aviso legal', href: '/aviso-legal' },
+      { label: 'Privacidad', href: '/privacidad' },
+    ],
+  },
+];
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo">
+          <img src="/img/logo-wordmark-dark.png" alt="SaleHoy" class="logo__wm logo__wm--for-light" />
+          <img src="/img/logo-wordmark-light.png" alt="" class="logo__wm logo__wm--for-dark" aria-hidden="true" />
+        </div>
+        <p class="footer-subtitle">Revista cultural del juego y el azar</p>
+      </div>
+
+      {cols.map(col => (
+        <nav class="footer-col" aria-label={col.title}>
+          <h3 class="footer-col__title">{col.title}</h3>
+          <ul class="footer-col__list">
+            {col.links.map(({ label, href }) => (
+              <li><a href={href} class="footer-col__link">{label}</a></li>
+            ))}
+          </ul>
+        </nav>
+      ))}
+    </div>
+
+    <hr class="footer-divider" />
+
+    <div class="footer-bottom">
+      <p class="footer-copy">
+        © {year} SaleHoy · Revista cultural del juego y el azar
+      </p>
+      <p class="footer-legal">
+        SaleHoy es contenido cultural. El juego no se controla. Si jugás, jugá responsable.
+        Si te preocupa cómo jugás, hay <a href="/aviso-legal">ayuda</a>.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--color-bg-elevated);
+    border-top: 1px solid var(--color-line);
+    padding-block: var(--space-3xl) var(--space-xl);
+    margin-top: var(--space-4xl);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2xl);
+  }
+
+  @media (min-width: 768px) {
+    .footer-grid {
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: var(--space-xl);
+    }
+  }
+
+  .footer-brand .logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+  }
+
+  .footer-brand .logo__wm {
+    display: block;
+    height: 42px;
+    width: auto;
+    max-width: 240px;
+  }
+  .footer-brand .logo__wm--for-light { display: block; }
+  .footer-brand .logo__wm--for-dark { display: none; }
+  [data-theme='dark'] .footer-brand .logo__wm--for-light { display: none; }
+  [data-theme='dark'] .footer-brand .logo__wm--for-dark { display: block; }
+
+  .footer-subtitle {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-sm);
+    color: var(--color-text-tertiary);
+    margin-top: var(--space-sm);
+    letter-spacing: 0.01em;
+  }
+
+  .footer-col__title {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-text-tertiary);
+    margin-bottom: var(--space-md);
+  }
+
+  .footer-col__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .footer-col__link {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    transition: color var(--transition-fast);
+  }
+
+  .footer-col__link:hover {
+    color: var(--color-accent-gold);
+  }
+
+  .footer-divider {
+    border: none;
+    border-top: 1px solid var(--color-line);
+    margin-block: var(--space-2xl) var(--space-lg);
+  }
+
+  .footer-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  @media (min-width: 768px) {
+    .footer-bottom {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+  }
+
+  .footer-copy {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--color-text-tertiary);
+  }
+
+  .footer-legal {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    color: var(--color-text-tertiary);
+    max-width: 540px;
+    line-height: var(--leading-normal);
+  }
+
+  .footer-legal a {
+    color: var(--color-accent-gold);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+</style>

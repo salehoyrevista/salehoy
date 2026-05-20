@@ -1,0 +1,121 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const cartas = await getCollection('cartas');
+  return cartas.map(carta => ({
+    params: { slug: carta.data.edicion },
+    props: { carta },
+  }));
+}
+
+const { carta } = Astro.props;
+const { Content } = await render(carta);
+
+const ediciones = await getCollection('ediciones');
+const edicion = ediciones.find(e => e.data.numero === carta.data.edicion);
+
+const fechaStr = carta.data.fecha.toLocaleDateString('es-AR', {
+  year: 'numeric', month: 'long', day: 'numeric'
+});
+---
+
+<BaseLayout
+  title={`Carta del editor · SaleHoy #${carta.data.edicion}`}
+  description={`Carta del editor de SaleHoy #${carta.data.edicion}, firmada por ${carta.data.firma}.`}
+  type="article"
+>
+  <article class="carta">
+    <header class="carta__header container-narrow">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">SaleHoy</a>
+        <span>›</span>
+        {edicion && (
+          <>
+            <a href={`/ediciones/${edicion.id}`}>#{edicion.data.numero} · {edicion.data.titulo}</a>
+            <span>›</span>
+          </>
+        )}
+        <span>Carta del editor</span>
+      </nav>
+
+      <span class="meta-label">Carta del editor</span>
+      <h1 class="hero-title">Antes de empezar</h1>
+      <p class="carta__firma">
+        Por <strong>{carta.data.firma}</strong>
+        <span class="meta"> · {fechaStr}</span>
+      </p>
+    </header>
+
+    <div class="carta__body prose has-drop-cap">
+      <Content />
+    </div>
+
+    {edicion && (
+      <aside class="carta__back container-narrow">
+        <a href={`/ediciones/${edicion.id}`} class="btn-secondary">
+          ← Volver al sumario del #{edicion.data.numero}
+        </a>
+      </aside>
+    )}
+  </article>
+</BaseLayout>
+
+<style>
+  .carta { padding-block: var(--space-3xl); }
+
+  .carta__header {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--color-text-tertiary);
+    margin-bottom: var(--space-lg);
+  }
+
+  .breadcrumb a {
+    color: var(--color-text-secondary);
+    transition: color var(--transition-fast);
+  }
+
+  .breadcrumb a:hover { color: var(--color-accent-gold); }
+
+  .carta__header .meta-label { display: block; margin-bottom: var(--space-md); }
+
+  .carta__firma {
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-line);
+    font-size: var(--text-md);
+    color: var(--color-text-secondary);
+  }
+
+  .carta__firma strong { color: var(--color-accent-gold); }
+
+  .carta__body { padding-block: var(--space-xl); }
+
+  .carta__back {
+    margin-top: var(--space-3xl);
+    padding-top: var(--space-2xl);
+    border-top: 1px solid var(--color-line);
+    text-align: center;
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    padding: var(--space-md) var(--space-xl);
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-full);
+    color: var(--color-text);
+    font-size: var(--text-sm);
+    transition: all var(--transition-fast);
+  }
+
+  .btn-secondary:hover { border-color: var(--color-accent-gold); color: var(--color-accent-gold); }
+</style>

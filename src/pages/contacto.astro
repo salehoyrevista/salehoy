@@ -1,0 +1,93 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Contacto" description="Cómo escribirle a SaleHoy.">
+  <section class="page container-narrow">
+    <header class="page__header">
+      <span class="meta-label">Contacto</span>
+      <h1 class="hero-title">Escribinos</h1>
+      <p class="hero-lead">
+        Para opinar, sugerir un tema, corregir un dato, proponer una colaboración, o simplemente charlar.
+      </p>
+    </header>
+
+    <div class="contact-options">
+      <a href="mailto:hola@salehoy.netlify.app" class="contact-card">
+        <span class="meta-label">Mail</span>
+        <span class="contact-card__value">hola@salehoy.netlify.app</span>
+        <span class="contact-card__hint">Respondemos cada par de días.</span>
+      </a>
+
+      <a href="https://instagram.com/salehoyrevista" target="_blank" rel="noopener" class="contact-card">
+        <span class="meta-label">Instagram</span>
+        <span class="contact-card__value">@salehoyrevista</span>
+        <span class="contact-card__hint">Donde publicamos primero.</span>
+      </a>
+    </div>
+
+    <div class="contact-note">
+      <p>
+        <strong>Si te preocupa cómo estás jugando</strong>, hay recursos de ayuda en nuestra página de <a href="/aviso-legal">aviso legal</a>. Por favor, no nos escribas a nosotros: hay profesionales con quien hablar.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page { padding-block: var(--space-3xl); }
+  .page__header { text-align: center; margin-bottom: var(--space-2xl); }
+  .page__header .hero-lead { margin-top: var(--space-md); margin-inline: auto; }
+
+  .contact-options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+    margin-block: var(--space-2xl);
+  }
+
+  @media (min-width: 768px) {
+    .contact-options { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .contact-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: var(--space-xl);
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    color: inherit;
+    transition: border-color var(--transition-fast);
+  }
+
+  .contact-card:hover { border-color: var(--color-accent-gold); }
+
+  .contact-card__value {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    color: var(--color-accent-gold);
+    margin-top: var(--space-xs);
+  }
+
+  .contact-card__hint {
+    font-size: var(--text-sm);
+    color: var(--color-text-tertiary);
+    margin-top: var(--space-sm);
+  }
+
+  .contact-note {
+    padding: var(--space-lg);
+    background: var(--color-bg-elevated);
+    border-left: 3px solid var(--color-accent-red);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .contact-note a {
+    color: var(--color-accent-gold);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+</style>

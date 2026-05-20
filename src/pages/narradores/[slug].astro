@@ -1,0 +1,152 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const narradores = await getCollection('narradores');
+  return narradores.map(n => ({
+    params: { slug: n.data.slug },
+    props: { narrador: n },
+  }));
+}
+
+const { narrador } = Astro.props;
+
+const articulos = (await getCollection('articulos'))
+  .filter(a => a.data.narrador === narrador.data.slug)
+  .sort((a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf());
+---
+
+<BaseLayout
+  title={narrador.data.nombre}
+  description={`${narrador.data.disciplina}. ${narrador.data.preguntaDeFondo}`}
+>
+  <article class="narrador">
+    <header class="narrador__hero container-narrow">
+      <img
+        src={`/narradores/${narrador.data.slug}.jpg`}
+        alt={`Retrato de ${narrador.data.nombre}`}
+        class="narrador__portrait"
+        width="300"
+        height="300"
+        loading="eager"
+      />
+      <span class="meta-label">Narrador</span>
+      <h1 class="hero-title">{narrador.data.nombre}</h1>
+      <p class="narrador__disciplina">{narrador.data.disciplina}</p>
+      <p class="narrador__pregunta">
+        <em>{narrador.data.preguntaDeFondo}</em>
+      </p>
+    </header>
+
+    <section class="narrador__bio container-prose">
+      <p class="narrador__bio-text">{narrador.data.bio}</p>
+    </section>
+
+    <section class="narrador__articles container-wide">
+      <h2 class="narrador__section-title">Artículos firmados ({articulos.length})</h2>
+      {articulos.length === 0 ? (
+        <p class="narrador__empty">Todavía no hay artículos publicados.</p>
+      ) : (
+        <div class="articles-grid">
+          {articulos.map(articulo => (
+            <ArticleCard articulo={articulo} narradorNombre={narrador.data.nombre} size="md" />
+          ))}
+        </div>
+      )}
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .narrador { padding-block: var(--space-3xl); }
+
+  .narrador__hero {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+  }
+
+  .narrador__portrait {
+    display: block;
+    width: 240px;
+    height: 240px;
+    margin: 0 auto var(--space-lg);
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--color-line);
+    box-shadow: 0 8px 30px -8px rgba(0,0,0,0.4);
+    /* Sutil acento dorado al pasar mouse */
+    transition: border-color var(--transition-fast);
+  }
+
+  .narrador__portrait:hover {
+    border-color: var(--color-accent-gold);
+  }
+
+  @media (min-width: 768px) {
+    .narrador__portrait { width: 300px; height: 300px; }
+  }
+
+  .narrador__hero .hero-title {
+    color: var(--color-accent-gold);
+    margin-block: var(--space-md);
+  }
+
+  .narrador__disciplina {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-tertiary);
+  }
+
+  .narrador__pregunta {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    color: var(--color-text-secondary);
+    margin-top: var(--space-md);
+  }
+
+  .narrador__bio {
+    padding-block: var(--space-xl);
+  }
+
+  .narrador__bio-text {
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text);
+  }
+
+  .narrador__articles {
+    padding-block: var(--space-2xl);
+  }
+
+  .narrador__section-title {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-medium);
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .articles-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+
+  @media (min-width: 768px) {
+    .articles-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (min-width: 1024px) {
+    .articles-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .narrador__empty {
+    color: var(--color-text-secondary);
+    font-style: italic;
+  }
+</style>
