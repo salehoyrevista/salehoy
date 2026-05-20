@@ -3,7 +3,7 @@ numero: "22"
 nombre: "El loco"
 edicion: "01"
 fecha: 2026-06-01
-intro: "La mini-sección semanal: los cinco narradores comentan el mismo número desde su disciplina. No son cinco picks. Son cinco lecturas de lo mismo."
+intro: "La mini-sección semanal: los cinco narradores comentan el mismo número desde su disciplina. Son cinco lecturas de lo mismo."
 ---
 
 ## El Matemático

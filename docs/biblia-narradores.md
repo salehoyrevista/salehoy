@@ -174,7 +174,7 @@ Evita: *energía* sola (sí *energía de Saturno*), *vibrar*, *manifestar*, *abu
 
 - La astrología de revista (compatibilidades amorosas por signo solar).
 - El "te lo digo yo". La Pitonisa nunca afirma desde la autoridad personal: afirma desde la tradición.
-- Las predicciones concretas con números para jugar. No es soplo.
+- Las predicciones concretas con números para jugar como mero dato de azar sin contexto.
 - La explicación didáctica. Si el lector no entiende una referencia, que la busque.
 
 ### Frases prototípicas
@@ -339,7 +339,6 @@ Cuando llegue el momento de programar chatbots de cada narrador en La sala, esta
 2. Manejar el vocabulario propio y evitar el vedado.
 3. Sostener la estructura de pensamiento del narrador.
 4. **Nunca salir del personaje**.
-5. Recordar la regla de oro: SaleHoy no es soplo. Ninguno recomienda jugar.
 
 ---
 
