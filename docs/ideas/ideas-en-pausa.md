@@ -140,3 +140,38 @@ Distinción importante: este archivo es para **proyectos, dispositivos, decision
 ---
 
 *Sumar ideas nuevas a continuación, manteniendo el mismo formato. Cada idea debe tener: concepto, estado, razonamiento, cuándo activar.*
+
+---
+
+## ARG (Alternate Reality Game) argentino sobre el juego
+
+**Concepto:** Distribuir pistas narrativas en ediciones de SaleHoy que armen una historia paralela cifrada. Personajes secundarios con vida fuera de los artículos (redes propias, teléfonos, sitios). Números que se repiten extrañamente. Páginas ocultas del sitio. Capas criptográficas en HTML. Los lectores que se dan cuenta investigan, arman teorías, descubren un universo narrativo paralelo sin que se los anuncie.
+
+**Estado:** Idea abierta, latente. No para ahora.
+
+**Razonamiento:**
+- Sería único en el mundo: no hay ARG argentino sobre el juego.
+- SaleHoy tiene ingredientes naturales: Vichy ya rompe la cuarta pared, el tema del juego es perfecto para cifrados y números, la estética editorial puede empujarse hacia lo críptico cuando convenga.
+- Lema fundacional del género: "This is not a game".
+- Necesita comunidad de lectores activa para tener sentido.
+
+**Cuándo activar:** no antes de 6-12 meses de funcionamiento sostenido, cuando haya un grupo fiel de lectores que disfrute encontrar cosas.
+
+---
+
+## Agentes operativos y agentes asistentes por narrador
+
+**Concepto:** Sumar dos tipos de agentes de IA al flujo de trabajo de SaleHoy.
+
+Agentes operativos: publicación automatizada, generación de variantes para Instagram al publicar edición nueva, backup mensual del sitio, análisis automático de tráfico semanal.
+
+Agentes asistentes especializados por narrador: uno por cada uno de los cinco narradores, con su dossier cargado, que ayuda al editor cuando escribe artículos firmados por ese narrador.
+
+**Estado:** Idea abierta. No para los próximos meses.
+
+**Razonamiento:**
+- Los agentes operativos liberan tiempo del editor para lo importante.
+- Los agentes asistentes mantienen la coherencia de voz a través del tiempo.
+- Ninguno publica autónomamente: ambos asisten al editor humano. Respeta la máxima 27.
+
+**Cuándo activar:** opción 1 (operativos) cuando aparezca la necesidad concreta. Opción 3 (asistentes) después de tres o cuatro ediciones publicadas.

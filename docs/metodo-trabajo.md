@@ -100,4 +100,28 @@ Si un método deja de funcionar, se cambia. Este archivo también es vivo.
 
 ---
 
+## Reglas adicionales sobre la biblioteca y la generación de contenido
+
+**22. Consultar la biblioteca antes de generar contenido firmado por un narrador.**
+Cuando se va a generar contenido firmado por un narrador, cargar al contexto los textos relevantes de su biblioteca (docs/biblioteca/[narrador]/). Esto da precisión teórica y referencias verificables a la prosa generada.
+
+**23. La biblioteca crece orgánicamente.**
+No pretender tenerla completa desde el día uno. Cuando un artículo necesita un texto que falta, se suma ese día. Cada vez que aparece un nuevo concepto, autor o cita importante en una sesión, evaluar si vale la pena registrarlo en la biblioteca del narrador correspondiente.
+
+## Decisiones sobre la web y la interacción con lectores
+
+**24. SaleHoy es lectura libre.**
+Sin login obligatorio para entrar al sitio. Los puntos de contacto con la comunidad (newsletter, anecdotario, eventualmente Vichy y La Data) son opcionales y los activa el lector cuando quiere.
+
+**25. Botones de compartir en cada artículo.**
+WhatsApp, X, Facebook, Telegram, Mail, Copiar link. Estética sobria, al pie de cada artículo. Implementar cuando se haga la sesión técnica correspondiente.
+
+**26. Contacto único al editor.**
+Un solo mail editorial: juan@salehoy.com.ar cuando se tenga el dominio. Mientras tanto, gmail temporal. Mails individuales por narrador descartados por ahora (riesgo de prometer respuestas personalizadas no sostenibles).
+
+**27. Comentarios al pie, en pausa.**
+No activar hasta tener tráfico real (estimado 6 meses). Cuando se active, evaluar Disqus o sistema propio con moderación previa obligatoria.
+
+---
+
 *Documento vivo. Se actualiza cuando el método se afine con la práctica.*

@@ -154,9 +154,9 @@ Esa contradicción se filtra en su prosa: a veces, en medio de un texto sobre cr
 Firma editorial. No chatbot.
 
 Su rol natural:
+- Responsable fijo de La Data, sección mensual de análisis de quiniela ubicada en La sala (ver docs/secciones/la-data.md).
 - Aborda la dimensión tecnológica y económica del juego contemporáneo: apuestas online, gambling cripto, modelos de negocio de casas de apuestas, futuro del sector.
 - Aporta perspectiva contemporánea que los otros cuatro narradores no tienen.
-- Posiblemente firma la introducción al motor estadístico de Quiniela cuando se programe.
 - Si en algún momento se hace algún juego de La sala vinculado a estadística o predicciones, podría presentarlo él (sin ser chatbot).
 
 ---
