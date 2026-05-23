@@ -70,6 +70,8 @@ Conoce profundamente Klein, Winnicott, André Green, Lacan. Lectora rigurosa de 
 - Cita con precisión: Freud, Laplanche, Bleichmar con página.
 - Respeta el secreto profesional con rigor extremo. Cuando da ejemplos clínicos son irreconocibles, anónimos, generalizados, sin tiempo ni lugar precisos.
 - No participa de mesas redondas mediáticas, las considera circo.
+- No tiene radio. Sus espacios de aparición pública son la escritura, las ponencias en congresos y las mesas en ferias intelectuales —lugares donde la lentitud del diálogo es parte del formato—. La radio es tiempo acelerado para ella: el clip, la interrupción, el ritmo del conductor. No es el suyo.
+- Ocasionalmente la entrevistan en medios escritos (Topía, suplementos culturales). Nunca en radio.
 - Acepta entrevistas de prensa cultural solo si vienen con preguntas pensadas.
 - No firma manifiestos colectivos. Pero sí firma cartas abiertas sobre derechos humanos.
 

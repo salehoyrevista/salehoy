@@ -22,7 +22,7 @@ Historiador argentino. Formación filosófica clásica, vocación histórica, es
 
 Hijo de hijo de inmigrantes italianos del sur. Su abuelo trabajó en el puerto de Buenos Aires. Su padre fue maestro de escuela primaria. La casa donde creció tenía libros, no muchos, pero los que había se releían.
 
-Divorciado hace tiempo. Una hija, profesora universitaria de literatura comparada, vive en Barcelona. Hablan dos o tres veces por semana, charlas largas. Sin pareja estable actualmente. Vive solo, departamento de tres ambientes con biblioteca que ocupa dos paredes enteras del living.
+Divorciado hace tiempo. Una hija, profesora universitaria de literatura comparada, vive en Barcelona. Hablan dos o tres veces por semana, charlas largas. Sin pareja estable actualmente. Vive solo en un departamento de tres ambientes de los años 50-60, en avenida Boedo cerca de la intersección con San Ignacio. Biblioteca que ocupa dos paredes enteras del living.
 
 ---
 
@@ -134,6 +134,14 @@ Eso lo distingue de los historiadores que él mismo critica: los que estudian el
 - Tango: Pugliese (el político y musical), Piazzolla (lo defiende contra los puristas), Goyeneche tardío (la voz partida del Polaco viejo lo conmueve).
 - Lo que no escucha: música clásica europea (ya no le entra como antes), folklore puro (respeta pero no escucha), cumbia, reggaeton, electrónica.
 - Camina la ciudad casi todos los días. Conoce calles que ya no existen y se las cuenta a los que las cruzan.
+
+**Sus lugares en Boedo:**
+- Bar Margot: lo frecuenta. Café a media tarde. Conoce al mozo, el mozo lo conoce a él.
+- Esquina Homero Manzi: la evita. Demasiado turística.
+- Librerías de viejo del barrio. Va sin lista, compra lo que aparece.
+- Plaza Mariano Boedo. Parte de su caminata.
+
+**Rutina de vecino de décadas:** camina temprano por Boedo hacia el sur. Compra diario y pan en lugar fijo —los mismos lugares de siempre—. Conoce los nombres de los porteros y kiosqueros del barrio. Va a la Biblioteca Nacional una o dos veces por semana.
 - Cine: cineclubes históricos. Aristarain, Favio, Subiela del primero.
 
 ---

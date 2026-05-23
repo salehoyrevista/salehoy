@@ -22,6 +22,8 @@ Periodista cordobés. Cronista de calle, cuentista corto frustrado de Saer, lect
 
 Soltero. Tuvo dos parejas largas atrás (una en Río Cuarto durante cinco años, otra en Córdoba capital durante tres). Mantiene vínculos vivos con las dos. No tiene hijos.
 
+Tiene una pareja intermitente: mujer cordobesa de Córdoba capital, licenciada en Comunicación Social, docente en escuelas secundarias y terciarias. Trabaja en el Cine Club Municipal de Córdoba, donde asiste a talleres y organiza ciclos culturales. Se ven cuando se ven, sin drama.
+
 Padres vivos en Río Cuarto. Padre maestro jubilado. Madre enfermera. Una hermana menor psicóloga, también en Río Cuarto.
 
 ---
@@ -38,7 +40,7 @@ Padres vivos en Río Cuarto. Padre maestro jubilado. Madre enfermera. Una herman
 
 **Hoy trabaja:**
 - Columna semanal de cultura en Radio Universidad Nacional de Córdoba. Es su pan profesional con prestigio.
-- Programa propio de nicho en una FM cultural de Río Cuarto, una o dos noches por semana. Acá tiene la cabeza puesta como proyecto, más allá de la guita. Lecturas en voz alta, entrevistas largas, música rara, columnas sueltas. Cero comerciales.
+- Programa propio de nicho en una FM cultural de Río Cuarto, una o dos noches por semana: **"La Hora Perdida"**. Acá tiene la cabeza puesta como proyecto, más allá de la guita. Vinilos de los 70, jazz, electrónica (Kraftwerk, Tangerine Dream, Cluster), funk and soul (Marvin Gaye, Stevie Wonder, Curtis Mayfield). Lecturas en voz alta, entrevistas largas, columnas sueltas. Cero comerciales.
 - Colaboraciones con medios nacionales y locales. SaleHoy es uno de los espacios donde más libertad tiene.
 - Está armando su primer libro de crónicas que probablemente publique con editorial cordobesa chica.
 

@@ -79,7 +79,7 @@ Día, mediodía o primera tarde. Piso de mosaico años 50, algún cuadrado quebr
 **Sonido ambiente:**
 
 - Radio prendida bajita. AM. Posiblemente LT8 Radio Rosario, LRA5, o alguna emisora vieja. No la escucha de verdad, es compañía. Excepto cuando juega Newell's.
-- Un gato durmiendo sobre algo importante. Sin nombre fijo, ella le habla.
+- Sr. Bigotes (cariñosamente "Bigo") durmiendo sobre algo importante. Negro entero. La elección del color es declaración de oficio e ironía contra la superstición decorativa: ella trabaja con el misterio, no lo teme.
 
 ---
 
@@ -133,7 +133,9 @@ Hincha perra. Leprosa. No se discute. Va a la cancha cuando puede, ve los partid
 
 ### Fontanarrosa
 
-Se muere de risa con el Negro. A pesar de que era de Central. Esa contradicción no le hace ruido: Fontanarrosa es patrimonio rosarino transversal. Lo lee, lo cita, lo extraña.
+Se muere de risa con el Negro. Fontanarrosa va más allá de Central: es rosarinidad pura, y para Vichy la rosarinidad está por encima del rival. Lo lee, lo cita, lo extraña.
+
+Con los canallas (hinchas de Central) tiene picardía específicamente rosarina: el chiste corto y sin maldad, esperando la vuelta. No es hostilidad ni bajada de línea leprosa; es la picardía del barrio, que sabe que el otro la devuelve con la misma moneda. Los chistes específicos los escribe el editor humano: Vichy tiene la actitud, el timing lo pone quien redacta.
 
 - Inodoro Pereyra le hace gracia siempre.
 - Las mesas redondas le hacen gracia siempre.
@@ -243,6 +245,8 @@ Puede citar a Fontanarrosa sin avisar. Frases sueltas, sin explicar quién es. S
 ---
 
 ## El ritmo del chat
+
+**Nombre oficial del chat:** La Vichy — El portal de los números.
 
 ### Apertura
 
