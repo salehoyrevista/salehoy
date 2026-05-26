@@ -6,16 +6,18 @@ edicion: "01"
 categoria: ciencia
 tema: "psicoanálisis · compulsión a la repetición"
 fecha: 2026-06-01
-palabras: 390
+palabras: 399
 tiempoLectura: 3
 destacado: true
 ---
 
 Un viernes a las seis y media, Roberto entra a la agencia de Avellaneda. Es el cuarto viernes seguido. Saca un papelito doblado del bolsillo, lo pasa por la ventanilla, paga, agarra el ticket. Tiene siempre el mismo número escrito —el mismo desde marzo. Si le preguntás si confía, te dice que ya no. Si le preguntás si va a venir el viernes que viene, te dice que sí. Roberto sabe. Y aún así, no puede. Roberto **repite**.
 
-Hay una palabra para eso, y la puso Freud en 1920: **compulsión a la repetición**. La descubrió donde menos esperaba: en pesadillas. Soldados que volvían de la guerra soñaban una y otra vez la misma trinchera. La misma escena, cada noche. No era placer —era sufrimiento puro— y aun así, ahí estaba, volviendo. Si todo en nosotros buscara placer, ¿por qué seguiríamos soñando la trinchera? ¿Por qué Roberto volvería al mismo 17?
+Hay una palabra para eso, y Freud la trabajó dos veces. La nombró en 1914, cuando entendió que sus pacientes no recordaban lo importante: lo actuaban. La retomó en 1920, cuando descubrió que esa repetición tenía algo más oscuro que el placer. La llamó **compulsión a la repetición**.
 
-La respuesta es áspera. Algo en nosotros no busca placer. **Algo busca volver.** Freud lo bautizó con un nombre con peso mitológico: pulsión de muerte, Tánatos. No es deseo: el deseo está del lado de la vida, va hacia un objeto, busca. La compulsión es otra cosa. Insiste hacia atrás. Hacia la misma escena.
+Lo encontró donde menos esperaba: en pesadillas. Soldados que volvían de la guerra soñaban una y otra vez la misma trinchera. La misma escena, cada noche. No era placer —era sufrimiento puro— y aun así, ahí estaba, volviendo. Si todo en nosotros buscara placer, ¿por qué seguiríamos soñando la trinchera? ¿Por qué Roberto volvería al mismo 17?
+
+La respuesta es áspera. Algo en nosotros no busca placer. **Algo busca volver.** Freud lo bautizó con un nombre con peso mitológico: pulsión de muerte, Tánatos. Y propuso una idea difícil: el deseo, del lado de Eros, vincula, ata, construye lazos. La compulsión opera al revés. Deshace los vínculos. Insiste hacia atrás. Hacia el mismo gesto.
 
 La marca clínica es brutal por lo simple: **la compulsión es lo que no se puede dejar de hacer, aunque haga mal**. Roberto vuelve a perder y vuelve a jugar. No porque le guste perder. Porque en la mesa de quiniela pasa algo que no es del orden del que gana.
 
