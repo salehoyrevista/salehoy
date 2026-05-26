@@ -2,73 +2,51 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Aviso legal · Juego responsable" description="Aviso legal de SaleHoy. Información sobre juego responsable y recursos de ayuda.">
-  <section class="page container-prose">
-    <header class="page__header">
+<BaseLayout title="Aviso legal" description="Lo que SaleHoy es y lo que no es.">
+  <article class="inst-page">
+    <header class="inst-page__header">
       <span class="meta-label">Aviso legal</span>
-      <h1 class="hero-title">Juego responsable</h1>
+      <h1 class="inst-page__title">Aviso legal</h1>
+      <p class="hero-lead">Lo que SaleHoy es y lo que no es.</p>
     </header>
 
     <div class="prose">
-      <p>
-        <strong>SaleHoy es una revista cultural sobre el azar y el juego.</strong> No es un sitio de apuestas, no promete resultados, no vende métodos, no garantiza nada. El análisis estadístico que ofrecemos describe el territorio del azar; no lo predice ni lo controla.
-      </p>
+      <p>SaleHoy es contenido editorial cultural argentino sobre el juego y el azar. No promueve las apuestas como salida económica. No da picks. No tiene relación comercial con casas de apuestas online ni físicas.</p>
 
-      <h2>Sobre el juego en general</h2>
-      <p>
-        El juego de azar es una actividad regulada en Argentina y en la mayoría de los países. La quiniela, los casinos, las apuestas deportivas, los hipódromos y las loterías están sujetos a normativa estatal o provincial. SaleHoy promueve el conocimiento cultural sobre estas prácticas, no su consumo.
-      </p>
+      <h2>Juego responsable</h2>
+      <p>El juego es entretenimiento, no salida económica. Si jugás, hacelo con conciencia y dentro de tus posibilidades. Si te preocupa cómo jugás, llamá gratis y anónimo al <strong>141</strong> (Sedronar).</p>
 
-      <p>
-        Para que el juego siga siendo entretenimiento y no se convierta en problema, conviene tener en cuenta principios básicos: jugar solo lo que se puede perder, no jugar para recuperar dinero perdido, no jugar bajo efecto de alcohol o sustancias, y reconocer cuándo el juego deja de divertir.
-      </p>
+      <h2>Licencia</h2>
+      <p>Todo el contenido editorial de SaleHoy está publicado bajo licencia Creative Commons BY-NC-SA 4.0.</p>
 
-      <h2>Si necesitás ayuda</h2>
-      <p>
-        Si sentís que estás jugando más de lo que querés, que el juego te genera ansiedad, deudas, problemas familiares o laborales, hay recursos disponibles. Pedir ayuda no es debilidad: es la decisión más inteligente que se puede tomar frente a una compulsión.
-      </p>
-      <ul>
-        <li>
-          <strong>Argentina</strong> — Programa de Prevención y Asistencia al Juego Compulsivo (PRoPAC).
-          Llamado gratuito al <strong>0800-444-4000</strong>.
-        </li>
-        <li>
-          <strong>Lotería de la Provincia de Buenos Aires</strong> — Línea de ayuda <strong>0800-444-7563</strong>.
-        </li>
-        <li>
-          <strong>Jugadores Anónimos Argentina</strong> — <a href="https://www.jugadoresanonimos.com.ar" target="_blank" rel="noopener">jugadoresanonimos.com.ar</a>.
-        </li>
-      </ul>
-
-      <h2>Sobre este sitio</h2>
-      <p>
-        SaleHoy es propiedad de <strong>Juan Boas</strong>. El contenido editorial es responsabilidad de la redacción. Los textos firmados por los cinco narradores son producciones editoriales: no representan opiniones individuales sino voces colectivas con disciplina propia.
-      </p>
-      <p>
-        El sitio no acepta publicidad de operadores de juego ni de casinos online. La eventual monetización vendrá por modelo de suscripción o donación de lectores.
-      </p>
-
-      <h2>Términos generales</h2>
-      <ul>
-        <li>El contenido editorial de SaleHoy está bajo licencia <strong>Creative Commons BY-NC-SA 4.0</strong>: podés citar y compartir con atribución, no comercialmente, y compartiendo bajo la misma licencia.</li>
-        <li>El motor estadístico ofrece análisis descriptivo, no predictivo. La probabilidad de cada sorteo es independiente del anterior.</li>
-        <li>Las imágenes, ilustraciones y elementos visuales pertenecen a sus respectivos autores; cuando corresponde, se citan al pie.</li>
-      </ul>
-
-      <p class="legal-footer">
-        Última actualización: {new Date().toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' })}.
-      </p>
+      <p>Editor responsable: Juan Boas.</p>
     </div>
-  </section>
+  </article>
 </BaseLayout>
 
 <style>
-  .page { padding-block: var(--space-3xl); }
-  .page__header { text-align: center; margin-bottom: var(--space-2xl); }
-  .legal-footer {
-    font-size: var(--text-sm);
-    color: var(--color-text-tertiary);
-    margin-top: var(--space-2xl);
-    font-style: italic;
+  .inst-page {
+    padding-block: var(--space-3xl);
+    max-width: 640px;
+    margin-inline: auto;
+    padding-inline: var(--gutter-xs);
+  }
+
+  .inst-page__header {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .inst-page__title {
+    font-family: var(--font-display);
+    font-size: var(--text-4xl);
+    font-weight: var(--font-semibold);
+    line-height: var(--leading-tight);
+    letter-spacing: -0.02em;
+    margin-top: var(--space-sm);
+    margin-bottom: var(--space-md);
+  }
+
+  .prose {
+    max-width: none;
   }
 </style>

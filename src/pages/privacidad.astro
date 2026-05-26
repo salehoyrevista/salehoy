@@ -2,54 +2,55 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Política de privacidad" description="Política de privacidad de SaleHoy.">
-  <section class="page container-prose">
-    <header class="page__header">
+<BaseLayout title="Privacidad" description="Qué datos guardamos y qué no.">
+  <article class="inst-page">
+    <header class="inst-page__header">
       <span class="meta-label">Privacidad</span>
-      <h1 class="hero-title">Política de privacidad</h1>
+      <h1 class="inst-page__title">Privacidad</h1>
+      <p class="hero-lead">Qué datos guardamos y qué no.</p>
     </header>
 
     <div class="prose">
-      <p>
-        SaleHoy respeta la privacidad de quienes visitan el sitio y lee la revista. Esta política explica qué datos recogemos, cómo los usamos y qué control tenés sobre ellos.
-      </p>
+      <p>SaleHoy es un sitio web estático. No guarda datos personales de quien lo visita más allá de lo estrictamente necesario para que funcione.</p>
 
-      <h2>Qué recogemos</h2>
-      <ul>
-        <li>
-          <strong>Datos de navegación anónimos</strong> a través de Google Analytics: páginas visitadas, tiempo de lectura, tipo de dispositivo, país. Estos datos no permiten identificarte personalmente.
-        </li>
-        <li>
-          <strong>Tu dirección de correo</strong> si te suscribís al newsletter. La guardamos en nuestro proveedor de email (Beehiiv) y la usamos solo para enviarte la revista.
-        </li>
-      </ul>
+      <h2>Newsletter</h2>
+      <p>Si te suscribís al newsletter, tu mail queda guardado en Beehiiv, la plataforma que usamos para enviar newsletters. Podés darte de baja en cualquier momento desde el pie de cualquier mail.</p>
 
-      <h2>Qué NO hacemos</h2>
-      <ul>
-        <li>No vendemos ni compartimos tus datos con terceros.</li>
-        <li>No usamos tu información para publicidad personalizada.</li>
-        <li>No requerimos registro para leer la revista.</li>
-      </ul>
+      <h2>Anecdotario</h2>
+      <p>Si mandás una anécdota, queda guardada por Netlify Forms. La leemos antes de publicar. Podemos editarla por estilo. Si pediste anonimato, lo respetamos.</p>
 
-      <h2>Tus derechos</h2>
-      <p>
-        En cualquier momento podés desuscribirte del newsletter (cada email tiene un link de desuscripción) o solicitarnos la eliminación de tus datos escribiéndonos a <a href="/contacto">contacto</a>.
-      </p>
+      <h2>La Vichy (chatbot)</h2>
+      <p>Las consultas son anónimas. No se guarda registro asociado a vos.</p>
 
       <h2>Cookies</h2>
-      <p>
-        El sitio usa cookies técnicas (preferencia de modo oscuro/claro) y cookies analíticas anónimas (Google Analytics). No usamos cookies publicitarias ni de tracking cross-site.
-      </p>
-
-      <p class="legal-footer">
-        Última actualización: {new Date().toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' })}.
-      </p>
+      <p>No usamos cookies de tracking ni de publicidad.</p>
     </div>
-  </section>
+  </article>
 </BaseLayout>
 
 <style>
-  .page { padding-block: var(--space-3xl); }
-  .page__header { text-align: center; margin-bottom: var(--space-2xl); }
-  .legal-footer { font-size: var(--text-sm); color: var(--color-text-tertiary); margin-top: var(--space-2xl); font-style: italic; }
+  .inst-page {
+    padding-block: var(--space-3xl);
+    max-width: 640px;
+    margin-inline: auto;
+    padding-inline: var(--gutter-xs);
+  }
+
+  .inst-page__header {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .inst-page__title {
+    font-family: var(--font-display);
+    font-size: var(--text-4xl);
+    font-weight: var(--font-semibold);
+    line-height: var(--leading-tight);
+    letter-spacing: -0.02em;
+    margin-top: var(--space-sm);
+    margin-bottom: var(--space-md);
+  }
+
+  .prose {
+    max-width: none;
+  }
 </style>

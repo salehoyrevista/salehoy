@@ -2,46 +2,66 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="404 — Página no encontrada" description="La página que buscás no existe.">
-  <section class="page container-narrow">
-    <div class="center">
-      <span class="data-num-large">404</span>
-      <h1 class="hero-title">Esta página no salió hoy</h1>
-      <p class="hero-lead">
-        El número que estabas buscando no existe en nuestra bolillera. Probá con otro.
-      </p>
-      <div class="links">
-        <a href="/" class="btn-primary">Volver al inicio</a>
-        <a href="/ediciones" class="btn-secondary">Ver las ediciones →</a>
-      </div>
+<BaseLayout title="Esta página no existe" description="La página que buscás no existe en SaleHoy.">
+  <article class="inst-page">
+    <header class="inst-page__header">
+      <h1 class="inst-page__title">Esta página no existe</h1>
+      <p class="inst-page__lead">Capaz era un número que no salió. Capaz se perdió en la mesa.</p>
+    </header>
+
+    <div class="inst-page__body">
+      <p>Lo que buscabas no está en esta dirección.</p>
+      <p><a href="/">Volvé al inicio</a> o entrá a <a href="/la-sala">La sala</a>.</p>
     </div>
-  </section>
+  </article>
 </BaseLayout>
 
 <style>
-  .page { padding-block: var(--space-4xl); }
-  .center { text-align: center; }
-  .center .data-num-large {
+  .inst-page {
+    padding-block: var(--space-4xl);
+    max-width: 640px;
+    margin-inline: auto;
+    padding-inline: var(--gutter-xs);
+    text-align: center;
+  }
+
+  .inst-page__header {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .inst-page__title {
+    font-family: var(--font-display);
+    font-size: var(--text-4xl);
+    font-weight: var(--font-semibold);
+    line-height: var(--leading-tight);
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-md);
+  }
+
+  .inst-page__lead {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-xl);
+    line-height: var(--leading-normal);
+    color: var(--color-text-secondary);
+  }
+
+  .inst-page__body {
+    font-size: var(--text-md);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .inst-page__body a {
     color: var(--color-accent-gold);
-    font-size: var(--text-7xl);
-    line-height: 1;
-    display: block;
-    margin-bottom: var(--space-lg);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
   }
-  .center .hero-lead { max-width: 480px; margin: var(--space-md) auto var(--space-2xl); }
-  .links { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-md); }
-  .btn-primary {
-    padding: var(--space-md) var(--space-xl);
-    background: var(--color-accent-gold);
-    color: var(--color-bg);
-    border-radius: var(--radius-full);
-    font-weight: var(--font-medium);
-  }
-  .btn-secondary {
-    padding: var(--space-md) var(--space-xl);
-    border: 1px solid var(--color-line-strong);
+
+  .inst-page__body a:hover {
     color: var(--color-text);
-    border-radius: var(--radius-full);
   }
-  .btn-secondary:hover { color: var(--color-accent-gold); border-color: var(--color-accent-gold); }
 </style>

@@ -1,189 +1,54 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
-
-const narradores = await getCollection('narradores');
 ---
 
-<BaseLayout title="Sobre SaleHoy" description="Qué es SaleHoy: una revista cultural sobre el juego y el azar argentino.">
-  <article class="sobre">
-    <header class="sobre__hero container-narrow">
+<BaseLayout title="Sobre SaleHoy" description="Una revista cultural argentina sobre el juego y el azar.">
+  <article class="inst-page">
+    <header class="inst-page__header">
       <span class="meta-label">Sobre SaleHoy</span>
-      <h1 class="hero-title">Una revista cultural sobre el juego y el azar argentino</h1>
-      <p class="hero-lead">
-        Toma el universo del jugador —la quiniela, el casino, las carreras, el póker, el casino online— y lo pone bajo la lente de cuatro disciplinas mayores: ciencia, historia, mística y cultura.
-      </p>
+      <h1 class="inst-page__title">Sobre SaleHoy</h1>
+      <p class="hero-lead">Una revista cultural argentina sobre el juego y el azar.</p>
     </header>
 
-    <section class="sobre__manifiesto container-prose prose has-drop-cap">
-      <p>
-        SaleHoy es una revista cultural sobre el juego y el azar argentino. Toma el universo del jugador —la quiniela, el casino, las carreras de caballos, el póker, los bingos, las apuestas deportivas, los nuevos casinos online— y lo pone bajo la lente de cuatro disciplinas mayores: ciencia, historia, mística y cultura.
-      </p>
+    <div class="prose">
+      <p>SaleHoy es una revista digital cultural que piensa al juego como fenómeno social, popular, histórico y literario. La quiniela, los hipódromos, el casino, las apuestas online, la lotería, los sorteos.</p>
 
-      <p>
-        Dentro de ese universo, la quiniela conserva un lugar de honor: es el juego más argentino, el más cotidiano, el más invisible para la cultura "seria". Por eso tiene su propia sección semanal en la revista —número de la suerte, palpito, voces de los cinco narradores. Pero la revista no se agota ahí. El jugador es siempre el mismo, sea quien tira la bolilla, baraja las cartas, larga el caballo o aprieta el botón del casino virtual.
-      </p>
+      <p>Pensamos al juego con seriedad. No promovemos las apuestas. Tampoco las condenamos. Las conversamos.</p>
 
-      <blockquote>
-        Lo que ofrece es una mirada: la convicción de que un país que juega todos los días tiene algo importante que decir sobre sí mismo, y que vale la pena pensarlo con la misma seriedad con la que pensaríamos cualquier otro hecho cultural.
-      </blockquote>
-    </section>
+      <p>Publicamos ediciones quincenales con artículos firmados por cinco narradores. Y tenemos una zona viva, La sala, donde el juego se vuelve cultura interactiva.</p>
 
-    <section class="sobre__narradores container-wide">
-      <h2 class="sobre__section-title">Los cinco narradores</h2>
-      <p class="sobre__section-intro">
-        Cada narrador firma desde una disciplina y un tono. No alternan: son columnistas estables. El cruce de los cinco arma el número editorial completo.
-      </p>
+      <h2>El editor</h2>
+      <p>Juan Boas es el editor de SaleHoy. Psicoanalista de profesión.</p>
 
-      <ul class="narradores-grid">
-        {narradores.map(n => (
-          <li>
-            <a href={`/narradores/${n.data.slug}`} class="narrador-card">
-              <h3>{n.data.nombre}</h3>
-              <p class="narrador-card__d">{n.data.disciplina}</p>
-              <p class="narrador-card__q"><em>{n.data.preguntaDeFondo}</em></p>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </section>
-
-    <section class="sobre__categorias container-narrow">
-      <h2 class="sobre__section-title">Las cuatro miradas</h2>
-      <ul class="cat-list">
-        <li><strong>Ciencia</strong> — matemática, estadística, probabilidad, física, química, psicoanálisis (Freud, Lacan), neurociencia, cognitivismo, sociología.</li>
-        <li><strong>Historia</strong> — historia social, antropológica, geográfica, política, jurídica.</li>
-        <li><strong>Cultura</strong> — literatura, cine, pintura, música, fotografía, teatro, cómic.</li>
-        <li><strong>Mística</strong> — Jung, filosofía, metafísica, esoterismo, religiones del azar, numerología, simbología.</li>
-      </ul>
-    </section>
-
-    <section class="sobre__arquitectura container-narrow">
-      <h2 class="sobre__section-title">Cómo leemos</h2>
-      <p>SaleHoy convive en la misma web pero opera con <strong>dos registros</strong> distintos:</p>
-      <ul class="reg-list">
-        <li>
-          <strong>Registro vivo — semanal.</strong> El motor estadístico, los candidatos del día, las <em>Voces del número</em>, los picks. La quiniela del barrio actualizada cada día.
-        </li>
-        <li>
-          <strong>Registro editorial — quincenal.</strong> La revista propiamente dicha. Cada 15 días sale un nuevo número con su título temático y sus artículos firmados.
-        </li>
-      </ul>
-      <p>La revista respira lento. El motor respira rápido. La separación es deliberada.</p>
-    </section>
-
-    <section class="sobre__creditos container-narrow">
-      <h2 class="sobre__section-title">Equipo</h2>
-      <p>Dirección editorial: <strong>Juan Boas</strong>.</p>
-      <p>
-        Los cinco narradores son figuras editoriales: voces estables, no firmas individuales. Detrás de cada uno trabaja la redacción.
-      </p>
-    </section>
+      <h2>Los narradores</h2>
+      <p>El Cronista (Paulo Castillo). El Historiador (Aníbal Belmonte). La Científica (María Lange). El Matemático (Tomás Vera). La Pitonisa (Vichy).</p>
+    </div>
   </article>
 </BaseLayout>
 
 <style>
-  .sobre { padding-block: var(--space-3xl); }
+  .inst-page {
+    padding-block: var(--space-3xl);
+    max-width: 640px;
+    margin-inline: auto;
+    padding-inline: var(--gutter-xs);
+  }
 
-  .sobre__hero {
-    text-align: center;
+  .inst-page__header {
     margin-bottom: var(--space-2xl);
   }
 
-  .sobre__hero .hero-lead {
-    margin-top: var(--space-md);
-  }
-
-  .sobre__manifiesto,
-  .sobre__narradores,
-  .sobre__categorias,
-  .sobre__arquitectura,
-  .sobre__creditos {
-    padding-block: var(--space-2xl);
-  }
-
-  .sobre__section-title {
+  .inst-page__title {
     font-family: var(--font-display);
-    font-size: var(--text-3xl);
+    font-size: var(--text-4xl);
     font-weight: var(--font-semibold);
+    line-height: var(--leading-tight);
+    letter-spacing: -0.02em;
+    margin-top: var(--space-sm);
     margin-bottom: var(--space-md);
   }
 
-  .sobre__section-intro {
-    color: var(--color-text-secondary);
-    margin-bottom: var(--space-xl);
-    max-width: 640px;
-  }
-
-  .narradores-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-md);
-  }
-
-  @media (min-width: 640px) {
-    .narradores-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  @media (min-width: 1024px) {
-    .narradores-grid { grid-template-columns: repeat(5, 1fr); }
-  }
-
-  .narrador-card {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-sm);
-    padding: var(--space-lg);
-    background: var(--color-bg-elevated);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-md);
-    color: inherit;
-    height: 100%;
-    transition: border-color var(--transition-fast);
-  }
-
-  .narrador-card:hover {
-    border-color: var(--color-accent-gold);
-  }
-
-  .narrador-card h3 {
-    font-family: var(--font-display);
-    font-size: var(--text-xl);
-    color: var(--color-accent-gold);
-    font-weight: var(--font-semibold);
-  }
-
-  .narrador-card__d {
-    font-size: var(--text-xs);
-    text-transform: lowercase;
-    color: var(--color-text-tertiary);
-  }
-
-  .narrador-card__q {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: var(--text-sm);
-    color: var(--color-text-secondary);
-    line-height: var(--leading-normal);
-  }
-
-  .cat-list, .reg-list {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-md);
-    font-size: var(--text-md);
-    line-height: var(--leading-relaxed);
-  }
-
-  .cat-list li, .reg-list li {
-    padding: var(--space-md);
-    border-left: 2px solid var(--color-line);
-    color: var(--color-text-secondary);
-  }
-
-  .cat-list strong, .reg-list strong {
-    color: var(--color-accent-gold);
+  .prose {
+    max-width: none;
   }
 </style>
