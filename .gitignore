@@ -29,3 +29,7 @@ Thumbs.db
 
 # Netlify
 .netlify/
+
+# QA local
+_screenshots/
+_verify_pages.mjs
