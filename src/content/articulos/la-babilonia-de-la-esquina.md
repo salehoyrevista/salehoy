@@ -9,6 +9,7 @@ fecha: 2026-06-01
 palabras: 470
 tiempoLectura: 4
 destacado: true
+imagen: /img/articulos/01/articulo-loteria-babilonia.jpg
 ---
 
 En enero de 1941, Jorge Luis Borges publica en la revista *Sur* un cuento de pocas páginas que titula "La lotería en Babilonia". Trabaja, hace ya cuatro años, como Auxiliar Primero en la Biblioteca Municipal Miguel Cané, en Boedo, donde quince empleados hacen el trabajo de dos y donde lo llaman "Borges Acevedo" para no confundirlo con otro empleado del mismo apellido. Cataloga libros a un ritmo deliberadamente lento. Lee a Kafka, lo traduce. Europa está en guerra. Argentina es neutral. Buenos Aires juega clandestinamente a la quiniela en agencias trucadas por levantadores que anotan en cuadernos. Borges no juega. Pero escribe.

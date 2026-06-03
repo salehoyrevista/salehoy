@@ -9,6 +9,7 @@ fecha: 2026-06-01
 palabras: 510
 tiempoLectura: 4
 destacado: true
+imagen: /img/articulos/01/articulo-pueblo-sonando.jpg
 ---
 
 Soñás con un muerto que te habla. Te despertás. En el almuerzo se lo contás a tu vieja, ella se persigna y te dice: "Jugá el 48". Vos no le preguntás por qué. Sabés —vagamente, sin haberlo aprendido nunca— que el 48 es el muerto que habla. Como sabés que el 17 es la desgracia, que el 22 es el loco. Nadie te enseñó la tabla. La tabla está. Existe desde antes que vos nacieras.

@@ -14,6 +14,7 @@ const articulos = defineCollection({
     palabras: z.number().optional(),
     tiempoLectura: z.number().optional(),
     destacado: z.boolean().default(false),
+    imagen: z.string().optional(),
   }),
 });
 

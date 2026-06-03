@@ -9,6 +9,7 @@ fecha: 2026-06-01
 palabras: 399
 tiempoLectura: 3
 destacado: true
+imagen: /img/articulos/01/articulo-numero-que-vuelve.jpg
 ---
 
 Un viernes a las seis y media, Roberto entra a la agencia de Avellaneda. Es el cuarto viernes seguido. Saca un papelito doblado del bolsillo, lo pasa por la ventanilla, paga, agarra el ticket. Tiene siempre el mismo número escrito —el mismo desde marzo. Si le preguntás si confía, te dice que ya no. Si le preguntás si va a venir el viernes que viene, te dice que sí. Roberto sabe. Y aún así, no puede. Roberto **repite**.

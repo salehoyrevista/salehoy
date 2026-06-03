@@ -9,6 +9,7 @@ fecha: 2026-06-01
 palabras: 460
 tiempoLectura: 4
 destacado: false
+imagen: /img/articulos/01/articulo-rachas.jpg
 ---
 
 ¿Tiene memoria el azar? La respuesta corta es **no**. La respuesta larga ocupa casi dos siglos de discusión matemática, y todavía nos persigue cada vez que pensamos que un número "está adeudado". La palabra es lo que más se escucha en los bares: *"el 32 tiene que salir, ya está adeudado".* La frase es la frase de siempre. Y es, palabra por palabra, lo que en estadística se conoce como **la falacia del jugador**: la creencia de que un evento aleatorio se vuelve más probable porque no ocurrió en mucho tiempo.

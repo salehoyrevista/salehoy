@@ -9,6 +9,7 @@ fecha: 2026-06-01
 palabras: 520
 tiempoLectura: 4
 destacado: false
+imagen: /img/articulos/01/articulo-hecha-en-rosario.jpg
 ---
 
 A fines del siglo XIX, Argentina era un país que se inventaba a sí mismo. El Segundo Censo Nacional, levantado en 1895, había contado cerca de cuatro millones de habitantes, y casi uno de cada cuatro era inmigrante recién llegado. El Estado, joven todavía, se daba instituciones a la velocidad a la que crecía el país: registro civil, escuelas públicas, ferrocarriles, hospitales. Para financiar parte de esa máquina enorme, el presidente José Evaristo Uriburu firmó, en noviembre de 1895, la creación de la **Lotería Nacional de Beneficencia**. La idea no era nueva: Italia, España y media Europa hacían lo mismo desde el siglo XVII. Un sorteo público recaudaba fondos, y los fondos se destinaban a hospitales, escuelas y orfanatos. Era el azar puesto al servicio del Estado.
