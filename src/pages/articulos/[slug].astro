@@ -108,6 +108,17 @@ const articleSchema = {
       </div>
     </header>
 
+    {articulo.data.imagen && (
+      <figure class="article__cover container-wide">
+        <img
+          src={articulo.data.imagen}
+          alt={articulo.data.title}
+          loading="eager"
+          decoding="async"
+        />
+      </figure>
+    )}
+
     <div class="article__body prose has-drop-cap">
       <Content />
     </div>
@@ -217,6 +228,19 @@ const articleSchema = {
 
   .article__autor strong {
     color: var(--color-accent-gold);
+  }
+
+  .article__cover {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .article__cover img {
+    width: 100%;
+    height: auto;
+    max-height: 480px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    display: block;
   }
 
   .article__body {
