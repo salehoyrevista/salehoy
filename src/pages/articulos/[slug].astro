@@ -20,14 +20,10 @@ const narrador = narradores.find(n => n.data.slug === articulo.data.narrador);
 const ediciones = await getCollection('ediciones');
 const edicion = ediciones.find(e => e.data.numero === articulo.data.edicion);
 
-// Más artículos del mismo narrador (excluyendo este)
 const todosArticulos = await getCollection('articulos');
-const otrosDelNarrador = todosArticulos
-  .filter(a => a.data.narrador === articulo.data.narrador && a.id !== articulo.id)
-  .slice(0, 2);
 const otrosDeLaEdicion = todosArticulos
   .filter(a => a.data.edicion === articulo.data.edicion && a.id !== articulo.id)
-  .slice(0, 3);
+  .slice(0, 2);
 
 const formatFecha = (d: Date) => d.toLocaleDateString('es-AR', {
   year: 'numeric', month: 'long', day: 'numeric'
@@ -35,7 +31,6 @@ const formatFecha = (d: Date) => d.toLocaleDateString('es-AR', {
 
 const ogImage = `/og/articulo-${articulo.id}.png`;
 
-// JSON-LD schema.org Article
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'Article',
@@ -61,6 +56,23 @@ const articleSchema = {
     name: `SaleHoy #${edicion.data.numero} · ${edicion.data.titulo}`,
   } : undefined,
 };
+
+// Acento por narrador — scoped a la página, no toca tokens.css
+const acentoMap: Record<string, string> = {
+  'la-cientifica':  '#C9A96E',
+  'la-pitonisa':    '#9B2226',
+  'el-matematico':  '#4A9070',
+  'el-cronista':    '#8B6040',
+  'el-historiador': '#4A2818',
+};
+const narratorAccent = narrador
+  ? (acentoMap[narrador.data.slug] ?? 'var(--color-accent-gold)')
+  : 'var(--color-accent-gold)';
+
+// Iniciales para el portrait
+const iniciales = narrador
+  ? narrador.data.nombre.split(' ').map((w: string) => w[0]).join('')
+  : '?';
 ---
 
 <BaseLayout
@@ -70,30 +82,26 @@ const articleSchema = {
   image={ogImage}
 >
   <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
-  <article class="article">
-    <header class="article__header container-narrow">
-      <nav class="breadcrumb" aria-label="Breadcrumb">
-        <a href="/">SaleHoy</a>
-        <span>›</span>
-        {edicion && (
-          <>
-            <a href={`/ediciones/${edicion.id}`}>#{edicion.data.numero}</a>
-            <span>›</span>
-          </>
-        )}
-        {narrador && <a href={`/narradores/${narrador.data.slug}`}>{narrador.data.nombre}</a>}
-      </nav>
 
-      <div class="article__tags">
-        <span class={`tag tag-categoria tag--${articulo.data.categoria}`}>{articulo.data.categoria}</span>
-        {articulo.data.tema && <span class="meta">· {articulo.data.tema}</span>}
+  <article class="article" style={`--narrator-accent: ${narratorAccent};`}>
+
+    <!-- Hero centrado -->
+    <header class="article__hero container-narrow">
+      <div class="article__eyebrow">
+        {edicion && `Edición #${edicion.data.numero}`}
+        {articulo.data.categoria && <span class="eyebrow__sep">·</span>}
+        {articulo.data.categoria}
+        {narrador && <span class="eyebrow__sep">·</span>}
+        {narrador && narrador.data.nombre}
       </div>
 
-      <h1 class="article__title hero-title">{articulo.data.title}</h1>
+      <h1 class="article__title">{articulo.data.title}</h1>
 
       {articulo.data.subtitle && (
-        <p class="article__subtitle hero-lead">{articulo.data.subtitle}</p>
+        <p class="article__deck">{articulo.data.subtitle}</p>
       )}
+
+      <hr class="article__divider" />
 
       <div class="article__meta">
         {narrador && (
@@ -101,13 +109,24 @@ const articleSchema = {
             Por <strong>{narrador.data.nombre}</strong>
           </a>
         )}
-        <span class="meta">
-          {formatFecha(articulo.data.fecha)}
-          {articulo.data.tiempoLectura && ` · ${articulo.data.tiempoLectura} min lectura`}
-        </span>
+        <span class="meta__sep">·</span>
+        <span>{formatFecha(articulo.data.fecha)}</span>
+        {articulo.data.tiempoLectura && (
+          <>
+            <span class="meta__sep">·</span>
+            <span>{articulo.data.tiempoLectura} min de lectura</span>
+          </>
+        )}
+      </div>
+
+      <div class="article__ornament" aria-hidden="true">
+        <span class="ornament__rule"></span>
+        <span class="ornament__symbol">✦</span>
+        <span class="ornament__rule"></span>
       </div>
     </header>
 
+    <!-- Imagen de cabecera -->
     {articulo.data.imagen && (
       <figure class="article__cover container-wide">
         <img
@@ -119,10 +138,19 @@ const articleSchema = {
       </figure>
     )}
 
+    <!-- Cuerpo -->
     <div class="article__body prose has-drop-cap">
       <Content />
     </div>
 
+    <!-- Firma del narrador -->
+    {narrador && (
+      <div class="article__sig" aria-hidden="true">
+        <span class="article__sig-inner">· {narrador.data.nombre} ·</span>
+      </div>
+    )}
+
+    <!-- Compartir -->
     <div class="container-narrow">
       <ShareButtons
         title={articulo.data.title}
@@ -130,106 +158,174 @@ const articleSchema = {
       />
     </div>
 
+    <!-- Author card -->
     {narrador && (
-      <aside class="article__autor-box container-narrow">
-        <h3 class="autor-box__title">Sobre el narrador</h3>
-        <p class="autor-box__name">{narrador.data.nombre}</p>
-        <p class="autor-box__bio">{narrador.data.bio}</p>
-        <a href={`/narradores/${narrador.data.slug}`} class="autor-box__link">
-          Ver todos los artículos de {narrador.data.nombre} →
+      <aside class="author-card container-narrow">
+        <div class="author-portrait" aria-hidden="true">{iniciales}</div>
+        <div class="author-info">
+          <div class="author-role">{narrador.data.disciplina || 'Narrador'}</div>
+          <h2 class="author-name">{narrador.data.nombre}</h2>
+          <p class="author-bio">{narrador.data.bio}</p>
+        </div>
+        <a href={`/narradores/${narrador.data.slug}`} class="author-link">
+          Ver el perfil →
         </a>
       </aside>
     )}
 
-    {(otrosDeLaEdicion.length > 0 || otrosDelNarrador.length > 0) && (
-      <aside class="article__related container-wide">
-        {otrosDeLaEdicion.length > 0 && (
-          <div>
-            <h3 class="related__title">En la misma edición</h3>
-            <ul class="related__list">
-              {otrosDeLaEdicion.map(a => (
-                <li>
-                  <a href={`/articulos/${a.id}`} class="related__link">
-                    <span class="related__cat">{a.data.categoria}</span>
-                    <span class="related__name">{a.data.title}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </aside>
+    <!-- Next rail -->
+    {otrosDeLaEdicion.length > 0 && (
+      <section class="next-rail container-wide" aria-label="Más de esta edición">
+        {otrosDeLaEdicion.map(a => {
+          const aNarrador = narradores.find(n => n.data.slug === a.data.narrador);
+          return (
+            <a class="next-card" href={`/articulos/${a.id}`}>
+              <div class="next-card__label">
+                {edicion && `#${edicion.data.numero}`} · En esta edición
+              </div>
+              <h3 class="next-card__title">{a.data.title}</h3>
+              {aNarrador && (
+                <div class="next-card__by">Por {aNarrador.data.nombre}</div>
+              )}
+            </a>
+          );
+        })}
+      </section>
     )}
 
+    <!-- CTA newsletter -->
     <aside class="article__cta container-narrow">
       <h3>Si te gustó, sumate al newsletter</h3>
       <p>Cada quincena, el número nuevo en tu mail. Sin spam.</p>
       <a href="/newsletter" class="btn-primary">Suscribirme</a>
     </aside>
+
   </article>
 </BaseLayout>
 
 <style>
+  /* ============================================================
+     Variables — narrator accent heredado via inline style en <article>
+     ============================================================ */
   .article {
-    padding-block: var(--space-3xl);
+    padding-block: var(--space-3xl) var(--space-4xl);
   }
 
-  .article__header {
+  /* ============================================================
+     Hero
+     ============================================================ */
+  .article__hero {
+    text-align: center;
     margin-bottom: var(--space-2xl);
+    padding-top: var(--space-xl);
   }
 
-  .breadcrumb {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-sm);
+  .article__eyebrow {
     font-family: var(--font-body);
-    font-size: var(--text-sm);
-    color: var(--color-text-tertiary);
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-leather);
     margin-bottom: var(--space-lg);
   }
 
-  .breadcrumb a {
-    color: var(--color-text-secondary);
-    transition: color var(--transition-fast);
-  }
-
-  .breadcrumb a:hover {
-    color: var(--color-accent-gold);
-  }
-
-  .article__tags {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    margin-bottom: var(--space-lg);
+  .eyebrow__sep {
+    display: inline-block;
+    margin: 0 var(--space-sm);
+    color: var(--color-line-strong);
   }
 
   .article__title {
-    margin-bottom: var(--space-md);
+    font-family: var(--font-display);
+    font-weight: var(--font-semibold);
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 1.04;
+    letter-spacing: -0.018em;
+    color: var(--color-text);
+    margin: 0 auto var(--space-lg);
+    max-width: 14ch;
+    text-wrap: balance;
   }
 
-  .article__subtitle {
-    margin-bottom: var(--space-xl);
+  .article__deck {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: var(--font-regular);
+    font-size: clamp(1.125rem, 1.5vw, 1.375rem);
+    line-height: 1.5;
+    color: var(--color-leather);
+    margin: 0 auto var(--space-xl);
+    max-width: 36ch;
+    text-wrap: pretty;
+  }
+
+  .article__divider {
+    width: 64px;
+    height: 1px;
+    background: var(--color-leather);
+    border: none;
+    margin: 0 auto var(--space-md);
   }
 
   .article__meta {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-md);
-    padding-top: var(--space-md);
-    border-top: 1px solid var(--color-line);
+    justify-content: center;
+    gap: var(--space-xs) var(--space-sm);
+    font-family: var(--font-body);
     font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    letter-spacing: 0.04em;
+    color: var(--color-leather);
+    margin-bottom: var(--space-xl);
   }
 
   .article__autor {
-    color: var(--color-text);
+    color: var(--color-leather);
+    text-decoration: none;
   }
 
   .article__autor strong {
-    color: var(--color-accent-gold);
+    color: var(--color-text);
+    font-weight: var(--font-semibold);
   }
 
+  .article__autor:hover strong {
+    color: var(--narrator-accent);
+  }
+
+  .meta__sep {
+    color: var(--color-line-strong);
+  }
+
+  /* Ornamento bajo el meta */
+  .article__ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-2xl);
+  }
+
+  .ornament__rule {
+    display: block;
+    width: 48px;
+    height: 1px;
+    background: var(--narrator-accent);
+    opacity: 0.6;
+  }
+
+  .ornament__symbol {
+    font-size: var(--text-sm);
+    color: var(--narrator-accent);
+    line-height: 1;
+  }
+
+  /* ============================================================
+     Imagen de cabecera
+     ============================================================ */
   .article__cover {
     margin-bottom: var(--space-2xl);
   }
@@ -239,112 +335,211 @@ const articleSchema = {
     height: auto;
     max-height: 480px;
     object-fit: cover;
-    border-radius: var(--radius-md);
     display: block;
   }
 
+  /* ============================================================
+     Cuerpo del artículo — overrides editoriales sobre .prose
+     ============================================================ */
   .article__body {
     padding-block: var(--space-xl);
   }
 
-  .article__autor-box {
-    margin-block: var(--space-3xl);
-    padding: var(--space-xl);
-    background: var(--color-bg-elevated);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--color-line);
-  }
-
-  .autor-box__title {
-    font-family: var(--font-body);
-    font-size: var(--text-xs);
-    font-weight: var(--font-semibold);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--color-text-tertiary);
-    margin-bottom: var(--space-sm);
-  }
-
-  .autor-box__name {
+  /* Prosa en Spectral, no Inter */
+  .article__body :global(p) {
     font-family: var(--font-display);
-    font-size: var(--text-2xl);
-    font-weight: var(--font-semibold);
-    color: var(--color-accent-gold);
-    margin-bottom: var(--space-sm);
-  }
-
-  .autor-box__bio {
-    font-size: var(--text-md);
+    font-weight: var(--font-regular);
+    font-size: 1.1875rem;
+    line-height: 1.78;
     color: var(--color-text-secondary);
-    line-height: var(--leading-relaxed);
-    margin-bottom: var(--space-md);
+    text-wrap: pretty;
+    hyphens: auto;
+    margin: 0 0 1.4em;
   }
 
-  .autor-box__link {
-    color: var(--color-text);
-    font-weight: var(--font-medium);
-  }
-
-  .autor-box__link:hover {
-    color: var(--color-accent-gold);
-  }
-
-  .article__related {
-    margin-block: var(--space-3xl);
-  }
-
-  .related__title {
-    font-family: var(--font-body);
-    font-size: var(--text-xs);
+  .article__body :global(p strong) {
     font-weight: var(--font-semibold);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--color-text-tertiary);
-    margin-bottom: var(--space-md);
+    color: var(--color-text);
+    letter-spacing: 0.002em;
   }
 
-  .related__list {
+  /* Drop cap con acento del narrador */
+  .article__body.has-drop-cap :global(p:first-of-type::first-letter) {
+    font-family: var(--font-display);
+    font-weight: var(--font-semibold);
+    font-size: 5.4em;
+    line-height: 0.86;
+    color: var(--narrator-accent);
+    float: left;
+    padding: 0.07em 0.10em 0 0;
+    margin-right: 0.02em;
+  }
+
+  /* ============================================================
+     Firma del narrador
+     ============================================================ */
+  .article__sig {
+    text-align: center;
+    margin: var(--space-xl) auto var(--space-xl);
+  }
+
+  .article__sig-inner {
+    font-family: var(--font-display);
+    font-variant-caps: all-small-caps;
+    font-feature-settings: "smcp", "c2sc";
+    font-size: var(--text-sm);
+    letter-spacing: 0.20em;
+    color: var(--narrator-accent);
+  }
+
+  /* ============================================================
+     Author card
+     ============================================================ */
+  .author-card {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-md);
+    grid-template-columns: 72px 1fr auto;
+    gap: var(--space-lg);
+    align-items: start;
+    margin-block: var(--space-2xl);
+    padding: var(--space-xl) 0;
+    border-top: 1px solid var(--color-line);
+    border-bottom: 1px solid var(--color-line);
   }
 
-  @media (min-width: 768px) {
-    .related__list { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 640px) {
+    .author-card {
+      grid-template-columns: 56px 1fr;
+    }
+    .author-link {
+      grid-column: 1 / -1;
+    }
   }
 
-  .related__link {
+  .author-portrait {
+    width: 72px;
+    height: 72px;
+    border: 1px solid var(--color-leather);
     display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-    padding: var(--space-md);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-md);
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: var(--font-medium);
+    font-size: var(--text-xl);
+    color: var(--narrator-accent);
+    background: var(--color-bg-elevated);
+    flex-shrink: 0;
+  }
+
+  .author-role {
+    font-family: var(--font-display);
+    font-variant-caps: all-small-caps;
+    font-feature-settings: "smcp", "c2sc";
+    font-size: var(--text-xs);
+    letter-spacing: 0.16em;
+    color: var(--narrator-accent);
+    margin-bottom: var(--space-xs);
+  }
+
+  .author-name {
+    font-family: var(--font-display);
+    font-weight: var(--font-semibold);
+    font-size: var(--text-xl);
+    letter-spacing: -0.005em;
+    color: var(--color-text);
+    margin: 0 0 var(--space-sm);
+  }
+
+  .author-bio {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-sm);
+    line-height: 1.55;
+    color: var(--color-text-secondary);
+    margin: 0;
+    max-width: 52ch;
+  }
+
+  .author-link {
+    align-self: flex-end;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-sm);
+    color: var(--narrator-accent);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .author-link:hover {
+    color: var(--color-text);
+  }
+
+  /* ============================================================
+     Next rail
+     ============================================================ */
+  .next-rail {
+    margin-block: var(--space-2xl) var(--space-md);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-xl);
+  }
+
+  @media (max-width: 640px) {
+    .next-rail { grid-template-columns: 1fr; }
+  }
+
+  .next-card {
+    border-top: 1px solid var(--color-line);
+    padding: var(--space-md) 0 var(--space-sm);
+    text-decoration: none;
+    color: inherit;
+    display: block;
     transition: border-color var(--transition-fast);
   }
 
-  .related__link:hover {
-    border-color: var(--color-accent-gold);
+  .next-card:hover {
+    border-top-color: var(--narrator-accent);
   }
 
-  .related__cat {
+  .next-card__label {
+    font-family: var(--font-body);
     font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-text-tertiary);
+    color: var(--color-leather);
+    margin-bottom: var(--space-sm);
   }
 
-  .related__name {
+  .next-card__title {
     font-family: var(--font-display);
-    font-size: var(--text-md);
-    font-weight: var(--font-medium);
+    font-weight: var(--font-semibold);
+    font-size: var(--text-xl);
+    line-height: 1.18;
+    letter-spacing: -0.005em;
     color: var(--color-text);
+    margin: 0 0 var(--space-xs);
+    text-wrap: balance;
   }
 
+  .next-card:hover .next-card__title {
+    color: var(--narrator-accent);
+  }
+
+  .next-card__by {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+
+  /* ============================================================
+     CTA newsletter
+     ============================================================ */
   .article__cta {
     text-align: center;
     padding-block: var(--space-3xl);
     border-top: 1px solid var(--color-line);
+    margin-top: var(--space-xl);
   }
 
   .article__cta h3 {
