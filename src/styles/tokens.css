@@ -96,6 +96,10 @@
   /* ============ PALETA EDITORIAL ============ */
   --color-leather: #C9A074;
   --color-leather-soft: #A88660;
+
+  /* Acentos por narrador (modo oscuro) */
+  --acento-tomas: #4A9070;
+  --acento-anibal: #8B6040;
 }
 
 /* ============ MODO CLARO ============ */
@@ -113,6 +117,8 @@
   --color-shadow: rgba(0, 0, 0, 0.08);
   --color-leather: #6B4423;
   --color-leather-soft: #8B6543;
+  --acento-tomas: #2D6043;
+  --acento-anibal: #4A2818;
 }
 
 /* ============ AUTO: SIGUE PREFERENCIA DEL SISTEMA ============ */
@@ -131,5 +137,7 @@
     --color-shadow: rgba(0, 0, 0, 0.08);
     --color-leather: #6B4423;
     --color-leather-soft: #8B6543;
+    --acento-tomas: #2D6043;
+    --acento-anibal: #4A2818;
   }
 }

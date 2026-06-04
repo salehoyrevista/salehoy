@@ -1,370 +1,567 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ArticleCard from '../components/ArticleCard.astro';
 import { getCollection } from 'astro:content';
 
 const articulos = await getCollection('articulos');
 const ediciones = await getCollection('ediciones');
 const narradores = await getCollection('narradores');
 
-// Edición actual (la más reciente)
 const edicionActual = ediciones.sort((a, b) =>
   b.data.fecha.valueOf() - a.data.fecha.valueOf()
 )[0];
 
-// Artículos de la edición actual
-const articulosDelNumero = articulos.filter(
-  a => a.data.edicion === edicionActual.data.numero
-);
+const articulosDelNumero = articulos
+  .filter(a => a.data.edicion === edicionActual.data.numero)
+  .sort((a, b) => (b.data.destacado ? 1 : 0) - (a.data.destacado ? 1 : 0));
 
-// Destacados (los 3 primeros marcados como destacados)
-const destacados = articulosDelNumero.filter(a => a.data.destacado).slice(0, 3);
-const resto = articulosDelNumero.filter(a => !a.data.destacado);
+// Mapa narrador slug → datos completos del narrador
+const narradorMap = new Map(narradores.map(n => [n.data.slug, n.data]));
 
-// Map narrador → nombre (lo necesita ArticleCard)
-const narradorMap = new Map(narradores.map(n => [n.data.slug, n.data.nombre]));
+// Acento y ornamento por narrador
+const accentoMap: Record<string, { color: string; orn: string }> = {
+  'la-pitonisa':    { color: 'var(--color-accent-red)',  orn: '/img/ornamentos/trebol-tres.svg' },
+  'el-cronista':    { color: 'var(--color-leather)',     orn: '/img/ornamentos/ornamento-surco.svg' },
+  'la-cientifica':  { color: 'var(--color-accent-gold)', orn: '/img/ornamentos/ornamento-divan.svg' },
+  'el-matematico':  { color: 'var(--acento-tomas)',      orn: '/img/ornamentos/ornamento-barras.svg' },
+  'el-historiador': { color: 'var(--acento-anibal)',     orn: '/img/ornamentos/ornamento-pluma.svg' },
+};
+
+// Imágenes de portada por convención de nombre
+const heroH = `/img/portadas/${edicionActual.id}-h.png`;
+const heroV = `/img/portadas/${edicionActual.id}-v.png`;
+
+const eyebrowEdicion = `El sumario · edición #${edicionActual.data.numero}`;
+
+const salaItems = [
+  { id: 'quiniela',      href: '/quiniela',           name: 'La Data',           what: 'El número de hoy, leído como dato y como augurio.',        crt: '22' },
+  { id: 'anecdotario',   href: '/anecdotario',         name: 'El Anecdotario',    what: 'Historias que mandan los lectores. Una por día.',           crt: '···' },
+  { id: 'frases',        href: '/maquina-de-frases',  name: 'Máquina de Frases', what: 'Tirá de la palanca; cae una sentencia sobre la suerte.',    crt: '★' },
+  { id: 'ruleta',        href: '/ruleta',              name: 'La Ruleta',         what: 'Un narrador al azar, una lectura que no buscabas.',         crt: '07' },
+];
 ---
 
-<BaseLayout title="SaleHoy" description="Revista cultural del juego y el azar. Quiniela, casino, póker, caballos, online: pensados con seriedad.">
-  <!-- HERO: tapa del número actual -->
-  <section class="hero">
-    <div class="container-narrow">
-      <div class="hero__tag">
-        <span class="meta-label">Número {edicionActual.data.numero} · {edicionActual.data.fecha.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })}</span>
-      </div>
-      <h1 class="hero-title">{edicionActual.data.titulo}</h1>
-      <p class="hero-lead">{edicionActual.data.bajada}</p>
-      <div class="hero__cta">
-        <a href={`/ediciones/${edicionActual.id}`} class="btn-primary">Entrar al número</a>
-        <a href={`/ediciones/${edicionActual.id}#carta`} class="btn-secondary">Leer la carta del editor →</a>
-      </div>
-    </div>
-  </section>
+<BaseLayout
+  title="SaleHoy"
+  description="Revista cultural del juego y el azar. Quiniela, casino, póker, caballos, online: pensados con seriedad."
+>
+  <div class="sh-home">
 
-  <!-- DESTACADOS DEL NÚMERO -->
-  <section class="section">
-    <div class="container-wide">
-      <h2 class="section__title">En esta edición</h2>
-      <div class="grid-3">
-        {destacados.map(articulo => (
-          <ArticleCard articulo={articulo} narradorNombre={narradorMap.get(articulo.data.narrador)} size="md" />
-        ))}
+    <!-- ═══ HERO ═══ -->
+    <section class="hero">
+      <img
+        class="hero__img hero__img--desk"
+        src={heroH}
+        alt={`Portada de la edición #${edicionActual.data.numero} de SaleHoy.`}
+        width="1376"
+        height="620"
+      />
+      <img
+        class="hero__img hero__img--mob"
+        src={heroV}
+        alt={`Portada de la edición #${edicionActual.data.numero} de SaleHoy.`}
+        width="768"
+        height="1100"
+      />
+      <div class="hero__scrim-top" aria-hidden="true"></div>
+      <div class="hero__scrim-bot" aria-hidden="true"></div>
+      <div class="hero__content">
+        <div class="hero__wordmark" aria-hidden="true">Sale<span class="hoy">Hoy</span></div>
+        <div class="hero__foot">
+          <span class="hero__eyebrow">
+            Última edición · <span class="hero__num">#{edicionActual.data.numero}</span> · {edicionActual.data.titulo}
+          </span>
+          <a href={`/ediciones/${edicionActual.id}`} class="btn-enter">
+            Entrar a la edición <span class="arrow">→</span>
+          </a>
+        </div>
       </div>
+    </section>
 
-      {resto.length > 0 && (
-        <div class="grid-2 grid-2--more">
-          {resto.map(articulo => (
-            <ArticleCard articulo={articulo} narradorNombre={narradorMap.get(articulo.data.narrador)} size="sm" />
+    <!-- ═══ SUMARIO ═══ -->
+    <section class="sh-section" id="sumario">
+      <div class="shell">
+        <div class="section-head reveal">
+          <div class="section-head__lhs">
+            <span class="eyebrow">{eyebrowEdicion}</span>
+            <h2 class="section-h">Cinco maneras de mirar un número</h2>
+          </div>
+          <p class="section-sub">Cinco oficios alrededor de la misma mesa. No se ponen de acuerdo.</p>
+        </div>
+
+        <div class="grid-feat">
+          {articulosDelNumero.map((art, i) => {
+            const narr = narradorMap.get(art.data.narrador);
+            const ac   = accentoMap[art.data.narrador] ?? { color: 'var(--color-text-secondary)', orn: '' };
+            const feature = i === 0;
+            return (
+              <article class={`card reveal${feature ? ' card--feature' : ''}`}>
+                <a href={`/articulos/${art.id}`} class="card__inner">
+                  <div class="card__illo">
+                    {ac.orn && <img class="card__orn" src={ac.orn} alt="" aria-hidden="true" />}
+                  </div>
+                  <span class="card__eyebrow" style={`color: ${ac.color}`}>{art.data.categoria}</span>
+                  <h3 class="card__title">{art.data.title}</h3>
+                  {art.data.subtitle && <p class="card__deck">{art.data.subtitle}</p>}
+                  <span class="card__byline" style={`color: ${ac.color}`}>
+                    <span class="card__dot" style={`background: ${ac.color}`}></span>
+                    {narr?.nombre ?? art.data.narrador} · <span class="card__role">{narr?.disciplina?.split(',')[0] ?? ''}</span>
+                  </span>
+                </a>
+              </article>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ LA SALA ═══ -->
+    <section class="sh-section sala" id="sala">
+      <div class="shell">
+        <div class="sala__head reveal">
+          <div class="sala__head-lhs">
+            <span class="eyebrow">La sala · zona viva</span>
+            <h2 class="section-h">Pasá a la sala</h2>
+            <p class="section-sub">Cuatro dispositivos que responden. Atrás del vidrio, un poco de arcade.</p>
+          </div>
+          <a href="/la-sala" class="btn-ink">
+            Entrar a La sala <span class="arrow">→</span>
+          </a>
+        </div>
+
+        <div class="sala__grid">
+          {salaItems.map((s, i) => (
+            <a href={s.href} class="sala-card reveal" style={`transition-delay: ${i * 60}ms`}>
+              <span class="sala-card__crt">{s.crt}</span>
+              <span class="sala-card__num">Nº 0{i + 1}</span>
+              <h3 class="sala-card__name">{s.name}</h3>
+              <p class="sala-card__what">{s.what}</p>
+              <span class="sala-card__go">Probar →</span>
+            </a>
           ))}
         </div>
-      )}
-    </div>
-  </section>
-
-  <!-- ZONA VIVA -->
-  <section class="section section--alt">
-    <div class="container-wide">
-      <span class="meta-label">El registro vivo</span>
-      <h2 class="section__title">Quiniela del día</h2>
-      <p class="section__intro">
-        Mientras la revista respira lento, el motor estadístico actualiza candidatos, terminaciones en deuda y números calientes. La quiniela del día.
-      </p>
-      <div class="cta-row">
-        <a href="/quiniela" class="btn-primary">Ver candidatos de hoy</a>
-        <a href="/quiniela/voces-del-numero" class="btn-secondary">Voces del número de la semana →</a>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ENTRÁ A LA SALA -->
-  <section class="section section--alt">
-    <div class="container-wide">
-      <a href="/la-sala" class="sala-cta">
-        <div class="sala-cta__left">
-          <span class="meta-label">El otro registro</span>
-          <h2 class="sala-cta__title">Entrá a La sala</h2>
-          <p class="sala-cta__desc">
-            Donde la revista se vuelve juego. Quiniela del día, Anecdotario, Máquina de Frases y Ruleta.
-          </p>
-          <span class="sala-cta__btn">Pasar a La sala →</span>
-        </div>
-        <div class="sala-cta__icons" aria-hidden="true">
-          <!-- Mini-previews de los 4 íconos pixel -->
-          <span class="sala-cta__icon sala-cta__icon--red">
-            <svg viewBox="0 0 16 16" shape-rendering="crispEdges">
-              <rect x="5" y="2" width="6" height="1" fill="currentColor"/>
-              <rect x="3" y="3" width="2" height="1" fill="currentColor"/>
-              <rect x="11" y="3" width="2" height="1" fill="currentColor"/>
-              <rect x="2" y="4" width="1" height="8" fill="currentColor"/>
-              <rect x="13" y="4" width="1" height="8" fill="currentColor"/>
-              <rect x="3" y="12" width="2" height="1" fill="currentColor"/>
-              <rect x="11" y="12" width="2" height="1" fill="currentColor"/>
-              <rect x="5" y="13" width="6" height="1" fill="currentColor"/>
-            </svg>
-          </span>
-          <span class="sala-cta__icon sala-cta__icon--amber">
-            <svg viewBox="0 0 16 16" shape-rendering="crispEdges">
-              <rect x="3" y="2" width="11" height="1" fill="currentColor"/>
-              <rect x="3" y="13" width="11" height="1" fill="currentColor"/>
-              <rect x="14" y="3" width="1" height="10" fill="currentColor"/>
-              <rect x="3" y="3" width="1" height="10" fill="currentColor"/>
-              <rect x="5" y="6" width="7" height="1" fill="currentColor"/>
-              <rect x="5" y="9" width="6" height="1" fill="currentColor"/>
-            </svg>
-          </span>
-          <span class="sala-cta__icon sala-cta__icon--gold">
-            <svg viewBox="0 0 16 16" shape-rendering="crispEdges">
-              <rect x="3" y="13" width="10" height="2" fill="currentColor"/>
-              <rect x="7" y="5" width="2" height="8" fill="currentColor"/>
-              <rect x="6" y="3" width="4" height="1" fill="currentColor"/>
-              <rect x="5" y="4" width="6" height="2" fill="currentColor"/>
-              <rect x="6" y="6" width="4" height="1" fill="currentColor"/>
-            </svg>
-          </span>
-          <span class="sala-cta__icon sala-cta__icon--green">
-            <svg viewBox="0 0 16 16" shape-rendering="crispEdges">
-              <rect x="5" y="2" width="6" height="1" fill="currentColor"/>
-              <rect x="3" y="3" width="2" height="1" fill="currentColor"/>
-              <rect x="11" y="3" width="2" height="1" fill="currentColor"/>
-              <rect x="1" y="6" width="1" height="4" fill="currentColor"/>
-              <rect x="14" y="6" width="1" height="4" fill="currentColor"/>
-              <rect x="5" y="13" width="6" height="1" fill="currentColor"/>
-              <rect x="7" y="4" width="2" height="9" fill="currentColor"/>
-              <rect x="3" y="7" width="10" height="2" fill="currentColor"/>
-            </svg>
-          </span>
-        </div>
-      </a>
-    </div>
-  </section>
+    <!-- ═══ NEWSLETTER ═══ -->
+    <section class="sh-section news" id="newsletter">
+      <div class="shell news__inner reveal">
+        <span class="eyebrow">Suscripción quincenal</span>
+        <h2 class="section-h">Te llega cada quince días,<br>un sábado a la tarde.</h2>
+        <p class="section-sub">Nunca publicidad. Nunca el correo a terceros. Una sola lista, un solo editor.</p>
+        <a href="/newsletter" class="btn-ink">
+          Suscribirme <span class="arrow">→</span>
+        </a>
+      </div>
+    </section>
 
-  <!-- NEWSLETTER -->
-  <section class="section section--alt">
-    <div class="container-narrow center">
-      <h2 class="section__title">Suscribite al newsletter</h2>
-      <p class="section__intro">
-        Te llegan los números nuevos a tu mail apenas salen. Sin spam. Sin promesas. Una vez por quincena.
-      </p>
-      <a href="/newsletter" class="btn-primary">Suscribirme</a>
-    </div>
-  </section>
+  </div>
 </BaseLayout>
 
 <style>
-  .hero {
-    padding-block: var(--space-4xl);
-    border-bottom: 1px solid var(--color-line);
-  }
-
-  .hero__tag {
-    margin-bottom: var(--space-md);
-  }
-
-  .hero-lead {
-    margin-top: var(--space-md);
-    max-width: 640px;
-  }
-
-  .hero__cta {
-    margin-top: var(--space-xl);
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-md);
-    align-items: center;
-  }
-
-  .section {
-    padding-block: var(--space-3xl);
-  }
-
-  .section--alt {
-    background: var(--color-bg-elevated);
-    border-block: 1px solid var(--color-line);
-  }
-
-  .section__title {
-    font-family: var(--font-display);
-    font-size: var(--text-3xl);
-    font-weight: var(--font-semibold);
-    margin-bottom: var(--space-md);
-  }
-
-  .section__intro {
-    font-size: var(--text-lg);
-    color: var(--color-text-secondary);
-    max-width: 640px;
-    margin-bottom: var(--space-xl);
-  }
-
-  .center { text-align: center; }
-  .center .section__intro { margin-inline: auto; }
-
-  .grid-3 {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-lg);
-    margin-top: var(--space-xl);
-  }
-
-  @media (min-width: 768px) {
-    .grid-3 { grid-template-columns: repeat(3, 1fr); }
-  }
-
-  .grid-2 {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-lg);
-    margin-top: var(--space-lg);
-  }
-
-  @media (min-width: 768px) {
-    .grid-2 { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  .cta-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-md);
-    margin-top: var(--space-xl);
-  }
-
-  .btn-primary, .btn-secondary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-body);
-    font-size: var(--text-sm);
-    font-weight: var(--font-medium);
-    padding: var(--space-md) var(--space-xl);
-    border-radius: var(--radius-full);
-    border: 1px solid;
-    transition: all var(--transition-fast);
-  }
-
-  .btn-primary {
-    background: var(--color-accent-gold);
-    color: var(--color-bg);
-    border-color: var(--color-accent-gold);
-  }
-
-  .btn-primary:hover {
-    background: transparent;
-    color: var(--color-accent-gold);
-  }
-
-  .btn-secondary {
-    background: transparent;
+  /* ══════════════ HOME ══════════════ */
+  .sh-home {
+    background: var(--color-bg);
     color: var(--color-text);
-    border-color: var(--color-line-strong);
   }
 
-  .btn-secondary:hover {
-    border-color: var(--color-accent-gold);
-    color: var(--color-accent-gold);
+  .shell {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
   }
 
-  /* === CTA grande a La sala === */
-  .sala-cta {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xl);
-    padding: var(--space-2xl);
-    background: linear-gradient(135deg, #1a1f2e 0%, #0a0d14 100%);
-    border: 2px solid #2a2f3a;
-    border-radius: var(--radius-md);
-    color: inherit;
-    text-decoration: none;
-    transition: all var(--transition-fast);
+  /* ---------- HERO ---------- */
+  .hero {
     position: relative;
     overflow: hidden;
-    box-shadow:
-      0 6px 0 #050709,
-      0 14px 36px -10px rgba(0,0,0,0.5);
+    background: #0a0804;
+  }
+  .hero__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+  .hero__img--desk { aspect-ratio: 1376 / 620; }
+  .hero__img--mob  { display: none; aspect-ratio: 768 / 1100; }
+
+  .hero__scrim-top,
+  .hero__scrim-bot {
+    position: absolute;
+    left: 0; right: 0;
+    pointer-events: none;
+  }
+  .hero__scrim-top {
+    top: 0;
+    height: 34%;
+    background: linear-gradient(to bottom, rgba(8,6,4,0.55), transparent);
+  }
+  .hero__scrim-bot {
+    bottom: 0;
+    height: 58%;
+    background: linear-gradient(to top, rgba(8,6,4,0.72) 0%, rgba(8,6,4,0.18) 60%, transparent 100%);
   }
 
-  @media (min-width: 768px) {
-    .sala-cta { flex-direction: row; align-items: center; justify-content: space-between; gap: var(--space-3xl); }
+  .hero__content {
+    position: absolute;
+    inset: 0;
+    padding: 30px 40px 36px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
-
-  .sala-cta:hover {
-    border-color: var(--color-accent-gold);
-    transform: translateY(-2px);
-    box-shadow:
-      0 6px 0 #050709,
-      0 18px 48px -10px rgba(212,175,55,0.35);
-  }
-
-  .sala-cta__left {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .sala-cta__title {
+  .hero__wordmark {
     font-family: var(--font-display);
-    font-size: var(--text-4xl);
-    font-weight: var(--font-semibold);
-    color: #ffd700;
-    margin-block: var(--space-sm) var(--space-md);
-    line-height: 1.1;
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: -0.01em;
+    color: #F4ECDC;
+    text-shadow: 0 1px 14px rgba(0,0,0,.45);
+    line-height: 1;
+    align-self: flex-start;
   }
+  .hero__wordmark .hoy { color: #E2837C; }
 
-  .sala-cta__desc {
-    font-family: var(--font-display);
-    font-size: var(--text-lg);
-    color: rgba(255,255,255,0.75);
-    line-height: var(--leading-normal);
-    margin-bottom: var(--space-lg);
-    max-width: 500px;
+  .hero__foot {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    align-items: flex-start;
   }
-
-  .sala-cta__btn {
-    display: inline-block;
+  .hero__eyebrow {
     font-family: var(--font-body);
-    font-size: var(--text-sm);
-    font-weight: var(--font-semibold);
+    font-size: 13px;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: #ffd700;
-    padding: var(--space-sm) var(--space-lg);
-    border: 1px solid #ffd700;
-    border-radius: var(--radius-full);
-    transition: all var(--transition-fast);
+    color: #F4ECDC;
+    line-height: 1.4;
+  }
+  .hero__num { color: #E2837C; }
+
+  .btn-enter {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--color-text);
+    background: #F4ECDC;
+    border-radius: 4px;
+    padding: 12px 22px;
+    text-decoration: none;
+    transition: background 120ms ease;
+  }
+  .btn-enter:hover { background: #fff; color: #1A1A1A; }
+  .btn-enter:hover .arrow { margin-left: 4px; }
+  .btn-enter .arrow { transition: margin-left 120ms ease; }
+
+  /* ---------- SECCIONES ---------- */
+  .sh-section {
+    padding: 80px 0;
+    border-top: 1px solid var(--color-line);
+  }
+  .sala { border-top: 1px solid var(--color-text); }
+
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+  .section-head__lhs { display: flex; flex-direction: column; gap: 10px; }
+
+  .eyebrow {
+    font-family: var(--font-display);
+    font-variant-caps: all-small-caps;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: var(--color-leather);
+    display: block;
+  }
+  .section-h {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(26px, 3vw, 34px);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    color: var(--color-text);
+    margin: 0;
+  }
+  .section-sub {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--color-text-secondary);
+    max-width: 30ch;
+    margin: 0;
+    align-self: flex-end;
+    text-wrap: pretty;
   }
 
-  .sala-cta:hover .sala-cta__btn {
-    background: #ffd700;
-    color: #0a0d14;
-  }
-
-  /* Mini-íconos pixel-art a la derecha */
-  .sala-cta__icons {
+  /* ---------- GRILLA ARTÍCULOS ---------- */
+  .grid-feat {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-md);
-    flex-shrink: 0;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 28px;
+  }
+  .card--feature { grid-row: span 2; }
+
+  .card {
+    border-top: 1px solid var(--color-line);
+    transition: border-color 200ms ease, border-width 200ms ease;
+  }
+  .card:hover { border-color: var(--color-text); border-top-width: 2px; }
+  .card:hover .card__title { color: var(--color-accent-red); }
+
+  .card__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px 0 24px;
+    text-decoration: none;
+    color: inherit;
   }
 
-  @media (min-width: 768px) {
-    .sala-cta__icons { grid-template-columns: repeat(2, 56px); }
-  }
-
-  .sala-cta__icon {
-    width: 56px;
-    height: 56px;
-    padding: 10px;
-    background: rgba(0,0,0,0.5);
-    border-radius: 8px;
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+  .card__illo {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-line);
+    aspect-ratio: 16 / 10;
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+    margin-bottom: 4px;
   }
-  .sala-cta__icon svg { width: 100%; height: 100%; display: block; }
+  .card--feature .card__illo { aspect-ratio: 4 / 3; }
 
-  .sala-cta__icon--red    { color: #ff5050; }
-  .sala-cta__icon--amber  { color: #ffb000; }
-  .sala-cta__icon--gold   { color: #ffd700; }
-  .sala-cta__icon--green  { color: #4fff8d; }
+  .card__orn {
+    position: absolute;
+    width: 38%;
+    opacity: 0.3;
+    pointer-events: none;
+  }
 
-  .sala-cta__icon { text-shadow: 0 0 6px currentColor; }
+  .card__eyebrow {
+    font-family: var(--font-display);
+    font-variant-caps: all-small-caps;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: capitalize;
+  }
+  .card__title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 1.16;
+    color: var(--color-text);
+    margin: 0;
+    transition: color 200ms ease;
+    text-wrap: pretty;
+  }
+  .card--feature .card__title { font-size: 34px; }
+
+  .card__deck {
+    font-family: var(--font-display);
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--color-text-secondary);
+    margin: 0;
+    text-wrap: pretty;
+  }
+  .card--feature .card__deck { font-size: 18px; }
+
+  .card__byline {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: 4px;
+  }
+  .card__dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .card__role { color: var(--color-leather); font-weight: 400; text-transform: none; letter-spacing: 0; }
+
+  /* ---------- LA SALA ---------- */
+  .sala__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 40px;
+    margin-bottom: 32px;
+  }
+  .sala__head-lhs { display: flex; flex-direction: column; gap: 8px; }
+
+  .btn-ink {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-bg);
+    background: var(--color-text);
+    border: none;
+    padding: 12px 22px;
+    text-decoration: none;
+    transition: background 120ms ease;
+    white-space: nowrap;
+  }
+  .btn-ink:hover { background: var(--color-accent-red); color: #fff; }
+  .btn-ink:hover .arrow { margin-left: 4px; }
+  .btn-ink .arrow { transition: margin-left 120ms ease; }
+
+  .sala__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  .sala-card {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-line);
+    border-radius: 6px;
+    padding: 22px 20px;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms ease, transform 200ms ease;
+  }
+  .sala-card:hover { border-color: var(--color-text); transform: translateY(-3px); }
+  .sala-card:hover .sala-card__go { color: var(--color-accent-red); }
+
+  .sala-card__crt {
+    font-family: 'VT323', 'JetBrains Mono', monospace;
+    font-size: 22px;
+    color: var(--color-accent-gold);
+    opacity: 0.65;
+    position: absolute;
+    top: 16px; right: 16px;
+    line-height: 1;
+  }
+  .sala-card__num {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-leather);
+    margin-bottom: 8px;
+    display: block;
+  }
+  .sala-card__name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 1.15;
+    color: var(--color-text);
+    margin: 0 0 8px;
+    padding-right: 34px;
+  }
+  .sala-card__what {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+    margin: 0;
+    flex: 1;
+    text-wrap: pretty;
+  }
+  .sala-card__go {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-accent-red);
+    margin-top: 16px;
+    transition: color 120ms ease;
+  }
+
+  /* ---------- NEWSLETTER ---------- */
+  .news {
+    background: var(--color-bg-elevated);
+    border-bottom: 1px solid var(--color-line);
+  }
+  .news__inner {
+    max-width: 720px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .news__inner .section-h { max-width: 18ch; }
+  .news__inner .section-sub { max-width: 44ch; }
+
+  /* ---------- ANIMACIONES ---------- */
+  @keyframes sh-revealUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .sh-home .reveal.is-in {
+    animation: sh-revealUp 600ms cubic-bezier(0.2, 0, 0, 1) both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sh-home .reveal.is-in { animation: none; }
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 980px) {
+    .grid-feat { grid-template-columns: 1.5fr 1fr; }
+    .card--feature { grid-row: span 2; }
+  }
+  @media (max-width: 900px) {
+    .sala__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 760px) {
+    .section-head { flex-direction: column; gap: 12px; }
+    .section-sub { align-self: auto; max-width: none; }
+    .sala__head { flex-direction: column; align-items: flex-start; gap: 16px; }
+  }
+  @media (max-width: 620px) {
+    .shell { padding: 0 22px; }
+    .hero__img--desk { display: none; }
+    .hero__img--mob  { display: block; }
+    .hero__content { padding: 24px 22px 30px; }
+    .grid-feat { grid-template-columns: 1fr; }
+    .card--feature { grid-row: span 1; }
+    .card--feature .card__title { font-size: 26px; }
+    .sala__grid { grid-template-columns: 1fr; }
+    .sh-section { padding: 60px 0; }
+  }
 </style>
+
+<script>
+  (function () {
+    const root = document.querySelector('.sh-home');
+    if (!root) return;
+    const els = root.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) {
+      els.forEach(el => el.classList.add('is-in'));
+      return;
+    }
+    const io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.06, rootMargin: '0px 0px -40px 0px' });
+    els.forEach(el => io.observe(el));
+  })();
+</script>

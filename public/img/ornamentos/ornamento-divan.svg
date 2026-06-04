@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-label="Diván — María Lange">
+  
+  <path d="M2 17 L 22 17 L 24 15 L 30 15"></path>
+  <path d="M30 15 L 30 11 Q 30 9, 28 9 L 22 9 Q 20 9, 20 11 L 20 15"></path>
+  
+  <line x1="10" y1="17" x2="10" y2="15.5"></line>
+  <line x1="16" y1="17" x2="16" y2="15.5"></line>
+  
+  <line x1="4" y1="17" x2="4" y2="21"></line>
+  <line x1="20" y1="17" x2="20" y2="21"></line>
+  <line x1="28" y1="15" x2="28" y2="21"></line>
+</svg>

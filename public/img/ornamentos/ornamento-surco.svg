@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" aria-label="Surco de vinilo — Paulo Castillo">
+  
+  <circle cx="12" cy="12" r="9.5"></circle>
+  <circle cx="12" cy="12" r="7.5"></circle>
+  <circle cx="12" cy="12" r="5.5"></circle>
+  <circle cx="12" cy="12" r="3.5"></circle>
+  <circle cx="12" cy="12" r="1.1" fill="currentColor"></circle>
+  
+  <line x1="20.5" y1="3.5" x2="13.5" y2="10.5" stroke-width="1.25"></line>
+  <circle cx="20.8" cy="3.2" r="0.9" fill="currentColor" stroke="none"></circle>
+</svg>
