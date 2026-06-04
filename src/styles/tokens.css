@@ -92,6 +92,10 @@
   --z-header: 100;
   --z-modal: 1000;
   --z-toast: 2000;
+
+  /* ============ PALETA EDITORIAL ============ */
+  --color-leather: #C9A074;
+  --color-leather-soft: #A88660;
 }
 
 /* ============ MODO CLARO ============ */
@@ -107,6 +111,8 @@
   --color-line: #E5DECC;
   --color-line-strong: #D5CCB5;
   --color-shadow: rgba(0, 0, 0, 0.08);
+  --color-leather: #6B4423;
+  --color-leather-soft: #8B6543;
 }
 
 /* ============ AUTO: SIGUE PREFERENCIA DEL SISTEMA ============ */
@@ -123,5 +129,7 @@
     --color-line: #E5DECC;
     --color-line-strong: #D5CCB5;
     --color-shadow: rgba(0, 0, 0, 0.08);
+    --color-leather: #6B4423;
+    --color-leather-soft: #8B6543;
   }
 }
