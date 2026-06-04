@@ -1,0 +1,785 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const frasesBienvenida = [
+  "A veces el número que se te aparece es el que siempre supiste.",
+  "El azar no es ciego. Sabe bien lo que hace.",
+  "No te digo qué va a salir. Te digo qué ya está.",
+];
+const fraseAmbiental = frasesBienvenida[Math.floor(Math.random() * frasesBienvenida.length)];
+
+// Fecha para el sidebar contextual
+const hoy = new Date();
+const diaNum = hoy.getDate();
+const mesNombre = hoy.toLocaleDateString('es-AR', { month: 'long' });
+---
+
+<BaseLayout
+  title="La Vichy"
+  description="La consulta oracular de SaleHoy. Contale qué soñaste, qué número se te aparece, qué cosa rara te pasó esta semana."
+>
+
+  <!-- ══════════════════════════════════════════
+       PANTALLA DE ENTRADA
+  ══════════════════════════════════════════ -->
+  <div id="vichy-welcome" class="welcome">
+    <div class="welcome__inner">
+
+      <div class="welcome__trébol" aria-hidden="true">
+        <svg viewBox="0 0 16 20" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="8" cy="5.5" r="3.2"/>
+          <circle cx="4" cy="11" r="3.2"/>
+          <circle cx="12" cy="11" r="3.2"/>
+          <line x1="8" y1="13.5" x2="8" y2="19"/>
+        </svg>
+      </div>
+
+      <p class="welcome__ambiance">
+        Cocina. Mediodía en Rosario. Mate, radio bajita, <em>La Capital</em> sobre la mesa. Un gato dormido encima del horóscopo.
+      </p>
+
+      <p class="welcome__ambiance welcome__ambiance--2">
+        En el barrio le dicen Doña. Pero ella prefiere que le digas Vichy.
+      </p>
+
+      <p class="welcome__ambiance welcome__ambiance--3">
+        Contale qué soñaste, qué número se te aparece, qué cosa rara te pasó esta semana.
+      </p>
+
+      <div class="welcome__disclaimer">
+        Vichy es un personaje editorial de SaleHoy. Su lectura es cultura, no consejo.<br/>
+        Si jugás, jugá poco. Si jugás mucho, hablá con alguien. Sedronar&nbsp;141.
+      </div>
+
+      <button id="btn-timbre" class="welcome__btn">
+        Tocar el timbre
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       APP DEL CHAT
+  ══════════════════════════════════════════ -->
+  <div id="vichy-app" class="vichy-app" hidden>
+
+    <!-- Sidebar contextual -->
+    <aside class="vichy-sidebar" aria-label="Contexto ambiental">
+      <div class="sidebar__trébol" aria-hidden="true">
+        <svg viewBox="0 0 16 20" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="8" cy="5.5" r="3.2"/>
+          <circle cx="4" cy="11" r="3.2"/>
+          <circle cx="12" cy="11" r="3.2"/>
+          <line x1="8" y1="13.5" x2="8" y2="19"/>
+        </svg>
+      </div>
+      <div class="sidebar__dato">Mediodía en Rosario</div>
+      <div class="sidebar__dato">Hoy: {diaNum} de {mesNombre}</div>
+      <div class="sidebar__cita">"{fraseAmbiental}"</div>
+    </aside>
+
+    <!-- Zona de chat -->
+    <section class="vichy-chat" aria-label="Consulta con Vichy">
+
+      <header class="chat-header">
+        <span class="chat-header__title">La consulta</span>
+        <span class="chat-header__sub">Con Vichy.</span>
+        <button
+          id="btn-volver"
+          class="chat-header__close"
+          aria-label="Volver a La sala"
+          onclick="window.location.href='/la-sala'"
+        >×</button>
+      </header>
+
+      <!-- Nota de prototipo -->
+      <div class="chat-notice">
+        Prototipo visual — Vichy responde en vivo desde el&nbsp;1&nbsp;jul&nbsp;2026.
+      </div>
+
+      <div class="chat-messages" role="log" aria-live="polite">
+
+        <!-- Vichy abre -->
+        <div class="msg msg--vichy">
+          <p>Pasá, pasá. Dejá el tapado ahí. ¿Querés mate?</p>
+          <p>Decime qué soñaste, qué número se te aparece, qué cosa rara te pasó esta semana. No apures. Acá el tiempo va despacio.</p>
+        </div>
+
+        <!-- Usuario -->
+        <div class="msg msg--user">
+          <div class="msg__bubble">
+            Soñé que perdía mi billetera y adentro estaba el número 17.
+          </div>
+        </div>
+
+        <!-- Vichy responde -->
+        <div class="msg msg--vichy">
+          <p>El diecisiete. Claro.</p>
+          <p>En los sueños no se pierde lo que no tiene valor. Que la billetera —que es el guarda de los recursos, lo que te pertenece— lleve ese número adentro, eso me habla de algo que ya es tuyo. Que no se ganó aún. Que está esperando que lo reclames.</p>
+          <p>Antes de leer, decime tres cosas más:</p>
+          <ul class="msg__lista">
+            <li>
+              <span class="trébol" aria-hidden="true">
+                <svg viewBox="0 0 16 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+                  <circle cx="8" cy="5.5" r="3.2"/><circle cx="4" cy="11" r="3.2"/><circle cx="12" cy="11" r="3.2"/>
+                  <line x1="8" y1="13.5" x2="8" y2="19"/>
+                </svg>
+              </span>
+              ¿Con quién soñaste, o estabas solo?
+            </li>
+            <li>
+              <span class="trébol" aria-hidden="true">
+                <svg viewBox="0 0 16 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+                  <circle cx="8" cy="5.5" r="3.2"/><circle cx="4" cy="11" r="3.2"/><circle cx="12" cy="11" r="3.2"/>
+                  <line x1="8" y1="13.5" x2="8" y2="19"/>
+                </svg>
+              </span>
+              ¿Era de día o de noche en el sueño?
+            </li>
+            <li>
+              <span class="trébol" aria-hidden="true">
+                <svg viewBox="0 0 16 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+                  <circle cx="8" cy="5.5" r="3.2"/><circle cx="4" cy="11" r="3.2"/><circle cx="12" cy="11" r="3.2"/>
+                  <line x1="8" y1="13.5" x2="8" y2="19"/>
+                </svg>
+              </span>
+              ¿Perdiste la billetera o alguien te la sacó?
+            </li>
+          </ul>
+        </div>
+
+        <!-- Usuario -->
+        <div class="msg msg--user">
+          <div class="msg__bubble">
+            Estaba solo. Era de noche. La perdí yo.
+          </div>
+        </div>
+
+        <!-- Vichy tira las cartas -->
+        <div class="msg msg--vichy">
+          <p>Bien. Entonces tiramos.</p>
+        </div>
+
+        <!-- Cartas del tarot -->
+        <div class="tarot-spread" aria-label="Tirada de tres cartas">
+          <div class="tarot-card" style="animation-delay: 0ms">
+            <div class="tarot-card__numeral">XIV</div>
+            <div class="tarot-card__illo" aria-hidden="true">
+              <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                <!-- El Carro: ruedas + trono + corona -->
+                <rect x="20" y="42" width="40" height="22" rx="2"/>
+                <circle cx="28" cy="68" r="6"/>
+                <circle cx="52" cy="68" r="6"/>
+                <line x1="28" y1="42" x2="28" y2="62"/>
+                <line x1="52" y1="42" x2="52" y2="62"/>
+                <!-- corona de estrella -->
+                <path d="M32 42 L40 28 L48 42"/>
+                <circle cx="40" cy="26" r="3" fill="currentColor"/>
+              </svg>
+            </div>
+            <div class="tarot-card__nombre">El Carro</div>
+          </div>
+
+          <div class="tarot-card" style="animation-delay: 300ms">
+            <div class="tarot-card__numeral">XII</div>
+            <div class="tarot-card__illo" aria-hidden="true">
+              <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                <!-- El Colgado: viga + figura colgada -->
+                <line x1="16" y1="20" x2="64" y2="20"/>
+                <line x1="40" y1="20" x2="40" y2="38"/>
+                <!-- cabeza -->
+                <circle cx="40" cy="44" r="6"/>
+                <!-- cuerpo con brazos atrás -->
+                <line x1="40" y1="50" x2="40" y2="65"/>
+                <path d="M40 55 Q30 58 26 54"/>
+                <path d="M40 55 Q50 58 54 54"/>
+                <!-- pies cruzados -->
+                <path d="M40 65 L34 72"/>
+                <path d="M40 65 L46 72"/>
+              </svg>
+            </div>
+            <div class="tarot-card__nombre">El Colgado</div>
+          </div>
+
+          <div class="tarot-card" style="animation-delay: 600ms">
+            <div class="tarot-card__numeral">XXI</div>
+            <div class="tarot-card__illo" aria-hidden="true">
+              <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                <!-- El Mundo: corona de laurel + figura -->
+                <ellipse cx="40" cy="40" rx="26" ry="32"/>
+                <!-- figurita interna -->
+                <circle cx="40" cy="26" r="5"/>
+                <line x1="40" y1="31" x2="40" y2="50"/>
+                <line x1="30" y1="38" x2="50" y2="38"/>
+                <line x1="40" y1="50" x2="33" y2="60"/>
+                <line x1="40" y1="50" x2="47" y2="60"/>
+              </svg>
+            </div>
+            <div class="tarot-card__nombre">El Mundo</div>
+          </div>
+        </div>
+
+        <!-- Lectura final de Vichy -->
+        <div class="msg msg--vichy">
+          <p>El Carro, El Colgado, El Mundo. Mirá qué tríada.</p>
+          <p>El Carro es el movimiento que ya arrancó —no importa lo que veas, vas hacia algún lado. El Colgado es la pausa necesaria, el que se suspende para ver diferente, para sacarse la idea de que perder es perder. Y El Mundo al final. El Mundo siempre cierra un ciclo. Dice que esto tiene forma, que no es caos: es un giro completo.</p>
+          <p>Tu billetera con el <strong>17</strong> adentro no se perdió en el sueño. Se fue para que la encontres con otro ojo.</p>
+          <p>Andá, andá. Y avisame si sale.</p>
+        </div>
+
+        <!-- Ornamento de cierre -->
+        <div class="chat-close-ornament" aria-hidden="true">
+          <svg viewBox="0 0 16 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+            <circle cx="8" cy="5.5" r="3.2"/><circle cx="4" cy="11" r="3.2"/><circle cx="12" cy="11" r="3.2"/>
+            <line x1="8" y1="13.5" x2="8" y2="19"/>
+          </svg>
+        </div>
+
+        <!-- Acciones de cierre -->
+        <div class="chat-actions">
+          <button class="chat-action" disabled>Otra consulta <span class="chat-action__note">(disponible 1&nbsp;jul)</span></button>
+          <button class="chat-action" disabled>Compartir esta lectura</button>
+        </div>
+
+      </div><!-- /chat-messages -->
+
+      <!-- Input (visual, no funcional en prototipo) -->
+      <div class="chat-input-area">
+        <div class="chat-input-wrap">
+          <textarea
+            class="chat-input"
+            placeholder="Contale qué soñaste, o qué número te visitó..."
+            rows="1"
+            disabled
+            aria-label="Escribile a Vichy"
+          ></textarea>
+          <button class="chat-send" aria-label="Enviar" disabled>
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="4" y1="10" x2="16" y2="10"/>
+              <polyline points="11 5 16 10 11 15"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+    </section><!-- /vichy-chat -->
+
+    <!-- Aire derecho (decorativo) -->
+    <div class="vichy-air" aria-hidden="true"></div>
+
+  </div><!-- /vichy-app -->
+
+  <!-- Sedronar persistente -->
+  <div class="vichy-sedronar">
+    ¿Te preocupa cómo jugás? Línea gratuita Sedronar&nbsp;141.
+  </div>
+
+</BaseLayout>
+
+<script>
+  const btnTimbre = document.getElementById('btn-timbre');
+  const welcome = document.getElementById('vichy-welcome');
+  const app = document.getElementById('vichy-app');
+
+  btnTimbre?.addEventListener('click', () => {
+    welcome?.setAttribute('hidden', '');
+    app?.removeAttribute('hidden');
+    // Scroll al top del chat
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+
+<style>
+  /* ============================================================
+     Variables locales — no tocan tokens.css
+     ============================================================ */
+  .welcome,
+  .vichy-app,
+  .vichy-sedronar {
+    --vichy-bg:     #F4ECDC;
+    --vichy-bubble: #E8DCC0;
+    --vichy-ink:    #1A1A1A;
+    --vichy-rojo:   #9B2226;
+    --vichy-cuero:  #6B4423;
+    --vichy-dorado: #C9A96E;
+    --vichy-rule:   #DCCFAF;
+  }
+
+  /* ============================================================
+     Pantalla de entrada — Welcome
+     ============================================================ */
+  .welcome {
+    background: var(--vichy-bg);
+    min-height: calc(100vh - 200px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-3xl) var(--gutter-xs);
+  }
+
+  .welcome__inner {
+    max-width: 560px;
+    text-align: center;
+  }
+
+  .welcome__trébol {
+    color: var(--vichy-cuero);
+    width: 28px;
+    height: 36px;
+    margin: 0 auto var(--space-2xl);
+    opacity: 0.7;
+  }
+
+  .welcome__ambiance {
+    font-family: var(--font-display);
+    font-size: 1.1875rem;
+    line-height: 1.7;
+    color: var(--vichy-ink);
+    margin: 0 0 1.5em;
+  }
+
+  .welcome__ambiance em {
+    font-style: italic;
+  }
+
+  .welcome__ambiance--2,
+  .welcome__ambiance--3 {
+    font-style: italic;
+  }
+
+  .welcome__disclaimer {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    color: var(--vichy-cuero);
+    line-height: 1.6;
+    margin-bottom: var(--space-2xl);
+    opacity: 0.85;
+  }
+
+  .welcome__btn {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: var(--font-medium);
+    letter-spacing: 0.06em;
+    color: var(--vichy-bg);
+    background: var(--vichy-rojo);
+    border: none;
+    padding: var(--space-md) var(--space-2xl);
+    cursor: pointer;
+    transition: background 200ms ease;
+  }
+
+  .welcome__btn:hover {
+    background: #7A1C1F;
+  }
+
+  /* ============================================================
+     App — Layout de tres columnas
+     ============================================================ */
+  .vichy-app {
+    background: var(--vichy-bg);
+    display: grid;
+    grid-template-columns: 220px minmax(0, 640px) 1fr;
+    min-height: calc(100vh - 200px);
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 1023px) {
+    .vichy-app {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr;
+    }
+    .vichy-air { display: none; }
+  }
+
+  /* ============================================================
+     Sidebar contextual
+     ============================================================ */
+  .vichy-sidebar {
+    border-right: 1px solid var(--vichy-rule);
+    padding: var(--space-2xl) var(--space-xl) var(--space-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  @media (max-width: 1023px) {
+    .vichy-sidebar {
+      border-right: none;
+      border-bottom: 1px solid var(--vichy-rule);
+      flex-direction: row;
+      align-items: center;
+      gap: var(--space-lg);
+      padding: var(--space-md) var(--gutter-xs);
+      flex-wrap: wrap;
+    }
+  }
+
+  .sidebar__trébol {
+    color: var(--vichy-cuero);
+    width: 20px;
+    height: 26px;
+    opacity: 0.6;
+    margin-bottom: var(--space-sm);
+  }
+
+  @media (max-width: 1023px) {
+    .sidebar__trébol { display: none; }
+  }
+
+  .sidebar__dato {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    color: var(--vichy-cuero);
+    letter-spacing: 0.04em;
+  }
+
+  .sidebar__cita {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-sm);
+    color: var(--vichy-cuero);
+    line-height: 1.55;
+    margin-top: var(--space-lg);
+    opacity: 0.8;
+  }
+
+  @media (max-width: 1023px) {
+    .sidebar__cita { display: none; }
+  }
+
+  /* ============================================================
+     Zona central del chat
+     ============================================================ */
+  .vichy-chat {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--vichy-rule);
+  }
+
+  @media (max-width: 1023px) {
+    .vichy-chat { border-right: none; }
+  }
+
+  /* Header del chat */
+  .chat-header {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-sm);
+    padding: var(--space-lg) var(--space-xl);
+    border-bottom: 1px solid var(--vichy-rule);
+    position: sticky;
+    top: 0;
+    background: var(--vichy-bg);
+    z-index: 10;
+  }
+
+  .chat-header__title {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--vichy-ink);
+  }
+
+  .chat-header__sub {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-sm);
+    color: var(--vichy-cuero);
+    flex: 1;
+  }
+
+  .chat-header__close {
+    font-family: var(--font-body);
+    font-size: 1.25rem;
+    color: var(--vichy-cuero);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0 var(--space-sm);
+    opacity: 0.6;
+    transition: opacity 150ms;
+  }
+
+  .chat-header__close:hover { opacity: 1; }
+
+  /* Nota de prototipo */
+  .chat-notice {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    color: var(--vichy-cuero);
+    background: rgba(107, 68, 35, 0.06);
+    padding: var(--space-sm) var(--space-xl);
+    border-bottom: 1px solid var(--vichy-rule);
+    text-align: center;
+    letter-spacing: 0.02em;
+  }
+
+  /* Mensajes */
+  .chat-messages {
+    flex: 1;
+    padding: var(--space-2xl) var(--space-xl);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    overflow-y: auto;
+  }
+
+  /* Mensaje de Vichy */
+  .msg--vichy {
+    margin-bottom: 2em;
+  }
+
+  .msg--vichy p {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: var(--vichy-ink);
+    margin: 0 0 1em;
+  }
+
+  .msg--vichy p:last-child { margin-bottom: 0; }
+
+  .msg--vichy strong {
+    color: var(--vichy-rojo);
+    font-weight: var(--font-medium);
+  }
+
+  /* Lista con trébol como bullet */
+  .msg__lista {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-sm) 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .msg__lista li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: var(--vichy-ink);
+  }
+
+  .trébol {
+    display: inline-flex;
+    align-items: flex-start;
+    flex-shrink: 0;
+    width: 14px;
+    height: 18px;
+    color: var(--vichy-rojo);
+    margin-top: 0.2em;
+  }
+
+  /* Mensaje del usuario */
+  .msg--user {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 2em;
+  }
+
+  .msg__bubble {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    color: var(--vichy-ink);
+    background: var(--vichy-bubble);
+    border-radius: 12px;
+    padding: 12px 16px;
+    max-width: 70%;
+    box-shadow: 0 1px 2px rgba(26, 26, 26, 0.04);
+  }
+
+  /* ============================================================
+     Tirada de cartas
+     ============================================================ */
+  .tarot-spread {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin: var(--space-xl) 0 var(--space-2xl);
+    flex-wrap: wrap;
+  }
+
+  .tarot-card {
+    width: 120px;
+    min-height: 174px;
+    border: 1px solid var(--vichy-cuero);
+    border-radius: 4px;
+    background: #FAF3E2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 14px 12px;
+    gap: var(--space-sm);
+    opacity: 0;
+    animation: cardAppear 400ms ease forwards;
+  }
+
+  @keyframes cardAppear {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .tarot-card__numeral {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.12em;
+    color: var(--vichy-cuero);
+    align-self: flex-start;
+  }
+
+  .tarot-card__illo {
+    flex: 1;
+    width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--vichy-ink);
+  }
+
+  .tarot-card__illo svg {
+    width: 80px;
+    height: 80px;
+  }
+
+  .tarot-card__nombre {
+    font-family: var(--font-display);
+    font-weight: var(--font-medium);
+    font-size: 1rem;
+    color: var(--vichy-ink);
+    text-align: center;
+  }
+
+  /* ============================================================
+     Ornamento de cierre + acciones
+     ============================================================ */
+  .chat-close-ornament {
+    display: flex;
+    justify-content: center;
+    margin: var(--space-xl) 0 var(--space-md);
+    color: var(--vichy-rojo);
+    width: 20px;
+    height: 26px;
+    margin-inline: auto;
+  }
+
+  .chat-actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-xl);
+    margin-bottom: var(--space-2xl);
+  }
+
+  .chat-action {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-sm);
+    color: var(--vichy-cuero);
+    background: none;
+    border: none;
+    cursor: not-allowed;
+    opacity: 0.5;
+    text-decoration: none;
+    padding: 0;
+  }
+
+  .chat-action__note {
+    font-size: var(--text-xs);
+    font-style: normal;
+    opacity: 0.7;
+  }
+
+  /* ============================================================
+     Input del usuario
+     ============================================================ */
+  .chat-input-area {
+    border-top: 1px solid var(--vichy-rule);
+    padding: var(--space-md) var(--space-xl);
+    background: var(--vichy-bg);
+    position: sticky;
+    bottom: 0;
+  }
+
+  .chat-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    background: #fff;
+    border: 1px solid var(--vichy-rule);
+    border-radius: 4px;
+    padding: var(--space-sm) var(--space-md);
+    box-shadow: 0 -1px 4px rgba(26, 26, 26, 0.04);
+  }
+
+  .chat-input {
+    flex: 1;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--vichy-ink);
+    background: none;
+    border: none;
+    outline: none;
+    resize: none;
+    line-height: 1.4;
+    opacity: 0.5;
+  }
+
+  .chat-input::placeholder {
+    color: var(--vichy-cuero);
+    opacity: 0.7;
+  }
+
+  .chat-send {
+    color: var(--vichy-cuero);
+    background: none;
+    border: none;
+    cursor: not-allowed;
+    opacity: 0.4;
+    padding: var(--space-xs);
+    flex-shrink: 0;
+  }
+
+  .chat-send svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+  }
+
+  /* ============================================================
+     Columna de aire
+     ============================================================ */
+  .vichy-air {
+    background: var(--vichy-bg);
+  }
+
+  /* ============================================================
+     Pie Sedronar
+     ============================================================ */
+  .vichy-sedronar {
+    background: var(--vichy-bg);
+    border-top: 1px solid var(--vichy-rule);
+    padding: var(--space-md) var(--gutter-xs);
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    color: var(--vichy-cuero);
+    text-align: center;
+    letter-spacing: 0.02em;
+  }
+
+  /* ============================================================
+     Reduced motion
+     ============================================================ */
+  @media (prefers-reduced-motion: reduce) {
+    .tarot-card {
+      animation: none;
+      opacity: 1;
+    }
+  }
+</style>
