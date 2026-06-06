@@ -22,6 +22,7 @@ const narradores = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/narradores' }),
   schema: z.object({
     nombre: z.string(),
+    nombreReal: z.string().optional(),
     slug: z.string(),
     disciplina: z.string(),
     tono: z.string(),

@@ -1,5 +1,6 @@
 ---
 nombre: "El Matemático"
+nombreReal: "Tomás Vera"
 slug: el-matematico
 disciplina: "Ciencias formales y físico-químicas"
 tono: "Preciso, sobrio, con humor seco. Cifras y razonamiento. Sin jerga innecesaria."

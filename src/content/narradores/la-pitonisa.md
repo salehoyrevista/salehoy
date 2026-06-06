@@ -1,5 +1,6 @@
 ---
 nombre: "La Pitonisa"
+nombreReal: "Verónica Bustamante"
 slug: la-pitonisa
 disciplina: "Mística, filosofía, simbología"
 tono: "Ensayo en voz baja. Atmosférico. Se permite la pregunta sin método. No es ciencia y no pretende serlo."

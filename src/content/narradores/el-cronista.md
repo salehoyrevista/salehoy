@@ -1,5 +1,6 @@
 ---
 nombre: "El Cronista"
+nombreReal: "Paulo Castillo"
 slug: el-cronista
 disciplina: "Cultura, literatura, cine, arte"
 tono: "Narrativo, con oído, con anécdota. Le saca brillo a lo argentino sin nostalgia."

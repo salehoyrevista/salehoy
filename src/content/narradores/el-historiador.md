@@ -1,5 +1,6 @@
 ---
 nombre: "El Historiador"
+nombreReal: "Aníbal Belmonte"
 slug: el-historiador
 disciplina: "Historia social, antropológica, geográfica, política y jurídica"
 tono: "Archivo, documento, mapa. Cita fuentes. Reconstruye escenas. Sabe contar el origen sin sermonear."
