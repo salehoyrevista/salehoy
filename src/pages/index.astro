@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ArticleCard from '../components/ArticleCard.astro';
 import { getCollection } from 'astro:content';
 
 const articulos = await getCollection('articulos');
@@ -10,33 +11,26 @@ const edicionActual = ediciones.sort((a, b) =>
   b.data.fecha.valueOf() - a.data.fecha.valueOf()
 )[0];
 
-const articulosDelNumero = articulos
-  .filter(a => a.data.edicion === edicionActual.data.numero)
-  .sort((a, b) => (b.data.destacado ? 1 : 0) - (a.data.destacado ? 1 : 0));
-
 // Mapa narrador slug → datos completos del narrador
 const narradorMap = new Map(narradores.map(n => [n.data.slug, n.data]));
-
-// Acento y ornamento por narrador
-const accentoMap: Record<string, { color: string; orn: string }> = {
-  'la-pitonisa':    { color: 'var(--color-accent-red)',  orn: '/img/ornamentos/trebol-tres.svg' },
-  'el-cronista':    { color: 'var(--color-leather)',     orn: '/img/ornamentos/ornamento-surco.svg' },
-  'la-cientifica':  { color: 'var(--color-accent-gold)', orn: '/img/ornamentos/ornamento-divan.svg' },
-  'el-matematico':  { color: 'var(--acento-tomas)',      orn: '/img/ornamentos/ornamento-barras.svg' },
-  'el-historiador': { color: 'var(--acento-anibal)',     orn: '/img/ornamentos/ornamento-pluma.svg' },
-};
 
 // Imágenes de portada por convención de nombre
 const heroH = `/img/portadas/${edicionActual.id}-h.png`;
 const heroV = `/img/portadas/${edicionActual.id}-v.png`;
 
-const eyebrowEdicion = `El sumario · edición #${edicionActual.data.numero}`;
+// Destacados: artículos marcados del número actual (max 3); fallback a los 3 más recientes
+const articulosNumero = articulos.filter(a => a.data.edicion === edicionActual.data.numero);
+const conDestacado = articulosNumero.filter(a => a.data.destacado);
+const articulosDestacados = (conDestacado.length > 0 ? conDestacado : articulosNumero)
+  .sort((a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf())
+  .slice(0, 3);
 
 const salaItems = [
-  { id: 'quiniela',      href: '/quiniela',           name: 'La Data',           what: 'El número de hoy, leído como dato y como augurio.',        crt: '22' },
-  { id: 'anecdotario',   href: '/anecdotario',         name: 'El Anecdotario',    what: 'Historias que mandan los lectores. Una por día.',           crt: '···' },
-  { id: 'frases',        href: '/maquina-de-frases',  name: 'Máquina de Frases', what: 'Tirá de la palanca; cae una sentencia sobre la suerte.',    crt: '★' },
-  { id: 'ruleta',        href: '/ruleta',              name: 'La Ruleta',         what: 'Un narrador al azar, una lectura que no buscabas.',         crt: '07' },
+  { id: 'vichy',       href: '/la-vichy',          name: 'La Vichy',          what: 'El portal de los números.' },
+  { id: 'data',        href: '/quiniela',           name: 'La Data',           what: 'Informe mensual de la quiniela.' },
+  { id: 'frases',      href: '/maquina-de-frases',  name: 'Máquina de Frases', what: 'Tirá la palanca.' },
+  { id: 'anecdotario', href: '/anecdotario',        name: 'Anecdotario',       what: 'Anécdotas reales, jugadores reales.' },
+  { id: 'generador',   href: '/la-sala',            name: 'El Generador',      what: 'Para los sorteos chicos y las apuestas del bar.' },
 ];
 ---
 
@@ -51,14 +45,14 @@ const salaItems = [
       <img
         class="hero__img hero__img--desk"
         src={heroH}
-        alt={`Portada de la edición #${edicionActual.data.numero} de SaleHoy.`}
+        alt={`Portada del número #${edicionActual.data.numero} de SaleHoy.`}
         width="1376"
         height="620"
       />
       <img
         class="hero__img hero__img--mob"
         src={heroV}
-        alt={`Portada de la edición #${edicionActual.data.numero} de SaleHoy.`}
+        alt={`Portada del número #${edicionActual.data.numero} de SaleHoy.`}
         width="768"
         height="1100"
       />
@@ -68,48 +62,37 @@ const salaItems = [
         <div class="hero__wordmark" aria-hidden="true">Sale<span class="hoy">Hoy</span></div>
         <div class="hero__foot">
           <span class="hero__eyebrow">
-            Última edición · <span class="hero__num">#{edicionActual.data.numero}</span> · {edicionActual.data.titulo}
+            Último número · <span class="hero__num">#{edicionActual.data.numero}</span> · {edicionActual.data.titulo}
           </span>
           <a href={`/ediciones/${edicionActual.id}`} class="btn-enter">
-            Entrar a la edición <span class="arrow">→</span>
+            Entrar al número <span class="arrow">→</span>
           </a>
         </div>
       </div>
     </section>
 
-    <!-- ═══ SUMARIO ═══ -->
-    <section class="sh-section" id="sumario">
+    <!-- ═══ DESTACADOS ═══ -->
+    <section class="sh-section" id="destacados">
       <div class="shell">
         <div class="section-head reveal">
           <div class="section-head__lhs">
-            <span class="eyebrow">{eyebrowEdicion}</span>
-            <h2 class="section-h">Cinco maneras de mirar un número</h2>
+            <span class="eyebrow">Número #{edicionActual.data.numero} · {edicionActual.data.titulo}</span>
+            <h2 class="section-h">Destacados del número</h2>
           </div>
-          <p class="section-sub">Cinco oficios alrededor de la misma mesa. No se ponen de acuerdo.</p>
+          <a href={`/ediciones/${edicionActual.id}`} class="btn-link">
+            Ver el número completo <span class="arrow">→</span>
+          </a>
         </div>
 
-        <div class="grid-feat">
-          {articulosDelNumero.map((art, i) => {
-            const narr = narradorMap.get(art.data.narrador);
-            const ac   = accentoMap[art.data.narrador] ?? { color: 'var(--color-text-secondary)', orn: '' };
-            const feature = i === 0;
-            return (
-              <article class={`card reveal${feature ? ' card--feature' : ''}`}>
-                <a href={`/articulos/${art.id}`} class="card__inner">
-                  <div class="card__illo">
-                    {ac.orn && <img class="card__orn" src={ac.orn} alt="" aria-hidden="true" />}
-                  </div>
-                  <span class="card__eyebrow" style={`color: ${ac.color}`}>{art.data.categoria}</span>
-                  <h3 class="card__title">{art.data.title}</h3>
-                  {art.data.subtitle && <p class="card__deck">{art.data.subtitle}</p>}
-                  <span class="card__byline" style={`color: ${ac.color}`}>
-                    <span class="card__dot" style={`background: ${ac.color}`}></span>
-                    {narr?.nombre ?? art.data.narrador} · <span class="card__role">{narr?.disciplina?.split(',')[0] ?? ''}</span>
-                  </span>
-                </a>
-              </article>
-            );
-          })}
+        <div class="grid-dest">
+          {articulosDestacados.map(art => (
+            <ArticleCard
+              articulo={art}
+              narradorNombre={narradorMap.get(art.data.narrador)?.nombre}
+              size="md"
+              showImagen
+            />
+          ))}
         </div>
       </div>
     </section>
@@ -121,7 +104,7 @@ const salaItems = [
           <div class="sala__head-lhs">
             <span class="eyebrow">La sala · zona viva</span>
             <h2 class="section-h">Pasá a la sala</h2>
-            <p class="section-sub">Cuatro dispositivos que responden. Atrás del vidrio, un poco de arcade.</p>
+            <p class="section-sub">Cinco dispositivos que responden.</p>
           </div>
           <a href="/la-sala" class="btn-ink">
             Entrar a La sala <span class="arrow">→</span>
@@ -131,8 +114,6 @@ const salaItems = [
         <div class="sala__grid">
           {salaItems.map((s, i) => (
             <a href={s.href} class="sala-card reveal" style={`transition-delay: ${i * 60}ms`}>
-              <span class="sala-card__crt">{s.crt}</span>
-              <span class="sala-card__num">Nº 0{i + 1}</span>
               <h3 class="sala-card__name">{s.name}</h3>
               <p class="sala-card__what">{s.what}</p>
               <span class="sala-card__go">Probar →</span>
@@ -145,8 +126,8 @@ const salaItems = [
     <!-- ═══ NEWSLETTER ═══ -->
     <section class="sh-section news" id="newsletter">
       <div class="shell news__inner reveal">
-        <span class="eyebrow">Suscripción quincenal</span>
-        <h2 class="section-h">Te llega cada quince días,<br>un sábado a la tarde.</h2>
+        <span class="eyebrow">El newsletter</span>
+        <h2 class="section-h">Te llega cuando sale<br>un número nuevo.</h2>
         <p class="section-sub">Nunca publicidad. Nunca el correo a terceros. Una sola lista, un solo editor.</p>
         <a href="/newsletter" class="btn-ink">
           Suscribirme <span class="arrow">→</span>
@@ -301,98 +282,31 @@ const salaItems = [
     text-wrap: pretty;
   }
 
-  /* ---------- GRILLA ARTÍCULOS ---------- */
-  .grid-feat {
+  /* ---------- GRILLA DESTACADOS ---------- */
+  .grid-dest {
     display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr;
-    grid-template-rows: auto auto;
-    gap: 28px;
-  }
-  .card--feature { grid-row: span 2; }
-
-  .card {
-    border-top: 1px solid var(--color-line);
-    transition: border-color 200ms ease, border-width 200ms ease;
-  }
-  .card:hover { border-color: var(--color-text); border-top-width: 2px; }
-  .card:hover .card__title { color: var(--color-accent-red); }
-
-  .card__inner {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 20px 0 24px;
-    text-decoration: none;
-    color: inherit;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
   }
 
-  .card__illo {
-    background: var(--color-bg-elevated);
-    border: 1px solid var(--color-line);
-    aspect-ratio: 16 / 10;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    margin-bottom: 4px;
-  }
-  .card--feature .card__illo { aspect-ratio: 4 / 3; }
-
-  .card__orn {
-    position: absolute;
-    width: 38%;
-    opacity: 0.3;
-    pointer-events: none;
-  }
-
-  .card__eyebrow {
-    font-family: var(--font-display);
-    font-variant-caps: all-small-caps;
-    font-size: 13px;
-    letter-spacing: 0.1em;
-    text-transform: capitalize;
-  }
-  .card__title {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 21px;
-    line-height: 1.16;
-    color: var(--color-text);
-    margin: 0;
-    transition: color 200ms ease;
-    text-wrap: pretty;
-  }
-  .card--feature .card__title { font-size: 34px; }
-
-  .card__deck {
-    font-family: var(--font-display);
-    font-size: 16px;
-    line-height: 1.55;
-    color: var(--color-text-secondary);
-    margin: 0;
-    text-wrap: pretty;
-  }
-  .card--feature .card__deck { font-size: 18px; }
-
-  .card__byline {
+  .btn-link {
     font-family: var(--font-body);
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 600;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    display: flex;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
-    margin-top: auto;
-    padding-top: 4px;
+    gap: 8px;
+    align-self: flex-end;
+    white-space: nowrap;
+    transition: color 120ms ease;
   }
-  .card__dot {
-    width: 5px; height: 5px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .card__role { color: var(--color-leather); font-weight: 400; text-transform: none; letter-spacing: 0; }
+  .btn-link:hover { color: var(--color-accent-red); }
+  .btn-link:hover .arrow { margin-left: 2px; }
+  .btn-link .arrow { transition: margin-left 120ms ease; }
 
   /* ---------- LA SALA ---------- */
   .sala__head {
@@ -427,7 +341,7 @@ const salaItems = [
 
   .sala__grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 16px;
   }
 
@@ -470,7 +384,6 @@ const salaItems = [
     line-height: 1.15;
     color: var(--color-text);
     margin: 0 0 8px;
-    padding-right: 34px;
   }
   .sala-card__what {
     font-family: var(--font-display);
@@ -520,9 +433,8 @@ const salaItems = [
   }
 
   /* ---------- RESPONSIVE ---------- */
-  @media (max-width: 980px) {
-    .grid-feat { grid-template-columns: 1.5fr 1fr; }
-    .card--feature { grid-row: span 2; }
+  @media (max-width: 1100px) {
+    .sala__grid { grid-template-columns: repeat(3, 1fr); }
   }
   @media (max-width: 900px) {
     .sala__grid { grid-template-columns: repeat(2, 1fr); }
@@ -531,15 +443,13 @@ const salaItems = [
     .section-head { flex-direction: column; gap: 12px; }
     .section-sub { align-self: auto; max-width: none; }
     .sala__head { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .grid-dest { grid-template-columns: 1fr; }
   }
   @media (max-width: 620px) {
     .shell { padding: 0 22px; }
     .hero__img--desk { display: none; }
     .hero__img--mob  { display: block; }
     .hero__content { padding: 24px 22px 30px; }
-    .grid-feat { grid-template-columns: 1fr; }
-    .card--feature { grid-row: span 1; }
-    .card--feature .card__title { font-size: 26px; }
     .sala__grid { grid-template-columns: 1fr; }
     .sh-section { padding: 60px 0; }
   }

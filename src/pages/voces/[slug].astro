@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import VocasCarta from '../../components/VocasCarta.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -15,6 +16,25 @@ const { Content } = await render(voces);
 
 const ediciones = await getCollection('ediciones');
 const edicion = ediciones.find(e => e.data.numero === voces.data.edicion);
+
+// Render bold/italic markdown inline
+function renderInline(text: string): string {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*]+?)\*/g, '<em>$1</em>');
+}
+
+// Parse the markdown body into narrator sections
+const rawBody: string = (voces as Record<string, unknown>).body as string ?? '';
+const sections: { name: string; text: string }[] = [];
+for (const block of rawBody.split(/\n(?=## )/)) {
+  const stripped = block.replace(/^## /, '');
+  const nl = stripped.indexOf('\n');
+  if (nl === -1) continue;
+  const name = stripped.slice(0, nl).trim();
+  const text = stripped.slice(nl).trim().replace(/\n+/g, ' ');
+  if (name && text) sections.push({ name, text });
+}
 ---
 
 <BaseLayout
@@ -22,79 +42,145 @@ const edicion = ediciones.find(e => e.data.numero === voces.data.edicion);
   description={voces.data.intro || `Cinco lecturas del número ${voces.data.numero}, ${voces.data.nombre}.`}
 >
   <article class="voces">
+
+    {edicion && (
+      <div class="voces__back container-wide">
+        <a href={`/ediciones/${edicion.id}`}>← Número #{edicion.data.numero} · {edicion.data.titulo}</a>
+      </div>
+    )}
+
     <header class="voces__hero container-narrow">
-      <span class="meta-label">Voces del número</span>
-      <div class="voces__numero">
-        <span class="data-num-large">{voces.data.numero}</span>
-        <span class="voces__nombre">{voces.data.nombre}</span>
+      <span class="meta-label">Sección coral</span>
+      <div class="voces__carta-wrap">
+        <VocasCarta numero={voces.data.numero} nombre={voces.data.nombre} size="lg" />
       </div>
       {voces.data.intro && (
-        <p class="hero-lead voces__intro">{voces.data.intro}</p>
-      )}
-      {edicion && (
-        <p class="voces__edicion">
-          De la edición <a href={`/ediciones/${edicion.id}`}>#{edicion.data.numero} · {edicion.data.titulo}</a>
-        </p>
+        <p class="voces__intro">{voces.data.intro}</p>
       )}
     </header>
 
-    <div class="voces__body prose container-narrow">
-      <Content />
-    </div>
+    {sections.length > 0 ? (
+      <div class="voces__coral container-wide">
+        {sections.map(s => (
+          <div class="voz">
+            <h2 class="voz__narrador">{s.name}</h2>
+            <p class="voz__texto" set:html={renderInline(s.text)} />
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div class="voces__body prose container-narrow">
+        <Content />
+      </div>
+    )}
+
   </article>
 </BaseLayout>
 
 <style>
-  .voces { padding-block: var(--space-3xl); }
+  .voces {
+    padding-block: var(--space-3xl) var(--space-4xl);
+  }
 
+  /* ── Breadcrumb ─────────────────────────────────── */
+  .voces__back {
+    margin-bottom: var(--space-xl);
+  }
+
+  .voces__back a {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-leather);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+
+  .voces__back a:hover { color: var(--color-text); }
+
+  /* ── Hero ───────────────────────────────────────── */
   .voces__hero {
     text-align: center;
-    margin-bottom: var(--space-2xl);
+    margin-bottom: var(--space-3xl);
   }
 
-  .voces__numero {
+  .voces__carta-wrap {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-xs);
-    margin-block: var(--space-lg);
-  }
-
-  .voces__numero .data-num-large {
-    color: var(--color-accent-gold);
-    font-size: var(--text-7xl);
-    line-height: 1;
-  }
-
-  .voces__nombre {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: var(--text-3xl);
-    color: var(--color-text);
+    justify-content: center;
+    margin-block: var(--space-xl) var(--space-2xl);
   }
 
   .voces__intro {
-    max-width: 640px;
-    margin-inline: auto;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+    max-width: 56ch;
+    margin: 0 auto;
   }
 
-  .voces__edicion {
-    font-size: var(--text-sm);
-    color: var(--color-text-tertiary);
-    margin-top: var(--space-lg);
+  /* ── Coral grid ─────────────────────────────────── */
+  .voces__coral {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+    padding-bottom: var(--space-3xl);
   }
 
-  .voces__edicion a {
-    color: var(--color-accent-gold);
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
+  @media (min-width: 600px) {
+    .voces__coral {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
+  @media (min-width: 1024px) {
+    .voces__coral {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+
+  /* ── Voz card ───────────────────────────────────── */
+  .voz {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-line-strong);
+    border-top: 2px solid var(--color-accent-gold);
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .voz__narrador {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-leather);
+    margin: 0;
+  }
+
+  .voz__texto {
+    font-family: var(--font-display);
+    font-size: var(--text-md);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+    margin: 0;
+    flex: 1;
+  }
+
+  /* Bold/italic created via set:html don't carry the scoped data-attr */
+  .voz__texto :global(em) { font-style: italic; color: var(--color-text); }
+  .voz__texto :global(strong) { font-weight: 600; color: var(--color-text); }
+
+  /* Fallback prose (body parsing failed) */
   .voces__body {
     padding-block: var(--space-xl);
   }
 
-  /* Cada bloque de narrador en Voces tiene un H2 que actúa como nombre */
   .voces__body :global(h2) {
     font-family: var(--font-display);
     font-size: var(--text-xl);

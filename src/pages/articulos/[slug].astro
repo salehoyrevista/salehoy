@@ -88,7 +88,7 @@ const iniciales = narrador
     <!-- Hero centrado -->
     <header class="article__hero container-narrow">
       <div class="article__eyebrow">
-        {edicion && `Edición #${edicion.data.numero}`}
+        {edicion && `Número #${edicion.data.numero}`}
         {articulo.data.categoria && <span class="eyebrow__sep">·</span>}
         {articulo.data.categoria}
         {narrador && <span class="eyebrow__sep">·</span>}
@@ -196,7 +196,7 @@ const iniciales = narrador
     <!-- CTA newsletter -->
     <aside class="article__cta container-narrow">
       <h3>Si te gustó, sumate al newsletter</h3>
-      <p>Cada quincena, el número nuevo en tu mail. Sin spam.</p>
+      <p>Cuando sale el número nuevo, te llega en tu mail. Sin spam.</p>
       <a href="/newsletter" class="btn-primary">Suscribirme</a>
     </aside>
 

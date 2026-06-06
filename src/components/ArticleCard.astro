@@ -5,10 +5,11 @@ interface Props {
   articulo: CollectionEntry<'articulos'>;
   narradorNombre?: string;
   size?: 'sm' | 'md' | 'lg';
+  showImagen?: boolean;
 }
 
-const { articulo, narradorNombre, size = 'md' } = Astro.props;
-const { title, subtitle, narrador, categoria, fecha, tiempoLectura } = articulo.data;
+const { articulo, narradorNombre, size = 'md', showImagen = false } = Astro.props;
+const { title, subtitle, narrador, categoria, fecha, tiempoLectura, imagen } = articulo.data;
 const href = `/articulos/${articulo.id}`;
 
 const formatFecha = (d: Date) => d.toLocaleDateString('es-AR', {
@@ -18,6 +19,12 @@ const formatFecha = (d: Date) => d.toLocaleDateString('es-AR', {
 
 <article class={`card card--${size}`}>
   <a href={href} class="card__link">
+    {showImagen && imagen && (
+      <div class="card__imagen">
+        <img src={imagen} alt="" loading="lazy" />
+      </div>
+    )}
+
     <div class="card__meta">
       <span class={`tag tag-categoria tag--${categoria}`}>{categoria}</span>
       {tiempoLectura && (
@@ -44,12 +51,31 @@ const formatFecha = (d: Date) => d.toLocaleDateString('es-AR', {
     border: 1px solid var(--color-line);
     border-radius: var(--radius-md);
     padding: var(--space-lg);
+    overflow: hidden;
     transition: border-color var(--transition-fast), transform var(--transition-fast);
   }
 
   .card:hover {
     border-color: var(--color-accent-gold);
     transform: translateY(-2px);
+  }
+
+  .card__imagen {
+    margin: calc(var(--space-lg) * -1) calc(var(--space-lg) * -1) var(--space-sm);
+    overflow: hidden;
+    border-radius: calc(var(--radius-md) - 1px) calc(var(--radius-md) - 1px) 0 0;
+  }
+
+  .card__imagen img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    transition: transform 300ms ease;
+  }
+
+  .card:hover .card__imagen img {
+    transform: scale(1.03);
   }
 
   .card__link {

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArticleCard from '../../components/ArticleCard.astro';
+import VocasCarta from '../../components/VocasCarta.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -68,19 +69,27 @@ const fechaStr = edicion.data.fecha.toLocaleDateString('es-AR', {
       <h2 class="edition__section-title">Cinco voces sobre el azar</h2>
       <div class="articles-grid">
         {articulosEdicion.map(articulo => (
-          <ArticleCard articulo={articulo} narradorNombre={narradorMap.get(articulo.data.narrador)} size="md" />
+          <ArticleCard articulo={articulo} narradorNombre={narradorMap.get(articulo.data.narrador)} size="md" showImagen />
         ))}
       </div>
     </section>
 
     {vocesEdicion && (
       <section class="edition__voces container-narrow">
-        <span class="meta-label">Mini-sección coral</span>
-        <h2 class="edition__section-title">Voces del número {vocesEdicion.data.numero} · {vocesEdicion.data.nombre}</h2>
-        <p>Los cinco narradores comentan, en formato breve, el número de la quincena.</p>
-        <a href={`/voces/${vocesEdicion.id}`} class="btn-secondary">
-          Leer Voces del número →
-        </a>
+        <span class="meta-label">Sección coral</span>
+        <div class="voces-teaser">
+          <VocasCarta
+            numero={vocesEdicion.data.numero}
+            nombre={vocesEdicion.data.nombre}
+            size="sm"
+          />
+          {vocesEdicion.data.intro && (
+            <p class="voces-teaser__intro">{vocesEdicion.data.intro}</p>
+          )}
+          <a href={`/voces/${vocesEdicion.id}`} class="btn-secondary">
+            Leer las cinco voces →
+          </a>
+        </div>
       </section>
     )}
   </article>
@@ -153,6 +162,25 @@ const fechaStr = edicion.data.fecha.toLocaleDateString('es-AR', {
 
   @media (min-width: 1024px) {
     .articles-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .voces-teaser {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xl);
+    padding-block: var(--space-xl);
+    text-align: center;
+  }
+
+  .voces-teaser__intro {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+    max-width: 54ch;
+    margin: 0;
   }
 
   .btn-secondary {

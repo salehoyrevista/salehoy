@@ -1,0 +1,113 @@
+---
+interface Props {
+  numero: string;
+  nombre: string;
+  label?: string;
+  size?: 'sm' | 'lg';
+}
+const { numero, nombre, label = 'Voces del número', size = 'lg' } = Astro.props;
+---
+
+<div class={`carta carta--${size}`}>
+  <div class="carta__inner">
+    <span class="carta__kicker">{label}</span>
+    <span class="carta__num">{numero}</span>
+    <div class="carta__rule" aria-hidden="true">
+      <span class="carta__line"></span>
+      <span class="carta__sym">✦</span>
+      <span class="carta__line"></span>
+    </div>
+    <span class="carta__nombre">{nombre}</span>
+  </div>
+</div>
+
+<style>
+  .carta {
+    display: inline-flex;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-accent-gold);
+    position: relative;
+  }
+
+  /* Inner ghost border */
+  .carta::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border: 1px solid var(--color-accent-gold);
+    opacity: 0.36;
+    pointer-events: none;
+  }
+
+  .carta__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+
+  .carta--lg .carta__inner {
+    padding: var(--space-2xl) var(--space-3xl);
+    min-width: 200px;
+  }
+
+  .carta--sm .carta__inner {
+    padding: var(--space-xl) var(--space-2xl);
+    min-width: 160px;
+  }
+
+  .carta__kicker {
+    font-family: var(--font-body);
+    font-size: 9px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--color-leather);
+  }
+
+  .carta__num {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1;
+    color: var(--color-accent-gold);
+    letter-spacing: -0.02em;
+    margin-block: var(--space-xs);
+  }
+
+  .carta--lg .carta__num { font-size: 5rem; }
+  .carta--sm .carta__num { font-size: 3.5rem; }
+
+  .carta__rule {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    width: 100%;
+    margin-block: var(--space-xs);
+  }
+
+  .carta__line {
+    flex: 1;
+    height: 1px;
+    background: var(--color-accent-gold);
+    opacity: 0.42;
+  }
+
+  .carta__sym {
+    font-size: 9px;
+    color: var(--color-accent-gold);
+    line-height: 1;
+  }
+
+  .carta__nombre {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--color-text);
+    line-height: var(--leading-snug);
+    letter-spacing: -0.01em;
+  }
+
+  .carta--lg .carta__nombre { font-size: var(--text-2xl); }
+  .carta--sm .carta__nombre { font-size: var(--text-xl); }
+</style>
