@@ -1,0 +1,31 @@
+{
+  "label": "2026-05",
+  "headline": "",
+  "subhead": "",
+  "ticker": "",
+  "zonas": {
+    "nacional": {
+      "apertura": "",
+      "tema": "",
+      "cajaDorada": "",
+      "cierre": ""
+    },
+    "buenosAires": {
+      "apertura": "",
+      "tema": "",
+      "cajaDorada": "",
+      "cierre": ""
+    },
+    "cordoba": {
+      "apertura": "",
+      "tema": "",
+      "cajaDorada": "",
+      "cierre": ""
+    },
+    "comparativa": {
+      "apertura": "",
+      "cierre": ""
+    }
+  },
+  "cierreInforme": ""
+}

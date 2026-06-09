@@ -1,0 +1,1022 @@
+{
+  "periodo": {
+    "desde": "2026-05-02",
+    "hasta": "2026-05-30",
+    "dias": 24
+  },
+  "totales": {
+    "sorteos": 345,
+    "extracciones": 6900
+  },
+  "fuente": "Rutas1000",
+  "generadoEl": "2026-06-09T23:24:23.152Z",
+  "zonas": {
+    "nacional": {
+      "nombre": "Nacional",
+      "sorteos": 120,
+      "extracciones": 2400,
+      "dosCifras": {
+        "esperadoPorNumero": 24,
+        "top": [
+          {
+            "numero": "11",
+            "apariciones": 34,
+            "vsPromedio": 0.41666666666666674
+          },
+          {
+            "numero": "47",
+            "apariciones": 34,
+            "vsPromedio": 0.41666666666666674
+          },
+          {
+            "numero": "06",
+            "apariciones": 33,
+            "vsPromedio": 0.375
+          },
+          {
+            "numero": "71",
+            "apariciones": 33,
+            "vsPromedio": 0.375
+          },
+          {
+            "numero": "77",
+            "apariciones": 33,
+            "vsPromedio": 0.375
+          },
+          {
+            "numero": "88",
+            "apariciones": 33,
+            "vsPromedio": 0.375
+          }
+        ],
+        "bottom": [
+          {
+            "numero": "72",
+            "apariciones": 12,
+            "vsPromedio": -0.5
+          },
+          {
+            "numero": "63",
+            "apariciones": 12,
+            "vsPromedio": -0.5
+          },
+          {
+            "numero": "79",
+            "apariciones": 13,
+            "vsPromedio": -0.45833333333333337
+          },
+          {
+            "numero": "39",
+            "apariciones": 14,
+            "vsPromedio": -0.41666666666666663
+          },
+          {
+            "numero": "91",
+            "apariciones": 15,
+            "vsPromedio": -0.375
+          },
+          {
+            "numero": "60",
+            "apariciones": 15,
+            "vsPromedio": -0.375
+          },
+          {
+            "numero": "15",
+            "apariciones": 15,
+            "vsPromedio": -0.375
+          }
+        ],
+        "porDecada": [
+          {
+            "rango": "00-09",
+            "apariciones": 257
+          },
+          {
+            "rango": "10-19",
+            "apariciones": 251
+          },
+          {
+            "rango": "20-29",
+            "apariciones": 258
+          },
+          {
+            "rango": "30-39",
+            "apariciones": 234
+          },
+          {
+            "rango": "40-49",
+            "apariciones": 230
+          },
+          {
+            "rango": "50-59",
+            "apariciones": 256
+          },
+          {
+            "rango": "60-69",
+            "apariciones": 222
+          },
+          {
+            "rango": "70-79",
+            "apariciones": 227
+          },
+          {
+            "rango": "80-89",
+            "apariciones": 241
+          },
+          {
+            "rango": "90-99",
+            "apariciones": 224
+          }
+        ]
+      },
+      "terminaciones": [
+        {
+          "digito": "0",
+          "apariciones": 230,
+          "pct": 0.09583333333333334
+        },
+        {
+          "digito": "1",
+          "apariciones": 256,
+          "pct": 0.10666666666666667
+        },
+        {
+          "digito": "2",
+          "apariciones": 210,
+          "pct": 0.0875
+        },
+        {
+          "digito": "3",
+          "apariciones": 238,
+          "pct": 0.09916666666666667
+        },
+        {
+          "digito": "4",
+          "apariciones": 254,
+          "pct": 0.10583333333333333
+        },
+        {
+          "digito": "5",
+          "apariciones": 235,
+          "pct": 0.09791666666666667
+        },
+        {
+          "digito": "6",
+          "apariciones": 254,
+          "pct": 0.10583333333333333
+        },
+        {
+          "digito": "7",
+          "apariciones": 272,
+          "pct": 0.11333333333333333
+        },
+        {
+          "digito": "8",
+          "apariciones": 231,
+          "pct": 0.09625
+        },
+        {
+          "digito": "9",
+          "apariciones": 220,
+          "pct": 0.09166666666666666
+        }
+      ],
+      "tresCifras": {
+        "unicos": 901,
+        "repetidos2omas": 690,
+        "top": [
+          {
+            "numero": "241",
+            "apariciones": 8
+          },
+          {
+            "numero": "244",
+            "apariciones": 8
+          },
+          {
+            "numero": "261",
+            "apariciones": 8
+          },
+          {
+            "numero": "007",
+            "apariciones": 7
+          },
+          {
+            "numero": "045",
+            "apariciones": 7
+          },
+          {
+            "numero": "071",
+            "apariciones": 7
+          },
+          {
+            "numero": "181",
+            "apariciones": 7
+          },
+          {
+            "numero": "716",
+            "apariciones": 7
+          },
+          {
+            "numero": "825",
+            "apariciones": 7
+          },
+          {
+            "numero": "847",
+            "apariciones": 7
+          }
+        ]
+      },
+      "cuatroCifras": {
+        "unicos": 2142,
+        "repetidos2omas": 243
+      },
+      "porMilar": [
+        {
+          "rango": "0000-0999",
+          "apariciones": 243
+        },
+        {
+          "rango": "1000-1999",
+          "apariciones": 266
+        },
+        {
+          "rango": "2000-2999",
+          "apariciones": 219
+        },
+        {
+          "rango": "3000-3999",
+          "apariciones": 248
+        },
+        {
+          "rango": "4000-4999",
+          "apariciones": 245
+        },
+        {
+          "rango": "5000-5999",
+          "apariciones": 259
+        },
+        {
+          "rango": "6000-6999",
+          "apariciones": 218
+        },
+        {
+          "rango": "7000-7999",
+          "apariciones": 248
+        },
+        {
+          "rango": "8000-8999",
+          "apariciones": 243
+        },
+        {
+          "rango": "9000-9999",
+          "apariciones": 211
+        }
+      ],
+      "aPrimera": {
+        "promedio": 4816,
+        "pct4000a5999": 0.20833333333333334,
+        "esperado4000a5999": 0.2
+      }
+    },
+    "buenosAires": {
+      "nombre": "Buenos Aires",
+      "sorteos": 126,
+      "extracciones": 2520,
+      "dosCifras": {
+        "esperadoPorNumero": 25.2,
+        "top": [
+          {
+            "numero": "81",
+            "apariciones": 47,
+            "vsPromedio": 0.8650793650793651
+          },
+          {
+            "numero": "89",
+            "apariciones": 45,
+            "vsPromedio": 0.7857142857142858
+          },
+          {
+            "numero": "91",
+            "apariciones": 40,
+            "vsPromedio": 0.5873015873015874
+          },
+          {
+            "numero": "28",
+            "apariciones": 39,
+            "vsPromedio": 0.5476190476190477
+          },
+          {
+            "numero": "78",
+            "apariciones": 38,
+            "vsPromedio": 0.5079365079365079
+          }
+        ],
+        "bottom": [
+          {
+            "numero": "86",
+            "apariciones": 10,
+            "vsPromedio": -0.6031746031746031
+          },
+          {
+            "numero": "72",
+            "apariciones": 13,
+            "vsPromedio": -0.4841269841269841
+          },
+          {
+            "numero": "43",
+            "apariciones": 14,
+            "vsPromedio": -0.4444444444444444
+          },
+          {
+            "numero": "53",
+            "apariciones": 15,
+            "vsPromedio": -0.40476190476190477
+          },
+          {
+            "numero": "04",
+            "apariciones": 15,
+            "vsPromedio": -0.40476190476190477
+          }
+        ],
+        "porDecada": [
+          {
+            "rango": "00-09",
+            "apariciones": 226
+          },
+          {
+            "rango": "10-19",
+            "apariciones": 250
+          },
+          {
+            "rango": "20-29",
+            "apariciones": 274
+          },
+          {
+            "rango": "30-39",
+            "apariciones": 239
+          },
+          {
+            "rango": "40-49",
+            "apariciones": 232
+          },
+          {
+            "rango": "50-59",
+            "apariciones": 268
+          },
+          {
+            "rango": "60-69",
+            "apariciones": 245
+          },
+          {
+            "rango": "70-79",
+            "apariciones": 245
+          },
+          {
+            "rango": "80-89",
+            "apariciones": 293
+          },
+          {
+            "rango": "90-99",
+            "apariciones": 248
+          }
+        ]
+      },
+      "terminaciones": [
+        {
+          "digito": "0",
+          "apariciones": 223,
+          "pct": 0.0884920634920635
+        },
+        {
+          "digito": "1",
+          "apariciones": 286,
+          "pct": 0.11349206349206349
+        },
+        {
+          "digito": "2",
+          "apariciones": 251,
+          "pct": 0.0996031746031746
+        },
+        {
+          "digito": "3",
+          "apariciones": 194,
+          "pct": 0.07698412698412699
+        },
+        {
+          "digito": "4",
+          "apariciones": 266,
+          "pct": 0.10555555555555556
+        },
+        {
+          "digito": "5",
+          "apariciones": 266,
+          "pct": 0.10555555555555556
+        },
+        {
+          "digito": "6",
+          "apariciones": 221,
+          "pct": 0.08769841269841269
+        },
+        {
+          "digito": "7",
+          "apariciones": 268,
+          "pct": 0.10634920634920635
+        },
+        {
+          "digito": "8",
+          "apariciones": 307,
+          "pct": 0.12182539682539682
+        },
+        {
+          "digito": "9",
+          "apariciones": 238,
+          "pct": 0.09444444444444444
+        }
+      ],
+      "tresCifras": {
+        "unicos": 912,
+        "repetidos2omas": 702,
+        "top": [
+          {
+            "numero": "530",
+            "apariciones": 9
+          },
+          {
+            "numero": "178",
+            "apariciones": 8
+          },
+          {
+            "numero": "181",
+            "apariciones": 8
+          },
+          {
+            "numero": "556",
+            "apariciones": 8
+          },
+          {
+            "numero": "589",
+            "apariciones": 8
+          },
+          {
+            "numero": "989",
+            "apariciones": 8
+          }
+        ]
+      },
+      "cuatroCifras": {
+        "unicos": 2231,
+        "repetidos2omas": 273
+      },
+      "porMilar": [
+        {
+          "rango": "0000-0999",
+          "apariciones": 248
+        },
+        {
+          "rango": "1000-1999",
+          "apariciones": 243
+        },
+        {
+          "rango": "2000-2999",
+          "apariciones": 236
+        },
+        {
+          "rango": "3000-3999",
+          "apariciones": 251
+        },
+        {
+          "rango": "4000-4999",
+          "apariciones": 261
+        },
+        {
+          "rango": "5000-5999",
+          "apariciones": 285
+        },
+        {
+          "rango": "6000-6999",
+          "apariciones": 245
+        },
+        {
+          "rango": "7000-7999",
+          "apariciones": 260
+        },
+        {
+          "rango": "8000-8999",
+          "apariciones": 238
+        },
+        {
+          "rango": "9000-9999",
+          "apariciones": 253
+        }
+      ],
+      "aPrimera": {
+        "promedio": 4956,
+        "pct4000a5999": 0.2698412698412698,
+        "esperado4000a5999": 0.2
+      }
+    },
+    "cordoba": {
+      "nombre": "Córdoba",
+      "sorteos": 99,
+      "extracciones": 1980,
+      "dosCifras": {
+        "esperadoPorNumero": 19.8,
+        "top": [
+          {
+            "numero": "80",
+            "apariciones": 32,
+            "vsPromedio": 0.6161616161616161
+          },
+          {
+            "numero": "04",
+            "apariciones": 29,
+            "vsPromedio": 0.46464646464646453
+          },
+          {
+            "numero": "94",
+            "apariciones": 28,
+            "vsPromedio": 0.41414141414141414
+          },
+          {
+            "numero": "19",
+            "apariciones": 27,
+            "vsPromedio": 0.36363636363636354
+          },
+          {
+            "numero": "73",
+            "apariciones": 27,
+            "vsPromedio": 0.36363636363636354
+          }
+        ],
+        "bottom": [
+          {
+            "numero": "49",
+            "apariciones": 10,
+            "vsPromedio": -0.4949494949494949
+          },
+          {
+            "numero": "62",
+            "apariciones": 11,
+            "vsPromedio": -0.4444444444444444
+          },
+          {
+            "numero": "05",
+            "apariciones": 12,
+            "vsPromedio": -0.3939393939393939
+          },
+          {
+            "numero": "61",
+            "apariciones": 13,
+            "vsPromedio": -0.3434343434343434
+          },
+          {
+            "numero": "51",
+            "apariciones": 13,
+            "vsPromedio": -0.3434343434343434
+          },
+          {
+            "numero": "47",
+            "apariciones": 13,
+            "vsPromedio": -0.3434343434343434
+          },
+          {
+            "numero": "27",
+            "apariciones": 13,
+            "vsPromedio": -0.3434343434343434
+          }
+        ],
+        "porDecada": [
+          {
+            "rango": "00-09",
+            "apariciones": 202
+          },
+          {
+            "rango": "10-19",
+            "apariciones": 194
+          },
+          {
+            "rango": "20-29",
+            "apariciones": 198
+          },
+          {
+            "rango": "30-39",
+            "apariciones": 194
+          },
+          {
+            "rango": "40-49",
+            "apariciones": 184
+          },
+          {
+            "rango": "50-59",
+            "apariciones": 198
+          },
+          {
+            "rango": "60-69",
+            "apariciones": 177
+          },
+          {
+            "rango": "70-79",
+            "apariciones": 210
+          },
+          {
+            "rango": "80-89",
+            "apariciones": 208
+          },
+          {
+            "rango": "90-99",
+            "apariciones": 215
+          }
+        ]
+      },
+      "terminaciones": [
+        {
+          "digito": "0",
+          "apariciones": 207,
+          "pct": 0.10454545454545454
+        },
+        {
+          "digito": "1",
+          "apariciones": 178,
+          "pct": 0.0898989898989899
+        },
+        {
+          "digito": "2",
+          "apariciones": 192,
+          "pct": 0.09696969696969697
+        },
+        {
+          "digito": "3",
+          "apariciones": 210,
+          "pct": 0.10606060606060606
+        },
+        {
+          "digito": "4",
+          "apariciones": 216,
+          "pct": 0.10909090909090909
+        },
+        {
+          "digito": "5",
+          "apariciones": 195,
+          "pct": 0.09848484848484848
+        },
+        {
+          "digito": "6",
+          "apariciones": 198,
+          "pct": 0.1
+        },
+        {
+          "digito": "7",
+          "apariciones": 169,
+          "pct": 0.08535353535353535
+        },
+        {
+          "digito": "8",
+          "apariciones": 225,
+          "pct": 0.11363636363636363
+        },
+        {
+          "digito": "9",
+          "apariciones": 190,
+          "pct": 0.09595959595959595
+        }
+      ],
+      "tresCifras": {
+        "unicos": 864,
+        "repetidos2omas": 588,
+        "top": [
+          {
+            "numero": "540",
+            "apariciones": 7
+          },
+          {
+            "numero": "665",
+            "apariciones": 7
+          },
+          {
+            "numero": "039",
+            "apariciones": 6
+          },
+          {
+            "numero": "065",
+            "apariciones": 6
+          },
+          {
+            "numero": "072",
+            "apariciones": 6
+          },
+          {
+            "numero": "080",
+            "apariciones": 6
+          },
+          {
+            "numero": "113",
+            "apariciones": 6
+          },
+          {
+            "numero": "318",
+            "apariciones": 6
+          },
+          {
+            "numero": "358",
+            "apariciones": 6
+          },
+          {
+            "numero": "675",
+            "apariciones": 6
+          },
+          {
+            "numero": "691",
+            "apariciones": 6
+          },
+          {
+            "numero": "829",
+            "apariciones": 6
+          },
+          {
+            "numero": "909",
+            "apariciones": 6
+          }
+        ]
+      },
+      "cuatroCifras": {
+        "unicos": 1815,
+        "repetidos2omas": 156
+      },
+      "porMilar": [
+        {
+          "rango": "0000-0999",
+          "apariciones": 222
+        },
+        {
+          "rango": "1000-1999",
+          "apariciones": 193
+        },
+        {
+          "rango": "2000-2999",
+          "apariciones": 180
+        },
+        {
+          "rango": "3000-3999",
+          "apariciones": 176
+        },
+        {
+          "rango": "4000-4999",
+          "apariciones": 196
+        },
+        {
+          "rango": "5000-5999",
+          "apariciones": 219
+        },
+        {
+          "rango": "6000-6999",
+          "apariciones": 189
+        },
+        {
+          "rango": "7000-7999",
+          "apariciones": 175
+        },
+        {
+          "rango": "8000-8999",
+          "apariciones": 208
+        },
+        {
+          "rango": "9000-9999",
+          "apariciones": 222
+        }
+      ],
+      "aPrimera": {
+        "promedio": 4798,
+        "pct4000a5999": 0.1919191919191919,
+        "esperado4000a5999": 0.2
+      },
+      "turista": {
+        "sorteos": 17,
+        "top": [
+          {
+            "numero": "22",
+            "apariciones": 10,
+            "vsPromedio": 1.9411764705882355
+          },
+          {
+            "numero": "72",
+            "apariciones": 10,
+            "vsPromedio": 1.9411764705882355
+          },
+          {
+            "numero": "80",
+            "apariciones": 8,
+            "vsPromedio": 1.3529411764705883
+          },
+          {
+            "numero": "30",
+            "apariciones": 7,
+            "vsPromedio": 1.058823529411765
+          },
+          {
+            "numero": "01",
+            "apariciones": 6,
+            "vsPromedio": 0.7647058823529411
+          },
+          {
+            "numero": "04",
+            "apariciones": 6,
+            "vsPromedio": 0.7647058823529411
+          },
+          {
+            "numero": "08",
+            "apariciones": 6,
+            "vsPromedio": 0.7647058823529411
+          },
+          {
+            "numero": "18",
+            "apariciones": 6,
+            "vsPromedio": 0.7647058823529411
+          },
+          {
+            "numero": "20",
+            "apariciones": 6,
+            "vsPromedio": 0.7647058823529411
+          },
+          {
+            "numero": "27",
+            "apariciones": 6,
+            "vsPromedio": 0.7647058823529411
+          },
+          {
+            "numero": "33",
+            "apariciones": 6,
+            "vsPromedio": 0.7647058823529411
+          },
+          {
+            "numero": "41",
+            "apariciones": 6,
+            "vsPromedio": 0.7647058823529411
+          },
+          {
+            "numero": "97",
+            "apariciones": 6,
+            "vsPromedio": 0.7647058823529411
+          },
+          {
+            "numero": "98",
+            "apariciones": 6,
+            "vsPromedio": 0.7647058823529411
+          }
+        ],
+        "aPrimera": {
+          "promedio": 4111,
+          "pct4000a5999": 0.17647058823529413,
+          "esperado4000a5999": 0.2
+        }
+      }
+    }
+  },
+  "comparativa": {
+    "topCruzado": {
+      "nacional": [
+        {
+          "numero": "11",
+          "apariciones": 34,
+          "vsPromedio": 0.41666666666666674
+        },
+        {
+          "numero": "47",
+          "apariciones": 34,
+          "vsPromedio": 0.41666666666666674
+        },
+        {
+          "numero": "06",
+          "apariciones": 33,
+          "vsPromedio": 0.375
+        },
+        {
+          "numero": "71",
+          "apariciones": 33,
+          "vsPromedio": 0.375
+        },
+        {
+          "numero": "77",
+          "apariciones": 33,
+          "vsPromedio": 0.375
+        },
+        {
+          "numero": "88",
+          "apariciones": 33,
+          "vsPromedio": 0.375
+        }
+      ],
+      "buenosAires": [
+        {
+          "numero": "81",
+          "apariciones": 47,
+          "vsPromedio": 0.8650793650793651
+        },
+        {
+          "numero": "89",
+          "apariciones": 45,
+          "vsPromedio": 0.7857142857142858
+        },
+        {
+          "numero": "91",
+          "apariciones": 40,
+          "vsPromedio": 0.5873015873015874
+        },
+        {
+          "numero": "28",
+          "apariciones": 39,
+          "vsPromedio": 0.5476190476190477
+        },
+        {
+          "numero": "78",
+          "apariciones": 38,
+          "vsPromedio": 0.5079365079365079
+        }
+      ],
+      "cordoba": [
+        {
+          "numero": "80",
+          "apariciones": 32,
+          "vsPromedio": 0.6161616161616161
+        },
+        {
+          "numero": "04",
+          "apariciones": 29,
+          "vsPromedio": 0.46464646464646453
+        },
+        {
+          "numero": "94",
+          "apariciones": 28,
+          "vsPromedio": 0.41414141414141414
+        },
+        {
+          "numero": "19",
+          "apariciones": 27,
+          "vsPromedio": 0.36363636363636354
+        },
+        {
+          "numero": "73",
+          "apariciones": 27,
+          "vsPromedio": 0.36363636363636354
+        }
+      ]
+    },
+    "coincidenciasTop10": [],
+    "coincidenciasTop20": [],
+    "promedioPrimera": [
+      {
+        "zona": "Nacional",
+        "promedio": 4816,
+        "pct4000a5999": 0.20833333333333334
+      },
+      {
+        "zona": "Buenos Aires",
+        "promedio": 4956,
+        "pct4000a5999": 0.2698412698412698
+      },
+      {
+        "zona": "Córdoba",
+        "promedio": 4798,
+        "pct4000a5999": 0.1919191919191919
+      }
+    ],
+    "decadas": [
+      {
+        "zona": "Nacional",
+        "masCaliente": {
+          "rango": "20-29",
+          "apariciones": 258
+        },
+        "masFria": {
+          "rango": "60-69",
+          "apariciones": 222
+        },
+        "difPct": 0.16216216216216206
+      },
+      {
+        "zona": "Buenos Aires",
+        "masCaliente": {
+          "rango": "80-89",
+          "apariciones": 293
+        },
+        "masFria": {
+          "rango": "00-09",
+          "apariciones": 226
+        },
+        "difPct": 0.29646017699115035
+      },
+      {
+        "zona": "Córdoba",
+        "masCaliente": {
+          "rango": "90-99",
+          "apariciones": 215
+        },
+        "masFria": {
+          "rango": "60-69",
+          "apariciones": 177
+        },
+        "difPct": 0.21468926553672318
+      }
+    ]
+  }
+}

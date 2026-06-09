@@ -33,3 +33,6 @@ Thumbs.db
 # QA local
 _screenshots/
 _verify_pages.mjs
+
+# La Data — exports crudos de Rutas1000 (input local, no va al repo)
+data/quinielas/
