@@ -1,31 +1,76 @@
 {
   "label": "2026-05",
-  "headline": "",
-  "subhead": "",
-  "ticker": "",
+  "headline": "Las tres quinielas no coincidieron en ningún número del top 10 este mes.",
+  "subhead": "`0` de `30` coincidencias entre Nacional, Buenos Aires y Córdoba. Cada quiniela, su universo.",
+  "ticker": "Sin picks. Sin predicciones. Solo lo que pasó, en números.",
   "zonas": {
     "nacional": {
-      "apertura": "",
-      "tema": "",
-      "cajaDorada": "",
-      "cierre": ""
+      "aperturaTitle": "Veinticuatro días, distribución pareja, y un `47` que insiste.",
+      "apertura": "Empecemos por la Nacional. Veinte días de quiniela, casi dos mil números extraídos, distribución prácticamente uniforme entre las décadas: ninguna pasa los `215`, ninguna baja de `185`. Eso es lo que la estadística llamaría comportamiento aburrido, y para nuestros fines es buena noticia: la quiniela está haciendo lo que se espera de ella.\n\nPero hay un dato que llama la atención: el `47` lideró con `33` apariciones, un `67%` más que el promedio. No es muchísimo, pero es persistente. Y mientras tanto, el `63` apenas tuvo nueve. Eso es lo que pasa con muestras chicas: los extremos parecen narrativos.\n\nLo interesante en serio aparece cuando uno mira a tres cifras. El `261` y el `244` salieron ocho veces cada uno en el mes. En un universo de mil números, eso ya es algo. No predicción. Curiosidad estadística.",
+      "temaTitle": "Una rueda que aburre bien, y un par de números que insisten.",
+      "tema": "Lo primero que hay que decir de la Nacional este mes es que la rueda no tiene personalidad. Las diez décadas se reparten entre `185` y `215` apariciones. Un techo estrecho. La diferencia entre la década más caliente y la más fría es del `16%`, que en estadística de quiniela es un valor casi aburrido. Y aburrida, en este contexto, quiere decir: cumple. La rueda gira como tiene que girar.\n\nPero adentro de esa uniformidad aparece un dato fino: el `47` salió `33` veces. El promedio teórico sobre 1980 extracciones está cerca de 19,8 por número. 33 contra 19,8 es un `67%` por encima. No es escandaloso, pero es claro. Mientras tanto, el `63` apenas tuvo nueve. Veintitrés días no son suficientes para confirmar nada. Pero sí para anotar.\n\nLo interesante en serio aparece a tres cifras. El `261` y el `244` salieron ocho veces cada uno. En un universo de mil números, con menos de dos mil extracciones, lo esperado por número anda en 1,98. Ocho es cuatro veces más. Eso ya merece una mirada. No predicción. Curiosidad estadística.\n\nA cuatro cifras la película cambia poco. El milar `5000–5999` tuvo 223 apariciones; el `2000–2999`, 176. La diferencia es notable pero está dentro de lo que la distribución uniforme admite cuando uno corta a 24 días. Lo más significativo no es ningún número en particular: es que el promedio del número a primera fue `4898`, casi exactamente el teórico de 5000. La rueda está limpia.\n\nSi jugás, jugá poco. Y si querés mirar, mirá a tres cifras: ahí está lo más raro del mes.",
+      "cajas": [
+        {
+          "label": "261 y 244 · tres cifras",
+          "valor": "8",
+          "valorNota": "× cada uno",
+          "texto": "En un universo de mil números, lo esperado por número anda en menos de dos en 24 días. El `261` y el `244` aparecieron ocho. El `847` siete. El resto del top a tres cifras anda entre cinco y seis. La cola larga del azar es ancha: lo que parece patrón puede ser pura forma de la curva."
+        },
+        {
+          "label": "Promedio a primera · 99 sorteos",
+          "valor": "4898",
+          "valorNota": "/ 5000 teórico",
+          "texto": "El número promedio salido en primera estuvo a un dos por ciento del teórico esperado. Entre 4000 y 5999 cayeron 20 de los 99 — exactamente el `20%` que dice la ecuación. La Nacional este mes hizo lo que tiene que hacer. Sin sobresaltos."
+        }
+      ],
+      "cierre": "Esta fue la Nacional de mayo. Las otras dos quinielas se comportaron distinto. Si te interesa cómo, entrá a Buenos Aires, a Córdoba, o directamente a la comparativa."
     },
     "buenosAires": {
-      "apertura": "",
-      "tema": "",
-      "cajaDorada": "",
-      "cierre": ""
+      "aperturaTitle": "En Buenos Aires, la década del 80 se puso a trabajar.",
+      "apertura": "En Buenos Aires pasa algo distinto. La década del 80 está caliente: `234` apariciones contra las `171` de la década 00–09. Casi 40% de diferencia. Y cuatro de los cinco números más salidos del mes pertenecen a esa zona: el `89`, el `91`, el `78`, el `81`.\n\nEso ya no es estadística pareja: es algo que el azar decidió hacer. ¿Significa que conviene jugar al 89 el viernes que viene? No. La estadística no funciona así. Lo que pasó pasó; lo que viene es independiente.\n\nPero a tres cifras aparece un dato más fino: el `989` salió ocho veces. Está cerca del 89 caliente, comparte estructura. ¿Coincidencia? Probablemente. Pero los patrones, cuando se ven, hay que nombrarlos.",
+      "temaTitle": "La década del 80, o cuando el azar dibuja un barrio.",
+      "tema": "Hay una tentación, cuando uno mira estos números, de contar una historia. La década del 80 domina Buenos Aires este mes: `234` apariciones, contra las 171 de la década más floja. Treinta y siete por ciento de diferencia — la brecha más grande de las tres quinielas. Y los cuatro números más calientes del mes —el 89, el 91, el 78, el 81— viven todos ahí.\n\nEl cerebro humano está cableado para ver patrones. Cuatro números calientes en la misma década parece un mensaje. No lo es. La distribución uniforme, cortada a 24 días, produce estos racimos con total naturalidad. Si tirás cien dados, algunos números van a salir juntos. No se pusieron de acuerdo.\n\nLo que sí es legítimo señalar es la magnitud. Un `37%` de brecha entre décadas es alto. En la Nacional, esa misma brecha fue del `16%`. ¿Por qué Buenos Aires se desvía más? Probablemente nada. Probablemente la muestra. Pero es de las cosas que, mes a mes, vale la pena seguir.\n\nA tres cifras, el dato bonito: el `989` salió ocho veces. Comparte estructura con el 89 caliente —termina en 89, empieza en 9— y eso invita a fantasear con una conexión. No la hay, o no la podemos probar. Pero los patrones, cuando se ven, hay que nombrarlos. Nombrarlos no es creerles.\n\nBuenos Aires también confirma algo que ya vimos: el rango 4000–5999 a primera está sobrerrepresentado. Esta vez con `26%`, contra el 20% esperado. No es para apostar. Es para mirar.",
+      "cajas": [
+        {
+          "label": "989 · tres cifras",
+          "valor": "8",
+          "valorNota": "× en el mes",
+          "texto": "El `989` salió ocho veces sobre un universo de mil números. Comparte estructura con el 89, el más caliente a dos cifras. La coincidencia es elegante y casi seguramente vacía: el azar no lee los números, no sabe que el 989 «contiene» al 89. Pero el ojo sí lo ve, y por eso lo anotamos."
+        },
+        {
+          "label": "4000–5999 a primera",
+          "valor": "26%",
+          "valorNota": "/ 20% teórico",
+          "texto": "De los 99 números a primera, 26 cayeron entre 4000 y 5999. El teórico esperado es 20%. Seis puntos por encima. En la Nacional este rango dio exacto (20%); en Córdoba, apenas por debajo (19%). Buenos Aires es la única de las tres con anomalía positiva clara. Para seguir, no para jugar."
+        }
+      ],
+      "cierre": "Esta fue Buenos Aires de mayo: la quiniela con más carácter del mes. Si querés ver cómo se comportó Córdoba —que suma un sexto sorteo— o el cruce de las tres, seguí por ahí."
     },
     "cordoba": {
-      "apertura": "",
-      "tema": "",
-      "cajaDorada": "",
-      "cierre": ""
+      "aperturaTitle": "Córdoba juega un sorteo de más, y se nota.",
+      "apertura": "Córdoba tiene una particularidad operativa: además de los cinco sorteos que comparte con las otras dos, suma un sorteo turista a las 22:15. Eso le da una extracción más por día y, en este período, `17` sorteos turista para mirar aparte.\n\nEl `80` fue el caliente del mes en Córdoba: 32 apariciones. La década del 80, otra vez, aparece arriba. Pero la coincidencia con Buenos Aires se rompe rápido: en Córdoba, el 80 viene acompañado por el `04`, el `94`, el `19`. Una mezcla rara.\n\nEn el top 10 cordobés hay ocho números que no aparecen en el top 10 de las otras dos. Cada quiniela, su universo.",
+      "temaTitle": "El sexto sorteo, y por qué tira más bajo.",
+      "tema": "Córdoba es la única de las tres con un sorteo de más. El turista de las 22:15 suma una extracción diaria que las otras dos no tienen, y en este recorte deja `17` sorteos para analizar por separado. Esa diferencia operativa es justo el tipo de cosa que La Data existe para mirar.\n\nEl `80` lideró con 32 apariciones. La década del 80 vuelve a aparecer arriba —como en Buenos Aires— pero la coincidencia termina ahí. Mientras BA acompaña al 80 con el 89, el 91 y el 78, Córdoba lo rodea de `04`, `94` y `19`. Una mezcla sin lógica aparente, que es exactamente lo que el azar produce.\n\nLa década más caliente acá fue la del 90 (`215`), la más fría la del 60 (`177`): 21% de brecha. Más que la Nacional, menos que Buenos Aires. Tres quinielas, tres temperaturas distintas.\n\nLo más raro está en el turista. El promedio del número a primera en ese sorteo fue `4111`, casi 900 puntos por debajo de los otros sorteos, donde ronda los 4800–4900. Es una muestra chica —17 sorteos en este recorte— y no se puede afirmar nada todavía. Capaz es el horario, capaz es la cantidad de apuestas, capaz es nada.\n\nPero mes a mes vamos a verlo. Si el turista insiste en tirar bajo, en algún momento dejará de ser anécdota y pasará a ser dato.",
+      "cajas": [
+        {
+          "label": "Sorteo turista · 22:15",
+          "valor": "4111",
+          "valorNota": "/ 5000 teórico",
+          "texto": "El promedio del número a primera en el turista fue `4111`, contra los ~4800 de los otros sorteos cordobeses. Casi 900 puntos de diferencia. El top 5 del turista —72, 22, 80, 30, 97— tampoco se parece al del resto del día. Diecisiete sorteos no alcanzan para concluir. Alcanzan para empezar a mirar."
+        },
+        {
+          "label": "540 y 665 · tres cifras",
+          "valor": "7",
+          "valorNota": "× cada uno",
+          "texto": "A tres cifras lideran el `540` y el `665`, con siete apariciones cada uno. Detrás, el 675, el 829 y el 909 con seis. Ninguno coincide con los calientes de Nacional (261, 244) ni de Buenos Aires (989). El patrón de las tres quinielas: no comparten nada."
+        }
+      ],
+      "cierre": "Esta fue Córdoba de mayo, sorteo turista incluido. Tres quinielas vistas por separado. Ahora, lo que más llama la atención del mes: cruzarlas. Entrá a la comparativa."
     },
     "comparativa": {
-      "apertura": "",
-      "cierre": ""
+      "apertura": "Ninguna coincidió con las otras. Lo más llamativo de mayo no fue ningún número: fue lo que no pasó. Ninguno de los números calientes del top 10 coincide entre las tres quinielas. Cero. Cada quiniela tiene su universo propio.\n\nEs contraintuitivo. Tres ruedas honestas, el mismo período, los mismos 100 números posibles — y sin embargo cada una se calienta por su cuenta. No significa nada predictivo. Significa algo sobre el azar: parece pulir cada quiniela por separado.",
+      "cierre": "Esto fue La Data de mayo. Tres quinielas, `297` sorteos, casi seis mil números extraídos. Lo que más llama la atención: las tres se comportaron distinto entre sí, y ninguna coincidió con las otras en sus números calientes. Eso no significa nada predictivo. Significa algo sobre el azar: parece pulir cada quiniela por separado.\n\nEstos datos no son para apostar. Son para pensar. La quiniela funciona, hace lo que tiene que hacer, y todavía nos deja preguntas: ¿por qué la década del 80 se calienta más en BA? ¿Por qué el sorteo turista de Córdoba tira a primera más bajo? Capaz nada. Capaz algo. Mes a mes vamos a verlo."
     }
   },
-  "cierreInforme": ""
+  "cierreInforme": "Si jugás, jugá poco. Si jugás mucho, hablá con alguien."
 }
