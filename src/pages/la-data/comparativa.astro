@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ComparativaView from '../../components/la-data/ComparativaView.astro';
+import { formatMes } from '../../lib/la-data';
+
+const datosGlob = import.meta.glob('../../data/la-data/*.datos.json', { eager: true });
+const textosGlob = import.meta.glob('../../data/la-data/*.textos.json', { eager: true });
+
+const datosKey = Object.keys(datosGlob).sort().at(-1)!;
+const mesStr = datosKey.match(/(\d{4}-\d{2})\.datos\.json/)![1];
+const textosKey = Object.keys(textosGlob).find(k => k.includes(mesStr))!;
+
+const datos = datosGlob[datosKey] as any;
+const textos = textosGlob[textosKey] as any;
+
+const mesLabel = formatMes(mesStr);
+---
+
+<BaseLayout
+  title={`La Data · Comparativa · ${mesLabel}`}
+  description={`Comparativa de las tres quinielas argentinas — ${mesLabel}. Nacional, Buenos Aires y Córdoba: coincidencias, décadas y más.`}
+>
+  <ComparativaView datos={datos} textos={textos} />
+</BaseLayout>

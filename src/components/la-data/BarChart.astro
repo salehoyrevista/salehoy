@@ -1,0 +1,166 @@
+---
+/**
+ * BarChart.astro — Gráfico de barras verticales SVG estático
+ * Para décadas (10 barras) y terminaciones (10 barras).
+ */
+interface BarItem {
+  label: string;
+  value: number;
+}
+
+interface Props {
+  items: BarItem[];
+  peakLabel: string;
+  lowLabel: string;
+  accent: string;
+  title: string;
+  unit?: string;
+}
+
+const { items, peakLabel, lowLabel, accent, title, unit = '' } = Astro.props;
+
+// Geometría
+const BAR_W = 40;
+const STEP = 60;
+const LEFT = 30;
+const CHART_H = 150;
+const BASE_Y = 170;
+const LABEL_Y = 188;
+const VIEW_W = 640;
+const VIEW_H = 200;
+
+const maxVal = Math.max(...items.map(i => i.value));
+const minVal = Math.min(...items.map(i => i.value));
+
+function barHeight(value: number): number {
+  return Math.round((value / maxVal) * CHART_H);
+}
+
+const chartId = `bc-${Math.random().toString(36).slice(2, 8)}`;
+
+// Descripción accesible
+const desc = items.map(i => `${i.label}: ${i.value}${unit}`).join(', ');
+---
+
+<figure class="ld-barchart">
+  <svg
+    viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
+    role="img"
+    aria-labelledby={`${chartId}-title`}
+    class="ld-barchart__svg"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <title id={`${chartId}-title`}>{title}</title>
+    <desc>{desc}</desc>
+
+    <!-- Baseline -->
+    <line
+      x1={LEFT - 4}
+      y1={BASE_Y}
+      x2={LEFT + items.length * STEP - 4}
+      y2={BASE_Y}
+      stroke={accent}
+      stroke-width="1"
+      opacity="0.25"
+    />
+
+    {items.map((item, i) => {
+      const x = LEFT + i * STEP;
+      const bh = barHeight(item.value);
+      const barY = BASE_Y - bh;
+      const isPeak = item.value === maxVal && item.label === peakLabel;
+      const isLow = item.value === minVal && item.label === lowLabel;
+
+      let fillOpacity = '0.5';
+      let strokeProps = null;
+      if (isPeak) {
+        fillOpacity = '1';
+        strokeProps = { stroke: accent, strokeWidth: '2', strokeDasharray: 'none' };
+      } else if (isLow) {
+        fillOpacity = '0.2';
+        strokeProps = { stroke: accent, strokeWidth: '1.5', strokeDasharray: '3 2' };
+      }
+
+      return (
+        <>
+          {/* Barra principal */}
+          <rect
+            x={x - BAR_W / 2}
+            y={barY}
+            width={BAR_W}
+            height={bh}
+            rx="2"
+            fill={accent}
+            fill-opacity={fillOpacity}
+          />
+          {/* Borde superpuesto para peak y low */}
+          {strokeProps && (
+            <rect
+              x={x - BAR_W / 2}
+              y={barY}
+              width={BAR_W}
+              height={bh}
+              rx="2"
+              fill="none"
+              stroke={strokeProps.stroke}
+              stroke-width={strokeProps.strokeWidth}
+              stroke-dasharray={strokeProps.strokeDasharray === 'none' ? undefined : strokeProps.strokeDasharray}
+            />
+          )}
+          {/* Valor encima */}
+          <text
+            x={x}
+            y={barY - 4}
+            text-anchor="middle"
+            font-family="'JetBrains Mono', monospace"
+            font-size="9"
+            fill={accent}
+            fill-opacity={isPeak ? '1' : isLow ? '0.6' : '0.75'}
+          >
+            {item.value}
+          </text>
+          {/* Label debajo */}
+          <text
+            x={x}
+            y={LABEL_Y}
+            text-anchor="middle"
+            font-family="'JetBrains Mono', monospace"
+            font-size="9"
+            fill={accent}
+            fill-opacity="0.6"
+          >
+            {item.label}
+          </text>
+        </>
+      );
+    })}
+  </svg>
+
+  <figcaption class="ld-barchart__legend">
+    <span class="ld-barchart__legend-peak">▲ pico: {peakLabel}</span>
+    <span class="ld-barchart__legend-low">▽ mínimo: {lowLabel}</span>
+  </figcaption>
+</figure>
+
+<style>
+  .ld-barchart {
+    margin: 0;
+  }
+
+  .ld-barchart__svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .ld-barchart__legend {
+    display: flex;
+    gap: var(--space-lg);
+    justify-content: center;
+    margin-top: var(--space-sm);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    opacity: 0.7;
+    color: var(--ld-accent, currentColor);
+  }
+</style>

@@ -254,19 +254,32 @@ writeFileSync(outDatos, JSON.stringify(datos, null, 2));
 
 const outTextos = join(ROOT, 'src', 'data', 'la-data', `${mes}.textos.json`);
 if (!existsSync(outTextos)) {
-  const vacio = '';
+  const v = '';
+  // Una zona editorial: títulos + prosa multipárrafo (separá párrafos con una
+  // línea en blanco) + las cajas de dato que haga falta + cierre.
+  // En la prosa, marcá los números a resaltar con backticks: `234`.
+  const zonaTxt = () => ({
+    aperturaTitle: v,   // título de apertura (h2)
+    apertura: v,        // prosa de apertura
+    temaTitle: v,       // título del tema
+    tema: v,            // prosa del tema (el componente usa la 1ª letra como capitular)
+    cajas: [            // una o más cajas de dato; sumá/sacá objetos según el mes
+      { label: v, valor: v, valorNota: v, texto: v },
+    ],
+    cierre: v,          // bajada de cierre de la zona
+  });
   const skeleton = {
-    label: `${mes}`,
-    headline: vacio,
-    subhead: vacio,
-    ticker: vacio,
+    label: mes,         // el componente muestra "Mayo 2026", no este string
+    headline: v,        // titular del mes (resaltá el número con backticks)
+    subhead: v,
+    ticker: v,
     zonas: {
-      nacional: { apertura: vacio, tema: vacio, cajaDorada: vacio, cierre: vacio },
-      buenosAires: { apertura: vacio, tema: vacio, cajaDorada: vacio, cierre: vacio },
-      cordoba: { apertura: vacio, tema: vacio, cajaDorada: vacio, cierre: vacio },
-      comparativa: { apertura: vacio, cierre: vacio },
+      nacional: zonaTxt(),
+      buenosAires: zonaTxt(),
+      cordoba: zonaTxt(),
+      comparativa: { apertura: v, cierre: v },
     },
-    cierreInforme: vacio,
+    cierreInforme: v,
   };
   writeFileSync(outTextos, JSON.stringify(skeleton, null, 2));
 }

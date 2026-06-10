@@ -1,0 +1,391 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SalaHeader from '../../components/SalaHeader.astro';
+import {
+  formatMes,
+  formatDateShort,
+  formatGeneradoEl,
+  formatVsPromedio,
+  PALETAS,
+  ZONA_NOMBRE,
+  ZONA_SLUG,
+  renderInlineHTML,
+} from '../../lib/la-data';
+
+// Cargar el mes más reciente
+const datosGlob = import.meta.glob('../../data/la-data/*.datos.json', { eager: true });
+const textosGlob = import.meta.glob('../../data/la-data/*.textos.json', { eager: true });
+
+const datosKey = Object.keys(datosGlob).sort().at(-1)!;
+const mesStr = datosKey.match(/(\d{4}-\d{2})\.datos\.json/)![1];
+const textosKey = Object.keys(textosGlob).find(k => k.includes(mesStr))!;
+
+const datos = datosGlob[datosKey] as any;
+const textos = textosGlob[textosKey] as any;
+
+const mesLabel = formatMes(mesStr);
+
+// Top 5 de Nacional para ticker de portada
+const top5Nacional = datos.zonas.nacional.dosCifras.top.slice(0, 5);
+
+const generadoEl = formatGeneradoEl(datos.generadoEl);
+---
+
+<BaseLayout
+  title="La Data · SaleHoy"
+  description={`Informe quinielistico mensual ${mesLabel} por Tomás Vera. Estadísticas, análisis y distribuciones de la quiniela argentina.`}
+>
+  <SalaHeader titulo="LA DATA" bajada={`Informe ${mesLabel}`} vibe="green" />
+
+  <div class="ld-portada container-wide">
+
+    <!-- Headline editorial (si existe) -->
+    {textos.headline && (
+      <h2 class="ld-portada__headline" set:html={renderInlineHTML(textos.headline)} />
+    )}
+    {textos.subhead && (
+      <p class="ld-portada__subhead">{textos.subhead}</p>
+    )}
+
+    <!-- Stats del mes en grande -->
+    <div class="ld-portada__stats">
+      <div class="ld-portada__stat">
+        <span class="data-num-large">{datos.totales.sorteos}</span>
+        <p class="ld-portada__stat-label">sorteos</p>
+      </div>
+      <div class="ld-portada__stat">
+        <span class="data-num-large">{datos.totales.extracciones}</span>
+        <p class="ld-portada__stat-label">extracciones</p>
+      </div>
+      <div class="ld-portada__stat">
+        <span class="ld-portada__stat-periodo">
+          {formatDateShort(datos.periodo.desde)} → {formatDateShort(datos.periodo.hasta)}
+        </span>
+        <p class="ld-portada__stat-label">{datos.periodo.dias} días</p>
+      </div>
+    </div>
+
+    <!-- Ticker: top 5 de Nacional -->
+    <div class="ld-portada__ticker" aria-label="Top 5 de la quiniela Nacional">
+      <span class="ld-portada__ticker-label">TOP 5 NACIONAL</span>
+      <div class="ld-portada__chips">
+        {top5Nacional.map((t: any) => (
+          <span class="ld-portada__chip">
+            <span class="ld-portada__chip-num">{t.numero}</span>
+            <span class="ld-portada__chip-meta">{formatVsPromedio(t.vsPromedio)}</span>
+          </span>
+        ))}
+      </div>
+    </div>
+
+    <!-- Cards de zona -->
+    <nav class="ld-portada__zonas" aria-label="Zonas del informe">
+      {(['nacional', 'buenosAires', 'cordoba', 'comparativa'] as const).map(z => {
+        const nombre = ZONA_NOMBRE[z] ?? 'Comparativa';
+        const topZona = z !== 'comparativa'
+          ? datos.zonas[z].dosCifras.top.slice(0, 3)
+          : null;
+        return (
+          <a
+            href={`/la-data/${ZONA_SLUG[z]}`}
+            class="ld-zona-card"
+            style={`--card-bg:${PALETAS[z].bg}; --card-accent:${PALETAS[z].accent}`}
+          >
+            <div class="ld-zona-card__head">
+              <span class="ld-zona-card__eyebrow">QUINIELA</span>
+              <span class="ld-zona-card__nombre">{nombre}</span>
+            </div>
+            {topZona && (
+              <div class="ld-zona-card__nums">
+                {topZona.map((t: any) => (
+                  <span class="ld-zona-card__num">{t.numero}</span>
+                ))}
+              </div>
+            )}
+            {z === 'comparativa' && (
+              <p class="ld-zona-card__comp-desc">Las tres loterías comparadas</p>
+            )}
+            <span class="ld-zona-card__arrow">→</span>
+          </a>
+        );
+      })}
+    </nav>
+
+    <!-- Firma y fecha -->
+    <p class="ld-portada__firma">
+      Por <strong>Tomás Vera</strong>
+      <span class="ld-portada__sep">·</span>
+      <span class="ld-portada__fecha">{mesLabel}</span>
+      <span class="ld-portada__sep">·</span>
+      <span class="ld-portada__gen">act. {generadoEl}</span>
+    </p>
+
+    <!-- Pie legal -->
+    <p class="ld-portada__legal">
+      SaleHoy es análisis cultural, no predicción.
+      Jugá responsable. Ayuda por juego problemático: Sedronar <strong>141</strong>.
+    </p>
+
+  </div>
+</BaseLayout>
+
+<style>
+  .ld-portada {
+    padding-block: var(--space-2xl) var(--space-4xl);
+  }
+
+  /* ── Headline editorial ─────────────────────────────────────────────────── */
+  .ld-portada__headline {
+    font-family: var(--font-display);
+    font-size: clamp(var(--text-2xl), 4vw, var(--text-5xl));
+    font-weight: var(--font-bold);
+    line-height: var(--leading-snug);
+    color: var(--color-text);
+    margin: 0 0 var(--space-md);
+    letter-spacing: -0.01em;
+  }
+
+  .ld-portada__subhead {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    margin: 0 0 var(--space-2xl);
+    font-style: italic;
+  }
+
+  /* ── Stats grandes ──────────────────────────────────────────────────────── */
+  .ld-portada__stats {
+    display: flex;
+    gap: var(--space-2xl);
+    align-items: flex-end;
+    flex-wrap: wrap;
+    padding-block: var(--space-xl);
+    border-top: 1px solid var(--color-line);
+    border-bottom: 1px solid var(--color-line);
+    margin-bottom: var(--space-2xl);
+  }
+
+  .ld-portada__stat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .ld-portada__stat-periodo {
+    font-family: var(--font-mono);
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    color: var(--color-text);
+    line-height: 1;
+  }
+
+  .ld-portada__stat-label {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-tertiary);
+    margin: 0;
+  }
+
+  /* ── Ticker top 5 ───────────────────────────────────────────────────────── */
+  .ld-portada__ticker {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-2xl);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+  }
+
+  .ld-portada__ticker-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.15em;
+    color: var(--color-text-tertiary);
+    white-space: nowrap;
+  }
+
+  .ld-portada__chips {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+  }
+
+  .ld-portada__chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #0F1730;
+    border: 1px solid rgba(91, 211, 122, 0.35);
+    border-radius: var(--radius-md);
+    padding: var(--space-xs) var(--space-md);
+    min-width: 52px;
+  }
+
+  .ld-portada__chip-num {
+    font-family: var(--font-mono);
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    color: #5BD37A;
+    line-height: 1;
+  }
+
+  .ld-portada__chip-meta {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: rgba(91, 211, 122, 0.55);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── Cards de zona ──────────────────────────────────────────────────────── */
+  .ld-portada__zonas {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+    margin-bottom: var(--space-3xl);
+  }
+
+  @media (max-width: 640px) {
+    .ld-portada__zonas { grid-template-columns: 1fr; }
+  }
+
+  @media (min-width: 1024px) {
+    .ld-portada__zonas { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  .ld-zona-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-md);
+    background: var(--card-bg);
+    border: 1px solid;
+    border-color: color-mix(in srgb, var(--card-accent) 30%, transparent);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xl);
+    text-decoration: none;
+    transition: all var(--transition-base);
+    min-height: 160px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ld-zona-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: color-mix(in srgb, var(--card-accent) 0%, transparent);
+    transition: background var(--transition-base);
+  }
+
+  .ld-zona-card:hover::before {
+    background: color-mix(in srgb, var(--card-accent) 8%, transparent);
+  }
+
+  .ld-zona-card:hover {
+    border-color: color-mix(in srgb, var(--card-accent) 60%, transparent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px -8px color-mix(in srgb, var(--card-accent) 30%, transparent);
+  }
+
+  .ld-zona-card__head {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    position: relative;
+  }
+
+  .ld-zona-card__eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.18em;
+    color: color-mix(in srgb, var(--card-accent) 50%, transparent);
+  }
+
+  .ld-zona-card__nombre {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    color: var(--card-accent);
+    line-height: var(--leading-tight);
+  }
+
+  .ld-zona-card__nums {
+    display: flex;
+    gap: var(--space-sm);
+    position: relative;
+  }
+
+  .ld-zona-card__num {
+    font-family: var(--font-mono);
+    font-size: var(--text-lg);
+    font-weight: var(--font-bold);
+    color: var(--card-accent);
+    background: color-mix(in srgb, var(--card-accent) 10%, transparent);
+    border-radius: var(--radius-sm);
+    padding: 2px 8px;
+    line-height: 1.5;
+  }
+
+  .ld-zona-card__comp-desc {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: color-mix(in srgb, var(--card-accent) 60%, transparent);
+    margin: 0;
+    position: relative;
+  }
+
+  .ld-zona-card__arrow {
+    font-family: var(--font-mono);
+    font-size: var(--text-xl);
+    color: var(--card-accent);
+    align-self: flex-end;
+    position: relative;
+    transition: transform var(--transition-fast);
+  }
+
+  .ld-zona-card:hover .ld-zona-card__arrow {
+    transform: translateX(4px);
+  }
+
+  /* ── Firma ──────────────────────────────────────────────────────────────── */
+  .ld-portada__firma {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    margin: 0 0 var(--space-md);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+  }
+
+  .ld-portada__firma strong { color: var(--color-text); }
+
+  .ld-portada__sep { opacity: 0.4; }
+
+  .ld-portada__fecha {
+    color: var(--acento-tomas);
+  }
+
+  .ld-portada__gen {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-tertiary);
+  }
+
+  /* ── Legal ──────────────────────────────────────────────────────────────── */
+  .ld-portada__legal {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    color: var(--color-text-tertiary);
+    margin: 0;
+    line-height: var(--leading-relaxed);
+    border-top: 1px solid var(--color-line);
+    padding-top: var(--space-md);
+  }
+</style>

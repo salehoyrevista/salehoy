@@ -1,0 +1,752 @@
+---
+/**
+ * ComparativaView.astro — Vista comparativa de las 3 zonas
+ */
+import {
+  formatMes,
+  formatVsPromedio,
+  formatPct,
+  renderProseHTML,
+  peakDecada,
+  PALETAS,
+  ZONA_NOMBRE,
+  ZONA_SLUG,
+  formatDateShort,
+  formatGeneradoEl,
+} from '../../lib/la-data';
+
+interface Props {
+  datos: any;
+  textos: any;
+}
+
+const { datos, textos } = Astro.props;
+
+const mesStr = textos.label as string;
+const mesLabel = formatMes(mesStr);
+const generadoEl = formatGeneradoEl(datos.generadoEl);
+
+const bg = '#F5F1E8';
+const accent = '#1B1F2A';
+
+const apertura = textos.zonas?.comparativa?.apertura ?? '';
+const cierre = textos.zonas?.comparativa?.cierre ?? '';
+
+const { topCruzado, coincidenciasTop10, coincidenciasTop20, promedioPrimera, decadas } = datos.comparativa;
+
+// Ticker
+const tickerText = `COMPARATIVA · ${mesLabel.toUpperCase()} · ${formatDateShort(datos.periodo.desde)}→${formatDateShort(datos.periodo.hasta)} · ${datos.totales.sorteos} sorteos · ${datos.totales.extracciones} extracciones · act.${generadoEl}`;
+
+// Nav inter-zonas (todas las 4)
+const todasLasZonas = [
+  { key: 'nacional',    nombre: 'Nacional',    slug: 'nacional' },
+  { key: 'buenosAires', nombre: 'Buenos Aires', slug: 'buenos-aires' },
+  { key: 'cordoba',     nombre: 'Córdoba',      slug: 'cordoba' },
+];
+
+// Diferencia porcentual entre caliente y fría
+function difDecadas(masCaliente: any, masFria: any): number {
+  return (masCaliente.apariciones - masFria.apariciones) / masFria.apariciones;
+}
+---
+
+<div
+  class="ld-zona ld-zona--comp"
+  style={`--ld-bg:${bg}; --ld-accent:${accent}; --ld-is-dark:0`}
+>
+
+  <!-- Breadcrumb -->
+  <nav class="ld-crumbs" aria-label="Migas de pan">
+    <a href="/la-sala" class="ld-crumb">★ LA SALA</a>
+    <span class="ld-crumb-sep" aria-hidden="true">›</span>
+    <a href="/la-data" class="ld-crumb">LA DATA</a>
+    <span class="ld-crumb-sep" aria-hidden="true">›</span>
+    <span class="ld-crumb ld-crumb--current" aria-current="page">COMPARATIVA</span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="ld-hero ld-hero--comp">
+
+    <!-- Ticker -->
+    <div class="ld-ticker" aria-label="Datos del mes" role="marquee">
+      <div class="ld-ticker__track">
+        <span class="ld-ticker__txt">{tickerText} &nbsp;·&nbsp; {tickerText} &nbsp;·&nbsp;</span>
+        <span class="ld-ticker__txt" aria-hidden="true">{tickerText} &nbsp;·&nbsp; {tickerText} &nbsp;·&nbsp;</span>
+      </div>
+    </div>
+
+    <div class="ld-hero__head container-wide">
+      <p class="ld-hero__eyebrow">QUINIELA ARGENTINA</p>
+      <h1 class="ld-hero__nombre">Comparativa</h1>
+      <p class="ld-hero__periodo">{mesLabel}</p>
+    </div>
+
+    <div class="ld-hero__stats container-wide">
+      <div class="ld-stat">
+        <span class="ld-stat__num">{datos.totales.sorteos}</span>
+        <span class="ld-stat__label">sorteos totales</span>
+      </div>
+      <div class="ld-stat">
+        <span class="ld-stat__num">{datos.totales.extracciones}</span>
+        <span class="ld-stat__label">extracciones totales</span>
+      </div>
+      <div class="ld-stat">
+        <span class="ld-stat__num">{datos.periodo.dias}</span>
+        <span class="ld-stat__label">días</span>
+      </div>
+    </div>
+
+    <!-- Nav inter-zonas -->
+    <nav class="ld-zonanav container-wide" aria-label="Zonas del informe">
+      {todasLasZonas.map(z => (
+        <a
+          href={`/la-data/${z.slug}`}
+          class="ld-zonanav__link"
+          style={`--zn-accent:${PALETAS[z.key].accent}; --zn-bg:${PALETAS[z.key].bg}`}
+        >
+          {z.nombre}
+        </a>
+      ))}
+    </nav>
+  </section>
+
+  <!-- Apertura editorial -->
+  {apertura && (
+    <section class="ld-apertura container-prose">
+      <div set:html={renderProseHTML(apertura)} />
+    </section>
+  )}
+
+  <!-- Top cruzado -->
+  <section class="ld-comp-topcruz container-wide">
+    <h2 class="ld-section-title">Top por zona</h2>
+    <div class="ld-comp-topcruz__grid">
+      {(['nacional', 'buenosAires', 'cordoba'] as const).map(z => (
+        <div
+          class="ld-comp-col"
+          style={`--col-accent:${PALETAS[z].accent}; --col-bg:${PALETAS[z].bg}`}
+        >
+          <h3 class="ld-comp-col__nombre">{ZONA_NOMBRE[z]}</h3>
+          <ol class="ld-comp-col__list">
+            {topCruzado[z].map((t: any) => (
+              <li class="ld-comp-col__item">
+                <span class="ld-comp-num">{t.numero}</span>
+                <span class="ld-comp-ap">{t.apariciones}v</span>
+                <span class={`ld-vs ${t.vsPromedio >= 0 ? 'ld-vs--pos' : 'ld-vs--neg'}`}>
+                  {formatVsPromedio(t.vsPromedio)}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Coincidencias -->
+  <section class="ld-comp-coincidencias container-wide">
+    <h2 class="ld-section-title">Coincidencias entre las tres zonas</h2>
+    <div class="ld-comp-coin__grid">
+      <div class="ld-comp-coin__bloque">
+        <p class="ld-comp-coin__label">Top 10</p>
+        {coincidenciasTop10.length > 0 ? (
+          <p class="ld-comp-coin__nums">{coincidenciasTop10.join(', ')}</p>
+        ) : (
+          <p class="ld-empty">Sin coincidencias en el top 10 este mes.</p>
+        )}
+      </div>
+      <div class="ld-comp-coin__bloque">
+        <p class="ld-comp-coin__label">Top 20</p>
+        {coincidenciasTop20.length > 0 ? (
+          <p class="ld-comp-coin__nums">{coincidenciasTop20.join(', ')}</p>
+        ) : (
+          <p class="ld-empty">Sin coincidencias en el top 20 tampoco.</p>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- Promedio a primera -->
+  <section class="ld-comp-primera container-wide">
+    <h2 class="ld-section-title">A primera: comparativa</h2>
+    <div class="ld-comp-tabla-wrap">
+      <table class="ld-comp-tabla">
+        <thead>
+          <tr>
+            <th>Zona</th>
+            <th>Promedio</th>
+            <th>% 4000–5999</th>
+            <th>Esperado</th>
+          </tr>
+        </thead>
+        <tbody>
+          {promedioPrimera.map((z: any) => (
+            <tr>
+              <td>{z.zona}</td>
+              <td class="ld-comp-td-num">{z.promedio}</td>
+              <td class="ld-comp-td-num">{formatPct(z.pct4000a5999)}</td>
+              <td class="ld-comp-td-dim">20.0%</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Décadas por zona -->
+  <section class="ld-comp-decadas container-wide">
+    <h2 class="ld-section-title">Décadas por zona</h2>
+    <div class="ld-comp-dec__grid">
+      {decadas.map((d: any) => {
+        const dif = difDecadas(d.masCaliente, d.masFria);
+        return (
+          <div class="ld-comp-dec">
+            <h3 class="ld-comp-dec__zona">{d.zona}</h3>
+            <div class="ld-comp-dec__row">
+              <span class="ld-comp-dec__label">Caliente</span>
+              <span class="ld-comp-dec__val">{d.masCaliente.rango}</span>
+              <span class="ld-comp-dec__ap">{d.masCaliente.apariciones}</span>
+            </div>
+            <div class="ld-comp-dec__row">
+              <span class="ld-comp-dec__label">Fría</span>
+              <span class="ld-comp-dec__val">{d.masFria.rango}</span>
+              <span class="ld-comp-dec__ap">{d.masFria.apariciones}</span>
+            </div>
+            <div class="ld-comp-dec__dif">
+              Diferencia: <strong class="ld-vs ld-vs--pos">{formatVsPromedio(dif)}</strong>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </section>
+
+  <!-- Cierre editorial -->
+  {cierre && (
+    <section class="ld-cierre container-prose">
+      <div set:html={renderProseHTML(cierre)} />
+    </section>
+  )}
+
+  <!-- Pie editorial -->
+  <footer class="ld-pie container-wide">
+    <p class="ld-pie__firma">Análisis de <strong>Tomás Vera</strong></p>
+    <p class="ld-pie__legal">
+      SaleHoy es análisis cultural, no predicción.
+      La quiniela es un juego de azar regulado.
+      Jugá responsable. Ayuda por juego problemático: Sedronar <strong>141</strong>.
+    </p>
+  </footer>
+
+</div>
+
+<style>
+  /* ── Variables ───────────────────────────────────────────────────────────── */
+  .ld-zona--comp {
+    background-color: var(--ld-bg);
+    color: var(--ld-accent);
+    min-height: 100vh;
+  }
+
+  /* ── Breadcrumb ─────────────────────────────────────────────────────────── */
+  .ld-crumbs {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-md) var(--space-lg);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid;
+    border-color: color-mix(in srgb, var(--ld-accent) 20%, transparent);
+  }
+
+  .ld-crumb {
+    color: color-mix(in srgb, var(--ld-accent) 55%, transparent);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+  .ld-crumb:hover { color: var(--ld-accent); }
+  .ld-crumb--current { color: var(--ld-accent); }
+  .ld-crumb-sep { opacity: 0.35; }
+
+  /* ── Hero ───────────────────────────────────────────────────────────────── */
+  .ld-hero--comp {
+    padding-bottom: var(--space-2xl);
+    border-bottom: 1px solid;
+    border-color: color-mix(in srgb, var(--ld-accent) 15%, transparent);
+    background: color-mix(in srgb, #E8E2D4 100%, transparent);
+  }
+
+  /* ── Ticker ─────────────────────────────────────────────────────────────── */
+  .ld-ticker {
+    overflow: hidden;
+    background: color-mix(in srgb, var(--ld-accent) 6%, transparent);
+    border-bottom: 1px solid;
+    border-color: color-mix(in srgb, var(--ld-accent) 15%, transparent);
+    padding-block: var(--space-xs);
+    white-space: nowrap;
+  }
+
+  .ld-ticker__track {
+    display: inline-flex;
+    animation: ldScroll 50s linear infinite;
+  }
+
+  .ld-ticker__txt {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.08em;
+    color: color-mix(in srgb, var(--ld-accent) 55%, transparent);
+    padding-inline: var(--space-md);
+  }
+
+  @keyframes ldScroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ld-ticker__track { animation: none; }
+  }
+
+  /* ── Hero head ──────────────────────────────────────────────────────────── */
+  .ld-hero__head {
+    padding-top: var(--space-2xl);
+    padding-bottom: var(--space-lg);
+  }
+
+  .ld-hero__eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.2em;
+    color: color-mix(in srgb, var(--ld-accent) 45%, transparent);
+    margin: 0 0 var(--space-xs);
+  }
+
+  .ld-hero__nombre {
+    font-family: var(--font-display);
+    font-size: clamp(var(--text-4xl), 8vw, var(--text-7xl));
+    font-weight: var(--font-bold);
+    line-height: var(--leading-tight);
+    color: var(--ld-accent);
+    margin: 0 0 var(--space-sm);
+    letter-spacing: -0.02em;
+  }
+
+  .ld-hero__periodo {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: color-mix(in srgb, var(--ld-accent) 50%, transparent);
+    margin: 0;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── Stats ──────────────────────────────────────────────────────────────── */
+  .ld-hero__stats {
+    display: flex;
+    gap: var(--space-xl);
+    padding-block: var(--space-lg);
+    border-top: 1px solid;
+    border-color: color-mix(in srgb, var(--ld-accent) 12%, transparent);
+    flex-wrap: wrap;
+  }
+
+  .ld-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .ld-stat__num {
+    font-family: var(--font-mono);
+    font-size: clamp(var(--text-2xl), 4vw, var(--text-4xl));
+    font-weight: var(--font-bold);
+    color: var(--ld-accent);
+    line-height: 1;
+  }
+
+  .ld-stat__label {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--ld-accent) 45%, transparent);
+  }
+
+  /* ── Nav inter-zonas ────────────────────────────────────────────────────── */
+  .ld-zonanav {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    padding-top: var(--space-lg);
+  }
+
+  .ld-zonanav__link {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: var(--space-xs) var(--space-md);
+    border: 1px solid;
+    border-color: var(--zn-accent);
+    color: var(--zn-accent);
+    border-radius: var(--radius-full);
+    transition: all var(--transition-fast);
+    text-decoration: none;
+  }
+
+  .ld-zonanav__link:hover {
+    background: var(--zn-accent);
+    color: var(--zn-bg, #000);
+  }
+
+  /* ── Section title ──────────────────────────────────────────────────────── */
+  .ld-section-title {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--ld-accent) 50%, transparent);
+    border-bottom: 1px solid;
+    border-color: color-mix(in srgb, var(--ld-accent) 18%, transparent);
+    padding-bottom: var(--space-sm);
+    margin-bottom: var(--space-xl);
+  }
+
+  /* ── Apertura ───────────────────────────────────────────────────────────── */
+  .ld-apertura {
+    padding-block: var(--space-3xl);
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: color-mix(in srgb, var(--ld-accent) 85%, transparent);
+  }
+
+  .ld-apertura :global(p) { margin-bottom: var(--space-md); }
+
+  /* ── Top cruzado ────────────────────────────────────────────────────────── */
+  .ld-comp-topcruz {
+    padding-block: var(--space-3xl);
+    border-top: 1px solid;
+    border-color: color-mix(in srgb, var(--ld-accent) 12%, transparent);
+  }
+
+  .ld-comp-topcruz__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-lg);
+  }
+
+  @media (max-width: 768px) {
+    .ld-comp-topcruz__grid { grid-template-columns: 1fr; }
+  }
+
+  .ld-comp-col {
+    background: var(--col-bg);
+    border: 1px solid;
+    border-color: color-mix(in srgb, var(--col-accent) 30%, transparent);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+  }
+
+  .ld-comp-col__nombre {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--col-accent);
+    margin: 0 0 var(--space-md);
+    border-bottom: 1px solid;
+    border-color: color-mix(in srgb, var(--col-accent) 25%, transparent);
+    padding-bottom: var(--space-sm);
+  }
+
+  .ld-comp-col__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .ld-comp-col__item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: color-mix(in srgb, var(--col-accent) 75%, transparent);
+  }
+
+  .ld-comp-num {
+    font-family: var(--font-mono);
+    font-weight: var(--font-bold);
+    color: var(--col-accent);
+    min-width: 2.2em;
+  }
+
+  .ld-comp-ap {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    opacity: 0.7;
+  }
+
+  .ld-vs {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: var(--font-bold);
+    margin-left: auto;
+    letter-spacing: 0.03em;
+  }
+
+  .ld-vs--pos { color: #5BD37A; }
+  .ld-vs--neg { color: #e07040; }
+
+  /* ── Coincidencias ──────────────────────────────────────────────────────── */
+  .ld-comp-coincidencias {
+    padding-block: var(--space-2xl);
+    border-top: 1px solid;
+    border-color: color-mix(in srgb, var(--ld-accent) 12%, transparent);
+  }
+
+  .ld-comp-coin__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+  }
+
+  @media (max-width: 480px) {
+    .ld-comp-coin__grid { grid-template-columns: 1fr; }
+  }
+
+  .ld-comp-coin__bloque {
+    background: color-mix(in srgb, var(--ld-accent) 5%, transparent);
+    border: 1px solid;
+    border-color: color-mix(in srgb, var(--ld-accent) 15%, transparent);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+  }
+
+  .ld-comp-coin__label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--ld-accent) 50%, transparent);
+    margin: 0 0 var(--space-sm);
+  }
+
+  .ld-comp-coin__nums {
+    font-family: var(--font-mono);
+    font-size: var(--text-base);
+    font-weight: var(--font-bold);
+    color: var(--ld-accent);
+    margin: 0;
+    letter-spacing: 0.05em;
+  }
+
+  .ld-empty {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: color-mix(in srgb, var(--ld-accent) 45%, transparent);
+    font-style: italic;
+    margin: 0;
+  }
+
+  /* ── Promedio a primera ─────────────────────────────────────────────────── */
+  .ld-comp-primera {
+    padding-block: var(--space-2xl);
+    border-top: 1px solid;
+    border-color: color-mix(in srgb, var(--ld-accent) 12%, transparent);
+  }
+
+  .ld-comp-tabla-wrap {
+    overflow-x: auto;
+  }
+
+  .ld-comp-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+  }
+
+  .ld-comp-tabla th {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--ld-accent) 50%, transparent);
+    text-align: left;
+    padding: var(--space-sm) var(--space-md);
+    border-bottom: 2px solid;
+    border-color: color-mix(in srgb, var(--ld-accent) 20%, transparent);
+  }
+
+  .ld-comp-tabla td {
+    padding: var(--space-sm) var(--space-md);
+    border-bottom: 1px solid;
+    border-color: color-mix(in srgb, var(--ld-accent) 10%, transparent);
+    color: color-mix(in srgb, var(--ld-accent) 80%, transparent);
+  }
+
+  .ld-comp-td-num {
+    font-family: var(--font-mono);
+    font-weight: var(--font-bold);
+    color: var(--ld-accent) !important;
+  }
+
+  .ld-comp-td-dim {
+    font-family: var(--font-mono);
+    color: color-mix(in srgb, var(--ld-accent) 45%, transparent) !important;
+  }
+
+  /* ── Décadas ────────────────────────────────────────────────────────────── */
+  .ld-comp-decadas {
+    padding-block: var(--space-2xl);
+    border-top: 1px solid;
+    border-color: color-mix(in srgb, var(--ld-accent) 12%, transparent);
+  }
+
+  .ld-comp-dec__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-lg);
+  }
+
+  @media (max-width: 768px) {
+    .ld-comp-dec__grid { grid-template-columns: 1fr; }
+  }
+
+  .ld-comp-dec {
+    background: color-mix(in srgb, var(--ld-accent) 5%, transparent);
+    border: 1px solid;
+    border-color: color-mix(in srgb, var(--ld-accent) 15%, transparent);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+  }
+
+  .ld-comp-dec__zona {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--ld-accent) 55%, transparent);
+    margin: 0 0 var(--space-md);
+    border-bottom: 1px solid;
+    border-color: color-mix(in srgb, var(--ld-accent) 12%, transparent);
+    padding-bottom: var(--space-sm);
+  }
+
+  .ld-comp-dec__row {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+    margin-bottom: var(--space-xs);
+    font-size: var(--text-sm);
+  }
+
+  .ld-comp-dec__label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: color-mix(in srgb, var(--ld-accent) 45%, transparent);
+    min-width: 5em;
+  }
+
+  .ld-comp-dec__val {
+    font-family: var(--font-mono);
+    font-weight: var(--font-bold);
+    color: var(--ld-accent);
+  }
+
+  .ld-comp-dec__ap {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: color-mix(in srgb, var(--ld-accent) 55%, transparent);
+  }
+
+  .ld-comp-dec__dif {
+    margin-top: var(--space-sm);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: color-mix(in srgb, var(--ld-accent) 55%, transparent);
+    padding-top: var(--space-sm);
+    border-top: 1px solid;
+    border-color: color-mix(in srgb, var(--ld-accent) 10%, transparent);
+  }
+
+  /* ── Cierre ─────────────────────────────────────────────────────────────── */
+  .ld-cierre {
+    padding-block: var(--space-3xl);
+    border-top: 1px solid;
+    border-color: color-mix(in srgb, var(--ld-accent) 12%, transparent);
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: color-mix(in srgb, var(--ld-accent) 80%, transparent);
+    font-style: italic;
+  }
+
+  .ld-cierre :global(p) { margin-bottom: var(--space-md); }
+
+  /* ── Pie editorial ──────────────────────────────────────────────────────── */
+  .ld-pie {
+    padding-block: var(--space-2xl);
+    border-top: 1px solid;
+    border-color: color-mix(in srgb, var(--ld-accent) 15%, transparent);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .ld-pie__firma {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: color-mix(in srgb, var(--ld-accent) 70%, transparent);
+    margin: 0;
+  }
+
+  .ld-pie__firma strong { color: var(--ld-accent); }
+
+  .ld-pie__legal {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    color: color-mix(in srgb, var(--ld-accent) 40%, transparent);
+    margin: 0;
+    line-height: var(--leading-relaxed);
+  }
+
+  .ld-pie__legal strong {
+    color: color-mix(in srgb, var(--ld-accent) 65%, transparent);
+  }
+
+  /* ── Container helpers dentro de la zona comparativa ────────────────────── */
+  .ld-zona--comp :global(.container-wide) {
+    max-width: var(--container-wide);
+    margin-inline: auto;
+    padding-inline: var(--gutter-xs);
+  }
+
+  .ld-zona--comp :global(.container-prose) {
+    max-width: var(--container-prose);
+    margin-inline: auto;
+    padding-inline: var(--gutter-xs);
+  }
+
+  @media (min-width: 768px) {
+    .ld-zona--comp :global(.container-wide),
+    .ld-zona--comp :global(.container-prose) {
+      padding-inline: var(--gutter-sm);
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .ld-zona--comp :global(.container-wide),
+    .ld-zona--comp :global(.container-prose) {
+      padding-inline: var(--gutter-lg);
+    }
+  }
+</style>
