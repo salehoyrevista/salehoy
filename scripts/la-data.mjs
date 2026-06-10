@@ -22,10 +22,18 @@ if (!mes || !/^\d{4}-\d{2}$/.test(mes)) {
 }
 
 const DIA_RE = /^([A-Za-zÁÉÍÓÚáéíóúñ]+?)(\d{2}\/\d{2}\/\d{4})(\d{2}:\d{2})$/;
-const ZONA_DE_MARCADOR = (t) =>
-  t.startsWith('Quiniela Buenos Aires') ? 'buenosAires'
-  : t.startsWith('Quiniela de Córdoba') ? 'cordoba'
-  : null;
+// Reconoce SOLO las tres quinielas de La Data por su nombre. Cualquier otra
+// (Ciudad/CABA, Santa Fe, Montevideo, etc.) devuelve '_ignorar_' y se descarta:
+// así un export equivocado nunca contamina en silencio.
+const ZONA_DE_MARCADOR = (t) => {
+  const s = t.toLowerCase();
+  if (!s.startsWith('quiniela')) return null;           // no es un marcador de zona
+  if (s.includes('córdoba') || s.includes('cordoba')) return 'cordoba';
+  if (s.includes('ciudad') || s.includes('nacional')) return 'nacional'; // "Quiniela de la Ciudad" = la ex-Nacional
+  if (s.includes('buenos aires')) return 'buenosAires';
+  return '_ignorar_';                                   // cualquier otra quiniela (Santa Fe, etc.)
+};
+const ignorados = new Set(); // marcadores de quinielas que se descartaron (para avisar)
 
 const pad = (n, w) => String(n).padStart(w, '0');
 const iso = (ddmmyyyy) => { const [d, m, y] = ddmmyyyy.split('/'); return `${y}-${m}-${d}`; };
@@ -54,10 +62,15 @@ function parseHTML(html) {
     if (!celdas.some(Boolean)) return;
     const f0 = celdas[0];
     const z = ZONA_DE_MARCADOR(f0);
-    if (z) { zona = z; return; }
+    if (z !== null) {
+      if (z === '_ignorar_') ignorados.add(f0.split('Resultados')[0].trim());
+      zona = z;
+      return;
+    }
     if (f0 === 'Fecha') return;
     const m = DIA_RE.exec(f0);
     if (!m) return;
+    if (zona === '_ignorar_') return; // bloque de una quiniela que no es de La Data
     const [, dia, fecha, hora] = m;
     const numeros = celdas.slice(1, 21).filter((s) => s !== '').map((s) => parseInt(s, 10));
     if (numeros.length === 0) return;
@@ -86,6 +99,11 @@ for (const f of archivos) {
 // Nos quedamos solo con los sorteos del mes pedido.
 const todos = crudos.filter((s) => iso(s.fecha).startsWith(`${mes}-`));
 if (todos.length === 0) { console.error(`No hay sorteos de ${mes} en ${dirCrudos}`); process.exit(1); }
+
+if (ignorados.size) {
+  console.warn(`\n  ⚠ Ignoré bloques que NO son de La Data: ${[...ignorados].join(', ')}`);
+  console.warn(`    (La Data solo usa Nacional, Buenos Aires y Córdoba. Revisá que bajaste el export correcto.)`);
+}
 
 // ---------- métricas ----------
 function analizarZona(sorteos) {
@@ -148,6 +166,17 @@ function analizarZona(sorteos) {
 
 const porZona = { nacional: [], buenosAires: [], cordoba: [] };
 for (const s of todos) porZona[s.zona].push(s);
+for (const z of ['nacional', 'buenosAires', 'cordoba']) {
+  if (porZona[z].length === 0) console.warn(`  ⚠ ${z}: 0 sorteos en ${mes} — falta el export de esa quiniela.`);
+}
+// El sorteo de las 22:15 (turista) es EXCLUSIVO de Córdoba. Si aparece en otra zona,
+// es porque el bloque de Córdoba vino sin título y se mezcló. Cortamos antes de ensuciar nada.
+if (todos.some((s) => s.hora === '22:15' && s.zona !== 'cordoba')) {
+  console.error('\n  ✖ Hay sorteos de las 22:15 (turista, exclusivo de Córdoba) fuera de Córdoba.');
+  console.error('    Probablemente el bloque de Córdoba vino sin título y se mezcló con otra quiniela.');
+  console.error('    Revisá el export (o bajá Córdoba en un archivo aparte). No genero nada así.');
+  process.exit(1);
+}
 
 const zonas = {
   nacional: { nombre: 'Nacional', ...analizarZona(porZona.nacional) },

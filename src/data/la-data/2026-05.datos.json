@@ -5,11 +5,11 @@
     "dias": 24
   },
   "totales": {
-    "sorteos": 345,
-    "extracciones": 6900
+    "sorteos": 369,
+    "extracciones": 7380
   },
   "fuente": "Rutas1000",
-  "generadoEl": "2026-06-09T23:24:23.152Z",
+  "generadoEl": "2026-06-10T03:06:44.997Z",
   "zonas": {
     "nacional": {
       "nombre": "Nacional",
@@ -281,177 +281,179 @@
     },
     "buenosAires": {
       "nombre": "Buenos Aires",
-      "sorteos": 126,
-      "extracciones": 2520,
+      "sorteos": 120,
+      "extracciones": 2400,
       "dosCifras": {
-        "esperadoPorNumero": 25.2,
+        "esperadoPorNumero": 24,
         "top": [
           {
             "numero": "81",
-            "apariciones": 47,
-            "vsPromedio": 0.8650793650793651
+            "apariciones": 44,
+            "vsPromedio": 0.8333333333333333
           },
           {
             "numero": "89",
-            "apariciones": 45,
-            "vsPromedio": 0.7857142857142858
-          },
-          {
-            "numero": "91",
-            "apariciones": 40,
-            "vsPromedio": 0.5873015873015874
+            "apariciones": 43,
+            "vsPromedio": 0.7916666666666667
           },
           {
             "numero": "28",
             "apariciones": 39,
-            "vsPromedio": 0.5476190476190477
+            "vsPromedio": 0.625
+          },
+          {
+            "numero": "91",
+            "apariciones": 39,
+            "vsPromedio": 0.625
           },
           {
             "numero": "78",
-            "apariciones": 38,
-            "vsPromedio": 0.5079365079365079
+            "apariciones": 36,
+            "vsPromedio": 0.5
           }
         ],
         "bottom": [
           {
             "numero": "86",
             "apariciones": 10,
-            "vsPromedio": -0.6031746031746031
+            "vsPromedio": -0.5833333333333333
           },
           {
             "numero": "72",
             "apariciones": 13,
-            "vsPromedio": -0.4841269841269841
+            "vsPromedio": -0.45833333333333337
+          },
+          {
+            "numero": "94",
+            "apariciones": 14,
+            "vsPromedio": -0.41666666666666663
+          },
+          {
+            "numero": "53",
+            "apariciones": 14,
+            "vsPromedio": -0.41666666666666663
           },
           {
             "numero": "43",
             "apariciones": 14,
-            "vsPromedio": -0.4444444444444444
+            "vsPromedio": -0.41666666666666663
           },
           {
-            "numero": "53",
-            "apariciones": 15,
-            "vsPromedio": -0.40476190476190477
+            "numero": "33",
+            "apariciones": 14,
+            "vsPromedio": -0.41666666666666663
           },
           {
-            "numero": "04",
-            "apariciones": 15,
-            "vsPromedio": -0.40476190476190477
+            "numero": "16",
+            "apariciones": 14,
+            "vsPromedio": -0.41666666666666663
           }
         ],
         "porDecada": [
           {
             "rango": "00-09",
-            "apariciones": 226
+            "apariciones": 210
           },
           {
             "rango": "10-19",
-            "apariciones": 250
+            "apariciones": 238
           },
           {
             "rango": "20-29",
-            "apariciones": 274
+            "apariciones": 262
           },
           {
             "rango": "30-39",
-            "apariciones": 239
+            "apariciones": 224
           },
           {
             "rango": "40-49",
-            "apariciones": 232
+            "apariciones": 224
           },
           {
             "rango": "50-59",
-            "apariciones": 268
+            "apariciones": 256
           },
           {
             "rango": "60-69",
-            "apariciones": 245
+            "apariciones": 232
           },
           {
             "rango": "70-79",
-            "apariciones": 245
+            "apariciones": 238
           },
           {
             "rango": "80-89",
-            "apariciones": 293
+            "apariciones": 280
           },
           {
             "rango": "90-99",
-            "apariciones": 248
+            "apariciones": 236
           }
         ]
       },
       "terminaciones": [
         {
           "digito": "0",
-          "apariciones": 223,
-          "pct": 0.0884920634920635
+          "apariciones": 214,
+          "pct": 0.08916666666666667
         },
         {
           "digito": "1",
-          "apariciones": 286,
-          "pct": 0.11349206349206349
+          "apariciones": 277,
+          "pct": 0.11541666666666667
         },
         {
           "digito": "2",
-          "apariciones": 251,
-          "pct": 0.0996031746031746
+          "apariciones": 239,
+          "pct": 0.09958333333333333
         },
         {
           "digito": "3",
-          "apariciones": 194,
-          "pct": 0.07698412698412699
+          "apariciones": 186,
+          "pct": 0.0775
         },
         {
           "digito": "4",
-          "apariciones": 266,
-          "pct": 0.10555555555555556
+          "apariciones": 255,
+          "pct": 0.10625
         },
         {
           "digito": "5",
-          "apariciones": 266,
-          "pct": 0.10555555555555556
+          "apariciones": 251,
+          "pct": 0.10458333333333333
         },
         {
           "digito": "6",
-          "apariciones": 221,
-          "pct": 0.08769841269841269
+          "apariciones": 203,
+          "pct": 0.08458333333333333
         },
         {
           "digito": "7",
-          "apariciones": 268,
-          "pct": 0.10634920634920635
+          "apariciones": 259,
+          "pct": 0.10791666666666666
         },
         {
           "digito": "8",
-          "apariciones": 307,
-          "pct": 0.12182539682539682
+          "apariciones": 290,
+          "pct": 0.12083333333333333
         },
         {
           "digito": "9",
-          "apariciones": 238,
-          "pct": 0.09444444444444444
+          "apariciones": 226,
+          "pct": 0.09416666666666666
         }
       ],
       "tresCifras": {
-        "unicos": 912,
-        "repetidos2omas": 702,
+        "unicos": 906,
+        "repetidos2omas": 672,
         "top": [
           {
             "numero": "530",
             "apariciones": 9
           },
           {
-            "numero": "178",
-            "apariciones": 8
-          },
-          {
             "numero": "181",
-            "apariciones": 8
-          },
-          {
-            "numero": "556",
             "apariciones": 8
           },
           {
@@ -461,412 +463,407 @@
           {
             "numero": "989",
             "apariciones": 8
+          },
+          {
+            "numero": "124",
+            "apariciones": 7
+          },
+          {
+            "numero": "178",
+            "apariciones": 7
+          },
+          {
+            "numero": "338",
+            "apariciones": 7
+          },
+          {
+            "numero": "424",
+            "apariciones": 7
+          },
+          {
+            "numero": "556",
+            "apariciones": 7
+          },
+          {
+            "numero": "728",
+            "apariciones": 7
           }
         ]
       },
       "cuatroCifras": {
-        "unicos": 2231,
-        "repetidos2omas": 273
+        "unicos": 2147,
+        "repetidos2omas": 240
       },
       "porMilar": [
         {
           "rango": "0000-0999",
-          "apariciones": 248
-        },
-        {
-          "rango": "1000-1999",
-          "apariciones": 243
-        },
-        {
-          "rango": "2000-2999",
           "apariciones": 236
         },
         {
+          "rango": "1000-1999",
+          "apariciones": 231
+        },
+        {
+          "rango": "2000-2999",
+          "apariciones": 228
+        },
+        {
           "rango": "3000-3999",
-          "apariciones": 251
+          "apariciones": 241
         },
         {
           "rango": "4000-4999",
-          "apariciones": 261
+          "apariciones": 250
         },
         {
           "rango": "5000-5999",
-          "apariciones": 285
+          "apariciones": 264
         },
         {
           "rango": "6000-6999",
-          "apariciones": 245
+          "apariciones": 233
         },
         {
           "rango": "7000-7999",
-          "apariciones": 260
+          "apariciones": 245
         },
         {
           "rango": "8000-8999",
-          "apariciones": 238
+          "apariciones": 225
         },
         {
           "rango": "9000-9999",
-          "apariciones": 253
+          "apariciones": 247
         }
       ],
       "aPrimera": {
-        "promedio": 4956,
-        "pct4000a5999": 0.2698412698412698,
+        "promedio": 4966,
+        "pct4000a5999": 0.275,
         "esperado4000a5999": 0.2
       }
     },
     "cordoba": {
       "nombre": "Córdoba",
-      "sorteos": 99,
-      "extracciones": 1980,
+      "sorteos": 129,
+      "extracciones": 2580,
       "dosCifras": {
-        "esperadoPorNumero": 19.8,
+        "esperadoPorNumero": 25.8,
         "top": [
           {
-            "numero": "80",
-            "apariciones": 32,
-            "vsPromedio": 0.6161616161616161
+            "numero": "39",
+            "apariciones": 38,
+            "vsPromedio": 0.4728682170542635
           },
           {
-            "numero": "04",
-            "apariciones": 29,
-            "vsPromedio": 0.46464646464646453
+            "numero": "45",
+            "apariciones": 36,
+            "vsPromedio": 0.39534883720930236
           },
           {
-            "numero": "94",
-            "apariciones": 28,
-            "vsPromedio": 0.41414141414141414
+            "numero": "56",
+            "apariciones": 35,
+            "vsPromedio": 0.3565891472868217
+          },
+          {
+            "numero": "74",
+            "apariciones": 35,
+            "vsPromedio": 0.3565891472868217
+          },
+          {
+            "numero": "08",
+            "apariciones": 34,
+            "vsPromedio": 0.317829457364341
           },
           {
             "numero": "19",
-            "apariciones": 27,
-            "vsPromedio": 0.36363636363636354
+            "apariciones": 34,
+            "vsPromedio": 0.317829457364341
           },
           {
-            "numero": "73",
-            "apariciones": 27,
-            "vsPromedio": 0.36363636363636354
+            "numero": "33",
+            "apariciones": 34,
+            "vsPromedio": 0.317829457364341
+          },
+          {
+            "numero": "52",
+            "apariciones": 34,
+            "vsPromedio": 0.317829457364341
+          },
+          {
+            "numero": "80",
+            "apariciones": 34,
+            "vsPromedio": 0.317829457364341
+          },
+          {
+            "numero": "98",
+            "apariciones": 34,
+            "vsPromedio": 0.317829457364341
           }
         ],
         "bottom": [
           {
-            "numero": "49",
-            "apariciones": 10,
-            "vsPromedio": -0.4949494949494949
-          },
-          {
-            "numero": "62",
-            "apariciones": 11,
-            "vsPromedio": -0.4444444444444444
-          },
-          {
-            "numero": "05",
-            "apariciones": 12,
-            "vsPromedio": -0.3939393939393939
-          },
-          {
-            "numero": "61",
-            "apariciones": 13,
-            "vsPromedio": -0.3434343434343434
+            "numero": "27",
+            "apariciones": 15,
+            "vsPromedio": -0.41860465116279066
           },
           {
             "numero": "51",
-            "apariciones": 13,
-            "vsPromedio": -0.3434343434343434
+            "apariciones": 16,
+            "vsPromedio": -0.3798449612403101
+          },
+          {
+            "numero": "49",
+            "apariciones": 17,
+            "vsPromedio": -0.3410852713178295
           },
           {
             "numero": "47",
-            "apariciones": 13,
-            "vsPromedio": -0.3434343434343434
+            "apariciones": 17,
+            "vsPromedio": -0.3410852713178295
           },
           {
-            "numero": "27",
-            "apariciones": 13,
-            "vsPromedio": -0.3434343434343434
+            "numero": "62",
+            "apariciones": 18,
+            "vsPromedio": -0.3023255813953488
           }
         ],
         "porDecada": [
           {
             "rango": "00-09",
-            "apariciones": 202
+            "apariciones": 279
           },
           {
             "rango": "10-19",
-            "apariciones": 194
+            "apariciones": 250
           },
           {
             "rango": "20-29",
-            "apariciones": 198
+            "apariciones": 252
           },
           {
             "rango": "30-39",
-            "apariciones": 194
+            "apariciones": 269
           },
           {
             "rango": "40-49",
-            "apariciones": 184
+            "apariciones": 247
           },
           {
             "rango": "50-59",
-            "apariciones": 198
+            "apariciones": 254
           },
           {
             "rango": "60-69",
-            "apariciones": 177
+            "apariciones": 237
           },
           {
             "rango": "70-79",
-            "apariciones": 210
+            "apariciones": 263
           },
           {
             "rango": "80-89",
-            "apariciones": 208
+            "apariciones": 258
           },
           {
             "rango": "90-99",
-            "apariciones": 215
+            "apariciones": 271
           }
         ]
       },
       "terminaciones": [
         {
           "digito": "0",
-          "apariciones": 207,
-          "pct": 0.10454545454545454
+          "apariciones": 260,
+          "pct": 0.10077519379844961
         },
         {
           "digito": "1",
-          "apariciones": 178,
-          "pct": 0.0898989898989899
+          "apariciones": 242,
+          "pct": 0.0937984496124031
         },
         {
           "digito": "2",
-          "apariciones": 192,
-          "pct": 0.09696969696969697
+          "apariciones": 262,
+          "pct": 0.10155038759689923
         },
         {
           "digito": "3",
-          "apariciones": 210,
-          "pct": 0.10606060606060606
+          "apariciones": 263,
+          "pct": 0.10193798449612403
         },
         {
           "digito": "4",
-          "apariciones": 216,
-          "pct": 0.10909090909090909
+          "apariciones": 270,
+          "pct": 0.10465116279069768
         },
         {
           "digito": "5",
-          "apariciones": 195,
-          "pct": 0.09848484848484848
+          "apariciones": 262,
+          "pct": 0.10155038759689923
         },
         {
           "digito": "6",
-          "apariciones": 198,
-          "pct": 0.1
+          "apariciones": 264,
+          "pct": 0.10232558139534884
         },
         {
           "digito": "7",
-          "apariciones": 169,
-          "pct": 0.08535353535353535
+          "apariciones": 229,
+          "pct": 0.08875968992248062
         },
         {
           "digito": "8",
-          "apariciones": 225,
-          "pct": 0.11363636363636363
+          "apariciones": 277,
+          "pct": 0.10736434108527132
         },
         {
           "digito": "9",
-          "apariciones": 190,
-          "pct": 0.09595959595959595
+          "apariciones": 251,
+          "pct": 0.09728682170542635
         }
       ],
       "tresCifras": {
-        "unicos": 864,
-        "repetidos2omas": 588,
+        "unicos": 930,
+        "repetidos2omas": 726,
         "top": [
           {
+            "numero": "042",
+            "apariciones": 9
+          },
+          {
+            "numero": "107",
+            "apariciones": 9
+          },
+          {
+            "numero": "000",
+            "apariciones": 8
+          },
+          {
+            "numero": "485",
+            "apariciones": 8
+          },
+          {
             "numero": "540",
-            "apariciones": 7
+            "apariciones": 8
           },
           {
             "numero": "665",
-            "apariciones": 7
-          },
-          {
-            "numero": "039",
-            "apariciones": 6
-          },
-          {
-            "numero": "065",
-            "apariciones": 6
-          },
-          {
-            "numero": "072",
-            "apariciones": 6
-          },
-          {
-            "numero": "080",
-            "apariciones": 6
-          },
-          {
-            "numero": "113",
-            "apariciones": 6
-          },
-          {
-            "numero": "318",
-            "apariciones": 6
-          },
-          {
-            "numero": "358",
-            "apariciones": 6
+            "apariciones": 8
           },
           {
             "numero": "675",
-            "apariciones": 6
-          },
-          {
-            "numero": "691",
-            "apariciones": 6
-          },
-          {
-            "numero": "829",
-            "apariciones": 6
-          },
-          {
-            "numero": "909",
-            "apariciones": 6
+            "apariciones": 8
           }
         ]
       },
       "cuatroCifras": {
-        "unicos": 1815,
-        "repetidos2omas": 156
+        "unicos": 2296,
+        "repetidos2omas": 263
       },
       "porMilar": [
         {
           "rango": "0000-0999",
-          "apariciones": 222
+          "apariciones": 279
         },
         {
           "rango": "1000-1999",
-          "apariciones": 193
+          "apariciones": 255
         },
         {
           "rango": "2000-2999",
-          "apariciones": 180
+          "apariciones": 234
         },
         {
           "rango": "3000-3999",
-          "apariciones": 176
+          "apariciones": 232
         },
         {
           "rango": "4000-4999",
-          "apariciones": 196
+          "apariciones": 246
         },
         {
           "rango": "5000-5999",
-          "apariciones": 219
+          "apariciones": 282
         },
         {
           "rango": "6000-6999",
-          "apariciones": 189
+          "apariciones": 252
         },
         {
           "rango": "7000-7999",
-          "apariciones": 175
+          "apariciones": 244
         },
         {
           "rango": "8000-8999",
-          "apariciones": 208
+          "apariciones": 279
         },
         {
           "rango": "9000-9999",
-          "apariciones": 222
+          "apariciones": 277
         }
       ],
       "aPrimera": {
-        "promedio": 4798,
-        "pct4000a5999": 0.1919191919191919,
+        "promedio": 4783,
+        "pct4000a5999": 0.1937984496124031,
         "esperado4000a5999": 0.2
       },
       "turista": {
-        "sorteos": 17,
+        "sorteos": 22,
         "top": [
           {
             "numero": "22",
             "apariciones": 10,
-            "vsPromedio": 1.9411764705882355
+            "vsPromedio": 1.2727272727272725
           },
           {
             "numero": "72",
             "apariciones": 10,
-            "vsPromedio": 1.9411764705882355
+            "vsPromedio": 1.2727272727272725
+          },
+          {
+            "numero": "98",
+            "apariciones": 9,
+            "vsPromedio": 1.0454545454545454
+          },
+          {
+            "numero": "08",
+            "apariciones": 8,
+            "vsPromedio": 0.8181818181818181
+          },
+          {
+            "numero": "18",
+            "apariciones": 8,
+            "vsPromedio": 0.8181818181818181
+          },
+          {
+            "numero": "30",
+            "apariciones": 8,
+            "vsPromedio": 0.8181818181818181
+          },
+          {
+            "numero": "33",
+            "apariciones": 8,
+            "vsPromedio": 0.8181818181818181
           },
           {
             "numero": "80",
             "apariciones": 8,
-            "vsPromedio": 1.3529411764705883
+            "vsPromedio": 0.8181818181818181
           },
           {
-            "numero": "30",
-            "apariciones": 7,
-            "vsPromedio": 1.058823529411765
-          },
-          {
-            "numero": "01",
-            "apariciones": 6,
-            "vsPromedio": 0.7647058823529411
-          },
-          {
-            "numero": "04",
-            "apariciones": 6,
-            "vsPromedio": 0.7647058823529411
-          },
-          {
-            "numero": "08",
-            "apariciones": 6,
-            "vsPromedio": 0.7647058823529411
-          },
-          {
-            "numero": "18",
-            "apariciones": 6,
-            "vsPromedio": 0.7647058823529411
-          },
-          {
-            "numero": "20",
-            "apariciones": 6,
-            "vsPromedio": 0.7647058823529411
-          },
-          {
-            "numero": "27",
-            "apariciones": 6,
-            "vsPromedio": 0.7647058823529411
-          },
-          {
-            "numero": "33",
-            "apariciones": 6,
-            "vsPromedio": 0.7647058823529411
-          },
-          {
-            "numero": "41",
-            "apariciones": 6,
-            "vsPromedio": 0.7647058823529411
+            "numero": "85",
+            "apariciones": 8,
+            "vsPromedio": 0.8181818181818181
           },
           {
             "numero": "97",
-            "apariciones": 6,
-            "vsPromedio": 0.7647058823529411
-          },
-          {
-            "numero": "98",
-            "apariciones": 6,
-            "vsPromedio": 0.7647058823529411
+            "apariciones": 8,
+            "vsPromedio": 0.8181818181818181
           }
         ],
         "aPrimera": {
-          "promedio": 4111,
-          "pct4000a5999": 0.17647058823529413,
+          "promedio": 4369,
+          "pct4000a5999": 0.18181818181818182,
           "esperado4000a5999": 0.2
         }
       }
@@ -909,55 +906,80 @@
       "buenosAires": [
         {
           "numero": "81",
-          "apariciones": 47,
-          "vsPromedio": 0.8650793650793651
+          "apariciones": 44,
+          "vsPromedio": 0.8333333333333333
         },
         {
           "numero": "89",
-          "apariciones": 45,
-          "vsPromedio": 0.7857142857142858
-        },
-        {
-          "numero": "91",
-          "apariciones": 40,
-          "vsPromedio": 0.5873015873015874
+          "apariciones": 43,
+          "vsPromedio": 0.7916666666666667
         },
         {
           "numero": "28",
           "apariciones": 39,
-          "vsPromedio": 0.5476190476190477
+          "vsPromedio": 0.625
+        },
+        {
+          "numero": "91",
+          "apariciones": 39,
+          "vsPromedio": 0.625
         },
         {
           "numero": "78",
-          "apariciones": 38,
-          "vsPromedio": 0.5079365079365079
+          "apariciones": 36,
+          "vsPromedio": 0.5
         }
       ],
       "cordoba": [
         {
-          "numero": "80",
-          "apariciones": 32,
-          "vsPromedio": 0.6161616161616161
+          "numero": "39",
+          "apariciones": 38,
+          "vsPromedio": 0.4728682170542635
         },
         {
-          "numero": "04",
-          "apariciones": 29,
-          "vsPromedio": 0.46464646464646453
+          "numero": "45",
+          "apariciones": 36,
+          "vsPromedio": 0.39534883720930236
         },
         {
-          "numero": "94",
-          "apariciones": 28,
-          "vsPromedio": 0.41414141414141414
+          "numero": "56",
+          "apariciones": 35,
+          "vsPromedio": 0.3565891472868217
+        },
+        {
+          "numero": "74",
+          "apariciones": 35,
+          "vsPromedio": 0.3565891472868217
+        },
+        {
+          "numero": "08",
+          "apariciones": 34,
+          "vsPromedio": 0.317829457364341
         },
         {
           "numero": "19",
-          "apariciones": 27,
-          "vsPromedio": 0.36363636363636354
+          "apariciones": 34,
+          "vsPromedio": 0.317829457364341
         },
         {
-          "numero": "73",
-          "apariciones": 27,
-          "vsPromedio": 0.36363636363636354
+          "numero": "33",
+          "apariciones": 34,
+          "vsPromedio": 0.317829457364341
+        },
+        {
+          "numero": "52",
+          "apariciones": 34,
+          "vsPromedio": 0.317829457364341
+        },
+        {
+          "numero": "80",
+          "apariciones": 34,
+          "vsPromedio": 0.317829457364341
+        },
+        {
+          "numero": "98",
+          "apariciones": 34,
+          "vsPromedio": 0.317829457364341
         }
       ]
     },
@@ -971,13 +993,13 @@
       },
       {
         "zona": "Buenos Aires",
-        "promedio": 4956,
-        "pct4000a5999": 0.2698412698412698
+        "promedio": 4966,
+        "pct4000a5999": 0.275
       },
       {
         "zona": "Córdoba",
-        "promedio": 4798,
-        "pct4000a5999": 0.1919191919191919
+        "promedio": 4783,
+        "pct4000a5999": 0.1937984496124031
       }
     ],
     "decadas": [
@@ -997,25 +1019,25 @@
         "zona": "Buenos Aires",
         "masCaliente": {
           "rango": "80-89",
-          "apariciones": 293
+          "apariciones": 280
         },
         "masFria": {
           "rango": "00-09",
-          "apariciones": 226
+          "apariciones": 210
         },
-        "difPct": 0.29646017699115035
+        "difPct": 0.33333333333333326
       },
       {
         "zona": "Córdoba",
         "masCaliente": {
-          "rango": "90-99",
-          "apariciones": 215
+          "rango": "00-09",
+          "apariciones": 279
         },
         "masFria": {
           "rango": "60-69",
-          "apariciones": 177
+          "apariciones": 237
         },
-        "difPct": 0.21468926553672318
+        "difPct": 0.17721518987341778
       }
     ]
   }
