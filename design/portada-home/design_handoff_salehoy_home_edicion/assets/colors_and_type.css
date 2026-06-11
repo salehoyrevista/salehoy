@@ -1,0 +1,361 @@
+/* ============================================================
+   SaleHoy · Design Tokens
+   Revista cultural del juego y el azar
+   ============================================================ */
+
+/* Webfonts via Google Fonts — see fonts/README.md for substitution notes */
+@import url("https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+:root {
+  /* ---------- Paleta ---------- */
+  /* Papeles — fondos cálidos, gradación sutil */
+  --paper-warm:        #F4ECDC;  /* fondo principal del producto */
+  --paper-warmer:      #FAF3E2;  /* tarjetas, contraste suave */
+  --paper-darker:      #E8DCC0;  /* burbujas del usuario, hover sutil */
+  --paper-edge:        #DCCFAF;  /* hairlines secundarios sobre papel */
+
+  /* Tinta — texto */
+  --ink:               #1A1A1A;  /* texto principal */
+  --ink-soft:          #2F2A24;  /* texto sobre papel cálido, menos contraste */
+  --ink-muted:         #6B6358;  /* texto secundario neutro */
+  --ink-line:          #B8A98A;  /* hairlines, divisores */
+
+  /* Acentos */
+  --rojo:              #9B2226;  /* rojo profundo: números, ornamentos activos */
+  --rojo-deep:         #7A1C1F;  /* hover / pressed sobre rojo */
+  --cuero:             #6B4423;  /* marrón cuero: metadatos, contexto */
+  --cuero-soft:        #8A5E37;  /* metadatos secundarios */
+  --dorado:            #C9A96E;  /* dorado: jackpot, destacados — uso esporádico */
+  --dorado-deep:       #A8884E;  /* dorado oscurecido para hover */
+
+  /* Acentos por narrador — usar SOLO dentro de contenido firmado por el narrador.
+     No romper la regla "un acento por pantalla" en contextos generales. */
+  --acento-vichy:      #9B2226;  /* La Vichy — rojo profundo */
+  --acento-paulo:      #6B4423;  /* Paulo Castillo — cuero, voz de radio cordobesa */
+  --acento-anibal:     #4A2818;  /* Aníbal Belmonte — sepia denso, pluma de archivo */
+  --acento-maria:      #C9A96E;  /* María Lange — dorado contenido (excepción a la regla "dorado jackpot-only") */
+  --acento-maria-deep: #A8884E;  /* María — variante text-safe sobre papel cálido */
+  --acento-tomas:      #2D6043;  /* Tomás Vera — verde editorial, no fluorescente */
+
+  /* Semántica */
+  --bg:                var(--paper-warm);
+  --bg-elev:           var(--paper-warmer);
+  --bg-sunk:           var(--paper-darker);
+  --fg:                var(--ink);
+  --fg-soft:           var(--ink-soft);
+  --fg-muted:          var(--ink-muted);
+  --fg-meta:           var(--cuero);          /* metadata editorial */
+  --accent:            var(--rojo);
+  --accent-deep:       var(--rojo-deep);
+  --highlight:         var(--dorado);
+  --rule:              var(--ink-line);
+
+  /* ---------- Tipografía ---------- */
+  --font-display:      "Spectral", "Source Serif Pro", Georgia, serif;
+  --font-serif:        "Spectral", "Source Serif Pro", Georgia, serif;
+  --font-sans:         "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono:         "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+  --font-arcade-crt:   "VT323", "Courier New", monospace;            /* La Sala / pantallas CRT */
+  --font-arcade-pixel: "Press Start 2P", "VT323", monospace;          /* uso restringido — jackpot, marquees */
+
+  /* Escala tipográfica (modular ~1.2, ajustada editorial) */
+  --fs-12: 0.75rem;     /* 12 — metadata muy pequeña */
+  --fs-13: 0.8125rem;   /* 13 — small caps de sección */
+  --fs-14: 0.875rem;    /* 14 — chrome digital */
+  --fs-16: 1rem;        /* 16 — cuerpo base */
+  --fs-18: 1.125rem;    /* 18 — cuerpo editorial */
+  --fs-20: 1.25rem;     /* 20 — bajada */
+  --fs-24: 1.5rem;      /* 24 — h4 / título de tarjeta */
+  --fs-30: 1.875rem;    /* 30 — h3 */
+  --fs-36: 2.25rem;     /* 36 — h2 */
+  --fs-48: 3rem;        /* 48 — h1 */
+  --fs-64: 4rem;        /* 64 — display */
+  --fs-96: 6rem;        /* 96 — masthead / portadas */
+
+  /* Pesos */
+  --fw-light:    300;
+  --fw-regular:  400;
+  --fw-medium:   500;
+  --fw-semibold: 600;
+  --fw-bold:     700;
+  --fw-black:    800;
+
+  /* Line-heights */
+  --lh-tight:   1.05;   /* display */
+  --lh-snug:    1.18;   /* títulos */
+  --lh-normal:  1.45;   /* UI */
+  --lh-prose:   1.65;   /* prosa editorial Spectral */
+  --lh-loose:   1.85;   /* citas en bastardilla */
+
+  /* Tracking — sustantivos importantes */
+  --tr-tight:        -0.02em;  /* titulares grandes */
+  --tr-snug:         -0.01em;  /* títulos */
+  --tr-normal:        0em;
+  --tr-wide:          0.04em;  /* metadata Inter */
+  --tr-section:       0.12em;  /* SMALL CAPS de sección */
+  --tr-mono-wide:     0.02em;  /* mono datos técnicos */
+
+  /* ---------- Espaciado ---------- */
+  --s-0:   0;
+  --s-1:   2px;
+  --s-2:   4px;
+  --s-3:   8px;
+  --s-4:   12px;
+  --s-5:   16px;
+  --s-6:   20px;
+  --s-7:   24px;
+  --s-8:   32px;
+  --s-9:   40px;
+  --s-10:  48px;
+  --s-11:  64px;
+  --s-12:  80px;
+  --s-13:  96px;
+  --s-14:  120px;
+
+  /* Anchos de columna editorial */
+  --col-narrow:   38ch;   /* sidebar */
+  --col-prose:    62ch;   /* columna de lectura ideal */
+  --col-wide:     78ch;   /* prosa amplia */
+
+  /* ---------- Bordes y radios ---------- */
+  --radius-0:   0px;       /* default editorial */
+  --radius-1:   2px;       /* sello, chip */
+  --radius-2:   4px;       /* botón pequeño, input */
+  --radius-3:   6px;       /* tarjeta digital */
+  --radius-4:   8px;       /* tarjeta grande */
+  --radius-5:   12px;      /* MÁXIMO permitido */
+
+  --bw-hair:    1px;
+  --bw-rule:    1.5px;
+  --bw-bold:    2px;
+  --bw-frame:   3px;       /* doble borde tarot */
+
+  /* ---------- Sombras (mínimas, nunca agresivas) ---------- */
+  --shadow-none: none;
+  --shadow-paper: 0 1px 0 rgba(26,26,26,0.04);
+  --shadow-soft:  0 1px 2px rgba(26,26,26,0.05), 0 1px 1px rgba(26,26,26,0.04);
+  --shadow-lift:  0 2px 6px rgba(26,26,26,0.06), 0 1px 2px rgba(26,26,26,0.05);
+  /* shadow-lift es el techo; no usar mayor profundidad */
+
+  /* ---------- Animación ---------- */
+  --ease-editorial:  cubic-bezier(0.2, 0.0, 0.0, 1.0);  /* salida elegante */
+  --ease-in-out:     cubic-bezier(0.4, 0.0, 0.2, 1.0);
+  --dur-fast:        120ms;
+  --dur-base:        200ms;
+  --dur-slow:        360ms;
+}
+
+/* ============================================================
+   Semantic element styles — drop into a project and prose works
+   ============================================================ */
+
+html, body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: var(--fs-16);
+  line-height: var(--lh-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Display titles — masthead, opening titles */
+.sh-masthead {
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-96);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tr-tight);
+  color: var(--ink);
+}
+
+h1, .sh-h1 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-48);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tr-snug);
+  margin: 0 0 var(--s-5);
+  text-wrap: pretty;
+}
+
+h2, .sh-h2 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-36);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tr-snug);
+  margin: var(--s-9) 0 var(--s-5);
+  text-wrap: pretty;
+}
+
+h3, .sh-h3 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-30);
+  line-height: var(--lh-snug);
+  margin: var(--s-8) 0 var(--s-4);
+}
+
+h4, .sh-h4 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-24);
+  line-height: var(--lh-snug);
+  margin: var(--s-7) 0 var(--s-3);
+}
+
+/* Section eyebrow — SMALL CAPS in cuero */
+.sh-eyebrow,
+.sh-section-label {
+  font-family: var(--font-serif);
+  font-variant-caps: all-small-caps;
+  font-feature-settings: "smcp", "c2sc";
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-13);
+  letter-spacing: var(--tr-section);
+  color: var(--cuero);
+  display: inline-block;
+}
+
+/* Prosa editorial — el cuerpo largo del artículo */
+.sh-prose {
+  font-family: var(--font-serif);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-18);
+  line-height: var(--lh-prose);
+  color: var(--ink-soft);
+  max-width: var(--col-prose);
+  text-wrap: pretty;
+  hyphens: auto;
+}
+.sh-prose p { margin: 0 0 var(--s-5); }
+.sh-prose p + p { text-indent: 1.25em; margin-top: 0; } /* sangría editorial */
+.sh-prose p:first-of-type { text-indent: 0; }
+
+/* Drop cap opcional — capitular roja */
+.sh-prose .sh-dropcap::first-letter,
+.sh-prose.sh-has-dropcap > p:first-of-type::first-letter {
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  color: var(--rojo);
+  float: left;
+  font-size: 4.2em;
+  line-height: 0.86;
+  padding: 0.08em 0.08em 0 0;
+  margin-right: 0.05em;
+}
+
+/* Bajada / standfirst */
+.sh-deck,
+.sh-standfirst {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-20);
+  line-height: var(--lh-prose);
+  color: var(--ink-soft);
+  max-width: var(--col-prose);
+}
+
+/* Body sans — UI, chat, formularios */
+p, .sh-body {
+  font-family: var(--font-sans);
+  font-size: var(--fs-16);
+  line-height: var(--lh-normal);
+  color: var(--fg);
+}
+
+/* Metadata — cuero, sans, ancho */
+.sh-meta {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-12);
+  letter-spacing: var(--tr-wide);
+  text-transform: uppercase;
+  color: var(--cuero);
+}
+
+/* Cita bloque */
+blockquote, .sh-pullquote {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-24);
+  line-height: var(--lh-loose);
+  color: var(--ink);
+  border: 0;
+  margin: var(--s-8) 0;
+  padding: 0 0 0 var(--s-5);
+  border-left: var(--bw-bold) solid var(--rojo);
+  max-width: var(--col-prose);
+}
+.sh-pullquote cite {
+  display: block;
+  font-style: normal;
+  font-size: var(--fs-13);
+  letter-spacing: var(--tr-section);
+  text-transform: uppercase;
+  color: var(--cuero);
+  margin-top: var(--s-4);
+}
+
+/* Mono datos técnicos */
+code, kbd, samp, .sh-mono {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  letter-spacing: var(--tr-mono-wide);
+}
+.sh-chip-mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-13);
+  background: var(--paper-darker);
+  color: var(--ink);
+  padding: 2px 8px;
+  border-radius: var(--radius-1);
+  border: 1px solid var(--ink-line);
+}
+
+/* Pantalla CRT / arcade — restringido a La Sala */
+.sh-crt {
+  font-family: var(--font-arcade-crt);
+  font-size: 1.5em;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+.sh-pixel {
+  font-family: var(--font-arcade-pixel);
+  font-size: var(--fs-12);
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+}
+
+/* Hairlines */
+hr, .sh-rule {
+  border: 0;
+  height: 1px;
+  background: var(--rule);
+  margin: var(--s-8) 0;
+}
+.sh-rule-bold { background: var(--ink); height: var(--bw-bold); }
+.sh-rule-double {
+  height: 5px;
+  background: none;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+}
+
+/* Enlaces editoriales */
+a, .sh-link {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--rojo);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color var(--dur-fast) var(--ease-editorial);
+}
+a:hover { color: var(--rojo); }

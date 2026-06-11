@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sobre — SaleHoy (solo main)</title>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     INTEGRACIÓN EN ASTRO
+     1. Las fuentes (estos <link>) van en el <head> de tu Layout.
+        Si Spectral / Inter / JetBrains Mono ya están cargadas, omitilos.
+     2. El bloque <style> de abajo: pegalo donde quieras (Layout global o
+        dentro del .astro). Todo está scopeado bajo .sh-about, no colisiona.
+     3. El <div class="sh-about"> … </div>: ese es el cuerpo de la página.
+        Pegalo dentro de tu layout, debajo de tu propio <header>.
+     4. El <script> final: pegalo al fondo del .astro (Astro lo empaqueta).
+     MODO OSCURO: responde solo a la clase `dark` en <html> (tu toggle de luna).
+     ════════════════════════════════════════════════════════════════════ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+  /* ══════════════ ESTILOS PÁGINA SOBRE — todo bajo .sh-about ══════════════ */
+  .sh-about {
+    --paper: #F4ECDC;
+    --paper-warm: #FAF3E2;
+    --paper-deep: #EFE5CF;
+    --ink: #1A1A1A;
+    --ink-soft: #2B2825;
+    --red: #9B2226;
+    --leather: #6B4423;
+    --leather-soft: #8B6543;
+    --gold: #C9A96E;
+    --rule: rgba(107, 68, 35, 0.28);
+    --rule-strong: rgba(107, 68, 35, 0.55);
+    --sh-serif: "Spectral", Georgia, "Times New Roman", serif;
+    --sh-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --sh-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sh-serif);
+    font-size: 18px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    transition: background-color 220ms ease, color 220ms ease;
+  }
+
+  /* Modo oscuro: se activa con la clase `dark` en <html> (tu toggle existente) */
+  html.dark .sh-about,
+  .sh-about.dark {
+    --paper: #1C1815;
+    --paper-warm: #221E1A;
+    --paper-deep: #1A1612;
+    --ink: #EAE2D0;
+    --ink-soft: #D6CDB8;
+    --red: #C73E42;
+    --leather: #C9A074;
+    --leather-soft: #A88660;
+    --gold: #E0BE82;
+    --rule: rgba(201, 160, 116, 0.30);
+    --rule-strong: rgba(201, 160, 116, 0.60);
+  }
+
+  .sh-about * { box-sizing: border-box; }
+  .sh-about ::selection { background: var(--red); color: var(--paper-warm); }
+
+  /* ---------- LAYOUT ---------- */
+  .sh-about .wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+  .sh-about .column {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  /* ---------- SECCIÓN 1: APERTURA ---------- */
+  .sh-about .opener {
+    padding: 96px 0 90px;
+    text-align: center;
+    position: relative;
+  }
+  .sh-about .opener__kicker {
+    font-family: var(--sh-sans);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--leather);
+    margin-bottom: 28px;
+  }
+  .sh-about .opener__kicker::before,
+  .sh-about .opener__kicker::after {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--leather);
+    vertical-align: middle;
+    margin: 0 14px;
+    opacity: 0.7;
+  }
+  .sh-about .opener h1 {
+    font-family: var(--sh-serif);
+    font-weight: 600;
+    font-size: clamp(38px, 5.6vw, 68px);
+    line-height: 1.08;
+    letter-spacing: -0.018em;
+    margin: 0 auto 28px;
+    max-width: 880px;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .sh-about .opener__sub {
+    font-family: var(--sh-serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(18px, 1.6vw, 22px);
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 620px;
+    margin: 0 auto 48px;
+    text-wrap: pretty;
+  }
+  .sh-about .clover {
+    width: 42px;
+    height: 42px;
+    margin: 0 auto;
+    color: var(--leather);
+    display: block;
+  }
+
+  /* ---------- DIVISOR ---------- */
+  .sh-about .divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 8px 0;
+    color: var(--leather);
+  }
+  .sh-about .divider__line {
+    flex: 0 0 80px;
+    height: 1px;
+    background: var(--rule-strong);
+  }
+  .sh-about .divider__dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--leather);
+  }
+
+  /* ---------- SECCIÓN 2: QUÉ ES ---------- */
+  .sh-about .what {
+    padding: 60px 0 90px;
+  }
+  .sh-about .drop p {
+    margin: 0 0 22px;
+    font-family: var(--sh-serif);
+    font-size: 18.5px;
+    line-height: 1.72;
+    color: var(--ink-soft);
+    text-wrap: pretty;
+  }
+  .sh-about .drop p:first-child::first-letter {
+    font-family: var(--sh-serif);
+    font-weight: 600;
+    float: left;
+    font-size: 74px;
+    line-height: 0.86;
+    padding: 6px 10px 0 0;
+    color: var(--red);
+  }
+  .sh-about .drop p:last-child {
+    margin-top: 32px;
+    padding-top: 22px;
+    border-top: 1px solid var(--rule);
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 17px;
+  }
+
+  /* ---------- SECCIÓN 3: LAS VOCES ---------- */
+  .sh-about .voices {
+    padding: 80px 0 90px;
+    background: var(--paper-warm);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .sh-about .section-head {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  .sh-about .section-head__num {
+    font-family: var(--sh-mono);
+    font-size: 11px;
+    color: var(--leather);
+    letter-spacing: 0.12em;
+    margin-bottom: 14px;
+  }
+  .sh-about .section-head h2 {
+    font-family: var(--sh-serif);
+    font-weight: 600;
+    font-size: clamp(30px, 3.4vw, 44px);
+    line-height: 1.12;
+    letter-spacing: -0.012em;
+    margin: 0 0 14px;
+    color: var(--ink);
+  }
+  .sh-about .section-head__sub {
+    font-family: var(--sh-serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 560px;
+    margin: 0 auto;
+    text-wrap: pretty;
+  }
+
+  .sh-about .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+  }
+  .sh-about .card {
+    background: var(--paper);
+    border: 1px solid var(--rule-strong);
+    padding: 28px 26px 26px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: transform 280ms cubic-bezier(.2,.7,.2,1), border-color 280ms ease;
+  }
+  .sh-about .card:hover {
+    transform: translateY(-2px);
+    border-color: var(--leather);
+  }
+  .sh-about .card__role {
+    font-family: var(--sh-sans);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--leather);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sh-about .card__role::before {
+    content: "";
+    width: 18px;
+    height: 1px;
+    background: var(--leather);
+  }
+  .sh-about .card__name {
+    font-family: var(--sh-serif);
+    font-weight: 600;
+    font-size: 26px;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+    color: var(--ink);
+  }
+  .sh-about .card__meta {
+    font-family: var(--sh-sans);
+    font-size: 12px;
+    color: var(--leather);
+    margin-bottom: 16px;
+    letter-spacing: 0.01em;
+  }
+  .sh-about .card__bio {
+    font-family: var(--sh-serif);
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 0 0 18px;
+    text-wrap: pretty;
+  }
+  .sh-about .card__quote {
+    font-family: var(--sh-serif);
+    font-style: italic;
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--ink);
+    padding: 14px 0 16px;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    margin: auto 0 18px;
+    position: relative;
+    padding-left: 16px;
+  }
+  .sh-about .card__quote::before {
+    content: "“";
+    position: absolute;
+    left: -2px;
+    top: 6px;
+    font-family: var(--sh-serif);
+    font-size: 28px;
+    line-height: 1;
+    color: var(--red);
+  }
+  .sh-about .card__link {
+    font-family: var(--sh-sans);
+    font-size: 12.5px;
+    color: var(--leather);
+    text-decoration: none;
+    letter-spacing: 0.01em;
+    align-self: flex-start;
+    transition: color 160ms ease, transform 220ms ease;
+  }
+  .sh-about .card__link span { transition: margin-left 220ms ease; }
+  .sh-about .card__link:hover { color: var(--red); }
+  .sh-about .card__link:hover span { margin-left: 4px; }
+
+  /* ---------- SECCIÓN 4: EL EDITOR ---------- */
+  .sh-about .editor {
+    padding: 90px 0;
+  }
+  .sh-about .editor__inner {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 56px;
+    max-width: 900px;
+    margin: 0 auto;
+    align-items: start;
+  }
+  .sh-about .editor__portrait {
+    aspect-ratio: 3 / 4;
+    border: 1px solid var(--rule-strong);
+    background:
+      repeating-linear-gradient(
+        135deg,
+        var(--paper-warm) 0 8px,
+        var(--paper-deep) 8px 16px
+      );
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 12px;
+  }
+  .sh-about .editor__portrait span {
+    font-family: var(--sh-mono);
+    font-size: 10px;
+    color: var(--leather);
+    letter-spacing: 0.06em;
+    background: var(--paper);
+    padding: 4px 8px;
+    border: 1px solid var(--rule);
+  }
+  .sh-about .editor__body h2 {
+    font-family: var(--sh-serif);
+    font-weight: 600;
+    font-size: 36px;
+    line-height: 1.1;
+    margin: 0 0 6px;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .sh-about .editor__body .role-tag {
+    font-family: var(--sh-sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--leather);
+    margin-bottom: 24px;
+    display: inline-block;
+  }
+  .sh-about .editor__body p {
+    font-family: var(--sh-serif);
+    font-size: 18.5px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  /* ---------- SECCIÓN 5: COMPROMISOS ---------- */
+  .sh-about .commit {
+    padding: 80px 0 90px;
+    background: var(--paper-warm);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .sh-about .commit__list {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 680px;
+  }
+  .sh-about .commit__list li {
+    font-family: var(--sh-serif);
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    padding: 18px 0 18px 44px;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .sh-about .commit__list li:last-child { border-bottom: none; }
+  .sh-about .commit__list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 22px;
+    width: 22px;
+    height: 22px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B4423' stroke-width='1.4'><path d='M12 13c0-2.5-1.6-4.2-3.6-4.2C6.6 8.8 5 10.2 5 12c0 1.7 1.5 3 3.4 3 1.2 0 2.2-.4 3.6-2zM12 13c0-2.5 1.6-4.2 3.6-4.2 1.8 0 3.4 1.4 3.4 3.2 0 1.7-1.5 3-3.4 3-1.2 0-2.2-.4-3.6-2zM12 13c2 .6 3.3 2.4 3.3 4.6 0 1.7-1.5 3.4-3.3 3.4s-3.3-1.7-3.3-3.4c0-2.2 1.3-4 3.3-4.6zM12 19v3'/></svg>");
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  .sh-about .commit__num {
+    font-family: var(--sh-mono);
+    font-size: 11px;
+    color: var(--leather);
+    flex: 0 0 28px;
+    padding-top: 4px;
+    letter-spacing: 0.05em;
+  }
+  .sh-about .commit__text { flex: 1; }
+
+  /* ---------- SECCIÓN 6: JUEGO RESPONSABLE ---------- */
+  .sh-about .care {
+    padding: 90px 0;
+  }
+  .sh-about .care__box {
+    max-width: 680px;
+    margin: 0 auto;
+    background: var(--paper-deep);
+    border: 1px solid var(--leather);
+    padding: 44px 48px 42px;
+    text-align: left;
+    position: relative;
+  }
+  .sh-about .care__box::before {
+    content: "";
+    position: absolute;
+    top: -1px; left: -1px; right: -1px;
+    height: 4px;
+    background: var(--red);
+  }
+  .sh-about .care__title {
+    font-family: var(--sh-sans);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin: 0 0 18px;
+  }
+  .sh-about .care__body {
+    font-family: var(--sh-serif);
+    font-size: 16.5px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    margin: 0;
+    text-wrap: pretty;
+  }
+  .sh-about .care__phone {
+    display: inline-block;
+    font-family: var(--sh-mono);
+    font-weight: 500;
+    color: var(--red);
+    border-bottom: 1px solid var(--red);
+    padding-bottom: 1px;
+  }
+
+  /* ---------- SECCIÓN 7: CONTACTO ---------- */
+  .sh-about .contact {
+    padding: 40px 0 90px;
+    text-align: center;
+  }
+  .sh-about .contact__line {
+    font-family: var(--sh-serif);
+    font-style: italic;
+    font-size: 19px;
+    color: var(--ink-soft);
+    margin: 0 0 36px;
+  }
+  .sh-about .contact__line a {
+    color: var(--red);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule-strong);
+    padding-bottom: 2px;
+    transition: border-color 200ms ease;
+  }
+  .sh-about .contact__line a:hover { border-color: var(--red); }
+  .sh-about .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--sh-sans);
+    font-size: 13.5px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+    background: transparent;
+    border: 1px solid var(--leather);
+    padding: 14px 28px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+  }
+  .sh-about .btn:hover {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .sh-about .btn svg { width: 14px; height: 14px; }
+  .sh-about .contact__note {
+    margin-top: 18px;
+    font-family: var(--sh-sans);
+    font-size: 12px;
+    color: var(--leather);
+  }
+
+  /* ---------- SECCIÓN 8: LICENCIA / PIE EDITORIAL ---------- */
+  .sh-about .license {
+    border-top: 1px solid var(--rule);
+    padding: 28px 0 8px;
+    text-align: center;
+  }
+  .sh-about .license__inner {
+    font-family: var(--sh-sans);
+    font-size: 11px;
+    color: var(--leather);
+    line-height: 1.7;
+    letter-spacing: 0.02em;
+  }
+
+  /* ---------- ANIMACIONES ---------- */
+  @keyframes sh-revealUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .sh-about .reveal.is-in {
+    animation: sh-revealUp 700ms cubic-bezier(.2,.7,.2,1) both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sh-about .reveal.is-in { animation: none; }
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 900px) {
+    .sh-about .grid { grid-template-columns: repeat(2, 1fr); }
+    .sh-about .editor__inner { grid-template-columns: 160px 1fr; gap: 32px; }
+  }
+  @media (max-width: 680px) {
+    .sh-about .wrap { padding: 0 22px; }
+    .sh-about .opener { padding: 64px 0 60px; }
+    .sh-about .grid { grid-template-columns: 1fr; gap: 16px; }
+    .sh-about .editor__inner { grid-template-columns: 1fr; gap: 28px; }
+    .sh-about .editor__portrait { max-width: 200px; }
+    .sh-about .care__box { padding: 32px 26px; }
+    .sh-about .drop p:first-child::first-letter { font-size: 58px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════ COPIAR DESDE ACÁ — cuerpo de la página "Sobre" ════════════ -->
+<div class="sh-about">
+
+  <!-- ===== SECCIÓN 1: APERTURA ===== -->
+  <section class="opener wrap reveal" data-screen-label="01 Apertura">
+    <div class="opener__kicker">Sobre la revista</div>
+    <h1>Una revista cultural sobre el juego y el azar</h1>
+    <p class="opener__sub">Pensamos al juego como fenómeno social, popular, histórico y literario. Con seriedad, sin moralina, sin soplo.</p>
+    <svg class="clover" viewBox="0 0 64 64" aria-hidden="true">
+      <!-- Trébol de tres hojas: tres lóbulos ovalados + tallito -->
+      <g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <ellipse cx="32" cy="18" rx="8" ry="11" transform="rotate(0 32 18)"/>
+        <ellipse cx="20" cy="32" rx="8" ry="11" transform="rotate(-60 20 32)"/>
+        <ellipse cx="44" cy="32" rx="8" ry="11" transform="rotate(60 44 32)"/>
+        <circle cx="32" cy="29" r="1.2" fill="currentColor" stroke="none"/>
+        <path d="M32 32 Q 33 44 36 54"/>
+      </g>
+    </svg>
+  </section>
+
+  <!-- ===== SECCIÓN 2: QUÉ ES SALEHOY ===== -->
+  <section class="what wrap" data-screen-label="02 Qué es SaleHoy">
+    <div class="divider reveal" aria-hidden="true">
+      <span class="divider__line"></span>
+      <span class="divider__dot"></span>
+      <span class="divider__line"></span>
+    </div>
+    <div class="column drop reveal" style="margin-top: 56px;">
+      <p>SaleHoy es una revista cultural argentina sobre el juego y el azar. La quiniela, los hipódromos, el casino, las apuestas online, la lotería, los sorteos. El juego como fenómeno social, económico, psíquico, histórico, literario.</p>
+      <p>Pensamos al juego con seriedad. No promovemos las apuestas como salida económica. Tampoco las condenamos como vicio. Lo conversamos, lo miramos, lo escribimos.</p>
+      <p>Publicamos ediciones quincenales con artículos firmados por nuestros cinco narradores. Y tenemos una zona viva, La sala, donde el juego se vuelve cultura interactiva: una pitonisa rosarinense que tira las cartas, análisis estadísticos mensuales, frases curadas, anecdotario popular.</p>
+      <p>SaleHoy es de quien lo lee. Si jugás, jugá con conciencia. Si te preocupa cómo jugás, hablá con alguien.</p>
+    </div>
+  </section>
+
+  <!-- ===== SECCIÓN 3: LAS CINCO VOCES ===== -->
+  <section class="voices" data-screen-label="03 Las cinco voces">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-head__num">— III —</div>
+        <h2>Las cinco voces</h2>
+        <p class="section-head__sub">Cinco narradores con biografía, formación, criterio y contradicciones. Cada uno firma desde su disciplina y su mirada.</p>
+      </div>
+
+      <div class="grid">
+        <article class="card reveal">
+          <div class="card__role">El cronista</div>
+          <h3 class="card__name">Paulo Castillo</h3>
+          <div class="card__meta">39 años · Río Cuarto, Córdoba</div>
+          <p class="card__bio">Periodista y cronista. Formado en la UNRC, pasó por La Voz del Interior y Hoy Día Córdoba. Volvió a Río Cuarto donde tiene columna en Radio Universidad y un programa propio de FM, “La Hora Perdida”, donde pasa vinilos de los 70.</p>
+          <blockquote class="card__quote">Eso era. Andá a saber por qué.</blockquote>
+          <a href="#" class="card__link">Ver perfil completo&nbsp;<span>→</span></a>
+        </article>
+
+        <article class="card reveal">
+          <div class="card__role">El historiador</div>
+          <h3 class="card__name">Aníbal Belmonte</h3>
+          <div class="card__meta">54 años · Boedo, Buenos Aires</div>
+          <p class="card__bio">Historiador formado en la UBA (Filosofía + posgrado en Historia). Especialista en personajes secundarios de la historia argentina. Usa el pasado para pensar el presente.</p>
+          <blockquote class="card__quote">El pasado no se estudia. Se interroga.</blockquote>
+          <a href="#" class="card__link">Ver perfil completo&nbsp;<span>→</span></a>
+        </article>
+
+        <article class="card reveal">
+          <div class="card__role">La científica</div>
+          <h3 class="card__name">María Lange</h3>
+          <div class="card__meta">77 años · Bariloche / Buenos Aires</div>
+          <p class="card__bio">Psicoanalista. Hija de un pionero del psicoanálisis del sur argentino. Discípula directa de Silvia Bleichmar. Doctorado en adicciones y subjetividad borderline. Matriz teórica laplancheana.</p>
+          <blockquote class="card__quote">Habría que preguntarse qué se pierde cuando se juega para perder.</blockquote>
+          <a href="#" class="card__link">Ver perfil completo&nbsp;<span>→</span></a>
+        </article>
+
+        <article class="card reveal">
+          <div class="card__role">El matemático</div>
+          <h3 class="card__name">Tomás Vera</h3>
+          <div class="card__meta">29 años · San Juan / Buenos Aires</div>
+          <p class="card__bio">Matemático formado en FAMAF (UNC). Maestría en Berkeley en economía social aplicada a finanzas y nuevas tecnologías. Consultor en Buenos Aires. El pollo del equipo.</p>
+          <blockquote class="card__quote">Si lo pensás bien, el problema no es ese. Es otro.</blockquote>
+          <a href="#" class="card__link">Ver perfil completo&nbsp;<span>→</span></a>
+        </article>
+
+        <article class="card reveal">
+          <div class="card__role">La pitonisa</div>
+          <h3 class="card__name">Vichy</h3>
+          <div class="card__meta">75–80 años · Rosario</div>
+          <p class="card__bio">Doña quinielera rosarinense. Tabla criolla, santoral, tarot, café y borra. Hincha de Newell’s. Lectora de Fontanarrosa. Conoció a Pichón Rivière siendo joven. Tiene un gato negro entero que se llama Sr. Bigotes, cariñosamente Bigo.</p>
+          <blockquote class="card__quote">Andá, andá. Y avisame si sale.</blockquote>
+          <a href="#" class="card__link">Ver perfil completo&nbsp;<span>→</span></a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECCIÓN 4: EL EDITOR ===== -->
+  <section class="editor wrap" data-screen-label="04 El editor">
+    <div class="editor__inner reveal">
+      <div class="editor__portrait" aria-hidden="true">
+        <span>retrato — Juan Boas</span>
+      </div>
+      <div class="editor__body">
+        <span class="role-tag">El editor</span>
+        <h2>Juan Boas</h2>
+        <p>Juan Boas es el editor de SaleHoy. Psicoanalista de profesión. Esa formación atraviesa los criterios editoriales del proyecto, especialmente en los temas sensibles: cómo se mira la compulsión, qué se cuida, qué se respeta, dónde se baja el tono. No se declara en cada artículo, pero está en el suelo de cada decisión.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECCIÓN 5: COMPROMISOS ===== -->
+  <section class="commit" data-screen-label="05 Compromiso editorial">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-head__num">— V —</div>
+        <h2>Lo que nos comprometemos</h2>
+        <p class="section-head__sub">Ocho líneas. No son reglas internas: son lo que el lector puede pedirnos cuando fallemos.</p>
+      </div>
+      <ul class="commit__list reveal">
+        <li><span class="commit__num">01</span><span class="commit__text">A no promover las apuestas como salida económica.</span></li>
+        <li><span class="commit__num">02</span><span class="commit__text">A no dar picks, soplos ni predicciones confiables.</span></li>
+        <li><span class="commit__num">03</span><span class="commit__text">A no infantilizar al jugador.</span></li>
+        <li><span class="commit__num">04</span><span class="commit__text">A nombrar la ludopatía cuando corresponda, con seriedad clínica.</span></li>
+        <li><span class="commit__num">05</span><span class="commit__text">A cuidar al lector que viene mal.</span></li>
+        <li><span class="commit__num">06</span><span class="commit__text">A escribir con cuidado y citar fuentes.</span></li>
+        <li><span class="commit__num">07</span><span class="commit__text">A sostener cinco voces diferenciadas, no un coro.</span></li>
+        <li><span class="commit__num">08</span><span class="commit__text">A confiar en la inteligencia de quien nos lee.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== SECCIÓN 6: JUEGO RESPONSABLE ===== -->
+  <section class="care wrap" data-screen-label="06 Juego responsable">
+    <div class="care__box reveal">
+      <h3 class="care__title">Si te preocupa cómo jugás</h3>
+      <p class="care__body">La Sedronar atiende gratuita y anónimamente al <a href="tel:141" class="care__phone">141</a>. El juego es entretenimiento, no salida económica. Si jugás, hacelo con conciencia y dentro de tus posibilidades. Si alguien que conocés está jugando mal, hablale con cuidado.</p>
+    </div>
+  </section>
+
+  <!-- ===== SECCIÓN 7: CONTACTO Y NEWSLETTER ===== -->
+  <section class="contact wrap" data-screen-label="07 Contacto">
+    <div class="reveal">
+      <p class="contact__line">Para contactarnos: <a href="/cdn-cgi/l/email-protection#204a55414e6053414c45484f590e434f4d0e4152"><span class="__cf_email__" data-cfemail="1d77687c735d6e7c7178757264337e7270337c6f">[email&#160;protected]</span></a></p>
+      <a href="#" class="btn" id="sh-subscribeBtn">
+        Suscribirse al newsletter
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M13 6l6 6-6 6"/>
+        </svg>
+      </a>
+      <p class="contact__note">Una edición cada quince días, directo a tu mail. Sin spam, sin ruido.</p>
+    </div>
+  </section>
+
+  <!-- ===== SECCIÓN 8: LICENCIA ===== -->
+  <section class="license wrap" data-screen-label="08 Licencia">
+    <div class="license__inner">
+      SaleHoy es contenido editorial bajo Creative Commons BY-NC-SA 4.0. Editor responsable: Juan Boas.
+    </div>
+  </section>
+
+</div>
+<!-- ════════════ HASTA ACÁ ════════════ -->
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  /* ===== Animación de entrada al hacer scroll (scopeada a .sh-about) ===== */
+  (function () {
+    var root = document.querySelector('.sh-about');
+    if (!root) return;
+    var els = root.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    els.forEach(function (el) { io.observe(el); });
+  })();
+
+  /* ===== Botón newsletter (placeholder sobrio).
+     Reemplazá esto por tu flujo real de suscripción. ===== */
+  (function () {
+    var btn = document.getElementById('sh-subscribeBtn');
+    if (!btn) return;
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      var orig = btn.innerHTML;
+      btn.innerHTML = 'Pronto disponible &nbsp;·&nbsp; volvé en unos días';
+      btn.style.pointerEvents = 'none';
+      setTimeout(function () {
+        btn.innerHTML = orig;
+        btn.style.pointerEvents = '';
+      }, 2200);
+    });
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 16" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" aria-label="Regla ornamental">
+  <line x1="0" y1="8" x2="100" y2="8"></line>
+  <circle cx="108" cy="8" r="1.5" fill="currentColor" stroke="none"></circle>
+  <path d="M114 8 l 6 -3 l 6 3 l -6 3 z" fill="currentColor" stroke="none"></path>
+  <circle cx="132" cy="8" r="1.5" fill="currentColor" stroke="none"></circle>
+  <line x1="140" y1="8" x2="240" y2="8"></line>
+</svg>

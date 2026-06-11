@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-label="Trébol de tres hojas, sólido">
+  <g>
+    <ellipse cx="12" cy="6.5" rx="3" ry="3.5"></ellipse>
+    <ellipse cx="6.8" cy="13" rx="3.5" ry="3" transform="rotate(-30 6.8 13)"></ellipse>
+    <ellipse cx="17.2" cy="13" rx="3.5" ry="3" transform="rotate(30 17.2 13)"></ellipse>
+    <path d="M11.4 11 C 11.4 15, 10.5 18, 9 20 L 10.2 20.3 C 11.8 18, 12.5 15.5, 12.6 11 Z"></path>
+  </g>
+</svg>
