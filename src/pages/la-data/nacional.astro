@@ -1,6 +1,6 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import ZonaInforme from '../../components/la-data/ZonaInforme.astro';
+import LaDataLayout from '../../layouts/LaDataLayout.astro';
+import ZonaDataPage from '../../components/la-data/ZonaDataPage.astro';
 import { formatMes } from '../../lib/la-data';
 
 const datosGlob = import.meta.glob('../../data/la-data/*.datos.json', { eager: true });
@@ -16,9 +16,10 @@ const textos = textosGlob[textosKey] as any;
 const mesLabel = formatMes(mesStr);
 ---
 
-<BaseLayout
+<LaDataLayout
   title={`La Data · Nacional · ${mesLabel}`}
-  description={`Informe quinielistico de la Quiniela Nacional — ${mesLabel}. Frecuencias, décadas, terminaciones y más.`}
+  description={`Informe quinielistico de la Quiniela Nacional — ${mesLabel}. Frecuencias, décadas, terminaciones y análisis estadístico.`}
+  mesLabel={mesLabel}
 >
-  <ZonaInforme zonaKey="nacional" datos={datos} textos={textos} />
-</BaseLayout>
+  <ZonaDataPage zonaKey="nacional" datos={datos} textos={textos} mesLabel={mesLabel} />
+</LaDataLayout>

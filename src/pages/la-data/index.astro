@@ -1,18 +1,7 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import SalaHeader from '../../components/SalaHeader.astro';
-import {
-  formatMes,
-  formatDateShort,
-  formatGeneradoEl,
-  formatVsPromedio,
-  PALETAS,
-  ZONA_NOMBRE,
-  ZONA_SLUG,
-  renderInlineHTML,
-} from '../../lib/la-data';
+import LaDataLayout from '../../layouts/LaDataLayout.astro';
+import { formatMes, formatVsPromedio, formatDateShort, formatGeneradoEl } from '../../lib/la-data';
 
-// Cargar el mes más reciente
 const datosGlob = import.meta.glob('../../data/la-data/*.datos.json', { eager: true });
 const textosGlob = import.meta.glob('../../data/la-data/*.textos.json', { eager: true });
 
@@ -24,368 +13,277 @@ const datos = datosGlob[datosKey] as any;
 const textos = textosGlob[textosKey] as any;
 
 const mesLabel = formatMes(mesStr);
-
-// Top 5 de Nacional para ticker de portada
-const top5Nacional = datos.zonas.nacional.dosCifras.top.slice(0, 5);
-
+const mesUpper = mesLabel.toUpperCase();
 const generadoEl = formatGeneradoEl(datos.generadoEl);
+
+const z = datos.zonas;
+
+// Ticker items — top 1 de cada zona
+const nacTop  = z.nacional.dosCifras.top[0];
+const bsasTop = z.buenosAires.dosCifras.top[0];
+const cbaTop  = z.cordoba.dosCifras.top[0];
+const tickerItems = [
+  { num: `NAC · ${nacTop?.numero  || '—'}`, delta: nacTop  ? formatVsPromedio(nacTop.vsPromedio)  : '' },
+  { num: `BA · ${bsasTop?.numero  || '—'}`, delta: bsasTop ? formatVsPromedio(bsasTop.vsPromedio) : '' },
+  { num: `CBA · ${cbaTop?.numero  || '—'}`, delta: cbaTop  ? formatVsPromedio(cbaTop.vsPromedio)  : '' },
+];
+// Agrego top 2 de cada zona para el ticker
+const nacTop2  = z.nacional.dosCifras.top[1];
+const bsasTop2 = z.buenosAires.dosCifras.top[1];
+const cbaTop2  = z.cordoba.dosCifras.top[1];
+if (nacTop2)  tickerItems.push({ num: `NAC · ${nacTop2.numero}`,  delta: formatVsPromedio(nacTop2.vsPromedio) });
+if (bsasTop2) tickerItems.push({ num: `BA · ${bsasTop2.numero}`,  delta: formatVsPromedio(bsasTop2.vsPromedio) });
+if (cbaTop2)  tickerItems.push({ num: `CBA · ${cbaTop2.numero}`,  delta: formatVsPromedio(cbaTop2.vsPromedio) });
+
+const tickerStream = [...tickerItems, ...tickerItems, ...tickerItems];
+
+// TitularDelMes — generado desde datos
+const coincLen = datos.comparativa.coincidenciasTop10.length;
+const titularLeading   = coincLen === 0
+  ? 'LAS TRES QUINIELAS NO COINCIDIERON EN'
+  : 'LAS TRES QUINIELAS COINCIDIERON EN';
+const titularHighlight = coincLen === 0
+  ? 'NINGÚN'
+  : coincLen === 1 ? '1 SOLO' : `${coincLen}`;
+const titularTrailing  = coincLen === 0
+  ? 'NÚMERO DEL TOP 10 ESTE MES'
+  : `NÚMERO${coincLen !== 1 ? 'S' : ''} DEL TOP 10: ${datos.comparativa.coincidenciasTop10.join(', ')}`;
+const titularDelta     = `${coincLen} / 30`;
+const titularCaption   = 'coincidencias entre Nacional, BA y Córdoba';
+
+// Zone configs
+const ZONES = {
+  nacional:    { bg: '#0F1730', fg: '#E8E2D1', bgDeep: '#080E1A', fgMuted: '#8892AE', accent: '#5BD37A', label: 'QUINIELA NACIONAL',    sub: '120 sorteos · 2400 extracciones' },
+  buenosAires: { bg: '#2A1A0E', fg: '#EDE0CF', bgDeep: '#150D07', fgMuted: '#A09080', accent: '#D4A574', label: 'QUINIELA BUENOS AIRES', sub: '120 sorteos · 2400 extracciones' },
+  cordoba:     { bg: '#162922', fg: '#DFF0F5', bgDeep: '#0B1511', fgMuted: '#8BAAB5', accent: '#7FB8C9', label: 'QUINIELA CÓRDOBA',      sub: `${z.cordoba.sorteos} sorteos · ${z.cordoba.extracciones} extracciones` },
+  comparativa: { bg: '#F5F1E8', fg: '#1B1F2A', bgDeep: 'var(--ink)', fgMuted: '#7A7560', accent: '#1B1F2A', label: 'LAS TRES COMPARADAS', sub: 'Cruce entre los tres informes' },
+};
 ---
 
-<BaseLayout
-  title="La Data · SaleHoy"
-  description={`Informe quinielistico mensual ${mesLabel} por Tomás Vera. Estadísticas, análisis y distribuciones de la quiniela argentina.`}
->
-  <SalaHeader titulo="LA DATA" bajada={`Informe ${mesLabel}`} vibe="green" />
+<LaDataLayout title={`La Data · ${mesLabel}`} mesLabel={mesLabel}>
 
-  <div class="ld-portada container-wide">
+  <article style="background:var(--paper-warmer);border:1px solid var(--ink);max-width:1180px;margin:20px auto 56px;position:relative;">
 
-    <!-- Headline editorial (si existe) -->
-    {textos.headline && (
-      <h2 class="ld-portada__headline" set:html={renderInlineHTML(textos.headline)} />
-    )}
-    {textos.subhead && (
-      <p class="ld-portada__subhead">{textos.subhead}</p>
-    )}
+    <!-- Frame header -->
+    <header style="padding:10px 22px;border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;gap:16px;">
+      <span style="display:inline-flex;align-items:center;gap:10px;font-family:var(--font-sans);font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--cuero);">
+        <img src="/img/logos/logo-ladata-pizarra.png" alt="La Data" style="height:26px;width:auto;display:block;mix-blend-mode:multiply;" />
+        <span style="width:1px;height:16px;background:var(--rule);display:inline-block;"></span>
+        La sala · dispositivo
+      </span>
+      <span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);letter-spacing:0.02em;">{mesLabel} · Tomás Vera</span>
+    </header>
 
-    <!-- Stats del mes en grande -->
-    <div class="ld-portada__stats">
-      <div class="ld-portada__stat">
-        <span class="data-num-large">{datos.totales.sorteos}</span>
-        <p class="ld-portada__stat-label">sorteos</p>
-      </div>
-      <div class="ld-portada__stat">
-        <span class="data-num-large">{datos.totales.extracciones}</span>
-        <p class="ld-portada__stat-label">extracciones</p>
-      </div>
-      <div class="ld-portada__stat">
-        <span class="ld-portada__stat-periodo">
-          {formatDateShort(datos.periodo.desde)} → {formatDateShort(datos.periodo.hasta)}
-        </span>
-        <p class="ld-portada__stat-label">{datos.periodo.dias} días</p>
-      </div>
-    </div>
-
-    <!-- Ticker: top 5 de Nacional -->
-    <div class="ld-portada__ticker" aria-label="Top 5 de la quiniela Nacional">
-      <span class="ld-portada__ticker-label">TOP 5 NACIONAL</span>
-      <div class="ld-portada__chips">
-        {top5Nacional.map((t: any) => (
-          <span class="ld-portada__chip">
-            <span class="ld-portada__chip-num">{t.numero}</span>
-            <span class="ld-portada__chip-meta">{formatVsPromedio(t.vsPromedio)}</span>
-          </span>
-        ))}
-      </div>
-    </div>
-
-    <!-- Cards de zona -->
-    <nav class="ld-portada__zonas" aria-label="Zonas del informe">
-      {(['nacional', 'buenosAires', 'cordoba', 'comparativa'] as const).map(z => {
-        const nombre = ZONA_NOMBRE[z] ?? 'Comparativa';
-        const topZona = z !== 'comparativa'
-          ? datos.zonas[z].dosCifras.top.slice(0, 3)
-          : null;
-        return (
-          <a
-            href={`/la-data/${ZONA_SLUG[z]}`}
-            class="ld-zona-card"
-            style={`--card-bg:${PALETAS[z].bg}; --card-accent:${PALETAS[z].accent}`}
-          >
-            <div class="ld-zona-card__head">
-              <span class="ld-zona-card__eyebrow">QUINIELA</span>
-              <span class="ld-zona-card__nombre">{nombre}</span>
-            </div>
-            {topZona && (
-              <div class="ld-zona-card__nums">
-                {topZona.map((t: any) => (
-                  <span class="ld-zona-card__num">{t.numero}</span>
-                ))}
-              </div>
-            )}
-            {z === 'comparativa' && (
-              <p class="ld-zona-card__comp-desc">Las tres loterías comparadas</p>
-            )}
-            <span class="ld-zona-card__arrow">→</span>
-          </a>
-        );
-      })}
+    <!-- Breadcrumb -->
+    <nav aria-label="Ubicación" style="font-family:var(--font-sans);font-size:12px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--cuero);padding:16px 28px 0;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+      <span>★</span>
+      <span style="font-weight:500;">LA SALA</span>
+      <span style="color:var(--ink-line);">›</span>
+      <span style="color:var(--ink);font-weight:600;">LA DATA</span>
     </nav>
 
-    <!-- Firma y fecha -->
-    <p class="ld-portada__firma">
-      Por <strong>Tomás Vera</strong>
-      <span class="ld-portada__sep">·</span>
-      <span class="ld-portada__fecha">{mesLabel}</span>
-      <span class="ld-portada__sep">·</span>
-      <span class="ld-portada__gen">act. {generadoEl}</span>
-    </p>
+    <!-- Marquee terminal -->
+    <div style="margin-top:14px;background:#0F1730;color:#E8E2D1;padding:10px 22px;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);font-family:var(--font-mono);font-size:13px;letter-spacing:0.04em;display:flex;align-items:center;gap:12px;overflow:hidden;white-space:nowrap;">
+      <span style="color:#5BD37A;font-size:11px;">●</span>
+      <span style="flex:1;overflow:hidden;text-overflow:ellipsis;">LA DATA · INFORME MENSUAL DE LA QUINIELA · {mesUpper} · {datos.totales.sorteos} SORTEOS · {datos.totales.extracciones.toLocaleString('es-AR')} EXTRACCIONES · POR TOMÁS VERA</span>
+      <span class="ld-cursor" style="display:inline-block;width:9px;height:16px;background:#5BD37A;vertical-align:middle;"></span>
+    </div>
 
-    <!-- Pie legal -->
-    <p class="ld-portada__legal">
-      SaleHoy es análisis cultural, no predicción.
-      Jugá responsable. Ayuda por juego problemático: Sedronar <strong>141</strong>.
-    </p>
+    <!-- Portada head — 2 columnas -->
+    <div class="ld-portada-head" style="padding:44px 56px 36px;display:grid;grid-template-columns:1.05fr 1fr;gap:56px;align-items:start;">
+      <!-- Izquierda -->
+      <div>
+        <span class="sh-section-label" style="color:var(--cuero);">Dispositivo de La Sala · 02</span>
+        <img class="ld-pizarra" src="/img/logos/logo-ladata-pizarra.png" alt="SaleHoy · La Data"
+          style="display:block;width:100%;max-width:440px;height:auto;margin:14px 0 18px;mix-blend-mode:multiply;" />
+        <p style="font-family:var(--font-serif);font-style:italic;font-size:22px;line-height:1.3;color:var(--ink-soft);margin:0 0 26px;max-width:20ch;">
+          Informe mensual de la Quiniela argentina.
+        </p>
+        <div style="width:56px;height:1px;background:var(--ink);margin-bottom:22px;"></div>
+        <p style="font-family:var(--font-serif);font-size:18px;line-height:1.55;color:var(--ink-soft);margin:0;max-width:36ch;">
+          Análisis estadístico mes a mes. Nacional, Buenos Aires, Córdoba y la comparación entre las tres. No damos picks. Mostramos qué pasó, en números.
+        </p>
+      </div>
 
-  </div>
-</BaseLayout>
+      <!-- Derecha — titular del mes -->
+      <div style="padding-top:18px;">
+        <!-- TitularDelMes -->
+        <div style="border:1px solid var(--cuero);background:var(--paper-warmer);padding:26px 28px;display:flex;flex-direction:column;gap:14px;position:relative;">
+          <div style="font-family:var(--font-sans);font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--cuero);display:flex;align-items:center;gap:10px;">
+            <span style="width:18px;height:1px;background:var(--cuero);display:inline-block;"></span>
+            Titular del mes · {mesLabel}
+          </div>
+          <div style="font-family:var(--font-mono);font-size:24px;line-height:1.22;font-weight:500;color:var(--ink);letter-spacing:0.01em;">
+            {titularLeading}
+            {' '}
+            <span style="color:var(--rojo);font-weight:600;">{titularHighlight}</span>
+            {' '}
+            {titularTrailing}
+          </div>
+          <div style="display:flex;align-items:baseline;gap:14px;font-family:var(--font-mono);font-size:12px;color:var(--ink-muted);">
+            <span style="color:#1F8550;font-weight:600;letter-spacing:0.04em;">{titularDelta}</span>
+            <span>{titularCaption}</span>
+          </div>
+        </div>
 
-<style>
-  .ld-portada {
-    padding-block: var(--space-2xl) var(--space-4xl);
-  }
+        <!-- Mini meta -->
+        <div style="margin-top:14px;padding:14px 4px 0;border-top:1px dotted var(--ink-line);display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);">
+          <div>
+            <div style="color:var(--cuero);font-size:9px;letter-spacing:0.12em;margin-bottom:2px;">SORTEOS</div>
+            <div style="color:var(--ink);font-size:16px;font-weight:500;">{datos.totales.sorteos}</div>
+          </div>
+          <div>
+            <div style="color:var(--cuero);font-size:9px;letter-spacing:0.12em;margin-bottom:2px;">EXTRACCIONES</div>
+            <div style="color:var(--ink);font-size:16px;font-weight:500;">{datos.totales.extracciones.toLocaleString('es-AR')}</div>
+          </div>
+          <div>
+            <div style="color:var(--cuero);font-size:9px;letter-spacing:0.12em;margin-bottom:2px;">ZONAS</div>
+            <div style="color:var(--ink);font-size:16px;font-weight:500;">04</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-  /* ── Headline editorial ─────────────────────────────────────────────────── */
-  .ld-portada__headline {
-    font-family: var(--font-display);
-    font-size: clamp(var(--text-2xl), 4vw, var(--text-5xl));
-    font-weight: var(--font-bold);
-    line-height: var(--leading-snug);
-    color: var(--color-text);
-    margin: 0 0 var(--space-md);
-    letter-spacing: -0.01em;
-  }
+    <!-- Divisor editorial -->
+    <div style="display:flex;align-items:center;padding:0 56px 26px;gap:18px;">
+      <span style="flex:1;height:1px;background:var(--ink-line);display:block;"></span>
+      <span style="font-family:var(--font-sans);font-size:10px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--cuero);">Cuatro zonas · una mesa</span>
+      <span style="flex:1;height:1px;background:var(--ink-line);display:block;"></span>
+    </div>
 
-  .ld-portada__subhead {
-    font-family: var(--font-display);
-    font-size: var(--text-lg);
-    color: var(--color-text-secondary);
-    margin: 0 0 var(--space-2xl);
-    font-style: italic;
-  }
+    <!-- Grilla 2x2 de zone buttons -->
+    <div class="ld-zone-grid" style="padding:0 56px 36px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <!-- Nacional -->
+      <a href="/la-data/nacional" style={`background:${ZONES.nacional.bg};color:${ZONES.nacional.fg};border:1px solid ${ZONES.nacional.bgDeep};padding:24px 22px 20px;min-height:160px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;text-decoration:none;position:relative;`}>
+        <div style={`position:absolute;top:14px;right:18px;font-family:var(--font-mono);font-size:10px;color:${ZONES.nacional.fgMuted};letter-spacing:0.06em;`}>/ NAC</div>
+        <div style={`color:${ZONES.nacional.accent};margin-bottom:18px;height:44px;display:flex;align-items:flex-end;`}>
+          <svg width="44" height="44" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round">
+            <circle cx="22" cy="22" r="6.5"/>
+            <line x1="22" y1="5" x2="22" y2="12"/><line x1="22" y1="32" x2="22" y2="39"/>
+            <line x1="5" y1="22" x2="12" y2="22"/><line x1="32" y1="22" x2="39" y2="22"/>
+            <line x1="10.5" y1="10.5" x2="15.6" y2="15.6"/><line x1="28.4" y1="28.4" x2="33.5" y2="33.5"/>
+            <line x1="33.5" y1="10.5" x2="28.4" y2="15.6"/><line x1="15.6" y1="28.4" x2="10.5" y2="33.5"/>
+          </svg>
+        </div>
+        <div>
+          <div style={`font-family:var(--font-mono);font-size:14px;font-weight:600;color:${ZONES.nacional.fg};letter-spacing:0.04em;margin-bottom:6px;`}>{ZONES.nacional.label}</div>
+          <div style={`font-family:var(--font-sans);font-size:13px;color:${ZONES.nacional.fgMuted};display:flex;justify-content:space-between;align-items:center;gap:12px;`}>
+            <span>{datos.zonas.nacional.sorteos} sorteos · {datos.zonas.nacional.extracciones} extracciones</span>
+            <span style={`color:${ZONES.nacional.accent};font-family:var(--font-mono);font-size:14px;`}>→</span>
+          </div>
+        </div>
+      </a>
 
-  /* ── Stats grandes ──────────────────────────────────────────────────────── */
-  .ld-portada__stats {
-    display: flex;
-    gap: var(--space-2xl);
-    align-items: flex-end;
-    flex-wrap: wrap;
-    padding-block: var(--space-xl);
-    border-top: 1px solid var(--color-line);
-    border-bottom: 1px solid var(--color-line);
-    margin-bottom: var(--space-2xl);
-  }
+      <!-- Buenos Aires -->
+      <a href="/la-data/buenos-aires" style={`background:${ZONES.buenosAires.bg};color:${ZONES.buenosAires.fg};border:1px solid ${ZONES.buenosAires.bgDeep};padding:24px 22px 20px;min-height:160px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;text-decoration:none;position:relative;`}>
+        <div style={`position:absolute;top:14px;right:18px;font-family:var(--font-mono);font-size:10px;color:${ZONES.buenosAires.fgMuted};letter-spacing:0.06em;`}>/ BSA</div>
+        <div style={`color:${ZONES.buenosAires.accent};margin-bottom:18px;height:44px;display:flex;align-items:flex-end;`}>
+          <svg width="44" height="44" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round">
+            <line x1="22" y1="4" x2="18" y2="36"/><line x1="22" y1="4" x2="26" y2="36"/>
+            <line x1="18" y1="36" x2="26" y2="36"/><line x1="14" y1="40" x2="30" y2="40"/>
+            <line x1="20" y1="20" x2="24" y2="20"/>
+          </svg>
+        </div>
+        <div>
+          <div style={`font-family:var(--font-mono);font-size:14px;font-weight:600;color:${ZONES.buenosAires.fg};letter-spacing:0.04em;margin-bottom:6px;`}>{ZONES.buenosAires.label}</div>
+          <div style={`font-family:var(--font-sans);font-size:13px;color:${ZONES.buenosAires.fgMuted};display:flex;justify-content:space-between;align-items:center;gap:12px;`}>
+            <span>{datos.zonas.buenosAires.sorteos} sorteos · {datos.zonas.buenosAires.extracciones} extracciones</span>
+            <span style={`color:${ZONES.buenosAires.accent};font-family:var(--font-mono);font-size:14px;`}>→</span>
+          </div>
+        </div>
+      </a>
 
-  .ld-portada__stat {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-  }
+      <!-- Córdoba -->
+      <a href="/la-data/cordoba" style={`background:${ZONES.cordoba.bg};color:${ZONES.cordoba.fg};border:1px solid ${ZONES.cordoba.bgDeep};padding:24px 22px 20px;min-height:160px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;text-decoration:none;position:relative;`}>
+        <div style={`position:absolute;top:14px;right:18px;font-family:var(--font-mono);font-size:10px;color:${ZONES.cordoba.fgMuted};letter-spacing:0.06em;`}>/ CBA</div>
+        <div style={`color:${ZONES.cordoba.accent};margin-bottom:18px;height:44px;display:flex;align-items:flex-end;`}>
+          <svg width="44" height="44" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" stroke-linecap="round">
+            <path d="M 4 34 L 12 22 L 18 28 L 24 18 L 30 26 L 36 16 L 40 22 L 40 34 Z"/>
+            <line x1="4" y1="38" x2="40" y2="38"/>
+          </svg>
+        </div>
+        <div>
+          <div style={`font-family:var(--font-mono);font-size:14px;font-weight:600;color:${ZONES.cordoba.fg};letter-spacing:0.04em;margin-bottom:6px;`}>{ZONES.cordoba.label}</div>
+          <div style={`font-family:var(--font-sans);font-size:13px;color:${ZONES.cordoba.fgMuted};display:flex;justify-content:space-between;align-items:center;gap:12px;`}>
+            <span>{datos.zonas.cordoba.sorteos} sorteos · {datos.zonas.cordoba.extracciones} extracciones</span>
+            <span style={`color:${ZONES.cordoba.accent};font-family:var(--font-mono);font-size:14px;`}>→</span>
+          </div>
+        </div>
+      </a>
 
-  .ld-portada__stat-periodo {
-    font-family: var(--font-mono);
-    font-size: var(--text-xl);
-    font-weight: var(--font-bold);
-    color: var(--color-text);
-    line-height: 1;
-  }
+      <!-- Comparativa -->
+      <a href="/la-data/comparativa" style="background:#F5F1E8;color:var(--ink);border:1px solid var(--ink);padding:24px 22px 20px;min-height:160px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;text-decoration:none;position:relative;">
+        <div style="position:absolute;top:14px;right:18px;font-family:var(--font-mono);font-size:10px;color:var(--ink-muted);letter-spacing:0.06em;">/ X3</div>
+        <div style="color:var(--cuero);margin-bottom:18px;height:44px;display:flex;align-items:flex-end;">
+          <svg width="44" height="44" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round">
+            <line x1="10" y1="32" x2="10" y2="20"/>
+            <line x1="22" y1="32" x2="22" y2="10"/>
+            <line x1="34" y1="32" x2="34" y2="24"/>
+            <line x1="4" y1="36" x2="40" y2="36"/>
+          </svg>
+        </div>
+        <div>
+          <div style="font-family:var(--font-mono);font-size:14px;font-weight:600;color:var(--ink);letter-spacing:0.04em;margin-bottom:6px;">{ZONES.comparativa.label}</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-muted);display:flex;justify-content:space-between;align-items:center;gap:12px;">
+            <span>Cruce entre los tres informes</span>
+            <span style="color:var(--ink);font-family:var(--font-mono);font-size:14px;">→</span>
+          </div>
+          <div style="display:flex;gap:0;margin-top:14px;height:4px;">
+            <div style="flex:1;background:#5BD37A;"></div>
+            <div style="flex:1;background:#D4A574;"></div>
+            <div style="flex:1;background:#7FB8C9;"></div>
+          </div>
+        </div>
+      </a>
+    </div>
 
-  .ld-portada__stat-label {
-    font-family: var(--font-body);
-    font-size: var(--text-xs);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--color-text-tertiary);
-    margin: 0;
-  }
+    <!-- Ticker calientes por zona -->
+    <div style="padding:0 56px 18px;">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;">
+        <span class="sh-section-label">Calientes por zona · {mesLabel}</span>
+        <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-muted);letter-spacing:0.06em;">
+          {formatDateShort(datos.periodo.hasta)} · act. {generadoEl}
+        </span>
+      </div>
+      <!-- Ticker scroll -->
+      <div style="background:#0A1020;border:1px solid var(--ink);overflow:hidden;position:relative;height:48px;">
+        <div style="position:absolute;left:0;top:0;bottom:0;width:110px;background:linear-gradient(90deg, #0A1020 60%, transparent);z-index:2;display:flex;align-items:center;padding:0 16px;pointer-events:none;">
+          <span style="font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:0.14em;color:#5BD37A;">● LIVE</span>
+        </div>
+        <div style="position:absolute;right:0;top:0;bottom:0;width:80px;background:linear-gradient(270deg, #0A1020 60%, transparent);z-index:2;pointer-events:none;"></div>
+        <div class="ld-ticker-track" style="position:absolute;top:0;left:0;height:100%;display:flex;align-items:center;white-space:nowrap;">
+          {tickerStream.map((it: any, i: number) => (
+            <span style="font-family:var(--font-mono);font-size:14px;color:#E8E2D1;padding:0 22px;display:inline-flex;align-items:baseline;gap:8px;">
+              <span style="color:#E8E2D1;font-weight:500;">{it.num}</span>
+              <span style="color:#5BD37A;font-size:12px;">{it.delta}</span>
+              <span style="color:#8892AE;font-size:11px;">·</span>
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
 
-  /* ── Ticker top 5 ───────────────────────────────────────────────────────── */
-  .ld-portada__ticker {
-    display: flex;
-    align-items: center;
-    gap: var(--space-md);
-    flex-wrap: wrap;
-    margin-bottom: var(--space-2xl);
-    padding: var(--space-md) var(--space-lg);
-    background: var(--color-bg-elevated);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-lg);
-  }
+    <!-- Footnote editorial -->
+    <div style="padding:10px 56px 20px;font-family:var(--font-serif);font-style:italic;font-size:13px;color:var(--ink-muted);text-align:center;max-width:720px;margin:0 auto;">
+      La Data es un dispositivo de lectura. No publicamos predicciones, ni recomendaciones.
+      Si querés mirar lo que pasó, entrá a cualquiera de las cuatro zonas.
+    </div>
 
-  .ld-portada__ticker-label {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    letter-spacing: 0.15em;
-    color: var(--color-text-tertiary);
-    white-space: nowrap;
-  }
+    <!-- Signature foot -->
+    <div style="padding:20px 28px 26px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--rule);gap:16px;flex-wrap:wrap;">
+      <div style="font-family:var(--font-sans);font-size:12px;color:var(--cuero);letter-spacing:0.04em;display:flex;align-items:center;gap:10px;">
+        <img src="/img/ornamentos/ornamento-barras.svg" alt="" width="14" height="14" />
+        <span>Por <span style="color:var(--ink);font-weight:600;">Tomás Vera</span> · El Matemático · {mesLabel}</span>
+      </div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);letter-spacing:0.02em;">
+        cierre · {formatDateShort(datos.periodo.hasta)} · act. {generadoEl}
+      </div>
+    </div>
 
-  .ld-portada__chips {
-    display: flex;
-    gap: var(--space-sm);
-    flex-wrap: wrap;
-  }
+    <!-- Sedronar note -->
+    <div style="border-top:1px solid var(--ink-line);padding:10px 28px;text-align:center;font-family:var(--font-sans);font-size:11px;color:var(--cuero);letter-spacing:0.02em;background:var(--paper-warm);">
+      La Data es análisis cultural, no soplo. Si te preocupa cómo jugás, hablá con alguien. Línea Sedronar 141.
+    </div>
 
-  .ld-portada__chip {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: #0F1730;
-    border: 1px solid rgba(91, 211, 122, 0.35);
-    border-radius: var(--radius-md);
-    padding: var(--space-xs) var(--space-md);
-    min-width: 52px;
-  }
-
-  .ld-portada__chip-num {
-    font-family: var(--font-mono);
-    font-size: var(--text-xl);
-    font-weight: var(--font-bold);
-    color: #5BD37A;
-    line-height: 1;
-  }
-
-  .ld-portada__chip-meta {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: rgba(91, 211, 122, 0.55);
-    letter-spacing: 0.05em;
-  }
-
-  /* ── Cards de zona ──────────────────────────────────────────────────────── */
-  .ld-portada__zonas {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-md);
-    margin-bottom: var(--space-3xl);
-  }
-
-  @media (max-width: 640px) {
-    .ld-portada__zonas { grid-template-columns: 1fr; }
-  }
-
-  @media (min-width: 1024px) {
-    .ld-portada__zonas { grid-template-columns: repeat(4, 1fr); }
-  }
-
-  .ld-zona-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: var(--space-md);
-    background: var(--card-bg);
-    border: 1px solid;
-    border-color: color-mix(in srgb, var(--card-accent) 30%, transparent);
-    border-radius: var(--radius-xl);
-    padding: var(--space-xl);
-    text-decoration: none;
-    transition: all var(--transition-base);
-    min-height: 160px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .ld-zona-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: color-mix(in srgb, var(--card-accent) 0%, transparent);
-    transition: background var(--transition-base);
-  }
-
-  .ld-zona-card:hover::before {
-    background: color-mix(in srgb, var(--card-accent) 8%, transparent);
-  }
-
-  .ld-zona-card:hover {
-    border-color: color-mix(in srgb, var(--card-accent) 60%, transparent);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px -8px color-mix(in srgb, var(--card-accent) 30%, transparent);
-  }
-
-  .ld-zona-card__head {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    position: relative;
-  }
-
-  .ld-zona-card__eyebrow {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    letter-spacing: 0.18em;
-    color: color-mix(in srgb, var(--card-accent) 50%, transparent);
-  }
-
-  .ld-zona-card__nombre {
-    font-family: var(--font-display);
-    font-size: var(--text-2xl);
-    font-weight: var(--font-bold);
-    color: var(--card-accent);
-    line-height: var(--leading-tight);
-  }
-
-  .ld-zona-card__nums {
-    display: flex;
-    gap: var(--space-sm);
-    position: relative;
-  }
-
-  .ld-zona-card__num {
-    font-family: var(--font-mono);
-    font-size: var(--text-lg);
-    font-weight: var(--font-bold);
-    color: var(--card-accent);
-    background: color-mix(in srgb, var(--card-accent) 10%, transparent);
-    border-radius: var(--radius-sm);
-    padding: 2px 8px;
-    line-height: 1.5;
-  }
-
-  .ld-zona-card__comp-desc {
-    font-family: var(--font-body);
-    font-size: var(--text-sm);
-    color: color-mix(in srgb, var(--card-accent) 60%, transparent);
-    margin: 0;
-    position: relative;
-  }
-
-  .ld-zona-card__arrow {
-    font-family: var(--font-mono);
-    font-size: var(--text-xl);
-    color: var(--card-accent);
-    align-self: flex-end;
-    position: relative;
-    transition: transform var(--transition-fast);
-  }
-
-  .ld-zona-card:hover .ld-zona-card__arrow {
-    transform: translateX(4px);
-  }
-
-  /* ── Firma ──────────────────────────────────────────────────────────────── */
-  .ld-portada__firma {
-    font-family: var(--font-body);
-    font-size: var(--text-sm);
-    color: var(--color-text-secondary);
-    margin: 0 0 var(--space-md);
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    flex-wrap: wrap;
-  }
-
-  .ld-portada__firma strong { color: var(--color-text); }
-
-  .ld-portada__sep { opacity: 0.4; }
-
-  .ld-portada__fecha {
-    color: var(--acento-tomas);
-  }
-
-  .ld-portada__gen {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-text-tertiary);
-  }
-
-  /* ── Legal ──────────────────────────────────────────────────────────────── */
-  .ld-portada__legal {
-    font-family: var(--font-body);
-    font-size: var(--text-xs);
-    color: var(--color-text-tertiary);
-    margin: 0;
-    line-height: var(--leading-relaxed);
-    border-top: 1px solid var(--color-line);
-    padding-top: var(--space-md);
-  }
-</style>
+  </article>
+</LaDataLayout>

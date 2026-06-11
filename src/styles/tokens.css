@@ -100,6 +100,35 @@
   /* Acentos por narrador (modo oscuro) */
   --acento-tomas: #4A9070;
   --acento-anibal: #8B6040;
+
+  /* ============ LA DATA — TOKENS DE DISEÑO ============ */
+  /* Papeles */
+  --paper-warm: #F4ECDC;
+  --paper-warmer: #FAF3E2;
+  --paper-darker: #E8DCC0;
+  --paper-edge: #DCCFAF;
+  /* Tinta */
+  --ink: #1A1A1A;
+  --ink-soft: #2F2A24;
+  --ink-muted: #6B6358;
+  --ink-line: #B8A98A;
+  /* Acentos editoriales */
+  --rojo: #9B2226;
+  --rojo-deep: #7A1C1F;
+  --cuero: #6B4423;
+  --cuero-soft: #8A5E37;
+  --dorado: #C9A96E;
+  --dorado-deep: #A8884E;
+  /* Aliases de fuentes para compatibilidad con La Data */
+  --font-serif: var(--font-display);
+  --font-sans: var(--font-body);
+  /* Alias semántico de hairline */
+  --rule: var(--ink-line);
+  /* Animaciones */
+  --ease-editorial: cubic-bezier(0.2, 0.0, 0.0, 1.0);
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 360ms;
 }
 
 /* ============ MODO CLARO ============ */

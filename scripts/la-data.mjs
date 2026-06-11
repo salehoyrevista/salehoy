@@ -178,6 +178,54 @@ if (todos.some((s) => s.hora === '22:15' && s.zona !== 'cordoba')) {
   process.exit(1);
 }
 
+// ---------- series temporales (para el gráfico interactivo) ----------
+function clasificarHorario(hora) {
+  const [h, m] = hora.split(':').map(Number);
+  const t = h * 100 + m;
+  if (t <= 1030) return 'previa';
+  if (t <= 1300) return 'primera';
+  if (t <= 1630) return 'matutina';
+  if (t <= 1930) return 'vespertina';
+  if (t <= 2145) return 'nocturna';
+  return 'turista';
+}
+
+function computarSeries(sorteos, incluirTurista = false) {
+  const sorted = [...sorteos].sort((a, b) => {
+    const dA = iso(a.fecha) + a.hora;
+    const dB = iso(b.fecha) + b.hora;
+    return dA < dB ? -1 : 1;
+  });
+  const dias = [...new Set(sorted.map((s) => iso(s.fecha)))].sort();
+  const tipos = ['todos', 'previa', 'primera', 'matutina', 'vespertina', 'nocturna'];
+  if (incluirTurista) tipos.push('turista');
+  const cifrasOpts = ['2', '3', '4'];
+  const series = {};
+  for (const tipo of tipos) {
+    const filtrados = tipo === 'todos' ? sorted : sorted.filter((s) => clasificarHorario(s.hora) === tipo);
+    series[tipo] = {};
+    for (const digStr of cifrasOpts) {
+      const w = parseInt(digStr, 10);
+      const mod = 10 ** w;
+      const totales = new Map();
+      for (const s of filtrados) for (const v of s.numeros) { const d = v % mod; totales.set(d, (totales.get(d) || 0) + 1); }
+      const top10 = [...totales.entries()].sort((a, b) => b[1] - a[1] || a[0] - b[0]).slice(0, 10).map(([n]) => n);
+      if (!top10.length) { series[tipo][digStr] = { dias: [], lineas: [] }; continue; }
+      const acum = new Map(top10.map((n) => [n, 0]));
+      const porDia = new Map();
+      for (const s of filtrados) { const d = iso(s.fecha); if (!porDia.has(d)) porDia.set(d, []); porDia.get(d).push(s); }
+      const lineasData = top10.map((num) => ({ num, valores: [] }));
+      for (const dia of dias) {
+        const ss = porDia.get(dia) || [];
+        for (const s of ss) for (const v of s.numeros) { const d = v % mod; if (acum.has(d)) acum.set(d, acum.get(d) + 1); }
+        for (const linea of lineasData) linea.valores.push(acum.get(linea.num));
+      }
+      series[tipo][digStr] = { dias, lineas: lineasData.map(({ num, valores }) => ({ numero: pad(num, w), valores })) };
+    }
+  }
+  return series;
+}
+
 const zonas = {
   nacional: { nombre: 'Nacional', ...analizarZona(porZona.nacional) },
   buenosAires: { nombre: 'Buenos Aires', ...analizarZona(porZona.buenosAires) },
@@ -193,6 +241,10 @@ if (turista.length) {
     aPrimera: a.aPrimera,
   };
 }
+
+zonas.nacional.series = computarSeries(porZona.nacional, false);
+zonas.buenosAires.series = computarSeries(porZona.buenosAires, false);
+zonas.cordoba.series = computarSeries(porZona.cordoba, true);
 
 // ---------- comparativa ----------
 function rankingDos(sorteos) {

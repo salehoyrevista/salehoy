@@ -1,0 +1,324 @@
+---
+interface Props {
+  series: Record<string, Record<string, { dias: string[]; lineas: Array<{ numero: string; valores: number[] }> }>>;
+  zoneBg: string;
+  zoneAccent: string;
+  isCordoba: boolean;
+  palette: string[];
+  mesLabel: string;
+}
+
+const { series, zoneBg, zoneAccent, isCordoba, palette, mesLabel } = Astro.props;
+
+const sorteoOpts = isCordoba
+  ? ['Todos', 'Previa', 'Primera', 'Matutina', 'Vespertina', 'Nocturna', 'Turista']
+  : ['Todos', 'Previa', 'Primera', 'Matutina', 'Vespertina', 'Nocturna'];
+
+const SORTEO_KEY: Record<string, string> = {
+  Todos: 'todos', Previa: 'previa', Primera: 'primera',
+  Matutina: 'matutina', Vespertina: 'vespertina', Nocturna: 'nocturna', Turista: 'turista',
+};
+---
+
+<div
+  class="ld-chart-island"
+  data-series={JSON.stringify(series)}
+  data-palette={JSON.stringify(palette)}
+  data-zone-bg={zoneBg}
+  data-zone-accent={zoneAccent}
+  data-is-cordoba={String(isCordoba)}
+  data-mes-label={mesLabel}
+>
+  <!-- Caption row -->
+  <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;gap:14px;flex-wrap:wrap;">
+    <div>
+      <div style="font-family:var(--font-sans);font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--cuero);">Gráfico principal</div>
+      <h3 id="ld-chart-caption" style="font-family:var(--font-display);font-weight:500;font-size:22px;color:var(--ink);margin:4px 0 0;letter-spacing:-0.005em;">Frecuencia acumulada · 2 cifras</h3>
+    </div>
+    <div id="ld-chart-caption-right" style="font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);letter-spacing:0.02em;text-align:right;">
+      ESTE MES · TODOS · 2 CIFRAS
+    </div>
+  </div>
+
+  <!-- Controles -->
+  <div class="ld-chart-controls" style="display:flex;flex-wrap:wrap;gap:24px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px dotted var(--ink-line);">
+    <!-- Período -->
+    <div>
+      <div style="font-family:var(--font-sans);font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--cuero);margin-bottom:8px;">Período</div>
+      <div style="display:flex;border:1px solid var(--ink-line);">
+        <button class="ld-ctrl-btn ld-ctrl-btn--period active" data-value="este-mes" style="font-family:var(--font-mono);font-size:11px;padding:7px 12px;background:var(--ink);color:var(--paper-warm);border:0;cursor:pointer;letter-spacing:0.02em;">Este mes</button>
+        <button class="ld-ctrl-btn ld-ctrl-btn--period" data-value="3m" disabled style="font-family:var(--font-mono);font-size:11px;padding:7px 12px;background:transparent;color:var(--ink-line);border:0;border-left:1px solid var(--ink-line);cursor:not-allowed;letter-spacing:0.02em;opacity:0.45;" title="Próximas ediciones">Últimos 3</button>
+        <button class="ld-ctrl-btn ld-ctrl-btn--period" data-value="6m" disabled style="font-family:var(--font-mono);font-size:11px;padding:7px 12px;background:transparent;color:var(--ink-line);border:0;border-left:1px solid var(--ink-line);cursor:not-allowed;letter-spacing:0.02em;opacity:0.45;" title="Próximas ediciones">Últimos 6</button>
+        <button class="ld-ctrl-btn ld-ctrl-btn--period" data-value="12m" disabled style="font-family:var(--font-mono);font-size:11px;padding:7px 12px;background:transparent;color:var(--ink-line);border:0;border-left:1px solid var(--ink-line);cursor:not-allowed;letter-spacing:0.02em;opacity:0.45;" title="Próximas ediciones">Año</button>
+      </div>
+    </div>
+
+    <!-- Sorteo -->
+    <div>
+      <div style="font-family:var(--font-sans);font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--cuero);margin-bottom:8px;">Sorteo</div>
+      <div style="display:flex;border:1px solid var(--ink-line);">
+        {sorteoOpts.map((opt, i) => (
+          <button
+            class={`ld-ctrl-btn ld-ctrl-btn--sorteo${opt === 'Todos' ? ' active' : ''}`}
+            data-value={SORTEO_KEY[opt]}
+            data-label={opt}
+            style={`font-family:var(--font-mono);font-size:11px;padding:7px 12px;background:${opt === 'Todos' ? 'var(--ink)' : 'transparent'};color:${opt === 'Todos' ? 'var(--paper-warm)' : 'var(--ink-muted)'};border:0;${i > 0 ? 'border-left:1px solid var(--ink-line);' : ''}cursor:pointer;letter-spacing:0.02em;transition:background var(--dur-fast) var(--ease-editorial);`}
+          >{opt}</button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Cifras -->
+    <div>
+      <div style="font-family:var(--font-sans);font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--cuero);margin-bottom:8px;">Cifras</div>
+      <div style="display:flex;border:1px solid var(--ink-line);">
+        {['2', '3', '4'].map((c, i) => (
+          <button
+            class={`ld-ctrl-btn ld-ctrl-btn--cifras${c === '2' ? ' active' : ''}`}
+            data-value={c}
+            style={`font-family:var(--font-mono);font-size:11px;padding:7px 12px;background:${c === '2' ? 'var(--ink)' : 'transparent'};color:${c === '2' ? 'var(--paper-warm)' : 'var(--ink-muted)'};border:0;${i > 0 ? 'border-left:1px solid var(--ink-line);' : ''}cursor:pointer;letter-spacing:0.02em;transition:background var(--dur-fast) var(--ease-editorial);`}
+          >{c}</button>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- SVG container -->
+  <div style="background:var(--paper-warmer);border:1px solid var(--ink-line);padding:24px;width:100%;box-sizing:border-box;">
+    <svg id="ld-chart-svg" viewBox="0 0 880 360" width="100%" style="display:block;"></svg>
+    <!-- Legend / hover hint -->
+    <div id="ld-chart-legend" style="margin-top:8px;padding:10px 0 0;border-top:1px dotted var(--ink-line);display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:12px;">
+      <span style="font-family:var(--font-serif);font-style:italic;font-size:13px;color:var(--ink-muted);">
+        Líneas en color: top 3 a 2 cifras. Las demás están atenuadas — pasales el mouse para destacarlas.
+      </span>
+      <span style="font-family:var(--font-mono);font-size:10px;color:var(--cuero);letter-spacing:0.06em;">FUENTE: PLANILLAS OFICIALES · LA DATA</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  const island = document.querySelector<HTMLElement>('.ld-chart-island');
+  if (island) {
+    const series = JSON.parse(island.dataset.series || '{}') as Record<string, Record<string, { dias: string[]; lineas: { numero: string; valores: number[] }[] }>>;
+    const palette = JSON.parse(island.dataset.palette || '[]') as string[];
+    const mesLabel = island.dataset.mesLabel || '';
+
+    let activeSorteo = 'todos';
+    let activeDigits = '2';
+    let hovered: string | null = null;
+
+    const svg = island.querySelector<SVGSVGElement>('#ld-chart-svg')!;
+    const legend = island.querySelector<HTMLElement>('#ld-chart-legend')!;
+    const caption = island.querySelector<HTMLElement>('#ld-chart-caption')!;
+    const captionRight = island.querySelector<HTMLElement>('#ld-chart-caption-right')!;
+
+    // Sorteo control
+    island.querySelectorAll<HTMLButtonElement>('.ld-ctrl-btn--sorteo').forEach(btn => {
+      btn.addEventListener('click', () => {
+        island.querySelectorAll('.ld-ctrl-btn--sorteo').forEach(b => {
+          (b as HTMLButtonElement).style.background = 'transparent';
+          (b as HTMLButtonElement).style.color = 'var(--ink-muted)';
+          b.classList.remove('active');
+        });
+        btn.style.background = 'var(--ink)';
+        btn.style.color = 'var(--paper-warm)';
+        btn.classList.add('active');
+        activeSorteo = btn.dataset.value || 'todos';
+        hovered = null;
+        render();
+      });
+    });
+
+    // Cifras control
+    island.querySelectorAll<HTMLButtonElement>('.ld-ctrl-btn--cifras').forEach(btn => {
+      btn.addEventListener('click', () => {
+        island.querySelectorAll('.ld-ctrl-btn--cifras').forEach(b => {
+          (b as HTMLButtonElement).style.background = 'transparent';
+          (b as HTMLButtonElement).style.color = 'var(--ink-muted)';
+          b.classList.remove('active');
+        });
+        btn.style.background = 'var(--ink)';
+        btn.style.color = 'var(--paper-warm)';
+        btn.classList.add('active');
+        activeDigits = btn.dataset.value || '2';
+        hovered = null;
+        render();
+      });
+    });
+
+    function niceMax(v: number): number {
+      if (v <= 0) return 10;
+      const pow = Math.pow(10, Math.floor(Math.log10(v)));
+      const n = v / pow;
+      let nice: number;
+      if (n <= 1) nice = 1;
+      else if (n <= 2) nice = 2;
+      else if (n <= 4) nice = 4;
+      else if (n <= 5) nice = 5;
+      else nice = 10;
+      return nice * pow;
+    }
+
+    function fmt(num: string): string {
+      return String(num).padStart(Number(activeDigits), '0');
+    }
+
+    function esc(s: string): string {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function render() {
+      const data = series[activeSorteo]?.[activeDigits];
+
+      // Update caption
+      const sorteoLabel = island.querySelector<HTMLButtonElement>(`.ld-ctrl-btn--sorteo.active`)?.dataset.label || 'Todos';
+      caption.textContent = `Frecuencia acumulada · ${activeDigits} cifras`;
+      captionRight.textContent = `ESTE MES · ${sorteoLabel.toUpperCase()} · ${activeDigits} CIFRAS`;
+
+      if (!data || !data.lineas || !data.lineas.length) {
+        svg.innerHTML = `<text x="440" y="180" text-anchor="middle" font-family="var(--font-mono)" font-size="12" fill="var(--cuero)">Sin datos para este filtro</text>`;
+        legend.querySelector('span')!.textContent = 'Sin datos para el filtro seleccionado.';
+        return;
+      }
+
+      const { dias, lineas } = data;
+      const DAYS = dias.length;
+      if (DAYS < 2) {
+        svg.innerHTML = `<text x="440" y="180" text-anchor="middle" font-family="var(--font-mono)" font-size="12" fill="var(--cuero)">Datos insuficientes (${DAYS} día)</text>`;
+        return;
+      }
+
+      // Geometry
+      const W = 880, H = 360;
+      const pad = { top: 28, right: 112, bottom: 38, left: 48 };
+      const innerW = W - pad.left - pad.right;
+      const innerH = H - pad.top - pad.bottom;
+
+      const maxFinal = Math.max(...lineas.map(l => l.valores[l.valores.length - 1] || 0));
+      const yMax = niceMax(maxFinal * 1.12);
+
+      // dayIdx = 0..DAYS-1, x maps to pad.left..pad.left+innerW
+      const xPos = (dayIdx: number) => pad.left + (dayIdx / (DAYS - 1)) * innerW;
+      const yPos = (v: number) => pad.top + innerH - (v / yMax) * innerH;
+
+      const isHighlighted = (i: number, num: string) =>
+        hovered !== null ? num === hovered : i < 3;
+      const isMuted = (i: number, num: string) =>
+        hovered !== null ? num !== hovered : i >= 3;
+
+      // Anti-collision for end labels on highlighted lines
+      const labelYMap: Record<string, number> = {};
+      {
+        const highlighted = lineas
+          .map((l, i) => ({ num: l.numero, i, finalVal: l.valores[l.valores.length - 1] || 0 }))
+          .filter(({ i, num }) => isHighlighted(i, num))
+          .sort((a, b) => yPos(a.finalVal) - yPos(b.finalVal));
+        const MIN_GAP = 14;
+        for (let k = 1; k < highlighted.length; k++) {
+          const prev = yPos(highlighted[k - 1].finalVal);
+          const cur = yPos(highlighted[k].finalVal);
+          if (cur - prev < MIN_GAP) {
+            highlighted[k].finalVal = highlighted[k - 1].finalVal; // adjust
+          }
+        }
+        // Re-sort and assign
+        const sorted = lineas
+          .map((l, i) => ({ num: l.numero, base: yPos(l.valores[l.valores.length - 1] || 0), i }))
+          .filter(({ i, num }) => isHighlighted(i, num))
+          .sort((a, b) => a.base - b.base);
+        for (let k = 1; k < sorted.length; k++) {
+          if (sorted[k].base - sorted[k - 1].base < MIN_GAP) {
+            sorted[k].base = sorted[k - 1].base + MIN_GAP;
+          }
+        }
+        sorted.forEach(o => { labelYMap[o.num] = o.base; });
+      }
+
+      // Y ticks
+      const yTicks = [0, yMax * 0.25, yMax * 0.5, yMax * 0.75, yMax].map(v => Math.round(v));
+
+      // X ticks: up to 6 evenly spaced day indices
+      const tickCount = Math.min(6, DAYS);
+      const xTicks: number[] = [];
+      for (let i = 0; i < tickCount; i++) {
+        const idx = Math.round((i / (tickCount - 1)) * (DAYS - 1));
+        xTicks.push(idx);
+      }
+
+      let parts: string[] = [];
+
+      // Axes
+      parts.push(`<line x1="${pad.left}" y1="${pad.top}" x2="${pad.left}" y2="${pad.top + innerH}" stroke="var(--ink-line)" stroke-width="1"/>`);
+      parts.push(`<line x1="${pad.left}" y1="${pad.top + innerH}" x2="${pad.left + innerW}" y2="${pad.top + innerH}" stroke="var(--ink-line)" stroke-width="1"/>`);
+
+      // Y guide lines
+      yTicks.slice(1).forEach(t => {
+        parts.push(`<line x1="${pad.left}" y1="${yPos(t).toFixed(1)}" x2="${pad.left + innerW}" y2="${yPos(t).toFixed(1)}" stroke="var(--ink-line)" stroke-width="0.5" stroke-dasharray="1 4" opacity="0.5"/>`);
+      });
+
+      // X ticks + labels (show day number 1-based)
+      xTicks.forEach(idx => {
+        const xp = xPos(idx).toFixed(1);
+        const dayNum = String(idx + 1).padStart(2, '0');
+        parts.push(`<line x1="${xp}" y1="${pad.top + innerH}" x2="${xp}" y2="${pad.top + innerH + 4}" stroke="var(--ink-line)" stroke-width="1"/>`);
+        parts.push(`<text x="${xp}" y="${pad.top + innerH + 18}" text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="var(--ink-muted)" letter-spacing="0.02em">${dayNum}</text>`);
+      });
+
+      // X axis label
+      parts.push(`<text x="${(pad.left + innerW / 2).toFixed(1)}" y="${H - 6}" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--cuero)" letter-spacing="0.14em">DÍA · ${esc(mesLabel.toUpperCase())}</text>`);
+
+      // Y ticks + labels
+      yTicks.forEach(t => {
+        parts.push(`<text x="${pad.left - 10}" y="${(yPos(t) + 4).toFixed(1)}" text-anchor="end" font-family="var(--font-mono)" font-size="10" fill="var(--ink-muted)">${String(Math.round(t)).padStart(2, '0')}</text>`);
+      });
+      parts.push(`<text x="${pad.left - 30}" y="${pad.top - 8}" text-anchor="start" font-family="var(--font-mono)" font-size="9" fill="var(--cuero)" letter-spacing="0.14em">APARICIONES</text>`);
+
+      // Muted lines first (behind)
+      lineas.forEach((l, i) => {
+        if (!isMuted(i, l.numero)) return;
+        const pts = l.valores.map((v, idx) => `${idx === 0 ? 'M' : 'L'} ${xPos(idx).toFixed(1)} ${yPos(v).toFixed(1)}`).join(' ');
+        parts.push(`<path d="${pts}" stroke="var(--ink-line)" stroke-width="1" fill="none" opacity="0.6" data-num="${esc(l.numero)}" class="ld-line-path ld-line-muted" style="cursor:pointer"/>`);
+      });
+
+      // Highlighted lines on top
+      lineas.forEach((l, i) => {
+        if (!isHighlighted(i, l.numero)) return;
+        const color = hovered !== null ? 'var(--rojo)' : (palette[i % palette.length] || palette[0]);
+        const pts = l.valores.map((v, idx) => `${idx === 0 ? 'M' : 'L'} ${xPos(idx).toFixed(1)} ${yPos(v).toFixed(1)}`).join(' ');
+        const finalVal = l.valores[l.valores.length - 1] || 0;
+        const lx = xPos(DAYS - 1).toFixed(1);
+        const ly = yPos(finalVal).toFixed(1);
+        const labelYVal = (labelYMap[l.numero] ?? yPos(finalVal)).toFixed(1);
+        parts.push(`<path d="${pts}" stroke="${esc(color)}" stroke-width="1.6" fill="none" data-num="${esc(l.numero)}" class="ld-line-path ld-line-hi" style="cursor:pointer"/>`);
+        parts.push(`<circle cx="${lx}" cy="${ly}" r="3" fill="${esc(color)}"/>`);
+        parts.push(`<text x="${(Number(lx) + 8).toFixed(1)}" y="${(Number(labelYVal) + 4).toFixed(1)}" font-family="var(--font-mono)" font-size="11" font-weight="600" fill="${esc(color)}" letter-spacing="0.02em">${esc(fmt(l.numero))} · ${finalVal}</text>`);
+      });
+
+      svg.innerHTML = parts.join('');
+
+      // Hover listeners on paths
+      svg.querySelectorAll<SVGPathElement>('.ld-line-path').forEach(path => {
+        path.addEventListener('mouseenter', () => {
+          hovered = path.dataset.num || null;
+          render();
+        });
+        path.addEventListener('mouseleave', () => {
+          hovered = null;
+          render();
+        });
+      });
+
+      // Legend text
+      const legendText = legend.querySelector('span');
+      if (legendText) {
+        if (hovered !== null) {
+          legendText.innerHTML = `Resaltado: <strong style="color:var(--rojo);font-family:var(--font-mono);font-style:normal">el ${esc(fmt(hovered))}</strong>. Pasá el mouse por las líneas grises para ver el resto.`;
+        } else {
+          legendText.textContent = `Líneas en color: top 3 a ${activeDigits} cifras. Las demás están atenuadas — pasales el mouse para destacarlas.`;
+        }
+      }
+    }
+
+    render();
+  }
+</script>

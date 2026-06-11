@@ -1,0 +1,360 @@
+---
+import { renderProseHTML, renderInlineHTML } from '../../lib/la-data';
+
+interface Props {
+  datos: any;
+  textos: any;
+  mesLabel: string;
+}
+
+const { datos, textos: t, mesLabel } = Astro.props;
+const comp = datos.comparativa;
+const zonas = datos.zonas;
+const mesUpper = mesLabel.toUpperCase();
+
+// Colores ACC para el modo claro (comparativa usa fondo hueso)
+const ACC = {
+  nacional:    '#1A6B43',
+  buenosAires: '#9A6B2E',
+  cordoba:     '#3C7C8C',
+} as const;
+const ACC_LABEL = {
+  nacional: 'NACIONAL',
+  buenosAires: 'BUENOS AIRES',
+  cordoba: 'CÓRDOBA',
+} as const;
+
+// CrossTable rows: top 5 de cada zona en paralelo
+const maxRows = Math.max(
+  comp.topCruzado.nacional.length,
+  comp.topCruzado.buenosAires.length,
+  comp.topCruzado.cordoba.length,
+  5
+);
+const tableRows = Array.from({ length: Math.min(maxRows, 5) }, (_, i) => {
+  const n = comp.topCruzado.nacional[i];
+  const b = comp.topCruzado.buenosAires[i];
+  const c = comp.topCruzado.cordoba[i];
+  return {
+    pos: `${i + 1}°`,
+    nacional:    n ? [n.numero, `${n.apariciones}×`] : ['—', ''],
+    buenosAires: b ? [b.numero, `${b.apariciones}×`] : ['—', ''],
+    cordoba:     c ? [c.numero, `${c.apariciones}×`] : ['—', ''],
+  };
+});
+
+// AvgTable rows
+const MIN = 3800, MAX_V = 5200;
+const pos = (v: number) => ((v - MIN) / (MAX_V - MIN)) * 100;
+const theoretical = pos(5000);
+
+const avgRows = [
+  ...comp.promedioPrimera.map((r: any) => {
+    const zoneKey = r.zona === 'Nacional' ? 'nacional' : r.zona === 'Buenos Aires' ? 'buenosAires' : 'cordoba';
+    const pct = Math.round(r.pct4000a5999 * 100);
+    const tag = Math.abs(pct - 20) <= 2 ? 'exacto' : pct > 20 ? 'sobre' : 'bajo';
+    const dir = pct > 21 ? 'up' : pct < 19 ? 'down' : 'ok';
+    return { label: r.zona, avg: r.promedio, pct: `${pct}%`, tag, dir, zone: zoneKey, sub: false };
+  }),
+  ...(zonas.cordoba.turista ? [{
+    label: 'Córdoba turista',
+    avg: zonas.cordoba.turista.aPrimera.promedio,
+    pct: '—',
+    tag: 'anomalía',
+    dir: 'down',
+    zone: 'cordoba',
+    sub: true,
+  }] : []),
+] as any[];
+
+// DeviationTable rows
+const devRows = comp.decadas.map((r: any) => {
+  const zoneKey = r.zona === 'Nacional' ? 'nacional' : r.zona === 'Buenos Aires' ? 'buenosAires' : 'cordoba';
+  return {
+    label: r.zona,
+    hot: `${r.masCaliente.rango} (${r.masCaliente.apariciones})`,
+    cold: `${r.masFria.rango} (${r.masFria.apariciones})`,
+    diff: Math.round(r.difPct * 100),
+    zone: zoneKey,
+  };
+});
+
+// Cierre — drop cap en primer párrafo
+const cierreText: string = t?.zonas?.comparativa?.cierre || '';
+const cierreParas = cierreText.split(/\n\n+/).map((p: string) => p.trim()).filter(Boolean);
+const cierreFirstLetter = cierreParas[0]?.charAt(0) || 'E';
+const cierreFirstRest = renderInlineHTML(cierreParas[0]?.slice(1) || '');
+const cierreRestHTML = renderProseHTML(cierreParas.slice(1).join('\n\n'));
+
+// Apertura
+const aperturaHTML = renderProseHTML(t?.zonas?.comparativa?.apertura || '');
+---
+
+<!-- DataDeviceFrame -->
+<article style="background:var(--paper-warmer);border:1px solid var(--ink);max-width:1180px;margin:20px auto 56px;position:relative;">
+
+  <!-- Frame header -->
+  <header style="padding:10px 22px;border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;gap:16px;">
+    <span style="display:inline-flex;align-items:center;gap:10px;font-family:var(--font-sans);font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--cuero);">
+      <img src="/img/logos/logo-ladata-pizarra.png" alt="La Data" style="height:26px;width:auto;display:block;mix-blend-mode:multiply;" />
+      <span style="width:1px;height:16px;background:var(--rule);display:inline-block;"></span>
+      La sala · dispositivo
+    </span>
+    <span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);letter-spacing:0.02em;">{mesLabel} · Tomás Vera</span>
+  </header>
+
+  <!-- Breadcrumb -->
+  <nav aria-label="Ubicación" style="font-family:var(--font-sans);font-size:12px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--cuero);padding:16px 28px 0;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+    <span>★</span>
+    <span style="font-weight:500;">LA SALA</span>
+    <span style="color:var(--ink-line);">›</span>
+    <span style="font-weight:500;">LA DATA</span>
+    <span style="color:var(--ink-line);">›</span>
+    <span style="color:var(--ink);font-weight:600;">COMPARATIVA</span>
+  </nav>
+
+  <!-- Marquee terminal -->
+  <div style="margin-top:14px;background:#0F1730;color:#E8E2D1;padding:10px 22px;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);font-family:var(--font-mono);font-size:13px;letter-spacing:0.04em;display:flex;align-items:center;gap:12px;overflow:hidden;white-space:nowrap;">
+    <span style="color:#5BD37A;font-size:11px;">●</span>
+    <span style="flex:1;overflow:hidden;text-overflow:ellipsis;">LAS TRES COMPARADAS · {mesUpper} · {datos.totales.sorteos} SORTEOS · {datos.totales.extracciones.toLocaleString('es-AR')} EXTRACCIONES · {comp.coincidenciasTop10.length === 0 ? '0 NÚMEROS EN COMÚN EN EL TOP 10' : `${comp.coincidenciasTop10.length} EN COMÚN: ${comp.coincidenciasTop10.join(', ')}`}</span>
+    <span class="ld-cursor" style="display:inline-block;width:9px;height:16px;background:#5BD37A;vertical-align:middle;"></span>
+  </div>
+
+  <!-- Comparativa header (fondo hueso, 3 acentos) -->
+  <header style="background:#F5F1E8;color:var(--ink);padding:22px 28px;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:18px;">
+      <div style="display:flex;gap:0;width:30px;height:12px;">
+        <span style={`flex:1;background:${ACC.nacional};`}></span>
+        <span style={`flex:1;background:${ACC.buenosAires};`}></span>
+        <span style={`flex:1;background:${ACC.cordoba};`}></span>
+      </div>
+      <div>
+        <div style="font-family:var(--font-mono);font-size:18px;font-weight:600;letter-spacing:0.04em;color:var(--ink);">LAS TRES COMPARADAS · {mesUpper}</div>
+        <div style="font-family:var(--font-sans);font-size:11px;color:var(--cuero);letter-spacing:0.1em;text-transform:uppercase;margin-top:4px;">{datos.totales.sorteos} sorteos · {datos.totales.extracciones.toLocaleString('es-AR')} extracciones · 3 quinielas</div>
+      </div>
+    </div>
+    <span style="font-family:var(--font-mono);font-size:11px;color:var(--ink);padding:5px 12px;border:1px solid var(--ink);letter-spacing:0.04em;">EL CRUCE DEL MES</span>
+  </header>
+
+  <!-- Apertura editorial — el hallazgo principal -->
+  <section style="background:var(--paper-warm);padding:44px 56px 34px;">
+    <div class="ld-nacional-apertura" style="display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:56px;align-items:start;">
+      <div>
+        <span class="sh-section-label">El hallazgo del mes</span>
+        <h2 style="font-family:var(--font-display);font-weight:500;font-size:44px;line-height:1.06;margin:8px 0 24px;letter-spacing:-0.02em;color:var(--ink);max-width:18ch;" set:html={renderInlineHTML(t?.zonas?.comparativa?.apertura?.split('\n\n')[0]?.split('.')[0] + '.' || 'Ninguna coincidió con las otras.')}></h2>
+        <div style="font-family:var(--font-serif);font-size:18px;line-height:1.6;color:var(--ink-soft);max-width:44ch;" set:html={aperturaHTML}></div>
+      </div>
+
+      <!-- El cruce en una cifra -->
+      <aside style="background:var(--paper-warmer);border:1px solid var(--ink-line);padding:22px;">
+        <div style="font-family:var(--font-sans);font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--cuero);margin-bottom:16px;">El cruce en una cifra</div>
+        <div style="font-family:var(--font-mono);font-size:64px;font-weight:600;color:var(--rojo);line-height:0.9;letter-spacing:-0.02em;">{comp.coincidenciasTop10.length}</div>
+        <div style="font-family:var(--font-serif);font-style:italic;font-size:15px;color:var(--ink-soft);margin:10px 0 18px;line-height:1.45;">
+          {comp.coincidenciasTop10.length === 0
+            ? 'números compartidos entre los tres top 10.'
+            : `número${comp.coincidenciasTop10.length > 1 ? 's' : ''} compartido${comp.coincidenciasTop10.length > 1 ? 's' : ''}: ${comp.coincidenciasTop10.join(', ')}.`}
+        </div>
+        <div style="border-top:1px dotted var(--ink-line);padding-top:14px;display:flex;flex-direction:column;gap:10px;">
+          {([['Nacional', 'nacional'], ['Buenos Aires', 'buenosAires'], ['Córdoba', 'cordoba']] as [string, keyof typeof ACC][]).map(([label, key]) => {
+            const top = comp.topCruzado[key]?.[0];
+            return (
+              <div style="display:flex;align-items:baseline;justify-content:space-between;">
+                <span style={`font-family:var(--font-sans);font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--cuero);display:flex;align-items:center;gap:8px;`}>
+                  <span style={`width:7px;height:7px;background:${ACC[key]};display:inline-block;`}></span>
+                  {label}
+                </span>
+                <span style="font-family:var(--font-mono);font-size:20px;font-weight:600;color:var(--ink);">{top?.numero || '—'}</span>
+              </div>
+            );
+          })}
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- TABLA 1 — Top 5 en columnas paralelas -->
+  <section style="padding:10px 56px 34px;">
+    <!-- Section head -->
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--ink);">
+      <div style="display:flex;align-items:baseline;gap:14px;flex-shrink:0;">
+        <span style="font-family:var(--font-mono);font-size:13px;color:var(--cuero);font-weight:600;">01</span>
+        <h3 style="font-family:var(--font-display);font-weight:600;font-size:24px;margin:0;letter-spacing:-0.01em;white-space:nowrap;">Top 5 a dos cifras</h3>
+      </div>
+      <span style="font-family:var(--font-mono);font-size:11px;color:var(--cuero);letter-spacing:0.06em;text-align:right;">
+        {comp.coincidenciasTop10.length === 0 ? 'SIN UNA SOLA COINCIDENCIA' : `${comp.coincidenciasTop10.length} EN COMÚN`}
+      </span>
+    </div>
+
+    <div style="overflow-x:auto;">
+      <div style="border:1px solid var(--ink-line);overflow:hidden;min-width:560px;">
+        <!-- Header row -->
+        <div style="display:grid;grid-template-columns:84px 1fr 1fr 1fr;background:var(--paper-warmer);border-bottom:1px solid var(--ink);">
+          <div style="padding:12px 16px;font-family:var(--font-sans);font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--cuero);">Pos.</div>
+          {(['nacional', 'buenosAires', 'cordoba'] as const).map(k => (
+            <div style={`padding:12px 16px;font-family:var(--font-mono);font-size:12px;font-weight:600;letter-spacing:0.06em;color:${ACC[k]};border-left:1px solid var(--ink-line);display:flex;align-items:center;gap:8px;`}>
+              <span style={`width:8px;height:8px;background:${ACC[k]};display:inline-block;`}></span>
+              {ACC_LABEL[k]}
+            </div>
+          ))}
+        </div>
+        <!-- Body rows -->
+        {tableRows.map((row: any, ri: number) => (
+          <div style={`display:grid;grid-template-columns:84px 1fr 1fr 1fr;${ri < tableRows.length - 1 ? 'border-bottom:1px solid var(--ink-line);' : ''}background:${ri % 2 === 1 ? 'var(--paper-warm)' : 'transparent'};`}>
+            <div style="padding:14px 16px;font-family:var(--font-mono);font-size:13px;color:var(--ink-muted);display:flex;align-items:center;">{row.pos}</div>
+            {(['nacional', 'buenosAires', 'cordoba'] as const).map(k => {
+              const cell = row[k];
+              return (
+                <div style="padding:12px 16px;border-left:1px solid var(--ink-line);display:flex;align-items:center;">
+                  <div style="display:flex;align-items:baseline;gap:8px;">
+                    <span style="font-family:var(--font-mono);font-size:22px;font-weight:600;color:var(--ink);">{cell[0]}</span>
+                    <span style={`font-family:var(--font-mono);font-size:12px;color:${ACC[k]};`}>{cell[1]}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+    </div>
+    <p style="font-family:var(--font-serif);font-style:italic;font-size:14px;color:var(--ink-muted);line-height:1.5;margin:14px 0 0;max-width:70ch;">
+      {comp.coincidenciasTop10.length === 0
+        ? 'Quince números distintos en quince casilleros. La probabilidad de que tres top 5 independientes no compartan nada no es despreciable — pero verla en limpio impresiona igual.'
+        : `El top 5 de cada quiniela tiene sus propios protagonistas. Coincidencias en el top 10: ${comp.coincidenciasTop10.length > 0 ? comp.coincidenciasTop10.join(', ') : 'ninguna'}.`}
+    </p>
+  </section>
+
+  <!-- TABLA 2 — Promedios a primera -->
+  <section style="padding:0 56px 34px;">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--ink);">
+      <div style="display:flex;align-items:baseline;gap:14px;flex-shrink:0;">
+        <span style="font-family:var(--font-mono);font-size:13px;color:var(--cuero);font-weight:600;">02</span>
+        <h3 style="font-family:var(--font-display);font-weight:600;font-size:24px;margin:0;letter-spacing:-0.01em;white-space:nowrap;">Promedio del número a primera</h3>
+      </div>
+      <span style="font-family:var(--font-mono);font-size:11px;color:var(--cuero);letter-spacing:0.06em;text-align:right;">TEÓRICO ESPERADO ≈ 5000</span>
+    </div>
+
+    <div style="overflow-x:auto;">
+      <div style="border:1px solid var(--ink-line);min-width:560px;">
+        {avgRows.map((r: any, i: number) => {
+          const barPos = pos(r.avg);
+          const barLeft = Math.min(barPos, theoretical);
+          const barWidth = Math.abs(barPos - theoretical);
+          return (
+            <div style={`display:grid;grid-template-columns:160px 90px 1fr 120px;align-items:center;gap:16px;padding:16px 20px;${i < avgRows.length - 1 ? 'border-bottom:1px solid var(--ink-line);' : ''}background:${r.sub ? 'var(--paper-warm)' : 'transparent'};`}>
+              <span style={`font-family:var(--font-sans);font-size:${r.sub ? '12px' : '13px'};font-weight:600;letter-spacing:0.04em;color:${r.sub ? 'var(--cuero)' : 'var(--ink)'};display:flex;align-items:center;gap:8px;`}>
+                <span style={`width:8px;height:8px;background:${ACC[r.zone as keyof typeof ACC]};display:inline-block;${r.sub ? 'opacity:0.6;' : ''}`}></span>
+                {r.label}
+              </span>
+              <span style="font-family:var(--font-mono);font-size:22px;font-weight:600;color:var(--ink);">{r.avg}</span>
+              <div style="position:relative;height:24px;">
+                <div style="position:absolute;top:50%;left:0;right:0;height:1px;background:var(--ink-line);"></div>
+                <div style={`position:absolute;top:50%;transform:translateY(-50%);left:${theoretical.toFixed(2)}%;width:1px;background:var(--cuero);height:100%;`}></div>
+                <div style={`position:absolute;top:50%;transform:translateY(-50%);left:${barLeft.toFixed(2)}%;width:${barWidth.toFixed(2)}%;height:4px;background:${ACC[r.zone as keyof typeof ACC]};`}></div>
+                <div style={`position:absolute;top:50%;transform:translate(-50%,-50%);left:${barPos.toFixed(2)}%;width:9px;height:9px;border-radius:50%;background:${ACC[r.zone as keyof typeof ACC]};border:2px solid var(--paper-warmer);`}></div>
+              </div>
+              <span style={`font-family:var(--font-mono);font-size:12px;text-align:right;color:${r.dir === 'up' ? '#9A6B2E' : r.dir === 'down' ? 'var(--rojo)' : 'var(--ink-muted)'};`}>{r.pct} · {r.tag}</span>
+            </div>
+          );
+        })}
+        <div style="padding:8px 20px;border-top:1px dotted var(--ink-line);font-family:var(--font-mono);font-size:10px;color:var(--cuero);letter-spacing:0.06em;display:flex;align-items:center;gap:8px;">
+          <span style="width:1px;height:12px;background:var(--cuero);display:inline-block;"></span>
+          LÍNEA VERTICAL = TEÓRICO ESPERADO (5000) · COLUMNA % = NÚMEROS A PRIMERA ENTRE 4000–5999
+        </div>
+      </div>
+    </div>
+    <p style="font-family:var(--font-serif);font-style:italic;font-size:14px;color:var(--ink-muted);line-height:1.5;margin:14px 0 0;max-width:70ch;">
+      El promedio a primera ronda los 5000 teóricos en casi todos los casos.
+      {zonas.cordoba.turista ? ` La excepción es el sorteo turista de Córdoba: ${zonas.cordoba.turista.aPrimera.promedio}, por debajo. Muestra chica (${zonas.cordoba.turista.sorteos} sorteos). Para seguir.` : ''}
+    </p>
+  </section>
+
+  <!-- TABLA 3 — Desviación por década -->
+  <section style="padding:0 56px 34px;">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--ink);">
+      <div style="display:flex;align-items:baseline;gap:14px;flex-shrink:0;">
+        <span style="font-family:var(--font-mono);font-size:13px;color:var(--cuero);font-weight:600;">03</span>
+        <h3 style="font-family:var(--font-display);font-weight:600;font-size:24px;margin:0;letter-spacing:-0.01em;white-space:nowrap;">Desviación por década</h3>
+      </div>
+      <span style="font-family:var(--font-mono);font-size:11px;color:var(--cuero);letter-spacing:0.06em;">CALIENTE − FRÍA, EN APARICIONES</span>
+    </div>
+
+    <div style="overflow-x:auto;">
+      <div style="border:1px solid var(--ink-line);min-width:640px;">
+        <div style="display:grid;grid-template-columns:160px 1fr 1fr 1fr 130px;background:var(--paper-warmer);border-bottom:1px solid var(--ink);">
+          {['Quiniela', 'Década caliente', 'Década fría', 'Diferencia', ''].map((h, i) => (
+            <div style={`padding:12px 16px;font-family:var(--font-sans);font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--cuero);${i > 0 ? 'border-left:1px solid var(--ink-line);' : ''}`}>{h}</div>
+          ))}
+        </div>
+        {devRows.map((r: any, i: number) => (
+          <div style={`display:grid;grid-template-columns:160px 1fr 1fr 1fr 130px;align-items:center;${i < devRows.length - 1 ? 'border-bottom:1px solid var(--ink-line);' : ''}background:${i % 2 === 1 ? 'var(--paper-warm)' : 'transparent'};`}>
+            <span style={`padding:14px 16px;font-family:var(--font-sans);font-size:13px;font-weight:600;color:var(--ink);display:flex;align-items:center;gap:8px;`}>
+              <span style={`width:8px;height:8px;background:${ACC[r.zone as keyof typeof ACC]};display:inline-block;`}></span>
+              {r.label}
+            </span>
+            <span style="padding:14px 16px;font-family:var(--font-mono);font-size:14px;color:var(--ink);border-left:1px solid var(--ink-line);">{r.hot}</span>
+            <span style="padding:14px 16px;font-family:var(--font-mono);font-size:14px;color:var(--ink-muted);border-left:1px solid var(--ink-line);">{r.cold}</span>
+            <span style={`padding:14px 16px;font-family:var(--font-mono);font-size:20px;font-weight:600;color:${ACC[r.zone as keyof typeof ACC]};border-left:1px solid var(--ink-line);`}>{r.diff}%</span>
+            <div style="padding:14px 16px;border-left:1px solid var(--ink-line);">
+              <div style="height:6px;background:var(--paper-darker);position:relative;">
+                <div style={`position:absolute;left:0;top:0;bottom:0;width:${(r.diff / 40) * 100}%;background:${ACC[r.zone as keyof typeof ACC]};`}></div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+    <p style="font-family:var(--font-serif);font-style:italic;font-size:14px;color:var(--ink-muted);line-height:1.5;margin:14px 0 0;max-width:70ch;">
+      {devRows[1]?.label || 'Buenos Aires'} es la quiniela con más carácter del mes: {devRows[1]?.diff || 33}% de brecha entre su década más caliente y la más fría. Tres ruedas, tres temperamentos.
+    </p>
+  </section>
+
+  <!-- Cierre editorial -->
+  <section style="background:var(--paper-warm);padding:40px 56px 36px;border-top:1px solid var(--ink-line);">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:22px;">
+      <span class="sh-section-label">Cierre · La Data de {mesLabel}</span>
+      <span style="flex:1;height:1px;background:var(--ink-line);"></span>
+    </div>
+    <div class="ld-tema-prose" style="font-family:var(--font-serif);font-size:18px;line-height:1.62;color:var(--ink-soft);max-width:62ch;">
+      <p style="margin:0 0 18px;">
+        <span style="font-family:var(--font-display);font-weight:600;font-size:3.6em;line-height:0.86;color:var(--rojo);float:left;padding:0.08em 0.1em 0 0;margin:0.05em 0 0;">{cierreFirstLetter}</span>
+        <span set:html={cierreFirstRest}></span>
+      </p>
+      <div set:html={cierreRestHTML}></div>
+    </div>
+
+    <div style="margin-top:32px;text-align:center;">
+      <div style="color:var(--cuero);letter-spacing:0.6em;font-size:14px;margin-bottom:20px;">* * *</div>
+      <a href="/la-data" style="font-family:var(--font-sans);font-size:13px;font-weight:500;padding:10px 20px;background:transparent;color:var(--ink);border:1px solid var(--ink);border-radius:2px;text-decoration:none;letter-spacing:0.02em;">← Volver a La Data</a>
+    </div>
+  </section>
+
+  <!-- Signature foot -->
+  <div style="padding:20px 28px 26px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--rule);gap:16px;flex-wrap:wrap;">
+    <div style="font-family:var(--font-sans);font-size:12px;color:var(--cuero);letter-spacing:0.04em;display:flex;align-items:center;gap:10px;">
+      <img src="/img/ornamentos/ornamento-barras.svg" alt="" width="14" height="14" />
+      <span>Por <span style="color:var(--ink);font-weight:600;">Tomás Vera</span> · El Matemático · {mesLabel}</span>
+    </div>
+    <div style="font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);letter-spacing:0.02em;">
+      {mesLabel} · La Data
+    </div>
+  </div>
+
+  <!-- Sedronar note -->
+  <div style="border-top:1px solid var(--ink-line);padding:10px 28px;text-align:center;font-family:var(--font-sans);font-size:11px;color:var(--cuero);letter-spacing:0.02em;background:var(--paper-warm);">
+    La Data es análisis cultural, no soplo. Si te preocupa cómo jugás, hablá con alguien. Línea Sedronar 141.
+  </div>
+
+</article>
+
+<style>
+  .ld-tema-prose p {
+    margin: 0 0 18px;
+  }
+  .ld-tema-prose p + p {
+    text-indent: 1.25em;
+    margin-top: 0;
+  }
+  .ld-tema-prose .ld-mono {
+    font-style: normal;
+  }
+</style>

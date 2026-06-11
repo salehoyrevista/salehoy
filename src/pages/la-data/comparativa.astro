@@ -1,6 +1,6 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import ComparativaView from '../../components/la-data/ComparativaView.astro';
+import LaDataLayout from '../../layouts/LaDataLayout.astro';
+import ComparativaPage from '../../components/la-data/ComparativaPage.astro';
 import { formatMes } from '../../lib/la-data';
 
 const datosGlob = import.meta.glob('../../data/la-data/*.datos.json', { eager: true });
@@ -16,9 +16,10 @@ const textos = textosGlob[textosKey] as any;
 const mesLabel = formatMes(mesStr);
 ---
 
-<BaseLayout
+<LaDataLayout
   title={`La Data · Comparativa · ${mesLabel}`}
-  description={`Comparativa de las tres quinielas argentinas — ${mesLabel}. Nacional, Buenos Aires y Córdoba: coincidencias, décadas y más.`}
+  description={`Las tres quinielas comparadas — ${mesLabel}. Coincidencias, promedios y desviaciones entre Nacional, Buenos Aires y Córdoba.`}
+  mesLabel={mesLabel}
 >
-  <ComparativaView datos={datos} textos={textos} />
-</BaseLayout>
+  <ComparativaPage datos={datos} textos={textos} mesLabel={mesLabel} />
+</LaDataLayout>

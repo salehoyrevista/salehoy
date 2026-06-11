@@ -1,0 +1,392 @@
+---
+import { renderProseHTML, renderInlineHTML, formatMes } from '../../lib/la-data';
+import LineChart from './LineChart.astro';
+
+interface Props {
+  zonaKey: 'nacional' | 'buenosAires' | 'cordoba';
+  datos: any;
+  textos: any;
+  mesLabel: string;
+}
+
+const { zonaKey, datos: fullDatos, textos: fullTextos, mesLabel } = Astro.props;
+const d = fullDatos.zonas[zonaKey];
+const t = (fullTextos?.zonas?.[zonaKey]) || {};
+
+const ZONE_CONFIG = {
+  nacional: {
+    label: 'QUINIELA NACIONAL',
+    bg: '#0F1730', bgDeep: '#070C1C',
+    fg: '#E8E2D1', fgMuted: '#8892AE',
+    accent: '#5BD37A', accentDim: '#2E7A47',
+    chips: ['PRE', '1RA', 'MAT', 'VES', 'NOC'],
+    breadcrumb: 'NACIONAL',
+    palette: ['#0F1730', '#5BD37A', '#6B4423'],
+  },
+  buenosAires: {
+    label: 'QUINIELA DE BUENOS AIRES',
+    bg: '#2A1A0E', bgDeep: '#1A0F08',
+    fg: '#F0E4CB', fgMuted: '#A6896C',
+    accent: '#D4A574', accentDim: '#8A6B45',
+    chips: ['PRE', '1RA', 'MAT', 'VES', 'NOC'],
+    breadcrumb: 'BUENOS AIRES',
+    palette: ['#2A1A0E', '#D4A574', '#6B4423'],
+  },
+  cordoba: {
+    label: 'QUINIELA DE CÓRDOBA',
+    bg: '#162922', bgDeep: '#0C1A14',
+    fg: '#E4E0D0', fgMuted: '#7A9088',
+    accent: '#7FB8C9', accentDim: '#4A7E8C',
+    chips: ['PRE', '1RA', 'MAT', 'VES', 'NOC', 'TUR'],
+    breadcrumb: 'CÓRDOBA',
+    palette: ['#162922', '#7FB8C9', '#6B4423'],
+  },
+} as const;
+
+const Z = ZONE_CONFIG[zonaKey];
+const mesUpper = mesLabel.toUpperCase();
+
+// Resumen ejecutivo
+const sorteosMeta = zonaKey === 'cordoba' && d.turista
+  ? `${d.sorteos} + ${d.turista.sorteos} TUR`
+  : String(d.sorteos);
+const top0 = d.dosCifras.top[0];
+const bot0 = d.dosCifras.bottom[0];
+const peakDec = d.dosCifras.porDecada.reduce((a: any, b: any) => b.apariciones > a.apariciones ? b : a);
+const lowDec = d.dosCifras.porDecada.reduce((a: any, b: any) => b.apariciones < a.apariciones ? b : a);
+const top3c = d.tresCifras.top[0];
+
+const resumen: [string, string][] = [
+  ['Sorteos procesados', sorteosMeta],
+  ['Extracciones', d.extracciones.toLocaleString('es-AR')],
+  ['Más salido', `${top0.numero} · ${top0.apariciones}× (+${Math.round(top0.vsPromedio * 100)}%)`],
+  ['Menos salido', `${bot0.numero} · ${bot0.apariciones}×`],
+  ['Década caliente', `${peakDec.rango} (${peakDec.apariciones})`],
+  ['Caliente a 3 cifras', `${top3c.numero} (${top3c.apariciones}×)`],
+  ['4000–5999 a primera', `${Math.round(d.aPrimera.pct4000a5999 * 100)}% / 20% teórico`],
+];
+if (zonaKey === 'cordoba' && d.turista) {
+  resumen.push(['Turista a primera', `prom. ${d.turista.aPrimera.promedio}`]);
+}
+
+// Marquee text
+const marqueeText = `ZONA ${Z.breadcrumb} · ${mesUpper} · ${d.sorteos} SORTEOS${zonaKey === 'cordoba' && d.turista ? ` + ${d.turista.sorteos} TURISTA` : ''} · ${d.extracciones.toLocaleString('es-AR')} EXTRACCIONES`;
+
+// Header sub
+const headerSub = zonaKey === 'cordoba' && d.turista
+  ? `${d.sorteos} sorteos + ${d.turista.sorteos} turista (22:15) · 6 horarios`
+  : `${d.sorteos} sorteos · ${d.extracciones.toLocaleString('es-AR')} extracciones · 5 horarios`;
+
+// Décadas con peak index
+const decadeData = d.dosCifras.porDecada.map((dec: any, i: number) => ({
+  label: dec.rango,
+  value: dec.apariciones,
+  peak: dec.apariciones === peakDec.apariciones ? i : -1,
+}));
+
+// VS Promedio items (top 3 up + bottom 2 down)
+const vsItems = [
+  ...d.dosCifras.top.slice(0, 3).map((item: any) => ({
+    num: item.numero,
+    dir: 'up',
+    delta: `+${Math.round(item.vsPromedio * 100)}%`,
+  })),
+  ...d.dosCifras.bottom.slice(0, 2).map((item: any) => ({
+    num: item.numero,
+    dir: 'down',
+    delta: `−${Math.abs(Math.round(item.vsPromedio * 100))}%`,
+  })),
+];
+
+// Tema editorial — drop cap en primer párrafo
+const temaText: string = t.tema || '';
+const temaParas = temaText.split(/\n\n+/).map((p: string) => p.trim()).filter(Boolean);
+const temaFirstLetter = temaParas[0]?.charAt(0) || '';
+const temaFirstRest = renderInlineHTML(temaParas[0]?.slice(1) || '');
+const temaRestHTML = renderProseHTML(temaParas.slice(1).join('\n\n'));
+
+// Apertura multi-párrafo
+const aperturaHTML = renderProseHTML(t.apertura || '');
+---
+
+<!-- DataDeviceFrame -->
+<article style="background:var(--paper-warmer);border:1px solid var(--ink);max-width:1180px;margin:20px auto 56px;position:relative;">
+
+  <!-- Frame header -->
+  <header style="padding:10px 22px;border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;gap:16px;">
+    <span style="display:inline-flex;align-items:center;gap:10px;font-family:var(--font-sans);font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--cuero);">
+      <img src="/img/logos/logo-ladata-pizarra.png" alt="La Data" style="height:26px;width:auto;display:block;mix-blend-mode:multiply;" />
+      <span style="width:1px;height:16px;background:var(--rule);display:inline-block;"></span>
+      La sala · dispositivo
+    </span>
+    <span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);letter-spacing:0.02em;">{mesLabel} · Tomás Vera</span>
+  </header>
+
+  <!-- Breadcrumb -->
+  <nav aria-label="Ubicación" style="font-family:var(--font-sans);font-size:12px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--cuero);padding:16px 28px 0;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+    <span style="color:var(--cuero);">★</span>
+    <span style="color:var(--cuero);font-weight:500;">LA SALA</span>
+    <span style="color:var(--ink-line);">›</span>
+    <span style="color:var(--cuero);font-weight:500;">LA DATA</span>
+    <span style="color:var(--ink-line);">›</span>
+    <span style="color:var(--ink);font-weight:600;">{Z.breadcrumb}</span>
+  </nav>
+
+  <!-- Marquee terminal -->
+  <div style="margin-top:14px;background:#0F1730;color:#E8E2D1;padding:10px 22px;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);font-family:var(--font-mono);font-size:13px;letter-spacing:0.04em;display:flex;align-items:center;gap:12px;overflow:hidden;white-space:nowrap;">
+    <span style="color:#5BD37A;font-size:11px;">●</span>
+    <span style="flex:1;overflow:hidden;text-overflow:ellipsis;">{marqueeText}</span>
+    <span class="ld-cursor" style="display:inline-block;width:9px;height:16px;background:#5BD37A;vertical-align:middle;"></span>
+  </div>
+
+  <!-- Zone header -->
+  <header style={`background:${Z.bg};color:${Z.fg};padding:22px 28px;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;`}>
+    <div style="display:flex;align-items:center;gap:18px;">
+      <span style={`color:${Z.accent};font-size:12px;`}>●</span>
+      <div>
+        <div style={`font-family:var(--font-mono);font-size:18px;font-weight:600;letter-spacing:0.04em;color:${Z.fg};`}>{Z.label} · {mesUpper}</div>
+        <div style={`font-family:var(--font-sans);font-size:11px;color:${Z.fgMuted};letter-spacing:0.1em;text-transform:uppercase;margin-top:4px;`}>{headerSub}</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      {Z.chips.map(c => (
+        <span style={`font-family:var(--font-mono);font-size:11px;background:transparent;color:${Z.accent};padding:5px 12px;border:1px solid ${Z.accent};letter-spacing:0.04em;`}>{c}</span>
+      ))}
+    </div>
+  </header>
+
+  <!-- Apertura editorial -->
+  <section style="background:var(--paper-warm);padding:44px 56px 36px;">
+    <div class="ld-nacional-apertura" style="display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:56px;align-items:start;">
+      <div>
+        <span class="sh-section-label">Apertura</span>
+        <h2 style="font-family:var(--font-display);font-weight:500;font-size:38px;line-height:1.08;margin:8px 0 24px;letter-spacing:-0.015em;color:var(--ink);max-width:22ch;" set:html={renderInlineHTML(t.aperturaTitle)}></h2>
+        <div style="font-family:var(--font-serif);font-size:18px;line-height:1.6;color:var(--ink-soft);max-width:44ch;" set:html={aperturaHTML}></div>
+      </div>
+
+      <!-- Resumen ejecutivo -->
+      <aside style="background:var(--paper-warmer);border:1px solid var(--ink-line);padding:22px;font-family:var(--font-mono);">
+        <div style="font-family:var(--font-sans);font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--cuero);margin-bottom:14px;display:flex;align-items:center;gap:8px;">
+          <span style={`width:6px;height:6px;background:${Z.accent};display:inline-block;`}></span>
+          Resumen ejecutivo · {mesLabel}
+        </div>
+        {resumen.map(([k, v], i) => (
+          <div style={`display:flex;justify-content:space-between;align-items:baseline;padding:9px 0;${i < resumen.length - 1 ? 'border-bottom:1px dotted var(--ink-line);' : ''}font-size:12px;`}>
+            <span style="color:var(--ink-muted);letter-spacing:0.02em;">{k}</span>
+            <span style="color:var(--ink);font-weight:500;">{v}</span>
+          </div>
+        ))}
+      </aside>
+    </div>
+  </section>
+
+  <!-- Vista general — 4 stat cards -->
+  <section style="padding:10px 56px 30px;">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--ink);">
+      <h3 style="font-family:var(--font-display);font-weight:600;font-size:22px;margin:0;white-space:nowrap;">Vista general</h3>
+      <span style="font-family:var(--font-mono);font-size:11px;color:var(--cuero);letter-spacing:0.06em;">4 LECTURAS · 2 CIFRAS · {mesUpper}</span>
+    </div>
+
+    <div class="ld-stats-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+
+      <!-- Top más salidos -->
+      <div style="background:var(--paper-warmer);border:1px solid var(--ink-line);padding:20px 22px 22px;display:flex;flex-direction:column;gap:16px;min-height:220px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+          <div>
+            <div style="font-family:var(--font-sans);font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--cuero);">Top 5 · Más salidos</div>
+            <div style="font-family:var(--font-serif);font-style:italic;font-size:13px;color:var(--ink-muted);margin-top:4px;">Los números que más veces aparecieron</div>
+          </div>
+          <span style={`width:6px;height:6px;border-radius:1px;background:${Z.accent};flex-shrink:0;margin-top:6px;`}></span>
+        </div>
+        <ol style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;flex:1;">
+          {d.dosCifras.top.map((item: any, i: number) => (
+            <li style={`display:flex;align-items:baseline;gap:12px;padding-bottom:6px;${i < d.dosCifras.top.length - 1 ? 'border-bottom:1px dotted var(--ink-line);' : ''}`}>
+              <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-muted);width:18px;letter-spacing:0.04em;">{String(i + 1).padStart(2, '0')}</span>
+              <span style="font-family:var(--font-mono);font-size:22px;font-weight:600;color:var(--ink);letter-spacing:-0.01em;flex:1;">{item.numero}</span>
+              <span style="font-family:var(--font-mono);font-size:13px;color:#1F8550;letter-spacing:0.02em;">▲ {item.apariciones}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <!-- Bottom menos salidos -->
+      <div style="background:var(--paper-warmer);border:1px solid var(--ink-line);padding:20px 22px 22px;display:flex;flex-direction:column;gap:16px;min-height:220px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+          <div>
+            <div style="font-family:var(--font-sans);font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--cuero);">Bottom 5 · Menos salidos</div>
+            <div style="font-family:var(--font-serif);font-style:italic;font-size:13px;color:var(--ink-muted);margin-top:4px;">Los números que menos veces aparecieron</div>
+          </div>
+          <span style="width:6px;height:6px;border-radius:1px;background:var(--rojo);flex-shrink:0;margin-top:6px;"></span>
+        </div>
+        <ol style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;flex:1;">
+          {d.dosCifras.bottom.map((item: any, i: number) => (
+            <li style={`display:flex;align-items:baseline;gap:12px;padding-bottom:6px;${i < d.dosCifras.bottom.length - 1 ? 'border-bottom:1px dotted var(--ink-line);' : ''}`}>
+              <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-muted);width:18px;letter-spacing:0.04em;">{String(i + 1).padStart(2, '0')}</span>
+              <span style="font-family:var(--font-mono);font-size:22px;font-weight:600;color:var(--ink);letter-spacing:-0.01em;flex:1;">{item.numero}</span>
+              <span style="font-family:var(--font-mono);font-size:13px;color:var(--rojo);letter-spacing:0.02em;">▼ {item.apariciones}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <!-- Distribución por década -->
+      <div style="background:var(--paper-warmer);border:1px solid var(--ink-line);padding:20px 22px 22px;display:flex;flex-direction:column;gap:16px;min-height:220px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+          <div>
+            <div style="font-family:var(--font-sans);font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--cuero);">Distribución por década</div>
+            <div style="font-family:var(--font-serif);font-style:italic;font-size:13px;color:var(--ink-muted);margin-top:4px;">{peakDec.rango} caliente ({peakDec.apariciones}), {lowDec.rango} fría ({lowDec.apariciones})</div>
+          </div>
+          <span style="width:6px;height:6px;border-radius:1px;background:var(--cuero);flex-shrink:0;margin-top:6px;"></span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:9px;height:100%;justify-content:center;flex:1;">
+          {(() => {
+            const maxVal = Math.max(...d.dosCifras.porDecada.map((dec: any) => dec.apariciones));
+            return d.dosCifras.porDecada.map((dec: any, i: number) => {
+              const isPeak = dec.apariciones === peakDec.apariciones;
+              return (
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-muted);width:40px;letter-spacing:0.02em;">{dec.rango}</span>
+                  <div style="flex:1;height:8px;background:var(--paper-darker);position:relative;">
+                    <div style={`position:absolute;left:0;top:0;bottom:0;width:${((dec.apariciones / maxVal) * 100).toFixed(1)}%;background:${isPeak ? Z.accent : 'var(--cuero)'};`}></div>
+                  </div>
+                  <span style="font-family:var(--font-mono);font-size:11px;color:var(--ink);width:24px;text-align:right;font-weight:500;">{dec.apariciones}</span>
+                </div>
+              );
+            });
+          })()}
+        </div>
+      </div>
+
+      <!-- VS Promedio teórico -->
+      <div style="background:var(--paper-warmer);border:1px solid var(--ink-line);padding:20px 22px 22px;display:flex;flex-direction:column;gap:16px;min-height:220px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+          <div>
+            <div style="font-family:var(--font-sans);font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--cuero);">VS promedio teórico</div>
+            <div style="font-family:var(--font-serif);font-style:italic;font-size:13px;color:var(--ink-muted);margin-top:4px;">Variación respecto a {d.dosCifras.esperadoPorNumero.toFixed(1)} apariciones por número</div>
+          </div>
+          <span style={`width:6px;height:6px;border-radius:1px;background:${Z.accent};flex-shrink:0;margin-top:6px;`}></span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:11px;justify-content:center;height:100%;flex:1;">
+          {vsItems.map((it: any, i: number) => (
+            <div style={`display:flex;align-items:baseline;justify-content:space-between;padding-bottom:7px;${i < vsItems.length - 1 ? 'border-bottom:1px dotted var(--ink-line);' : ''}`}>
+              <span style="font-family:var(--font-mono);font-size:18px;font-weight:600;color:var(--ink);">{it.num}</span>
+              <span style={`font-family:var(--font-mono);font-size:13px;color:${it.dir === 'up' ? '#1F8550' : 'var(--rojo)'};letter-spacing:0.02em;display:inline-flex;align-items:baseline;gap:6px;`}>
+                <span style="font-size:11px;">{it.dir === 'up' ? '▲' : '▼'}</span>
+                {it.delta}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Gráfico principal -->
+  <section style="padding:0 56px 30px;">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--ink);">
+      <h3 style="font-family:var(--font-display);font-weight:600;font-size:22px;margin:0;white-space:nowrap;">Movimiento del mes</h3>
+      <span style="font-family:var(--font-mono);font-size:11px;color:var(--cuero);letter-spacing:0.06em;">SERIE TEMPORAL · ACUMULADA</span>
+    </div>
+    <LineChart
+      series={d.series || {}}
+      zoneBg={Z.bg}
+      zoneAccent={Z.accent}
+      isCordoba={zonaKey === 'cordoba'}
+      palette={Z.palette}
+      mesLabel={mesLabel}
+    />
+  </section>
+
+  <!-- Tema editorial del mes -->
+  <section style="background:var(--paper-warm);padding:44px 56px 36px;border-top:1px solid var(--ink-line);">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:22px;">
+      <span class="sh-section-label">Tema editorial del mes</span>
+      <span style="flex:1;height:1px;background:var(--ink-line);"></span>
+      <span style="font-family:var(--font-mono);font-size:11px;color:var(--cuero);letter-spacing:0.06em;">LECTURA · 4 MIN</span>
+    </div>
+
+    <h2 style="font-family:var(--font-display);font-weight:500;font-size:42px;line-height:1.1;margin:0 0 22px;letter-spacing:-0.02em;max-width:22ch;color:var(--ink);" set:html={renderInlineHTML(t.temaTitle)}></h2>
+
+    <div class="ld-tema-prose" style="font-family:var(--font-serif);font-size:18px;line-height:1.62;color:var(--ink-soft);max-width:62ch;">
+      <!-- Primer párrafo con drop cap -->
+      <p style="margin:0 0 18px;">
+        <span style={`font-family:var(--font-display);font-weight:600;font-size:3.6em;line-height:0.86;color:${Z.bg};float:left;padding:0.08em 0.1em 0 0;margin:0.05em 0 0;`}>{temaFirstLetter}</span>
+        <span set:html={temaFirstRest}></span>
+      </p>
+      <!-- Párrafos restantes -->
+      <div set:html={temaRestHTML}></div>
+    </div>
+  </section>
+
+  <!-- Lo que vimos más fino — caja dorada -->
+  <section style="padding:10px 56px 30px;">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+      <span class="sh-section-label" style="color:var(--dorado-deep);">Lo que vimos más fino</span>
+      <span style="flex:1;height:1px;background:var(--dorado);"></span>
+    </div>
+
+    <div style="border:1px solid var(--dorado);background:var(--paper-warmer);padding:28px 32px;position:relative;">
+      <!-- Corner ornaments -->
+      <span style="position:absolute;width:12px;height:12px;top:-1px;left:-1px;border-top:2px solid var(--dorado);border-left:2px solid var(--dorado);"></span>
+      <span style="position:absolute;width:12px;height:12px;top:-1px;right:-1px;border-top:2px solid var(--dorado);border-right:2px solid var(--dorado);"></span>
+      <span style="position:absolute;width:12px;height:12px;bottom:-1px;left:-1px;border-bottom:2px solid var(--dorado);border-left:2px solid var(--dorado);"></span>
+      <span style="position:absolute;width:12px;height:12px;bottom:-1px;right:-1px;border-bottom:2px solid var(--dorado);border-right:2px solid var(--dorado);"></span>
+
+      <div class="ld-cifras-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:36px;">
+        {(t.cajas || []).map((caja: any) => (
+          <div>
+            <div style="font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--dorado-deep);letter-spacing:0.12em;margin-bottom:10px;text-transform:uppercase;">{caja.label}</div>
+            <div style="font-family:var(--font-mono);font-size:36px;font-weight:600;color:var(--ink);letter-spacing:-0.01em;line-height:1;margin-bottom:14px;">
+              {caja.valor}<span style="color:var(--ink-muted);font-size:18px;font-weight:400;"> {caja.valorNota}</span>
+            </div>
+            <p style="font-family:var(--font-serif);font-style:italic;font-size:15px;line-height:1.5;color:var(--ink-soft);margin:0;max-width:38ch;" set:html={renderInlineHTML(caja.texto)}></p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Cierre de zona -->
+  <section style="padding:32px 56px 28px;text-align:center;border-top:1px solid var(--ink-line);">
+    <div style="color:var(--cuero);letter-spacing:0.6em;font-size:14px;margin-bottom:18px;">* * *</div>
+    <p style="font-family:var(--font-serif);font-style:italic;font-size:18px;color:var(--ink-soft);margin:0 0 22px;max-width:52ch;margin-left:auto;margin-right:auto;line-height:1.5;" set:html={renderInlineHTML(t.cierre)}></p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="/la-data" style="font-family:var(--font-sans);font-size:13px;font-weight:500;padding:10px 20px;background:transparent;color:var(--ink);border:1px solid var(--ink);border-radius:2px;text-decoration:none;letter-spacing:0.02em;">← Volver a La Data</a>
+      <a href="/la-data/comparativa" style="font-family:var(--font-sans);font-size:13px;font-weight:500;padding:10px 20px;background:var(--ink);color:var(--paper-warm);border:1px solid var(--ink);border-radius:2px;text-decoration:none;letter-spacing:0.02em;">Ver la comparativa →</a>
+    </div>
+  </section>
+
+  <!-- Signature foot -->
+  <div style="padding:20px 28px 26px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--rule);gap:16px;flex-wrap:wrap;">
+    <div style="font-family:var(--font-sans);font-size:12px;color:var(--cuero);letter-spacing:0.04em;display:flex;align-items:center;gap:10px;">
+      <img src="/img/ornamentos/ornamento-barras.svg" alt="" width="14" height="14" />
+      <span>Por <span style="color:var(--ink);font-weight:600;">Tomás Vera</span> · El Matemático · {mesLabel}</span>
+    </div>
+    <div style="font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);letter-spacing:0.02em;">
+      {mesLabel} · La Data
+    </div>
+  </div>
+
+  <!-- Sedronar note -->
+  <div style="border-top:1px solid var(--ink-line);padding:10px 28px;text-align:center;font-family:var(--font-sans);font-size:11px;color:var(--cuero);letter-spacing:0.02em;background:var(--paper-warm);">
+    La Data es análisis cultural, no soplo. Si te preocupa cómo jugás, hablá con alguien. Línea Sedronar 141.
+  </div>
+
+</article>
+
+<style>
+  .ld-tema-prose p {
+    margin: 0 0 18px;
+  }
+  .ld-tema-prose p + p {
+    text-indent: 1.25em;
+    margin-top: 0;
+  }
+  .ld-tema-prose p:first-of-type {
+    text-indent: 0;
+  }
+  .ld-tema-prose .ld-mono {
+    font-style: normal;
+  }
+</style>
