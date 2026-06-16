@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArticleCard from '../../components/ArticleCard.astro';
 import VocasCarta from '../../components/VocasCarta.astro';
+import ElTrio from '../../components/ElTrio.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -73,6 +74,8 @@ const fechaStr = edicion.data.fecha.toLocaleDateString('es-AR', {
         ))}
       </div>
     </section>
+
+    <ElTrio edicion={edicion.data.numero} />
 
     {vocesEdicion && (
       <section class="edition__voces container-narrow">

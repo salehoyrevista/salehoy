@@ -24,15 +24,6 @@ const conDestacado = articulosNumero.filter(a => a.data.destacado);
 const articulosDestacados = (conDestacado.length > 0 ? conDestacado : articulosNumero)
   .sort((a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf())
   .slice(0, 3);
-
-// El Trío: recomendaciones culturales del número actual (El Cronista)
-const recomendaciones = await getCollection('recomendaciones');
-const tipoOrden: Record<string, number> = { pelicula: 0, libro: 1, disco: 2 };
-const tipoLabel: Record<string, string> = { pelicula: 'Película', libro: 'Libro', disco: 'Disco' };
-const trio = recomendaciones
-  .filter(r => r.data.edicion === edicionActual.data.numero)
-  .sort((a, b) => (tipoOrden[a.data.tipo] ?? 9) - (tipoOrden[b.data.tipo] ?? 9))
-  .slice(0, 3);
 ---
 
 <BaseLayout
@@ -97,36 +88,6 @@ const trio = recomendaciones
         </div>
       </div>
     </section>
-
-    <!-- ═══ EL TRÍO ═══ -->
-    {trio.length > 0 && (
-    <section class="sh-section trio" id="el-trio">
-      <div class="shell">
-        <div class="section-head reveal">
-          <div class="section-head__lhs">
-            <span class="eyebrow">El Cronista recomienda</span>
-            <h2 class="section-h">El Trío</h2>
-          </div>
-          <p class="section-sub">Una película, un libro, un disco. Cultura a la carta.</p>
-        </div>
-
-        <div class="trio__box reveal">
-          {trio.map(r => (
-            <a href={`/el-trio/${r.id}`} class="trio__item">
-              <div class={`trio__cover trio__cover--${r.data.tipo}`}>
-                {r.data.imagen
-                  ? <img src={r.data.imagen} alt={r.data.titulo} loading="lazy" />
-                  : <span class="trio__ph">{tipoLabel[r.data.tipo]}</span>}
-              </div>
-              <span class="trio__tipo">{tipoLabel[r.data.tipo]}</span>
-              <h3 class="trio__title">{r.data.titulo}</h3>
-              <span class="trio__meta">{r.data.autor}{r.data.anio ? ` · ${r.data.anio}` : ''}</span>
-            </a>
-          ))}
-        </div>
-      </div>
-    </section>
-    )}
 
     <!-- ═══ LA SALA (umbral sobrio) ═══ -->
     <section class="sh-section sala" id="sala">

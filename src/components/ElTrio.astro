@@ -1,0 +1,113 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Props {
+  edicion: string;
+}
+const { edicion } = Astro.props;
+
+const tipoOrden: Record<string, number> = { pelicula: 0, libro: 1, disco: 2 };
+const tipoLabel: Record<string, string> = { pelicula: 'Película', libro: 'Libro', disco: 'Disco' };
+
+const recomendaciones = await getCollection('recomendaciones');
+const trio = recomendaciones
+  .filter(r => r.data.edicion === edicion)
+  .sort((a, b) => (tipoOrden[a.data.tipo] ?? 9) - (tipoOrden[b.data.tipo] ?? 9))
+  .slice(0, 3);
+---
+
+{trio.length > 0 && (
+<section class="eltrio container-wide" id="el-trio">
+  <span class="meta-label">El Cronista recomienda</span>
+  <h2 class="eltrio__title">El Trío</h2>
+  <p class="eltrio__sub">Una película, un libro, un disco. Cultura a la carta.</p>
+
+  <div class="eltrio__box">
+    {trio.map(r => (
+      <a href={`/el-trio/${r.id}`} class="eltrio__item">
+        <div class={`eltrio__cover eltrio__cover--${r.data.tipo}`}>
+          {r.data.imagen
+            ? <img src={r.data.imagen} alt={r.data.titulo} loading="lazy" />
+            : <span class="eltrio__ph">{tipoLabel[r.data.tipo]}</span>}
+        </div>
+        <span class="eltrio__tipo">{tipoLabel[r.data.tipo]}</span>
+        <h3 class="eltrio__name">{r.data.titulo}</h3>
+        <span class="eltrio__meta">{r.data.autor}{r.data.anio ? ` · ${r.data.anio}` : ''}</span>
+      </a>
+    ))}
+  </div>
+</section>
+)}
+
+<style>
+  .eltrio { padding-block: 56px; }
+  .eltrio__title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(26px, 3vw, 34px);
+    margin: 8px 0 6px;
+  }
+  .eltrio__sub {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 17px;
+    color: var(--color-text-secondary);
+    margin: 0 0 28px;
+  }
+  .eltrio__box {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-line);
+    border-radius: 8px;
+    padding: 28px;
+  }
+  .eltrio__item { display: flex; flex-direction: column; text-decoration: none; color: inherit; }
+  .eltrio__cover {
+    aspect-ratio: 3 / 4;
+    border-radius: 5px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    border: 1px solid var(--color-line);
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+  .eltrio__cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .eltrio__item:hover .eltrio__cover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+  .eltrio__ph {
+    font-family: var(--font-display);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.1em;
+    font-size: 18px;
+    color: var(--color-bg);
+    opacity: 0.92;
+  }
+  .eltrio__cover--pelicula { background: var(--color-accent-red); }
+  .eltrio__cover--libro    { background: var(--color-leather); }
+  .eltrio__cover--disco    { background: var(--color-text); }
+  .eltrio__tipo {
+    font-family: var(--font-display);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.12em;
+    font-size: 12px;
+    color: var(--color-leather);
+  }
+  .eltrio__name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 19px;
+    line-height: 1.18;
+    color: var(--color-text);
+    margin: 4px 0;
+  }
+  .eltrio__item:hover .eltrio__name { color: var(--color-accent-red); }
+  .eltrio__meta { font-family: var(--font-body); font-size: 13px; color: var(--color-text-secondary); }
+
+  @media (max-width: 620px) {
+    .eltrio__box { padding: 18px; gap: 14px; }
+    .eltrio__name { font-size: 16px; }
+  }
+</style>
