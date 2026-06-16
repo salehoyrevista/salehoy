@@ -25,13 +25,14 @@ const articulosDestacados = (conDestacado.length > 0 ? conDestacado : articulosN
   .sort((a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf())
   .slice(0, 3);
 
-const salaItems = [
-  { id: 'vichy',       href: '/la-vichy',          name: 'La Vichy',          what: 'El portal de los números.' },
-  { id: 'data',        href: '/quiniela',           name: 'La Data',           what: 'Informe mensual de la quiniela.' },
-  { id: 'frases',      href: '/maquina-de-frases',  name: 'Máquina de Frases', what: 'Tirá la palanca.' },
-  { id: 'anecdotario', href: '/anecdotario',        name: 'Anecdotario',       what: 'Anécdotas reales, jugadores reales.' },
-  { id: 'generador',   href: '/la-sala',            name: 'El Generador',      what: 'Para los sorteos chicos y las apuestas del bar.' },
-];
+// El Trío: recomendaciones culturales del número actual (El Cronista)
+const recomendaciones = await getCollection('recomendaciones');
+const tipoOrden: Record<string, number> = { pelicula: 0, libro: 1, disco: 2 };
+const tipoLabel: Record<string, string> = { pelicula: 'Película', libro: 'Libro', disco: 'Disco' };
+const trio = recomendaciones
+  .filter(r => r.data.edicion === edicionActual.data.numero)
+  .sort((a, b) => (tipoOrden[a.data.tipo] ?? 9) - (tipoOrden[b.data.tipo] ?? 9))
+  .slice(0, 3);
 ---
 
 <BaseLayout
@@ -97,28 +98,46 @@ const salaItems = [
       </div>
     </section>
 
-    <!-- ═══ LA SALA ═══ -->
-    <section class="sh-section sala" id="sala">
+    <!-- ═══ EL TRÍO ═══ -->
+    {trio.length > 0 && (
+    <section class="sh-section trio" id="el-trio">
       <div class="shell">
-        <div class="sala__head reveal">
-          <div class="sala__head-lhs">
-            <span class="eyebrow">La sala · zona viva</span>
-            <h2 class="section-h">Pasá a la sala</h2>
-            <p class="section-sub">Cinco dispositivos que responden.</p>
+        <div class="section-head reveal">
+          <div class="section-head__lhs">
+            <span class="eyebrow">El Cronista recomienda</span>
+            <h2 class="section-h">El Trío</h2>
           </div>
-          <a href="/la-sala" class="btn-ink">
-            Entrar a La sala <span class="arrow">→</span>
-          </a>
+          <p class="section-sub">Una película, un libro, un disco. Cultura a la carta.</p>
         </div>
 
-        <div class="sala__grid">
-          {salaItems.map((s, i) => (
-            <a href={s.href} class="sala-card reveal" style={`transition-delay: ${i * 60}ms`}>
-              <h3 class="sala-card__name">{s.name}</h3>
-              <p class="sala-card__what">{s.what}</p>
-              <span class="sala-card__go">Probar →</span>
+        <div class="trio__box reveal">
+          {trio.map(r => (
+            <a href={`/el-trio/${r.id}`} class="trio__item">
+              <div class={`trio__cover trio__cover--${r.data.tipo}`}>
+                {r.data.imagen
+                  ? <img src={r.data.imagen} alt={r.data.titulo} loading="lazy" />
+                  : <span class="trio__ph">{tipoLabel[r.data.tipo]}</span>}
+              </div>
+              <span class="trio__tipo">{tipoLabel[r.data.tipo]}</span>
+              <h3 class="trio__title">{r.data.titulo}</h3>
+              <span class="trio__meta">{r.data.autor}{r.data.anio ? ` · ${r.data.anio}` : ''}</span>
             </a>
           ))}
+        </div>
+      </div>
+    </section>
+    )}
+
+    <!-- ═══ LA SALA (umbral sobrio) ═══ -->
+    <section class="sh-section sala" id="sala">
+      <div class="shell">
+        <div class="sala__umbral reveal">
+          <span class="eyebrow">La sala · zona viva</span>
+          <h2 class="section-h">La sala está abierta</h2>
+          <p class="section-sub sala__sub">Cinco dispositivos que responden: los números, la quiniela, las frases, las anécdotas y el azar del bar.</p>
+          <a href="/la-sala" class="btn-ink sala__cta">
+            Ingresar a la sala <span class="arrow">→</span>
+          </a>
         </div>
       </div>
     </section>
@@ -404,6 +423,81 @@ const salaItems = [
     transition: color 120ms ease;
   }
 
+  /* ---------- LA SALA (umbral) ---------- */
+  .sala__umbral {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+    padding: 16px 0;
+  }
+  .sala__umbral .section-h { max-width: 20ch; }
+  .sala__sub { align-self: center; max-width: 54ch; }
+  .sala__cta { margin-top: 10px; font-size: 14px; padding: 14px 28px; }
+
+  /* ---------- EL TRÍO ---------- */
+  .trio__box {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-line);
+    border-radius: 8px;
+    padding: 28px;
+  }
+  .trio__item {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+  }
+  .trio__cover {
+    aspect-ratio: 3 / 4;
+    border-radius: 5px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    border: 1px solid var(--color-line);
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+  .trio__cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .trio__item:hover .trio__cover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+  .trio__ph {
+    font-family: var(--font-display);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.1em;
+    font-size: 18px;
+    color: var(--color-bg);
+    opacity: 0.92;
+  }
+  .trio__cover--pelicula { background: var(--color-accent-red); }
+  .trio__cover--libro    { background: var(--color-leather); }
+  .trio__cover--disco    { background: var(--color-text); }
+  .trio__tipo {
+    font-family: var(--font-display);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.12em;
+    font-size: 12px;
+    color: var(--color-leather);
+  }
+  .trio__title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 19px;
+    line-height: 1.18;
+    color: var(--color-text);
+    margin: 4px 0;
+  }
+  .trio__item:hover .trio__title { color: var(--color-accent-red); }
+  .trio__meta {
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: var(--color-text-secondary);
+  }
+
   /* ---------- NEWSLETTER ---------- */
   .news {
     background: var(--color-bg-elevated);
@@ -450,8 +544,9 @@ const salaItems = [
     .hero__img--desk { display: none; }
     .hero__img--mob  { display: block; }
     .hero__content { padding: 24px 22px 30px; }
-    .sala__grid { grid-template-columns: 1fr; }
     .sh-section { padding: 60px 0; }
+    .trio__box { padding: 18px; gap: 14px; }
+    .trio__title { font-size: 16px; }
   }
 </style>
 

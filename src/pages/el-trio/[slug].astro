@@ -1,0 +1,177 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const recomendaciones = await getCollection('recomendaciones');
+  return recomendaciones.map(reco => ({
+    params: { slug: reco.id },
+    props: { reco },
+  }));
+}
+
+const { reco } = Astro.props;
+const { Content } = await render(reco);
+
+const narradores = await getCollection('narradores');
+const narrador = narradores.find(n => n.data.slug === (reco.data.narrador ?? 'el-cronista'));
+
+const tipoLabel: Record<string, string> = { pelicula: 'Película', libro: 'Libro', disco: 'Disco' };
+
+const formatFecha = (d: Date) => d.toLocaleDateString('es-AR', {
+  year: 'numeric', month: 'long', day: 'numeric'
+});
+
+const meta = [reco.data.autor, reco.data.anio].filter(Boolean).join(' · ');
+---
+
+<BaseLayout
+  title={`${reco.data.titulo} · El Trío`}
+  description={reco.data.bajada || `${tipoLabel[reco.data.tipo]}: ${reco.data.titulo} — recomendación cultural de SaleHoy.`}
+  type="article"
+  image={reco.data.imagen || '/og-default.svg'}
+>
+  <article class="reco">
+    <div class="reco__shell">
+
+      <a href="/#el-trio" class="reco__back">← El Trío</a>
+
+      <header class="reco__head">
+        <span class="reco__eyebrow">El Trío · {tipoLabel[reco.data.tipo]}</span>
+        <h1 class="reco__title">{reco.data.titulo}</h1>
+        {meta && <p class="reco__meta">{meta}</p>}
+        {narrador && (
+          <p class="reco__firma">
+            Por <a href={`/narradores/${narrador.data.slug}`}>{narrador.data.nombreReal ?? narrador.data.nombre}</a>
+            {' · '}{formatFecha(reco.data.fecha)}
+          </p>
+        )}
+      </header>
+
+      <div class={`reco__cover reco__cover--${reco.data.tipo}`}>
+        {reco.data.imagen
+          ? <img src={reco.data.imagen} alt={reco.data.titulo} />
+          : <span class="reco__ph">{tipoLabel[reco.data.tipo]}</span>}
+      </div>
+
+      {reco.data.bajada && <p class="reco__bajada">{reco.data.bajada}</p>}
+
+      <div class="reco__body">
+        <Content />
+      </div>
+
+      <a href="/#el-trio" class="reco__more">Ver el resto de El Trío →</a>
+
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .reco {
+    background: var(--color-bg);
+    color: var(--color-text);
+    padding: 56px 0 88px;
+  }
+  .reco__shell {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+  .reco__back, .reco__more {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    color: var(--color-text-secondary);
+    transition: color 120ms ease;
+  }
+  .reco__back:hover, .reco__more:hover { color: var(--color-accent-red); }
+  .reco__more { display: inline-block; margin-top: 40px; }
+
+  .reco__head { margin: 22px 0 26px; }
+  .reco__eyebrow {
+    font-family: var(--font-display);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.12em;
+    font-size: 14px;
+    color: var(--color-leather);
+    display: block;
+    margin-bottom: 8px;
+  }
+  .reco__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(30px, 5vw, 44px);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  .reco__meta {
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--color-text-secondary);
+    margin: 12px 0 0;
+  }
+  .reco__firma {
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--color-text-tertiary);
+    margin: 6px 0 0;
+  }
+  .reco__firma a { color: var(--color-leather); text-decoration: none; }
+  .reco__firma a:hover { text-decoration: underline; }
+
+  .reco__cover {
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-line);
+    margin-bottom: 26px;
+  }
+  .reco__cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .reco__ph {
+    font-family: var(--font-display);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.14em;
+    font-size: 24px;
+    color: var(--color-bg);
+    opacity: 0.92;
+  }
+  .reco__cover--pelicula { background: var(--color-accent-red); }
+  .reco__cover--libro    { background: var(--color-leather); }
+  .reco__cover--disco    { background: var(--color-text); }
+
+  .reco__bajada {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 20px;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+    margin: 0 0 28px;
+    text-wrap: pretty;
+  }
+
+  .reco__body {
+    font-family: var(--font-display);
+    font-size: 19px;
+    line-height: 1.72;
+    color: var(--color-text);
+  }
+  .reco__body :global(p) { margin: 0 0 1.2em; }
+  .reco__body :global(h2) {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 24px;
+    margin: 1.6em 0 0.5em;
+  }
+
+  @media (max-width: 620px) {
+    .reco { padding: 40px 0 64px; }
+    .reco__shell { padding: 0 22px; }
+    .reco__body { font-size: 17px; }
+  }
+</style>

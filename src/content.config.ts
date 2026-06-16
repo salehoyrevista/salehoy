@@ -64,4 +64,19 @@ const cartas = defineCollection({
   }),
 });
 
-export const collections = { articulos, narradores, ediciones, voces, cartas };
+const recomendaciones = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/recomendaciones' }),
+  schema: z.object({
+    tipo: z.enum(['pelicula', 'libro', 'disco']),
+    titulo: z.string(),
+    autor: z.string(),
+    anio: z.number().optional(),
+    edicion: z.string(),
+    fecha: z.date(),
+    bajada: z.string().optional(),
+    imagen: z.string().optional(),
+    narrador: z.enum(['el-matematico', 'la-cientifica', 'la-pitonisa', 'el-cronista', 'el-historiador']).default('el-cronista'),
+  }),
+});
+
+export const collections = { articulos, narradores, ediciones, voces, cartas, recomendaciones };
