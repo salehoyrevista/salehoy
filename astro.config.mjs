@@ -5,7 +5,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://salehoy.netlify.app',
+  site: 'https://salehoy.com.ar',
   integrations: [
     mdx(),
     sitemap({
