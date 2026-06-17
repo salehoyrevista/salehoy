@@ -1,0 +1,131 @@
+---
+import { getCollection } from 'astro:content';
+import '../styles/globals.css';
+
+const ediciones = (await getCollection('ediciones'))
+  .sort((a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf());
+const latest = ediciones[0];
+
+const links = [
+  { label: 'Suscribirme al newsletter', sub: 'Te llega cuando sale un número nuevo', href: '/newsletter', primary: true },
+  { label: `Último número · #${latest.data.numero}`, sub: latest.data.titulo, href: `/ediciones/${latest.id}` },
+  { label: 'El Trío', sub: 'Una película, un libro, un disco', href: `/ediciones/${latest.id}#el-trio` },
+  { label: 'La Sala', sub: 'Cinco dispositivos que responden', href: '/la-sala' },
+  { label: 'La Data', sub: 'El informe mensual de la quiniela', href: '/la-data' },
+  { label: 'Toda la revista', sub: 'El archivo de números', href: '/ediciones' },
+];
+---
+
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SaleHoy · enlaces</title>
+  <meta name="description" content="Revista cultural del juego y el azar. Newsletter, último número, La Sala y más." />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+</head>
+<body class="ig">
+  <main class="ig__wrap">
+    <header class="ig__head">
+      <img src="/img/logo-wordmark-light.png" alt="SaleHoy" class="ig__logo" width="220" height="64" />
+      <p class="ig__tag">Revista cultural del juego y el azar</p>
+    </header>
+
+    <nav class="ig__links" aria-label="Enlaces de SaleHoy">
+      {links.map(l => (
+        <a href={l.href} class={`ig__btn${l.primary ? ' ig__btn--primary' : ''}`}>
+          <span class="ig__btn-label">{l.label}</span>
+          <span class="ig__btn-sub">{l.sub}</span>
+        </a>
+      ))}
+    </nav>
+
+    <a href="https://instagram.com/salehoyrevista" class="ig__social" target="_blank" rel="noopener">@salehoyrevista</a>
+    <p class="ig__legal">SaleHoy es contenido cultural. El juego no se controla. Si jugás, jugá responsable.</p>
+  </main>
+</body>
+</html>
+
+<style>
+  .ig {
+    margin: 0;
+    min-height: 100vh;
+    background: #0B1220;
+    color: #F5F0E1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+  .ig__wrap {
+    width: 100%;
+    max-width: 460px;
+    padding: 48px 22px 40px;
+    text-align: center;
+  }
+  .ig__head { margin-bottom: 30px; }
+  .ig__logo { width: 200px; height: auto; display: block; margin: 0 auto 14px; }
+  .ig__tag {
+    font-family: 'Spectral', Georgia, serif;
+    font-style: italic;
+    font-size: 16px;
+    color: #C9C2B0;
+    margin: 0;
+  }
+  .ig__links { display: flex; flex-direction: column; gap: 12px; }
+  .ig__btn {
+    display: block;
+    padding: 15px 18px;
+    border: 1px solid rgba(212,175,55,0.38);
+    border-radius: 12px;
+    background: rgba(245,240,225,0.03);
+    color: #F5F0E1;
+    text-decoration: none;
+    transition: border-color 160ms ease, transform 160ms ease, background 160ms ease;
+  }
+  .ig__btn:hover {
+    border-color: #D4AF37;
+    background: rgba(245,240,225,0.07);
+    transform: translateY(-2px);
+  }
+  .ig__btn-label {
+    display: block;
+    font-family: 'Spectral', Georgia, serif;
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 1.2;
+  }
+  .ig__btn-sub {
+    display: block;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 13px;
+    color: #C9C2B0;
+    margin-top: 3px;
+  }
+  .ig__btn--primary {
+    background: #D4AF37;
+    border-color: #D4AF37;
+  }
+  .ig__btn--primary .ig__btn-label { color: #0B1220; }
+  .ig__btn--primary .ig__btn-sub { color: #4a3c0f; }
+  .ig__btn--primary:hover { background: #e0bd4a; border-color: #e0bd4a; }
+  .ig__social {
+    display: inline-block;
+    margin-top: 26px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: #D4AF37;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+  .ig__social:hover { text-decoration: underline; }
+  .ig__legal {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 11px;
+    color: #7A7368;
+    margin-top: 18px;
+    line-height: 1.5;
+  }
+</style>
