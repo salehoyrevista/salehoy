@@ -4,13 +4,13 @@ titulo: "Húngaros"
 autor: "Flavio Lo Presti"
 edicion: "01"
 fecha: 2026-06-16
-bajada: "El cronista cordobés cuenta a su padre: un estafador que se hacía el húngaro y le vendía palpito a los clubes de fútbol."
+bajada: "Flavio Lo Presti convierte a su padre —un estafador que se hacía pasar por húngaro— en literatura, y de paso pregunta si se puede escribir para zafar de la herencia."
 imagen: "/img/trio/01/hungaros.webp"
 narrador: el-cronista
 ---
 
-Hay padres que son una novela, y el de Flavio Lo Presti es uno de ellos. Cronista cordobés, Lo Presti reconstruye a un hombre que se hacía pasar por húngaro para estafar, que viajaba de arriba para no pagar el trole y que —mejor todavía— les vendía a clubes de fútbol del ascenso sus servicios de "mentalista": la promesa de inclinar la suerte a fuerza de concentración. Un timador con oficio, un jugador que apostaba con la vida de los demás.
+Antes de ser un libro, el padre de Flavio Lo Presti fue una colección de anécdotas demasiado buenas para ser ciertas: el hombre que se hacía pasar por húngaro para estafar, que viajaba de arriba para no pagar el trole, que les vendía a clubes de fútbol del ascenso sus servicios de mentalista. Hay una buena historia editorial atrás: casi diez años antes de que el libro existiera, Juan Forn ya había leído esos textos y había querido publicarlos. El proyecto se cayó, pero las anécdotas siguieron ahí, esperando.
 
-*Húngaros* es el intento del hijo por contar a ese hombre y, de paso, por contarse a sí mismo. La pregunta que lo mueve es de las grandes: ¿se puede escapar de lo que un padre deja? El libro arranca pareciendo que escribir es heredar al padre, y termina dando vuelta la apuesta: escribir es, más bien, sobrevivirlo.
+Lo notable es lo que Lo Presti decidió **no** hacer. No escribió la semblanza del personaje pintoresco ni el ajuste de cuentas con el padre siniestro. Escribió algo más difícil: la pregunta de si se puede zafar de lo que un padre deja. El libro arranca pareciendo que escribir es heredarlo —el hijo cronista contando al padre fabulador— y termina dando vuelta la cosa: escribir es, más bien, el modo de sobrevivirlo.
 
-Para SaleHoy es una joya. Acá conviven el engaño, la superstición vendida como ciencia y el palpito hecho mercancía. Lo Presti no juzga a su viejo: lo mira de cerca, con humor y con bronca, hasta volverlo entrañable. Una crónica familiar que es también una radiografía de la viveza criolla. Y un recordatorio: el mejor estafador es el que primero se cree el cuento.
+Es una ópera prima, pero no se nota. La prosa cordobesa tiene timing, oído y una crueldad tierna para mirar al viejo sin idealizarlo ni condenarlo. Ganó el Primer Premio del Fondo Nacional de las Artes —jurado de María Gainza, Aníbal Jarkowski y Gustavo Ferreyra— y se leyó como uno de esos debuts que ya parecen obra. Se termina en una tarde y deja la sensación rara de haber conocido a alguien.
