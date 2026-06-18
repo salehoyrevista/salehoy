@@ -18,6 +18,15 @@ const narradorMap = new Map(narradores.map(n => [n.data.slug, n.data]));
 const heroH = `/img/portadas/${edicionActual.id}-h.png`;
 const heroV = `/img/portadas/${edicionActual.id}-v.png`;
 
+// Universos: última recomendación (El Trío) y última voz
+const recomendaciones = await getCollection('recomendaciones');
+const ultimaReco = recomendaciones
+  .sort((a, b) => (b.data.fecha?.valueOf() ?? 0) - (a.data.fecha?.valueOf() ?? 0))[0];
+
+const voces = await getCollection('voces');
+const ultimaVoz = voces
+  .sort((a, b) => (b.data.fecha?.valueOf() ?? 0) - (a.data.fecha?.valueOf() ?? 0))[0];
+
 // Destacados: artículos marcados del número actual (max 3); fallback a los 3 más recientes
 const articulosNumero = articulos.filter(a => a.data.edicion === edicionActual.data.numero);
 const conDestacado = articulosNumero.filter(a => a.data.destacado);
@@ -62,6 +71,47 @@ const articulosDestacados = (conDestacado.length > 0 ? conDestacado : articulosN
         </div>
       </div>
     </section>
+
+    <!-- ═══ TAMBIÉN EN SALEHOY ═══ -->
+    <nav class="universos" aria-label="Secciones de SaleHoy">
+      <div class="shell universos__grid">
+
+        <a href="/la-sala" class="univ">
+          <span class="univ__glyph" aria-hidden="true">★</span>
+          <div class="univ__body">
+            <span class="univ__label">Zona viva</span>
+            <strong class="univ__name">La Sala</strong>
+            <p class="univ__desc">La Vichy, La Data, las frases, las anécdotas y el azar del bar.</p>
+          </div>
+          <span class="univ__arrow" aria-hidden="true">→</span>
+        </a>
+
+        {ultimaReco && (
+          <a href={`/el-trio/${ultimaReco.id}`} class="univ">
+            <span class="univ__glyph" aria-hidden="true">✦</span>
+            <div class="univ__body">
+              <span class="univ__label">Recomendaciones</span>
+              <strong class="univ__name">El Trío</strong>
+              <p class="univ__desc">Una película, un libro, un disco. Lo que los narradores están mirando.</p>
+            </div>
+            <span class="univ__arrow" aria-hidden="true">→</span>
+          </a>
+        )}
+
+        {ultimaVoz && (
+          <a href={`/voces/${ultimaVoz.id}`} class="univ">
+            <span class="univ__glyph" aria-hidden="true">{ultimaVoz.data.numero}</span>
+            <div class="univ__body">
+              <span class="univ__label">Voces del número</span>
+              <strong class="univ__name">El {ultimaVoz.data.nombre}</strong>
+              <p class="univ__desc">Los cinco narradores leen el mismo número desde su disciplina.</p>
+            </div>
+            <span class="univ__arrow" aria-hidden="true">→</span>
+          </a>
+        )}
+
+      </div>
+    </nav>
 
     <!-- ═══ DESTACADOS ═══ -->
     <section class="sh-section" id="destacados">
@@ -120,6 +170,106 @@ const articulosDestacados = (conDestacado.length > 0 ? conDestacado : articulosN
 </BaseLayout>
 
 <style>
+  /* ══════════════ UNIVERSOS ══════════════ */
+  .universos {
+    border-top: 1px solid var(--color-line);
+    border-bottom: 1px solid var(--color-line);
+    background: var(--color-bg-elevated);
+  }
+
+  .universos__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .univ {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: var(--space-lg);
+    padding: var(--space-xl) var(--space-lg);
+    text-decoration: none;
+    color: inherit;
+    border-right: 1px solid var(--color-line);
+    transition: background var(--transition-fast);
+  }
+
+  .univ:last-child { border-right: none; }
+
+  .univ:hover {
+    background: color-mix(in srgb, var(--color-accent-gold) 5%, var(--color-bg-elevated));
+  }
+
+  .univ:hover .univ__arrow {
+    transform: translateX(3px);
+  }
+
+  .univ__glyph {
+    font-family: var(--font-mono);
+    font-size: var(--text-3xl);
+    font-weight: var(--font-medium);
+    color: var(--color-accent-gold);
+    line-height: 1;
+    opacity: 0.75;
+    min-width: 2ch;
+    text-align: center;
+  }
+
+  .univ__body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .univ__label {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-tertiary);
+  }
+
+  .univ__name {
+    font-family: var(--font-display);
+    font-weight: var(--font-semibold);
+    font-size: var(--text-xl);
+    color: var(--color-text);
+    line-height: 1.1;
+  }
+
+  .univ__desc {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    line-height: 1.45;
+    margin: var(--space-xs) 0 0;
+    text-wrap: pretty;
+  }
+
+  .univ__arrow {
+    font-size: var(--text-lg);
+    color: var(--color-text-tertiary);
+    transition: transform var(--transition-fast), color var(--transition-fast);
+    align-self: center;
+  }
+
+  .univ:hover .univ__name { color: var(--color-accent-gold); }
+  .univ:hover .univ__arrow { color: var(--color-accent-gold); }
+
+  @media (max-width: 760px) {
+    .universos__grid {
+      grid-template-columns: 1fr;
+    }
+    .univ {
+      border-right: none;
+      border-bottom: 1px solid var(--color-line);
+      padding: var(--space-lg);
+    }
+    .univ:last-child { border-bottom: none; }
+  }
+
   /* ══════════════ HOME ══════════════ */
   .sh-home {
     background: var(--color-bg);
