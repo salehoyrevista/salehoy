@@ -6,9 +6,12 @@ interface Props {
   narradorNombre?: string;
   size?: 'sm' | 'md' | 'lg';
   showImagen?: boolean;
+  featured?: boolean;
 }
 
-const { articulo, narradorNombre, size = 'md', showImagen = false } = Astro.props;
+const { articulo, narradorNombre, size = 'md', showImagen = false, featured = false } = Astro.props;
+const resolvedSize = featured ? 'lg' : size;
+const resolvedImagen = featured || showImagen;
 const { title, subtitle, narrador, categoria, fecha, tiempoLectura, imagen } = articulo.data;
 const href = `/articulos/${articulo.id}`;
 
@@ -17,30 +20,32 @@ const formatFecha = (d: Date) => d.toLocaleDateString('es-AR', {
 });
 ---
 
-<article class={`card card--${size}`}>
+<article class={`card card--${resolvedSize}${featured ? ' card--featured' : ''}`}>
   <a href={href} class="card__link">
-    {showImagen && imagen && (
+    {resolvedImagen && imagen && (
       <div class="card__imagen">
         <img src={imagen} alt="" loading="lazy" />
       </div>
     )}
 
-    <div class="card__meta">
-      <span class={`tag tag-categoria tag--${categoria}`}>{categoria}</span>
-      {tiempoLectura && (
-        <span class="meta">· {tiempoLectura} min lectura</span>
+    <div class="card__body">
+      <div class="card__meta">
+        <span class={`tag tag-categoria tag--${categoria}`}>{categoria}</span>
+        {tiempoLectura && (
+          <span class="meta">· {tiempoLectura} min lectura</span>
+        )}
+      </div>
+
+      <h2 class="card__title">{title}</h2>
+
+      {subtitle && resolvedSize !== 'sm' && (
+        <p class="card__subtitle">{subtitle}</p>
       )}
-    </div>
 
-    <h2 class="card__title">{title}</h2>
-
-    {subtitle && size !== 'sm' && (
-      <p class="card__subtitle">{subtitle}</p>
-    )}
-
-    <div class="card__footer">
-      <span class="card__autor">{narradorNombre || narrador.replace('-', ' ')}</span>
-      <time class="card__fecha" datetime={fecha.toISOString()}>{formatFecha(fecha)}</time>
+      <div class="card__footer">
+        <span class="card__autor">{narradorNombre || narrador.replace('-', ' ')}</span>
+        <time class="card__fecha" datetime={fecha.toISOString()}>{formatFecha(fecha)}</time>
+      </div>
     </div>
   </a>
 </article>
@@ -83,6 +88,12 @@ const formatFecha = (d: Date) => d.toLocaleDateString('es-AR', {
     flex-direction: column;
     gap: var(--space-sm);
     color: inherit;
+  }
+
+  .card__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
   }
 
   .card__meta {
@@ -128,5 +139,49 @@ const formatFecha = (d: Date) => d.toLocaleDateString('es-AR', {
     text-transform: capitalize;
     font-weight: var(--font-medium);
     color: var(--color-text-secondary);
+  }
+
+  /* ── FEATURED (líder de sección) ── */
+  .card--featured .card__link {
+    flex-direction: row;
+    gap: 0;
+  }
+
+  .card--featured .card__imagen {
+    flex: 0 0 55%;
+    margin: calc(var(--space-lg) * -1) 0 calc(var(--space-lg) * -1) calc(var(--space-lg) * -1);
+    border-radius: calc(var(--radius-md) - 1px) 0 0 calc(var(--radius-md) - 1px);
+  }
+
+  .card--featured .card__imagen img {
+    aspect-ratio: 4 / 3;
+    height: 100%;
+  }
+
+  .card--featured .card__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding-left: var(--space-lg);
+    justify-content: center;
+  }
+
+  .card--featured .card__title {
+    font-size: var(--text-3xl);
+  }
+
+  @media (max-width: 640px) {
+    .card--featured .card__link {
+      flex-direction: column;
+    }
+    .card--featured .card__imagen {
+      flex: none;
+      margin: calc(var(--space-lg) * -1) calc(var(--space-lg) * -1) var(--space-sm);
+      border-radius: calc(var(--radius-md) - 1px) calc(var(--radius-md) - 1px) 0 0;
+    }
+    .card--featured .card__body {
+      padding-left: 0;
+    }
   }
 </style>

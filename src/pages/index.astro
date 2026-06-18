@@ -77,12 +77,13 @@ const articulosDestacados = (conDestacado.length > 0 ? conDestacado : articulosN
         </div>
 
         <div class="grid-dest">
-          {articulosDestacados.map(art => (
+          {articulosDestacados.map((art, i) => (
             <ArticleCard
               articulo={art}
               narradorNombre={narradorMap.get(art.data.narrador)?.nombre}
-              size="md"
-              showImagen
+              featured={i === 0}
+              size={i === 0 ? 'lg' : 'md'}
+              showImagen={i !== 0}
             />
           ))}
         </div>
@@ -267,6 +268,10 @@ const articulosDestacados = (conDestacado.length > 0 ? conDestacado : articulosN
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
+  }
+
+  .grid-dest :global(.card--featured) {
+    grid-column: 1 / -1;
   }
 
   .btn-link {
@@ -527,7 +532,4 @@ const articulosDestacados = (conDestacado.length > 0 ? conDestacado : articulosN
           io.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.06, rootMargin: '0px 0px -40px 0px' });
-    els.forEach(el => io.observe(el));
-  })();
-</script>
+    }, { threshold: 0.06, rootMargin: '0px 0px -4
