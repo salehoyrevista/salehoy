@@ -16,7 +16,17 @@ const { Content } = await render(reco);
 const narradores = await getCollection('narradores');
 const narrador = narradores.find(n => n.data.slug === (reco.data.narrador ?? 'el-cronista'));
 
+const todasRecos = await getCollection('recomendaciones');
+const siblings = todasRecos
+  .filter(r => r.data.edicion === reco.data.edicion && r.id !== reco.id)
+  .sort((a, b) => {
+    const order = ['pelicula', 'libro', 'disco'];
+    return order.indexOf(a.data.tipo) - order.indexOf(b.data.tipo);
+  });
+
 const tipoLabel: Record<string, string> = { pelicula: 'Película', libro: 'Libro', disco: 'Disco' };
+const tipoGlyph: Record<string, string> = { pelicula: '▶', libro: '◆', disco: '◉' };
+const enlaceLabel: Record<string, string> = { pelicula: 'Dónde verla', libro: 'Conseguir el libro', disco: 'Escuchar el disco' };
 
 const formatFecha = (d: Date) => d.toLocaleDateString('es-AR', {
   year: 'numeric', month: 'long', day: 'numeric'
@@ -34,7 +44,7 @@ const meta = [reco.data.autor, reco.data.anio].filter(Boolean).join(' · ');
   <article class="reco">
     <div class="reco__shell">
 
-      <a href="/#el-trio" class="reco__back">← El Trío</a>
+      <a href="/el-trio" class="reco__back">← El Trío</a>
 
       <header class="reco__head">
         <span class="reco__eyebrow">El Trío · {tipoLabel[reco.data.tipo]}</span>
@@ -60,7 +70,30 @@ const meta = [reco.data.autor, reco.data.anio].filter(Boolean).join(' · ');
         <Content />
       </div>
 
-      <a href="/#el-trio" class="reco__more">Ver el resto de El Trío →</a>
+      {reco.data.enlaceObra && (
+        <a href={reco.data.enlaceObra} class="reco__cta" target="_blank" rel="sponsored noopener">
+          {enlaceLabel[reco.data.tipo]} →
+        </a>
+      )}
+
+      {siblings.length > 0 && (
+        <aside class="reco__siblings">
+          <p class="reco__siblings-label">El Trío completo</p>
+          <div class="reco__siblings-grid">
+            {siblings.map(s => (
+              <a href={`/el-trio/${s.id}`} class={`sib sib--${s.data.tipo}`}>
+                <span class="sib__glyph" aria-hidden="true">{tipoGlyph[s.data.tipo]}</span>
+                <div class="sib__body">
+                  <span class="sib__tipo">{tipoLabel[s.data.tipo]}</span>
+                  <strong class="sib__titulo">{s.data.titulo}</strong>
+                  {s.data.autor && <span class="sib__autor">{s.data.autor}</span>}
+                </div>
+                <span class="sib__arrow" aria-hidden="true">→</span>
+              </a>
+            ))}
+          </div>
+        </aside>
+      )}
 
     </div>
   </article>
@@ -77,7 +110,7 @@ const meta = [reco.data.autor, reco.data.anio].filter(Boolean).join(' · ');
     margin: 0 auto;
     padding: 0 32px;
   }
-  .reco__back, .reco__more {
+  .reco__back {
     font-family: var(--font-body);
     font-size: 13px;
     font-weight: 600;
@@ -86,8 +119,21 @@ const meta = [reco.data.autor, reco.data.anio].filter(Boolean).join(' · ');
     color: var(--color-text-secondary);
     transition: color 120ms ease;
   }
-  .reco__back:hover, .reco__more:hover { color: var(--color-accent-red); }
-  .reco__more { display: inline-block; margin-top: 40px; }
+  .reco__back:hover { color: var(--color-accent-red); }
+  .reco__cta {
+    display: inline-block;
+    margin: 36px 0 8px;
+    padding: 13px 24px;
+    border-radius: 8px;
+    background: var(--color-accent-gold);
+    color: var(--color-bg);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    transition: background 140ms ease;
+  }
+  .reco__cta:hover { background: #e0bd4a; }
 
   .reco__head { margin: 22px 0 26px; }
   .reco__eyebrow {
@@ -169,9 +215,98 @@ const meta = [reco.data.autor, reco.data.anio].filter(Boolean).join(' · ');
     margin: 1.6em 0 0.5em;
   }
 
+  /* ── Siblings (El Trío completo) ── */
+  .reco__siblings {
+    margin-top: 56px;
+    padding-top: 32px;
+    border-top: 1px solid var(--color-line);
+  }
+  .reco__siblings-label {
+    font-family: var(--font-body);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.1em;
+    font-size: 13px;
+    color: var(--color-text-tertiary);
+    margin: 0 0 16px;
+  }
+  .reco__siblings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .sib {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    border: 1px solid var(--color-line);
+    border-radius: 8px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 120ms ease, transform 120ms ease;
+  }
+  .sib:hover {
+    border-color: var(--color-accent-gold);
+    transform: translateY(-2px);
+  }
+
+  .sib__glyph {
+    font-size: 18px;
+    opacity: 0.55;
+    line-height: 1;
+  }
+  .sib--pelicula .sib__glyph { color: var(--color-accent-red); opacity: 1; }
+  .sib--libro    .sib__glyph { color: var(--color-leather); opacity: 1; }
+  .sib--disco    .sib__glyph { color: var(--color-text-secondary); opacity: 1; }
+
+  .sib__body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .sib__tipo {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-tertiary);
+  }
+  .sib__titulo {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--color-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .sib__autor {
+    font-family: var(--font-body);
+    font-size: 12px;
+    color: var(--color-text-tertiary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .sib__arrow {
+    font-size: 16px;
+    color: var(--color-text-tertiary);
+    transition: color 120ms ease, transform 120ms ease;
+  }
+  .sib:hover .sib__arrow {
+    color: var(--color-accent-gold);
+    transform: translateX(3px);
+  }
+
   @media (max-width: 620px) {
     .reco { padding: 40px 0 64px; }
     .reco__shell { padding: 0 22px; }
     .reco__body { font-size: 17px; }
+    .reco__siblings-grid { grid-template-columns: 1fr; }
   }
 </style>
