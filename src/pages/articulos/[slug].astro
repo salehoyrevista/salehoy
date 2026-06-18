@@ -31,11 +31,22 @@ const formatFecha = (d: Date) => d.toLocaleDateString('es-AR', {
 
 const ogImage = `/og/articulo-${articulo.id}.png`;
 
-const articleSchema = {
+const articleUrl = new URL(`/articulos/${articulo.id}`, Astro.site).toString();
+const articleImageUrl = articulo.data.imagen
+  ? new URL(articulo.data.imagen, Astro.site).toString()
+  : undefined;
+
+const articleSchema: Record<string, unknown> = {
   '@context': 'https://schema.org',
-  '@type': 'Article',
+  '@type': 'NewsArticle',
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': articleUrl,
+  },
+  url: articleUrl,
   headline: articulo.data.title,
   description: articulo.data.subtitle || '',
+  ...(articleImageUrl ? { image: [articleImageUrl] } : {}),
   author: {
     '@type': 'Person',
     name: narrador?.data.nombre || articulo.data.narrador,
@@ -45,16 +56,22 @@ const articleSchema = {
     '@type': 'Organization',
     name: 'SaleHoy',
     url: Astro.site?.toString(),
+    logo: {
+      '@type': 'ImageObject',
+      url: new URL('/img/logo-dark.svg', Astro.site).toString(),
+    },
   },
   datePublished: articulo.data.fecha.toISOString(),
   dateModified: articulo.data.fecha.toISOString(),
   inLanguage: 'es-AR',
   articleSection: articulo.data.categoria,
-  isPartOf: edicion ? {
-    '@type': 'PublicationIssue',
-    issueNumber: edicion.data.numero,
-    name: `SaleHoy #${edicion.data.numero} · ${edicion.data.titulo}`,
-  } : undefined,
+  ...(edicion ? {
+    isPartOf: {
+      '@type': 'PublicationIssue',
+      issueNumber: edicion.data.numero,
+      name: `SaleHoy #${edicion.data.numero} · ${edicion.data.titulo}`,
+    },
+  } : {}),
 };
 
 // Acento por narrador — scoped a la página, no toca tokens.css

@@ -109,7 +109,7 @@ const articulosDestacados = (conDestacado.length > 0 ? conDestacado : articulosN
       <div class="shell news__inner reveal">
         <span class="eyebrow">El newsletter</span>
         <h2 class="section-h">Te llega cuando sale<br>un número nuevo.</h2>
-        <p class="section-sub">Nunca publicidad. Nunca el correo a terceros. Una sola lista, un solo editor.</p>
+        <p class="section-sub">Sin spam. Sin terceros. Una sola lista, un solo editor.</p>
         <a href="/newsletter" class="btn-ink">
           Suscribirme <span class="arrow">→</span>
         </a>
@@ -532,4 +532,7 @@ const articulosDestacados = (conDestacado.length > 0 ? conDestacado : articulosN
           io.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.06, rootMargin: '0px 0px -4
+    }, { threshold: 0.06, rootMargin: '0px 0px -40px 0px' });
+    els.forEach(el => io.observe(el));
+  })();
+</script>
