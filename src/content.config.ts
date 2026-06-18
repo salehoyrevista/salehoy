@@ -75,6 +75,7 @@ const recomendaciones = defineCollection({
     fecha: z.date(),
     bajada: z.string().optional(),
     imagen: z.string().optional(),
+    enlaceObra: z.string().optional(),
     narrador: z.enum(['el-matematico', 'la-cientifica', 'la-pitonisa', 'el-cronista', 'el-historiador']).default('el-cronista'),
   }),
 });
