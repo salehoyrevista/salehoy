@@ -58,9 +58,57 @@ const ZONES = {
   cordoba:     { bg: '#162922', fg: '#DFF0F5', bgDeep: '#0B1511', fgMuted: '#8BAAB5', accent: '#7FB8C9', label: 'QUINIELA CÓRDOBA',      sub: `${z.cordoba.sorteos} sorteos · ${z.cordoba.extracciones} extracciones` },
   comparativa: { bg: '#F5F1E8', fg: '#1B1F2A', bgDeep: 'var(--ink)', fgMuted: '#7A7560', accent: '#1B1F2A', label: 'LAS TRES COMPARADAS', sub: 'Cruce entre los tres informes' },
 };
+
+// ─── SEO / structured data ──────────────────────────────────────────────────
+const laDataUrl = new URL('/la-data', Astro.site).toString();
+const laDataDesc = `La Data — Informe mensual de la quiniela argentina (${mesLabel}). ${datos.totales.sorteos} sorteos, ${datos.totales.extracciones.toLocaleString('es-AR')} extracciones. Análisis estadístico de Nacional, Buenos Aires y Córdoba por Tomás Vera. No damos picks: mostramos qué pasó, en números.`;
+
+const laDataSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Dataset',
+      '@id': `${laDataUrl}#dataset`,
+      name: `La Data · Informe mensual de la quiniela · ${mesLabel}`,
+      description: laDataDesc,
+      url: laDataUrl,
+      inLanguage: 'es-AR',
+      keywords: ['quiniela', 'estadística', 'Nacional', 'Buenos Aires', 'Córdoba', mesLabel],
+      creator: { '@type': 'Person', name: 'Tomás Vera', url: new URL('/narradores/el-matematico', Astro.site).toString() },
+      publisher: {
+        '@type': 'Organization',
+        name: 'SaleHoy',
+        url: Astro.site?.toString(),
+        logo: { '@type': 'ImageObject', url: new URL('/img/logo-dark.svg', Astro.site).toString() },
+      },
+      variableMeasured: ['frecuencia de números', 'desvío vs. promedio teórico', 'distribución por década', 'coincidencias entre zonas'],
+      temporalCoverage: mesStr,
+    },
+    {
+      '@type': 'Article',
+      '@id': `${laDataUrl}#article`,
+      mainEntityOfPage: { '@type': 'WebPage', '@id': laDataUrl },
+      url: laDataUrl,
+      headline: `La Data · ${mesLabel}`,
+      description: laDataDesc,
+      image: [new URL('/og-default.png', Astro.site).toString()],
+      author: { '@type': 'Person', name: 'Tomás Vera', url: new URL('/narradores/el-matematico', Astro.site).toString() },
+      publisher: {
+        '@type': 'Organization',
+        name: 'SaleHoy',
+        url: Astro.site?.toString(),
+        logo: { '@type': 'ImageObject', url: new URL('/img/logo-dark.svg', Astro.site).toString() },
+      },
+      inLanguage: 'es-AR',
+      articleSection: 'La Data',
+      isPartOf: { '@type': 'CreativeWorkSeries', name: 'La Data · SaleHoy' },
+    },
+  ],
+};
 ---
 
-<LaDataLayout title={`La Data · ${mesLabel}`} mesLabel={mesLabel}>
+<LaDataLayout title={`La Data · ${mesLabel}`} mesLabel={mesLabel} description={laDataDesc}>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(laDataSchema)} />
 
   <article style="background:var(--paper-warmer);border:1px solid var(--ink);max-width:1180px;margin:20px auto 56px;position:relative;">
 

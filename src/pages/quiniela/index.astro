@@ -3,27 +3,40 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import SalaHeader from '../../components/SalaHeader.astro';
 ---
 
-<BaseLayout title="Quiniela del día" description="Motor estadístico de SaleHoy: candidatos del día con análisis editorial.">
+<BaseLayout
+  title="La quiniela en SaleHoy"
+  description="SaleHoy no da picks ni resultados: pensamos la quiniela como objeto cultural. Análisis mensual en La Data y la zona viva de La Sala."
+>
   <section class="page container-wide">
     <SalaHeader
-      titulo="Quiniela del día"
-      bajada="Candidatos con score combinado, terminaciones en deuda, números calientes, suma de dígitos, centenas activas."
+      titulo="La quiniela en SaleHoy"
+      bajada="Acá no vas a encontrar el número de hoy ni un soplo. Pensamos la quiniela como lo que es: un objeto cultural argentino. La leemos con números, con historia y con literatura."
       vibe="red"
     />
 
-    <div class="construction">
-      <h2>En migración</h2>
-      <p>
-        El motor estadístico de la versión actual del sitio se está reescribiendo para el nuevo entorno. Mientras tanto, podés acceder a la versión anterior:
-      </p>
-      <a href="https://salehoy.com.ar" class="btn-primary" target="_blank" rel="noopener">
-        Ir a la versión actual →
+    <div class="quiniela-rail">
+      <a class="rail-card" href="/la-data">
+        <span class="rail-card__eyebrow">Informe mensual</span>
+        <h2 class="rail-card__title">La Data</h2>
+        <p class="rail-card__text">
+          Análisis estadístico de la quiniela mes a mes: Nacional, Buenos Aires, Córdoba y la comparación entre las tres. No damos picks; mostramos qué pasó, en números.
+        </p>
+        <span class="rail-card__cta">Ver el informe →</span>
+      </a>
+
+      <a class="rail-card" href="/la-sala">
+        <span class="rail-card__eyebrow">Zona viva</span>
+        <h2 class="rail-card__title">La Sala</h2>
+        <p class="rail-card__text">
+          La Vichy y su tabla de los sueños, la Máquina de Frases, el Anecdotario y El Generador. La quiniela como cultura de bar, mate y radio bajita.
+        </p>
+        <span class="rail-card__cta">Entrar a la sala →</span>
       </a>
     </div>
 
     <aside class="legal">
       <p>
-        <strong>SaleHoy es contenido cultural y de análisis.</strong> Los candidatos son resultado de análisis estadístico descriptivo, no predictivo. La quiniela es un juego de azar regulado por el Estado. Si jugás, jugá responsable.
+        <strong>SaleHoy es una revista cultural sobre el juego y el azar.</strong> No damos picks, no predecimos números ni publicamos resultados. La quiniela es un juego de azar regulado por el Estado. El juego no se controla. Si jugás, jugá responsable; si te preocupa cómo jugás, hay <a href="/aviso-legal">ayuda</a>.
       </p>
     </aside>
   </section>
@@ -34,40 +47,63 @@ import SalaHeader from '../../components/SalaHeader.astro';
   .page__header { margin-bottom: var(--space-2xl); }
   .page__header .hero-lead { margin-top: var(--space-md); max-width: 640px; }
 
-  .construction {
+  .quiniela-rail {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-xl);
+    margin-block: var(--space-2xl);
+  }
+
+  @media (max-width: 640px) {
+    .quiniela-rail { grid-template-columns: 1fr; }
+  }
+
+  .rail-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
     padding: var(--space-2xl);
     background: var(--color-bg-elevated);
     border: 1px solid var(--color-line);
     border-radius: var(--radius-md);
-    margin-block: var(--space-xl);
-    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color var(--transition-fast), transform var(--transition-fast);
   }
 
-  .construction h2 {
+  .rail-card:hover {
+    border-color: var(--color-accent-gold);
+    transform: translateY(-2px);
+  }
+
+  .rail-card__eyebrow {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-leather);
+  }
+
+  .rail-card__title {
     font-family: var(--font-display);
     font-size: var(--text-2xl);
-    margin-bottom: var(--space-md);
+    font-weight: var(--font-semibold);
+    margin: 0;
   }
 
-  .construction p {
+  .rail-card__text {
     color: var(--color-text-secondary);
-    margin-bottom: var(--space-lg);
+    margin: 0;
+    flex: 1;
   }
 
-  .btn-primary {
-    display: inline-flex;
-    padding: var(--space-md) var(--space-xl);
-    background: var(--color-accent-gold);
-    color: var(--color-bg);
-    border-radius: var(--radius-full);
-    border: 1px solid var(--color-accent-gold);
+  .rail-card__cta {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
     font-weight: var(--font-medium);
-    transition: all var(--transition-fast);
-  }
-
-  .btn-primary:hover {
-    background: transparent;
     color: var(--color-accent-gold);
+    margin-top: var(--space-sm);
   }
 
   .legal {
