@@ -110,7 +110,7 @@ function EntryScreen({ onEnter }){
 /* Pre-loaded conversation */
 const SEED = [
   { who:'vichy', text:'Pas\u00e1, sentate. Ven\u00ed que est\u00e1 el agua. \u00bfTe tir\u00e1s un mate?' },
-  { who:'vichy', text:'Bueno. Contame: \u00bfqu\u00e9 so\u00f1aste, qu\u00e9 n\u00famero se te aparece, qu\u00e9 cosa rara te pas\u00f3 esta semana? O si quer\u00e9s, te tiro una carta.' }
+  { who:'vichy', text:'Antes de que me cuentes nada\u2026 \u00bfc\u00f3mo te llaman?' }
 ];
 
 function renderParts(parts){
@@ -408,6 +408,8 @@ function ChatScreen({ onBack, tw }){
   const [msgs, setMsgs] = useState(SEED);
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
+  const [step, setStep] = useState('name');
+  const [name, setName] = useState('');
 
   function send(){
     const t = input.trim();
@@ -415,8 +417,9 @@ function ChatScreen({ onBack, tw }){
     setInput('');
     setMsgs(m => [...m, { who:'user', text:t }]);
     setBusy(true);
-    VICHY_PROVIDER(t).then(reply => {
-      setMsgs(m => [...m, ...reply]);
+    VICHY_PROVIDER(t, { step, name }).then(r => {
+      setMsgs(m => [...m, ...r.msgs]);
+      setStep(r.step); setName(r.name);
       setBusy(false);
     });
   }
@@ -476,7 +479,7 @@ function ChatScreen({ onBack, tw }){
             if (m.who === 'card') return (
               <React.Fragment key={i}>
                 <div className="orn-trebol"><TrebolRed /></div>
-                <div style={{...iridStyle(tw), '--cw':'180px', display:'flex', justifyContent:'center', margin:'20px 0'}}>
+                <div style={{...iridStyle(tw), '--cw':'186px', display:'flex', justifyContent:'center', margin:'22px 0'}}>
                   <IridescentCard card={findCard(m.card.n, m.card.palo)} flipped={true} onToggle={()=>{}} tilt={tw.tilt} eager={true} />
                 </div>
               </React.Fragment>
@@ -501,12 +504,6 @@ function ChatScreen({ onBack, tw }){
           <div className="aire-mark">aire · margen · respirar</div>
         </aside>
       </div>
-
-      {/* ── La tirada de tres ── */}
-      <TiradaSection tw={tw} />
-
-      {/* ── El mazo completo ── */}
-      <MazoSection tw={tw} />
 
       {/* Dock */}
       <div className="dock" role="region" aria-label="Escribir a Vichy">
@@ -536,9 +533,8 @@ function ChatScreen({ onBack, tw }){
 }
 
 /* ===================== CEREBRO GUIONADO (sin IA) =====================
-   La Vichy responde desde una memoria interna. Para enchufar una IA/API en el
-   futuro, reemplazá VICHY_PROVIDER por una función async que pegue al backend
-   y devuelva mensajes en el mismo formato ({who:'vichy',text|parts} y {who:'card',card}).
+   Secuencia guiada interactiva. Para IA futura: reemplazá VICHY_PROVIDER por
+   una función async que pegue a una API y devuelva { msgs, step, name }.
    ==================================================================== */
 const VICHY_MAZO = {
   "_meta": {
@@ -794,135 +790,111 @@ const VICHY_SUENOS = {
 
 /* ============================================================================
    La Vichy — cerebro guionado (sin IA). Vanilla JS, sin dependencias.
-   Devuelve mensajes en el formato del diseño:
-     { who:'vichy', text }              -> prosa simple
-     { who:'vichy', parts:[...] }       -> prosa con <em>{em}</em> y <span.num>{num}</span>
-     { who:'card', card:{n,palo} }      -> revela una carta real del mazo (IridescentCard)
-   COSTURA PARA IA: el chat llama a un "provider" async (reply). Hoy = guionado.
-   Mañana = un provider que pega a una API/LLM, con la MISMA firma y formato.
+   Reproduce la SECUENCIA del diseño, pero interactiva:
+     saludo -> nombre -> signo -> equipo -> consulta -> (tira UNA carta y la lee)
+   Mensajes en el formato del diseño:
+     {who:'vichy', text} · {who:'vichy', parts:[...]} · {who:'card', card:{n,palo}}
+   COSTURA IA: el chat llama a VICHY_PROVIDER(text, ctx) -> Promise<{msgs,step,name}>.
+   Hoy = guionado; mañana = un provider async que pega a una API con la misma firma.
    ========================================================================== */
 function makeVichyBrain(MAZO, DIALOGO, SUENOS){
-  const byId = {};            // "palo-n" -> carta
-  MAZO.cartas.forEach(c => {
-    const [n, palo] = c.id.split('-');         // mi id interno es "n-palo"
-    byId[palo + '-' + n] = Object.assign({}, c, { n: parseInt(n,10), palo });
-  });
+  const byId = {};
+  MAZO.cartas.forEach(c => { const [n,palo]=c.id.split('-'); byId[palo+'-'+n]=Object.assign({},c,{n:parseInt(n,10),palo}); });
 
-  const norm = (s) => (s||'')
-    .toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')
-    .replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim();
-  const pick = (arr) => arr[Math.floor(Math.random()*arr.length)];
-  const hasWord = (txt, keys) => { const w=new Set(txt.split(' ')); return keys.some(k=> k.includes(' ')?txt.includes(k):w.has(k)); };
+  const norm = (s) => (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim();
+  const pick = (a) => a[Math.floor(Math.random()*a.length)];
+  const hasWord = (txt,keys) => { const w=new Set(txt.split(' ')); return keys.some(k=> k.includes(' ')?txt.includes(k):w.has(k)); };
 
-  // palabra-gancho de cada pájaro -> "palo-n" (para "soñé con un hornero")
   const AVE_KEY = {
-    'condor':'espada-1','aguilucho':'espada-2','aguila':'espada-3','halconcito':'espada-4',
-    'lechucita':'espada-5','lechuza':'espada-6','halcon':'espada-7','gavilan':'espada-10',
-    'chimango':'espada-11','carancho':'espada-12',
-    'jilguero':'oro-1','naranjero':'oro-2','benteveo':'oro-3','cabecita':'oro-4','misto':'oro-5',
-    'pepitero':'oro-6','tucan':'oro-7','sietecolores':'oro-10','tordo':'oro-11','boyero':'oro-12',
-    'garza':'copa-1','cisne':'copa-2','flamenco':'copa-3','maca':'copa-4','gallareta':'copa-5',
-    'barcino':'copa-6','bigua':'copa-7','ciguena':'copa-10','espatula':'copa-11','cauquen':'copa-12',
-    'hornero':'basto-1','carpintero':'basto-2','cardenal':'basto-3','chingolo':'basto-4','ratona':'basto-5',
-    'calandria':'basto-6','picaflor':'basto-7','colibri':'basto-7','zorzal':'basto-10','loro':'basto-11','chaja':'basto-12'
+    'condor':'espada-1','aguilucho':'espada-2','aguila':'espada-3','halconcito':'espada-4','lechucita':'espada-5','lechuza':'espada-6','halcon':'espada-7','gavilan':'espada-10','chimango':'espada-11','carancho':'espada-12',
+    'jilguero':'oro-1','naranjero':'oro-2','benteveo':'oro-3','cabecita':'oro-4','misto':'oro-5','pepitero':'oro-6','tucan':'oro-7','sietecolores':'oro-10','tordo':'oro-11','boyero':'oro-12',
+    'garza':'copa-1','cisne':'copa-2','flamenco':'copa-3','maca':'copa-4','gallareta':'copa-5','barcino':'copa-6','bigua':'copa-7','ciguena':'copa-10','espatula':'copa-11','cauquen':'copa-12',
+    'hornero':'basto-1','carpintero':'basto-2','cardenal':'basto-3','chingolo':'basto-4','ratona':'basto-5','calandria':'basto-6','picaflor':'basto-7','colibri':'basto-7','zorzal':'basto-10','loro':'basto-11','chaja':'basto-12'
   };
-  function buscarAve(txt){
-    const w = new Set(txt.split(' '));
-    for (const k in AVE_KEY){ if (w.has(k)) return byId[AVE_KEY[k]]; }
-    return null;
-  }
+  const buscarAve = (txt) => { const w=new Set(txt.split(' ')); for(const k in AVE_KEY) if(w.has(k)) return byId[AVE_KEY[k]]; return null; };
 
-  // shuffle-bag de cartas (no repite hasta agotar)
-  let bag = [], lastId = null;
-  const refill = () => { bag = MAZO.cartas.map(c=>c.id);
-    for(let i=bag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[bag[i],bag[j]]=[bag[j],bag[i]];} };
-  function drawCard(){
-    if(!bag.length) refill();
-    let id = bag.pop();
-    if(id===lastId && bag.length){ bag.unshift(id); id=bag.pop(); }
-    lastId = id;
-    const [n,palo]=id.split('-'); return byId[palo+'-'+n];
-  }
+  let bag=[], lastId=null;
+  const refill=()=>{ bag=MAZO.cartas.map(c=>c.id); for(let i=bag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[bag[i],bag[j]]=[bag[j],bag[i]];} };
+  function drawCard(){ if(!bag.length) refill(); let id=bag.pop(); if(id===lastId&&bag.length){bag.unshift(id);id=bag.pop();} lastId=id; const [n,palo]=id.split('-'); return byId[palo+'-'+n]; }
 
-  function buscarSueno(txt){
-    const w=new Set(txt.split(' '));
-    for(const e of SUENOS.tabla){ const sins=e.sinonimos.map(norm);
-      if(sins.some(s=> s.includes(' ')?txt.includes(s):w.has(s))) return e; }
-    return null;
-  }
-  function cosaSonada(txt){ const m=txt.match(/(?:sone con|sone|sueno con|sueno|sonar con|sonaba con)\s+(.{2,40})/); return m?m[1].trim():'eso'; }
+  const buscarSueno=(txt)=>{ const w=new Set(txt.split(' ')); for(const e of SUENOS.tabla){ const s=e.sinonimos.map(norm); if(s.some(x=>x.includes(' ')?txt.includes(x):w.has(x))) return e; } return null; };
 
   function lecturaParts(card){
-    return ['Salió ', {em:card.nombre.toLowerCase()}, ' — ', {em:card.ave}, '. ',
-            'El número: ', {num:card.numero}, ', ', card.figura, '. ', card.lectura];
+    return ['Salió ', {em:card.nombre.toLowerCase()}, ' — ', {em:card.ave}, '. El número: ', {num:card.numero}, ', ', card.figura, '. ', card.lectura];
   }
-  function revelarCarta(card, intro){
-    const msgs = [];
-    if (intro) msgs.push({ who:'vichy', text: intro });
-    msgs.push({ who:'card', card:{ n:card.n, palo:card.palo } });
-    msgs.push({ who:'vichy', parts: lecturaParts(card) });
+
+  // ---- bancos de la secuencia ----
+  const NAME_LINES = ['Lindo nombre.', 'Me gusta.', 'Anotado.', 'Buen nombre, de los que duran.'];
+  const SIGNOS = {
+    aries:'Aries. Fuego del que arranca primero, mijo.', tauro:'Tauro. Terco y de buen comer, te conozco.',
+    geminis:'Géminis. Dos en uno, nunca sé con cuál hablo.', cancer:'Cáncer. Caparazón duro, adentro pura agua.',
+    leo:'Leo. Te gusta el sol y que te miren, ¿o no?', virgo:'Virgo. Todo en su lugar, hasta los nervios.',
+    libra:'Libra. Pesás todo antes de decidir, balanza.', escorpio:'Escorpio. Aguijón guardado, pero memoria larga.',
+    sagitario:'Sagitario. Flecha al horizonte, siempre con un viaje en la cabeza.', capricornio:'Capricornio. Cabra de monte, Saturno te enseña con tiempo.',
+    acuario:'Acuario. Rarito y adelantado, de los que ven lo que no se ve.', piscis:'Piscis. Dos peces, soñador hasta dormido.'
+  };
+  function signoQuip(text){ const t=norm(text); for(const k in SIGNOS) if(t.includes(k)) return SIGNOS[k]; return 'Mirá vos. Algo de eso se te nota.'; }
+  const APERTURAS = ['Dejá que el mazo hable. Esperá que tiro una carta…','Cerrá los ojos un segundo y pensá en lo tuyo. Doy vuelta…','Pedile permiso a los naipes, que son orgullosos. Ahí va…','Soplá, como hacía mi abuela. Mirá lo que salió:'];
+  const CIERRES = (name)=>['¿Querés que tire otra, o lo dejamos acá, '+name+'?','Quedátela en el bolsillo, '+name+'. Y si jugás, jugá de cariño.','Eso dijo el naipe. Contame si sale.','¿Seguimos con otra, '+name+'?'];
+
+  function limpiarNombre(text){
+    const w=(text||'').trim().split(/\s+/)[0]||'';
+    const c=w.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ]/g,'');
+    if(!c) return 'mijo';
+    return c.charAt(0).toUpperCase()+c.slice(1).toLowerCase();
+  }
+  function clasificar(txt){
+    if(hasWord(txt,['chau','adios','me voy','nos vemos','hasta luego'])) return 'despedida';
+    if(hasWord(txt,['gracias','genia','crack','grosa'])) return 'gracias';
+    if(hasWord(txt,['gano','ganar','es seguro','apuesto','apostar','cuanto pongo','cuanto apuesto','es estafa','plata facil'])) return 'ganar';
+    if(hasWord(txt,['quien sos','quien es vichy','de donde sos','tu historia','quien eres'])) return 'quien';
+    if(hasWord(txt,['como funciona','que es esto','como lees','como sabes','como se juega'])) return 'como';
+    return 'consulta';
+  }
+
+  // una consulta SIEMPRE puede terminar en una carta (salvo charla aparte)
+  function consulta(text, name){
+    const txt=norm(text);
+    const intent=clasificar(txt);
+    if(intent==='ganar')    return [{who:'vichy', text: pick(DIALOGO.ganar_apostar.respuestas)}];
+    if(intent==='quien')    return [{who:'vichy', text: pick(DIALOGO.quien_es_vichy.respuestas)}];
+    if(intent==='como')     return [{who:'vichy', text: pick(DIALOGO.como_funciona.respuestas).replace('{tirada}','').trim()}];
+    if(intent==='gracias')  return [{who:'vichy', text: pick(DIALOGO.agradecimiento.respuestas)}];
+    if(intent==='despedida')return [{who:'vichy', text: pick(DIALOGO.despedida.respuestas)}];
+    const ave=buscarAve(txt), sue=buscarSueno(txt);
+    const card=ave||drawCard();
+    const msgs=[{who:'vichy', text:'Mirá vos. '+pick(APERTURAS)}, {who:'card', card:{n:card.n,palo:card.palo}}, {who:'vichy', parts: lecturaParts(card)}];
+    if(sue) msgs.push({who:'vichy', parts:['Y lo que me contaste, '+name+', deja el ', {num:sue.numero}, ', ', sue.figura, '. Pensá qué te está diciendo.']});
+    msgs.push({who:'vichy', text: pick(CIERRES(name))});
     return msgs;
   }
-  function tirada(){ return revelarCarta(drawCard(), pick(DIALOGO.aperturas_tirada.respuestas)); }
 
-  function clasificar(txt){
-    if(!txt) return 'saludo';
-    if(hasWord(txt,['chau','adios','me voy','nos vemos','hasta luego','gracias chau'])) return 'despedida';
-    if(hasWord(txt,['gracias','genia','crack','grosa','sos lo mas'])) return 'gracias';
-    if(hasWord(txt,['gano','ganar','es seguro','apuesto','apostar','cuanto pongo','cuanto juego','cuanto apuesto','es estafa','me forro','plata facil'])) return 'ganar';
-    if(hasWord(txt,['sone','sueno','sonar','sonaba','tuve un sueno','anoche sone'])) return 'sueno';
-    if(hasWord(txt,['quien sos','quien es vichy','de donde sos','tu historia','quien eres','como te llamas'])) return 'quien';
-    if(hasWord(txt,['como funciona','que es esto','como lees','como sabes','como va esto','como se juega','que onda esto'])) return 'como';
-    if(hasWord(txt,['tira','tirame','otra carta','otra','una carta','dale','carta','leeme','leme','tirada','tira una'])) return 'tirada';
-    if(hasWord(txt,['numero','que numero','dame un numero','dame la suerte','que juego','para la quiniela','para jugar'])) return 'pedir_numero';
-    if(hasWord(txt,['hola','buenas','buen dia','buenas tardes','buenas noches','epa','dona','vichy'])) return 'saludo';
-    return 'fallback';
-  }
-
-  // === PROVIDER GUIONADO (sin IA) ===
-  function guionado(textoUsuario){
-    const txt = norm(textoUsuario);
-    const intent = clasificar(txt);
-    switch(intent){
-      case 'saludo':       return [{who:'vichy', text: pick(DIALOGO.saludos.respuestas)}];
-      case 'tirada':
-      case 'pedir_numero': return tirada();
-      case 'sueno': {
-        const hit = buscarSueno(txt);
-        if(hit) return [
-          {who:'vichy', parts:['Eso es el ', {num:hit.numero}, ', ', hit.figura, '.']},
-          {who:'vichy', text: pick(DIALOGO.contar_sueno.encontrado)
-              .replace('{sueno}', cosaSonada(txt)).replace('{numero}', hit.numero).replace('{figura}', hit.figura)}
-        ];
-        const ave = buscarAve(txt);
-        if(ave) return revelarCarta(ave, 'Mirá vos, soñaste con '+ave.ave.toLowerCase()+'. Esa la tengo en el mazo. Esperá que la doy vuelta…');
-        return [{who:'vichy', text: pick(DIALOGO.contar_sueno.no_encontrado).replace('{tirada}','').trim()}];
-      }
-      case 'ganar':   return [{who:'vichy', text: pick(DIALOGO.ganar_apostar.respuestas)}];
-      case 'como':    return [{who:'vichy', text: pick(DIALOGO.como_funciona.respuestas).replace('{tirada}','').trim()}];
-      case 'quien':   return [{who:'vichy', text: pick(DIALOGO.quien_es_vichy.respuestas)}];
-      case 'gracias': return [{who:'vichy', text: pick(DIALOGO.agradecimiento.respuestas)}];
-      case 'despedida': return [{who:'vichy', text: pick(DIALOGO.despedida.respuestas)}];
-      default: {
-        const ave = buscarAve(txt);
-        if(ave) return revelarCarta(ave, 'Ah, '+ave.ave.toLowerCase()+'. Mirá lo que tengo para vos…');
-        return [{who:'vichy', text: pick(DIALOGO.fallback.respuestas).replace('{tirada}','').trim()}];
-      }
+  // máquina de estados de la secuencia
+  function guided(text, ctx){
+    const step=(ctx&&ctx.step)||'name';
+    let name=(ctx&&ctx.name)||'';
+    if(step==='name'){
+      name=limpiarNombre(text);
+      return { step:'sign', name, msgs:[{who:'vichy', text: name+'. '+pick(NAME_LINES)+' Decime, ¿de qué signo sos? La edad redonda nomás, no me importa el día.'}] };
     }
+    if(step==='sign'){
+      return { step:'team', name, msgs:[{who:'vichy', text: signoQuip(text)+' Una más y arrancamos: ¿sos hincha de algún equipo? Te pregunto, no es por nada.'}] };
+    }
+    if(step==='team'){
+      return { step:'consulta', name, msgs:[
+        {who:'vichy', text:'Bueno, '+name+'. Sentate cómodo.'},
+        {who:'vichy', text:'Ahora sí: contame qué te trajo. ¿Soñaste algo, se te aparece un número, te pasó algo raro esta semana?'}
+      ] };
+    }
+    return { step:'consulta', name, msgs: consulta(text, name||'mijo') };
   }
 
-  // provider async (firma lista para IA). Hoy resuelve guionado tras un delay.
-  function reply(textoUsuario, opts){
-    const delay = (opts && opts.delay!=null) ? opts.delay : 1100;
-    return new Promise(res => setTimeout(()=>res(guionado(textoUsuario)), delay));
-  }
-
-  return { reply, guionado, drawCard, byId, _clasificar: clasificar, _norm: norm };
+  function provider(text, ctx){ return new Promise(res=>setTimeout(()=>res(guided(text,ctx)), 1100)); }
+  return { provider, guided, consulta, drawCard, byId, _clasificar:clasificar, _norm:norm, _limpiarNombre:limpiarNombre };
 }
 
 const VICHY_BRAIN = makeVichyBrain(VICHY_MAZO, VICHY_DIALOGO, VICHY_SUENOS);
-/* Costura para IA: hoy guionado; mañana, swap por un provider async con fetch(). */
-const VICHY_PROVIDER = (texto) => VICHY_BRAIN.reply(texto, { delay: 1100 });
+const VICHY_PROVIDER = (texto, ctx) => VICHY_BRAIN.provider(texto, ctx);
 
 /* ───────── Root ───────── */
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
@@ -960,9 +932,7 @@ function App(){
     const saved = (typeof localStorage!=='undefined') && localStorage.getItem('lavichy-screen');
     if (saved === 'chat') setScreen('chat');
   }, []);
-  useEffect(() => {
-    if (typeof localStorage!=='undefined') localStorage.setItem('lavichy-screen', screen);
-  }, [screen]);
+  useEffect(() => { if (typeof localStorage!=='undefined') localStorage.setItem('lavichy-screen', screen); }, [screen]);
   return (
     <React.Fragment>
       {screen === 'entry'
