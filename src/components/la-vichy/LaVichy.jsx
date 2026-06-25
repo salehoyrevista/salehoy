@@ -410,6 +410,9 @@ function ChatScreen({ onBack, tw }){
   const [busy, setBusy] = useState(false);
   const [step, setStep] = useState('name');
   const [name, setName] = useState('');
+  const [sign, setSign] = useState('');
+  const [age, setAge] = useState(null);
+  function resetConsulta(){ setMsgs(SEED); setStep('name'); setName(''); setSign(''); setAge(null); if(typeof window!=='undefined') window.scrollTo({top:0,behavior:'smooth'}); }
 
   function send(){
     const t = input.trim();
@@ -417,9 +420,9 @@ function ChatScreen({ onBack, tw }){
     setInput('');
     setMsgs(m => [...m, { who:'user', text:t }]);
     setBusy(true);
-    VICHY_PROVIDER(t, { step, name }).then(r => {
+    VICHY_PROVIDER(t, { step, name, sign, age }).then(r => {
       setMsgs(m => [...m, ...r.msgs]);
-      setStep(r.step); setName(r.name);
+      setStep(r.step); setName(r.name); setSign(r.sign); setAge(r.age);
       setBusy(false);
     });
   }
@@ -477,18 +480,14 @@ function ChatScreen({ onBack, tw }){
               </React.Fragment>
             );
             if (m.who === 'card') return (
-              <React.Fragment key={i}>
-                <div className="orn-trebol"><TrebolRed /></div>
-                <div style={{...iridStyle(tw), '--cw':'186px', display:'flex', justifyContent:'center', margin:'22px 0'}}>
-                  <IridescentCard card={findCard(m.card.n, m.card.palo)} flipped={true} onToggle={()=>{}} tilt={tw.tilt} eager={true} />
-                </div>
-              </React.Fragment>
+              <ChatCard key={i} card={m.card} reveal={m.reveal} tw={tw}
+                onReveal={(rm)=>setMsgs(mm=>[...mm, ...rm])} />
             );
             if (m.who === 'closure') return (
               <React.Fragment key={i}>
                 <div className="orn-trebol"><TrebolRed /></div>
                 <div className="close-row">
-                  <a href="#" onClick={(e)=>{e.preventDefault(); window.location.reload();}}>Otra consulta</a>
+                  <a href="#" onClick={(e)=>{e.preventDefault(); resetConsulta();}}>Otra consulta</a>
                   <a href="#" onClick={(e)=>e.preventDefault()}>Compartir esta lectura</a>
                 </div>
               </React.Fragment>
@@ -533,9 +532,8 @@ function ChatScreen({ onBack, tw }){
 }
 
 /* ===================== CEREBRO GUIONADO (sin IA) =====================
-   Secuencia guiada interactiva. Para IA futura: reemplazá VICHY_PROVIDER por
-   una función async que pegue a una API y devuelva { msgs, step, name }.
-   ==================================================================== */
+   Para IA futura: reemplazar VICHY_PROVIDER por un provider async con la
+   misma firma que devuelva { msgs, step, name, sign, age }. ============= */
 const VICHY_MAZO = {
   "_meta": {
     "nombre": "La tabla de Vichy",
@@ -787,114 +785,135 @@ const VICHY_SUENOS = {
     { "figura": "el viejo", "numero": "90", "sinonimos": ["viejo", "abuelo", "anciano", "el miedo", "miedo"] }
   ]
 };
+const VICHY_ORACLE = {"numeros":{"10":{"nombre":"La leche","lectura":"El 10 es la leche. Blanco, alimento, lo que da la madre. Algunos dicen el cañón, pero acá en Rosario decimos la leche, m'ija."},"11":{"nombre":"El palito","lectura":"El 11 son los palitos, los dos parados. Lo que va de a dos. Lo que se sostiene. Algunos dicen el minero, viene de la Smorfia vieja."},"12":{"nombre":"El soldado","lectura":"El 12 es el soldado. El que obedece. El que no pregunta. ¿Vos sos el soldado en el sueño, o lo vías pasar?"},"13":{"nombre":"La yeta","lectura":"El 13 es la yeta. Pero acá te aclaro: la gente le tiene miedo y por eso le sale seguido. La yeta es la creencia, no el número. Si te apareció el 13, eso quiere decir algo. Pensá qué temés."},"14":{"nombre":"El borracho","lectura":"El 14 es el borracho. El que se pasa de la raya. El que dice lo que no diría sobrio. Si te apareció, fijate qué se te está soltando."},"15":{"nombre":"La niña bonita","lectura":"El 15 es la niña bonita. El cumpleaños grande. La que está por florecer. Es número de fiesta, m'ija. Algo lindo se prepara."},"16":{"nombre":"El anillo","lectura":"El 16 es el anillo. Lo que ata. Promesa, compromiso, vuelta entera. ¿De qué dedo era el sueño?"},"17":{"nombre":"La desgracia","lectura":"El 17 es la desgracia. Pero ojo: cuando aparece en sueño, muchas veces es aviso para que estés atenta, no condena. La desgracia se rodea, no se sufre."},"18":{"nombre":"La sangre","lectura":"El 18 es la sangre. Familia, herida, vida que corre. Sangre es todo a la vez. ¿Era tuya o de otro?"},"19":{"nombre":"El pescado","lectura":"El 19 es el pescado. En Rosario, pescado es Paraná, m'ija. Pero también es lo que se atrapa. Lo que pica. Lo que viene a vos cuando tirás la línea con paciencia."},"20":{"nombre":"La fiesta","lectura":"El 20 es la fiesta. Algo se festeja. O algo se está por festejar y vos todavía no lo sabés."},"21":{"nombre":"La mujer","lectura":"El 21 es la mujer. Cualquier mujer. La que aparece y vos sabés cuál es. La que no aparece y también sabés cuál es."},"22":{"nombre":"El loco","lectura":"El 22 es el loco. Y en el tarot también, mirá vos. El que empieza sin saber a dónde va. A veces es santo y no se da cuenta. Si te apareció, algo nuevo está naciendo. O algo viejo se está rompiendo. Las dos cosas, capaz."},"23":{"nombre":"El cocinero","lectura":"El 23 es el cocinero. El que mezcla, el que prueba, el que sabe el punto. ¿En tu sueño cocinabas vos, o te cocinaban?"},"24":{"nombre":"El caballo","lectura":"El 24 es el caballo. Animal noble. Si soñaste con un caballo, decime de qué color era, si estaba quieto o galopaba, si vos lo mirabas o ibas montada. El caballo cambia mucho según cómo aparece."},"25":{"nombre":"La gallina","lectura":"El 25 es la gallina. La que cuida, la que pone, la que cacarea. A veces también la que sale corriendo. Vos sabrás cuál te tocó."},"26":{"nombre":"La misa","lectura":"El 26 es la misa. Lo sagrado en lo cotidiano. ¿Hace cuánto no entrás a una iglesia, m'ija? No te digo que vayas. Te digo que el sueño te lo está diciendo, no yo."},"27":{"nombre":"El peine","lectura":"El 27 es el peine. Te peinás para algo, m'ija. Te preparás. Algo se va a ver."},"28":{"nombre":"El cerro","lectura":"El 28 es el cerro. Lo alto. Lo que cuesta subir. Si soñaste con un cerro, fijate si subías o lo mirabas desde abajo."},"29":{"nombre":"San Pedro","lectura":"El 29 es San Pedro. El que tiene las llaves. El que abre la puerta. Si te apareció el 29, alguna puerta se está por abrir. O cerrar, según."},"30":{"nombre":"Santa Rosa","lectura":"El 30 es Santa Rosa. La que trae la tormenta cada agosto. Si te apareció, algo está por descargar. Esperá unos días antes de decidir."},"31":{"nombre":"La luz","lectura":"El 31 es la luz. Lo que se ilumina de golpe. Una verdad que se cae sola. ¿Qué se te aclaró últimamente, m'ija?"},"32":{"nombre":"El dinero","lectura":"El 32 es el dinero. Pero ojo: el dinero en sueños no siempre es dinero. A veces es lo que pensás que te falta. A veces es lo que ya tenés y no ves."},"33":{"nombre":"Cristo","lectura":"El 33 es Cristo. La edad de Cristo. El número del Sagrado Corazón. Si te apareció, algo te está pidiendo entrega. O algo te está pidiendo perdón. Vos sabrás cuál."},"34":{"nombre":"La cabeza","lectura":"El 34 es la cabeza. Pensar mucho, decidir, mandar. Si en el sueño la cabeza era tuya, ¿te dolía?"},"35":{"nombre":"El pajarito","lectura":"El 35 es el pajarito. Mensajero. El que canta y vos no entendés qué dice, pero algo dice. Fijate si era de día o de noche."},"36":{"nombre":"La manteca","lectura":"El 36 es la manteca. Lo que ablanda. Lo que se derrite. Algo en tu vida está perdiendo dureza."},"37":{"nombre":"El dentista","lectura":"El 37 es el dentista. Y los dientes en sueños son problema, m'ija. Algo que se cae, algo que no podés morder. Pero a veces es solo que mañana tenés turno."},"38":{"nombre":"Las piedras","lectura":"El 38 son las piedras. Lo duro. Lo que no se mueve. O lo que cae. Si soñaste con piedras, fijate dónde estaban: si en el camino, si en la mano, si te las tiraban."},"39":{"nombre":"La lluvia","lectura":"El 39 es la lluvia. Lo que cae sin que vos lo decidas. Bendición o llanto, según cómo vino. ¿Te mojaste o estabas resguardada?"},"40":{"nombre":"El cura","lectura":"El 40 es el cura. El que confiesa. El que escucha sin juzgar, si es bueno. ¿Qué necesitás contar que no contás?"},"41":{"nombre":"El cuchillo","lectura":"El 41 es el cuchillo. Lo que corta. Algo se está por cortar en tu vida. O ya se cortó y vos todavía no te diste cuenta."},"42":{"nombre":"Las zapatillas","lectura":"El 42 son las zapatillas. Para caminar, para correr, para ir. ¿Para dónde vas, m'ija?"},"43":{"nombre":"El balcón","lectura":"El 43 es el balcón. Mirar desde arriba. Esperar a alguien. O estar en un borde. ¿Vos qué mirabas?"},"44":{"nombre":"La cárcel","lectura":"El 44 es la cárcel. Encierro. No siempre es la cárcel literal: a veces es la casa, a veces es vos misma. ¿Quién tenía las llaves?"},"45":{"nombre":"El vino","lectura":"El 45 es el vino. Lo que alegra y lo que afloja la lengua. Si soñaste con vino, alguna verdad anda dando vueltas."},"46":{"nombre":"Los tomates","lectura":"El 46 son los tomates. Algo que madura. Lo rojo en la planta. Lo que está listo para comer."},"47":{"nombre":"El muerto","lectura":"El 47 es el muerto. Pero acordate, m'ija: el muerto en sueños casi nunca es muerte. Es algo que terminó, algo que ya no, algo que se transforma. ¿Conocías al muerto del sueño?"},"48":{"nombre":"El muerto que habla","lectura":"El 48 es el muerto que habla. Eso es serio, m'ija. No te asustes pero escuchá. Alguien te quiere decir algo. ¿Qué te dijo en el sueño? Eso importa más que el número."},"49":{"nombre":"La carne","lectura":"El 49 es la carne. El cuerpo, el asado, el deseo. La carne es todo lo que el alma no es. ¿De qué carne se trata?"},"50":{"nombre":"El pan","lectura":"El 50 es el pan. El trabajo, la mesa, lo que se parte para compartir. Si te apareció el 50, andá a San Cayetano. O al menos pensá en él un rato."},"51":{"nombre":"El serrucho","lectura":"El 51 es el serrucho. Lo que separa de a poco. Lo que tarda en cortar. Una decisión que estás tomando despacio."},"52":{"nombre":"Madre e hijo","lectura":"El 52 es madre e hijo. Lo más sagrado y lo más complicado a la vez. ¿Quién era la madre en el sueño? ¿Quién el hijo?"},"53":{"nombre":"El barco","lectura":"El 53 es el barco. Viaje. Despedida. Llegada. En Rosario, los barcos del puerto los veo desde hace décadas. Algunos se van, otros llegan. Algunos se quedan oxidando."},"54":{"nombre":"La vaca","lectura":"El 54 es la vaca. Abundancia tranquila. Lo que da sin pedir mucho. Pero también lo que se mata para comer."},"55":{"nombre":"La música","lectura":"El 55 es la música. Algo te suena, algo te habla en clave. Si soñaste con música, ¿era alegre o triste? Importa."},"56":{"nombre":"La caída","lectura":"El 56 es la caída. Lo que se viene abajo. A veces necesario. Lo que cae deja lugar a algo nuevo. En la tradición popular se asocia al Gauchito Gil, que también cayó."},"57":{"nombre":"El jorobado","lectura":"El 57 es el jorobado. La tradición dice que da suerte tocarlo. Lo que carga, lo que aguanta. ¿Qué carga llevás vos que no decís?"},"58":{"nombre":"El ahogado","lectura":"El 58 es el ahogado. Algo te falta el aire, m'ija. Tomá distancia de lo que te aprieta. Salí a respirar."},"59":{"nombre":"Las plantas","lectura":"El 59 son las plantas. Lo que crece despacio. Lo que necesita cuidado todos los días. Algo en tu vida que estás regando, sépalo o no."},"60":{"nombre":"La virgen","lectura":"El 60 es la Virgen. Para mí siempre es la Lola, nuestra Señora del Rosario. Pero podés ponerle la Virgen que vos quieras. La cuestión es: alguien te protege. Aunque vos no lo veas."},"61":{"nombre":"La escopeta","lectura":"El 61 es la escopeta. Arma de cazador. Algo te apunta, o vos apuntás a algo. ¿A qué le tirás, m'ija?"},"62":{"nombre":"La inundación","lectura":"El 62 es la inundación. Algo te excede. Te pasa por encima. Pero ojo: cuando baja el agua, queda tierra nueva. No siempre es fin."},"63":{"nombre":"El casamiento","lectura":"El 63 es el casamiento. Unión. Promesa pública. ¿De quién era la boda? Porque si era la tuya y vos no te casás, eso es otra cosa."},"64":{"nombre":"El llanto","lectura":"El 64 es el llanto. Lo que se sale por los ojos cuando no se puede decir por la boca. ¿De alegría o de pena?"},"65":{"nombre":"El cazador","lectura":"El 65 es el cazador. El que busca. El que espera escondido. ¿A quién perseguís vos sin decirlo?"},"66":{"nombre":"Las lombrices","lectura":"El 66 son las lombrices. Lo que vive abajo. Lo que come por dentro. Algo te roe, m'ija. Pequeñito pero te roe."},"67":{"nombre":"La mordida","lectura":"El 67 es la mordida. Algo te marcó. ¿Quién te mordió? ¿Dónde?"},"68":{"nombre":"Los sobrinos","lectura":"El 68 son los sobrinos. La familia que no es de uno pero es de uno. Si soñaste con sobrinos, alguien joven de la familia anda pensando en vos."},"69":{"nombre":"Los vicios","lectura":"El 69 son los vicios. Lo que no podés dejar aunque sepas. No te lo digo con sermón, m'ija. Te lo digo porque el número te lo está mostrando."},"70":{"nombre":"El muerto que sueña","lectura":"El 70 es el muerto que sueña. Eso es raro y profundo, m'ija. Es como si alguien que ya no está te estuviera soñando a vos. Pensá quién te falta."},"71":{"nombre":"El excremento","lectura":"El 71 es el excremento. Aunque te dé impresión, en la tradición trae plata. Lo que el cuerpo larga, deja lugar para lo que viene."},"72":{"nombre":"La sorpresa","lectura":"El 72 es la sorpresa. Algo te va a llegar de donde no esperás. Puede ser linda o de las otras. Estate atenta."},"73":{"nombre":"El hospital","lectura":"El 73 es el hospital. Pero no siempre es enfermedad: a veces es lugar de cuidado. ¿Estabas internada o visitabas a alguien?"},"74":{"nombre":"La gente negra","lectura":"El 74 es la gente negra. Como dice la tradición vieja. Para mí siempre tuvo que ver con los ancestros, con lo que viene de atrás. No con la piel: con lo que está en la sombra."},"75":{"nombre":"El payaso","lectura":"El 75 es el payaso. La risa que tapa. La cara pintada. ¿Vos andás haciendo el payaso para que no te vean cómo estás?"},"76":{"nombre":"Las llamas","lectura":"El 76 son las llamas. Distinto al incendio: las llamas iluminan, calientan, también queman. Pero son fuego que vos podés ver. Es lo que arde adentro."},"77":{"nombre":"Las piernas de mujer","lectura":"El 77 son las piernas de mujer. Tradición vieja, m'ija, no me culpes. El deseo. El cuerpo que pasa. Lo que se ve y queda dando vueltas."},"78":{"nombre":"La ramera","lectura":"El 78 es la ramera. Yo sé lo que se dice de este número, m'ija. Y yo de eso sé. Pero hoy te digo nomás: si te apareció el 78, algo se está vendiendo o comprando que no debería. O sí, vos sabrás."},"79":{"nombre":"El ladrón","lectura":"El 79 es el ladrón. Te roban algo. O vos te llevás algo que no es tuyo. ¿En el sueño quién era el que robaba?"},"80":{"nombre":"La bocha","lectura":"El 80 es la bocha. Lo redondo. La cabeza también, en otra clave. ¿A qué le apuntás?"},"81":{"nombre":"Las flores","lectura":"El 81 son las flores. Lo lindo que dura poco. ¿Eran de jardín o eran de ramo? Porque las flores compradas dicen otra cosa que las cortadas."},"82":{"nombre":"La pelea","lectura":"El 82 es la pelea. Algo se discute. Algo se pelea. Adentro tuyo o con alguien."},"83":{"nombre":"El mal tiempo","lectura":"El 83 es el mal tiempo. Pero el mal tiempo pasa, m'ija. Pasa siempre. Esperá."},"84":{"nombre":"La iglesia","lectura":"El 84 es la iglesia. La casa de la fe. Si te apareció, fijate qué estás dejando entrar y qué estás dejando afuera de la tuya."},"85":{"nombre":"La linterna","lectura":"El 85 es la linterna. Luz que vos elegís adónde apuntar. Buscás algo en la oscuridad. ¿Qué buscás?"},"86":{"nombre":"El humo","lectura":"El 86 es el humo. Aviso. Si hay humo, hubo fuego. ¿Dónde se quemó algo que vos todavía no viste?"},"87":{"nombre":"Los piojos","lectura":"El 87 son los piojos. Molestia chiquita pero constante. Algo te pica, m'ija. Algo te hace rascar."},"88":{"nombre":"El Papa","lectura":"El 88 es el Papa. Autoridad espiritual. Padre. Algo te pide bendición o algo te pide perdón."},"89":{"nombre":"La rata","lectura":"El 89 es la rata. La traición chiquita. La que pasa cerca y vos no ves. Estate atenta a quién entra a tu casa."},"90":{"nombre":"El miedo","lectura":"El 90 es el miedo. Y también es el abuelo, en algunas tablas. ¿Sabés por qué? Porque el abuelo es el que ya vio todo y por eso tiene miedo de algunas cosas. Y de otras, no."},"91":{"nombre":"El excusado","lectura":"El 91 es el excusado. Lugar de soltar. De estar a solas. Algo que necesitás largar."},"92":{"nombre":"El médico","lectura":"El 92 es el médico. El que mira y dice. ¿Hace cuánto no te revisás, m'ija? Pero también puede ser que algo necesita diagnóstico, no necesariamente del cuerpo."},"93":{"nombre":"El enamorado","lectura":"El 93 es el enamorado. Pero ojo: en el sueño, ¿estabas enamorada o te miraban con amor? Eso cambia todo."},"94":{"nombre":"El cementerio","lectura":"El 94 es el cementerio. No te asustes, m'ija. Es lugar de visita. Pensá quién extrañás. O quién te extraña."},"95":{"nombre":"Los anteojos","lectura":"El 95 son los anteojos. Algo te lo ves mejor de lo que pensás. O algo te falta ver con más cuidado."},"96":{"nombre":"El marido","lectura":"El 96 es el marido. El compañero. El que está. El que estuvo. El que falta."},"97":{"nombre":"La mesa","lectura":"El 97 es la mesa. Donde se come, donde se habla, donde se decide. ¿Cómo estaba puesta la mesa de tu sueño?"},"98":{"nombre":"La lavandera","lectura":"El 98 es la lavandera. La que limpia lo sucio de otros. Algo se está lavando. Algo se está aireando."},"99":{"nombre":"El hermano","lectura":"El 99 es el hermano. La sangre. El que viene del mismo lugar. A veces aliado, a veces rival. ¿Cuál te toca a vos?"},"00":{"nombre":"Los huevos","lectura":"El 00 son los huevos. El principio de todo. Lo que está por nacer, lo que se cocina, lo que todavía no es. A veces es una cosa que vas a empezar. A veces es algo que tenés guardado y todavía no abriste."},"01":{"nombre":"El agua","lectura":"El 1 es el agua. Y el agua es todo: limpia, ahoga, da vida, lleva lo que toca. Si soñaste con agua, importa de qué color era, si se movía o estaba quieta, si era dulce o salada. Decime."},"02":{"nombre":"El niño","lectura":"El 2 es el niño. Algo chiquito que pide. Algo nuevo en tu casa. O algo viejo que vuelve hecho criatura. ¿Era nene o nena? ¿Lloraba o reía?"},"03":{"nombre":"San Cono","lectura":"El 3 es San Cono, el santo que cuida la quiniela. Es uruguayo de devoción pero acá lo respetamos igual. Si te apareció el 3, alguien te está cuidando. O algo que prometiste y no cumpliste."},"04":{"nombre":"La cama","lectura":"El 4 es la cama. Toda cama es un naufragio detenido, como decía un poeta. Es donde naciste, donde dormís, donde alguna vez te vas a morir. ¿La cama del sueño estaba tendida o revuelta?"},"05":{"nombre":"El gato","lectura":"El 5 es el gato. Animal de la noche. Sabe entrar y salir sin que lo veas. Si soñaste con un gato, fijate de qué color era: el negro no es yeta, m'ija, eso es cuento."},"06":{"nombre":"El perro","lectura":"El 6 es el perro. Lo que te acompaña. Lo que te defiende. Lo que te ladra a la puerta cuando algo se acerca. Si te ladraba, prestá atención. Si te lamía, agradecé."},"07":{"nombre":"El revólver","lectura":"El 7 es el revólver. Ruido que asusta. No siempre dispara, a veces solo amaga. ¿Quién lo tenía en la mano? Porque eso cambia todo."},"08":{"nombre":"El incendio","lectura":"El 8 es el incendio. Lo que se prende y no se apaga fácil. Pasión, bronca, o algo que se está quemando en tu casa que vos no querés ver."},"09":{"nombre":"El arroyo","lectura":"El 9 es el arroyo. Agua que se va. No se queda. Si soñaste con un arroyo, algo se está yendo. No siempre es malo: a veces lo que se va es lo que tenía que irse."}},"signos":{"aries":{"signo":"Aries","lectura":"Aries empuja. El primero del año astrológico, el carnero, el que arranca. Si me venís con un sueño de fuego y sos de Aries, no te asombres: tu signo es así.","suerte":["01","09","17"],"planeta":"Marte"},"tauro":{"signo":"Tauro","lectura":"Tauro es tierra fija. Lo que se queda. El toro no corre, espera. Si soñaste con algo material y sos de Tauro, mirá bien qué tenés.","suerte":["06","15","24"],"planeta":"Venus"},"geminis":{"signo":"Géminis","lectura":"Géminis es dos. Mercurio, el mensajero. Géminis sueña con voces, con cartas, con caminos que se bifurcan. ¿Vos a cuál vas?","suerte":["05","14","23"],"planeta":"Mercurio"},"cancer":{"signo":"Cáncer","lectura":"Cáncer es la Luna. Agua que llora, agua que cuida. El cangrejo va para atrás. Si sos de Cáncer y soñaste con tu mamá, no te sorprendas.","suerte":["02","07","16"],"planeta":"Luna"},"leo":{"signo":"Leo","lectura":"Leo es el sol. El león en el medio del cielo. Le gusta que lo vean. Si sos de Leo, soñás con audiencia, con escenario, con corona.","suerte":["01","10","19"],"planeta":"Sol"},"virgo":{"signo":"Virgo","lectura":"Virgo es tierra mutable. La virgen con la espiga en la mano. Cuenta los granos uno por uno. Si sos de Virgo, ya analizaste demasiado tu sueño antes de venir.","suerte":["05","14","23"],"planeta":"Mercurio"},"libra":{"signo":"Libra","lectura":"Libra es la balanza. Venus en aire. Pesa todo. Si sos de Libra, no podés decidir. Por eso vienen a mí.","suerte":["06","15","24"],"planeta":"Venus"},"escorpio":{"signo":"Escorpio","lectura":"Escorpio es agua que profundiza. El alacrán, el águila, el fénix. Tres animales para un solo signo. Si sos de Escorpio, tu sueño tiene capas. Vamos a ir bajando.","suerte":["08","18","27"],"planeta":"Plutón (tradicional: Marte)"},"sagitario":{"signo":"Sagitario","lectura":"Sagitario es el arquero. Júpiter, el grande. Tira lejos. Si sos de Sagitario, soñás con viajes, con lugares que no conociste. Y a veces te llaman.","suerte":["03","12","21"],"planeta":"Júpiter"},"capricornio":{"signo":"Capricornio","lectura":"Capricornio sube despacio. La cabra de monte. Saturno enseña con tiempo. Si sos de Capricornio, no me apurés: tu sueño te lo voy a leer entero.","suerte":["08","17","26"],"planeta":"Saturno"},"acuario":{"signo":"Acuario","lectura":"Acuario es aire, no agua. La gente se confunde por el nombre. El aguatero echa agua del cielo, pero el signo es aire. Si sos de Acuario, lees la quiniela como si fuera carta astral, y no te equivocás: lo es.","suerte":["04","11","22"],"planeta":"Urano (tradicional: Saturno)"},"piscis":{"signo":"Piscis","lectura":"Piscis es agua que recuerda el mar. Dos peces atados nadando para distintos lados. Si sos de Piscis, ya no me hace falta que me cuentes el sueño: vos ya lo soñaste tres veces.","suerte":["07","16","25"],"planeta":"Neptuno (tradicional: Júpiter)"}},"cierre_frases":["Hacé con esto lo que te indique tu intuición. Andá, andá. Y avisame si sale.","Llevate los números y la reflexión. El resto lo ponés vos. Andá. Y avisame si sale.","Eso te dejo. Pensalo despacio, sin apurar. Andá con Dios, y avisame si sale."]};
 
-/* ============================================================================
-   La Vichy — cerebro guionado (sin IA). Vanilla JS, sin dependencias.
-   Reproduce la SECUENCIA del diseño, pero interactiva:
-     saludo -> nombre -> signo -> equipo -> consulta -> (tira UNA carta y la lee)
-   Mensajes en el formato del diseño:
-     {who:'vichy', text} · {who:'vichy', parts:[...]} · {who:'card', card:{n,palo}}
-   COSTURA IA: el chat llama a VICHY_PROVIDER(text, ctx) -> Promise<{msgs,step,name}>.
-   Hoy = guionado; mañana = un provider async que pega a una API con la misma firma.
-   ========================================================================== */
-function makeVichyBrain(MAZO, DIALOGO, SUENOS){
-  const byId = {};
-  MAZO.cartas.forEach(c => { const [n,palo]=c.id.split('-'); byId[palo+'-'+n]=Object.assign({},c,{n:parseInt(n,10),palo}); });
+/* La Vichy — cerebro guionado (sin IA). Secuencia de chat guiada + devolución
+   que ata signo/edad/sueño/número/pájaro con el material oracular de SaleHoy.
+   Una sola carta por consulta, tapada (se destapa con click), y cierra.
+   Mensajes: {who:'vichy',text|parts} · {who:'card',card,reveal:[...]} · {who:'closure'}
+   IA futura: reemplazar VICHY_PROVIDER por un provider async con la misma firma. */
+function makeVichyBrain(MAZO, DIALOGO, SUENOS, ORACLE){
+  const byId={}; MAZO.cartas.forEach(c=>{const [n,p]=c.id.split('-');byId[p+'-'+n]=Object.assign({},c,{n:+n,palo:p});});
+  const norm=s=>(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim();
+  const pick=a=>a[Math.floor(Math.random()*a.length)];
+  const hasWord=(t,k)=>{const w=new Set(t.split(' '));return k.some(x=>x.includes(' ')?t.includes(x):w.has(x));};
+  const frases=s=>(s||'').split(/(?<=[\.\?!])\s+/).filter(Boolean);
+  const primeraFrase=s=>frases(s)[0]||s||'';
+  const ultimaFrase=s=>{const f=frases(s);return f[f.length-1]||s||'';};
+  const primeraClausula=s=>(s||'').split(/[;,]/)[0].trim();
 
-  const norm = (s) => (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim();
-  const pick = (a) => a[Math.floor(Math.random()*a.length)];
-  const hasWord = (txt,keys) => { const w=new Set(txt.split(' ')); return keys.some(k=> k.includes(' ')?txt.includes(k):w.has(k)); };
+  const AVE_KEY={condor:'espada-1',aguilucho:'espada-2',aguila:'espada-3',halconcito:'espada-4',lechucita:'espada-5',lechuza:'espada-6',halcon:'espada-7',gavilan:'espada-10',chimango:'espada-11',carancho:'espada-12',jilguero:'oro-1',naranjero:'oro-2',benteveo:'oro-3',cabecita:'oro-4',misto:'oro-5',pepitero:'oro-6',tucan:'oro-7',sietecolores:'oro-10',tordo:'oro-11',boyero:'oro-12',garza:'copa-1',cisne:'copa-2',flamenco:'copa-3',maca:'copa-4',gallareta:'copa-5',barcino:'copa-6',bigua:'copa-7',ciguena:'copa-10',espatula:'copa-11',cauquen:'copa-12',hornero:'basto-1',carpintero:'basto-2',cardenal:'basto-3',chingolo:'basto-4',ratona:'basto-5',calandria:'basto-6',picaflor:'basto-7',colibri:'basto-7',zorzal:'basto-10',loro:'basto-11',chaja:'basto-12'};
+  const buscarAve=t=>{const w=new Set(t.split(' '));for(const k in AVE_KEY)if(w.has(k))return byId[AVE_KEY[k]];return null;};
+  const buscarSueno=t=>{const w=new Set(t.split(' '));for(const e of SUENOS.tabla){const s=e.sinonimos.map(norm);if(s.some(x=>x.includes(' ')?t.includes(x):w.has(x)))return e;}return null;};
 
-  const AVE_KEY = {
-    'condor':'espada-1','aguilucho':'espada-2','aguila':'espada-3','halconcito':'espada-4','lechucita':'espada-5','lechuza':'espada-6','halcon':'espada-7','gavilan':'espada-10','chimango':'espada-11','carancho':'espada-12',
-    'jilguero':'oro-1','naranjero':'oro-2','benteveo':'oro-3','cabecita':'oro-4','misto':'oro-5','pepitero':'oro-6','tucan':'oro-7','sietecolores':'oro-10','tordo':'oro-11','boyero':'oro-12',
-    'garza':'copa-1','cisne':'copa-2','flamenco':'copa-3','maca':'copa-4','gallareta':'copa-5','barcino':'copa-6','bigua':'copa-7','ciguena':'copa-10','espatula':'copa-11','cauquen':'copa-12',
-    'hornero':'basto-1','carpintero':'basto-2','cardenal':'basto-3','chingolo':'basto-4','ratona':'basto-5','calandria':'basto-6','picaflor':'basto-7','colibri':'basto-7','zorzal':'basto-10','loro':'basto-11','chaja':'basto-12'
-  };
-  const buscarAve = (txt) => { const w=new Set(txt.split(' ')); for(const k in AVE_KEY) if(w.has(k)) return byId[AVE_KEY[k]]; return null; };
+  let bag=[],last=null;
+  const refill=()=>{bag=MAZO.cartas.map(c=>c.id);for(let i=bag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[bag[i],bag[j]]=[bag[j],bag[i]];}};
+  function drawCard(){if(!bag.length)refill();let id=bag.pop();if(id===last&&bag.length){bag.unshift(id);id=bag.pop();}last=id;const[n,p]=id.split('-');return byId[p+'-'+n];}
 
-  let bag=[], lastId=null;
-  const refill=()=>{ bag=MAZO.cartas.map(c=>c.id); for(let i=bag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[bag[i],bag[j]]=[bag[j],bag[i]];} };
-  function drawCard(){ if(!bag.length) refill(); let id=bag.pop(); if(id===lastId&&bag.length){bag.unshift(id);id=bag.pop();} lastId=id; const [n,palo]=id.split('-'); return byId[palo+'-'+n]; }
+  const SIGNS=['aries','tauro','geminis','cancer','leo','virgo','libra','escorpio','escorpion','sagitario','capricornio','acuario','piscis'];
+  function detectSigno(text){const t=norm(text);for(const s of SIGNS){if(t.includes(s)){const k=(s==='escorpion')?'escorpio':s;return k;}}return '';}
+  function detectEdad(text){const m=(text||'').match(/\b(\d{1,3})\b/g);if(!m)return null;for(const x of m){const n=+x;if(n>=10&&n<=110)return n;}return null;}
+  function limpiarNombre(text){const w=(text||'').trim().split(/\s+/)[0]||'';const c=w.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ]/g,'');return c?c.charAt(0).toUpperCase()+c.slice(1).toLowerCase():'mijo';}
 
-  const buscarSueno=(txt)=>{ const w=new Set(txt.split(' ')); for(const e of SUENOS.tabla){ const s=e.sinonimos.map(norm); if(s.some(x=>x.includes(' ')?txt.includes(x):w.has(x))) return e; } return null; };
+  const NAME_LINES=['Lindo nombre.','Me gusta.','Anotado.','Buen nombre, de los que duran.'];
+  const APERTURAS=['Dejá que el mazo hable. Doy vuelta una…','Cerrá los ojos y pensá en lo tuyo. Ahí va…','Pedile permiso a los naipes, que son orgullosos…','Una sola voy a tirar. Pero bien tirada.'];
+  const REFLEX_EDAD=['ya sabés que no todo lo que cruza es para vos.','ya aprendiste que apurarse no adelanta nada.','lo que tenga que ser, va a ser igual.','una ya distingue lo que pesa de lo que solo hace ruido.'];
+  const CERRADO=name=>['Ya tiraste tu carta por hoy, '+name+'. Quedate con eso, que de tanto pedir se gasta. Si querés otra, tocá “Otra consulta”.','Por hoy ya está, '+name+'. La carta ya habló. Volvé cuando el mazo te llame.','Una por consulta, '+name+'. Así se respeta el naipe. Tocá “Otra consulta” si querés empezar de nuevo.'];
 
-  function lecturaParts(card){
-    return ['Salió ', {em:card.nombre.toLowerCase()}, ' — ', {em:card.ave}, '. El número: ', {num:card.numero}, ', ', card.figura, '. ', card.lectura];
-  }
-
-  // ---- bancos de la secuencia ----
-  const NAME_LINES = ['Lindo nombre.', 'Me gusta.', 'Anotado.', 'Buen nombre, de los que duran.'];
-  const SIGNOS = {
-    aries:'Aries. Fuego del que arranca primero, mijo.', tauro:'Tauro. Terco y de buen comer, te conozco.',
-    geminis:'Géminis. Dos en uno, nunca sé con cuál hablo.', cancer:'Cáncer. Caparazón duro, adentro pura agua.',
-    leo:'Leo. Te gusta el sol y que te miren, ¿o no?', virgo:'Virgo. Todo en su lugar, hasta los nervios.',
-    libra:'Libra. Pesás todo antes de decidir, balanza.', escorpio:'Escorpio. Aguijón guardado, pero memoria larga.',
-    sagitario:'Sagitario. Flecha al horizonte, siempre con un viaje en la cabeza.', capricornio:'Capricornio. Cabra de monte, Saturno te enseña con tiempo.',
-    acuario:'Acuario. Rarito y adelantado, de los que ven lo que no se ve.', piscis:'Piscis. Dos peces, soñador hasta dormido.'
-  };
-  function signoQuip(text){ const t=norm(text); for(const k in SIGNOS) if(t.includes(k)) return SIGNOS[k]; return 'Mirá vos. Algo de eso se te nota.'; }
-  const APERTURAS = ['Dejá que el mazo hable. Esperá que tiro una carta…','Cerrá los ojos un segundo y pensá en lo tuyo. Doy vuelta…','Pedile permiso a los naipes, que son orgullosos. Ahí va…','Soplá, como hacía mi abuela. Mirá lo que salió:'];
-  const CIERRES = (name)=>['¿Querés que tire otra, o lo dejamos acá, '+name+'?','Quedátela en el bolsillo, '+name+'. Y si jugás, jugá de cariño.','Eso dijo el naipe. Contame si sale.','¿Seguimos con otra, '+name+'?'];
-
-  function limpiarNombre(text){
-    const w=(text||'').trim().split(/\s+/)[0]||'';
-    const c=w.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ]/g,'');
-    if(!c) return 'mijo';
-    return c.charAt(0).toUpperCase()+c.slice(1).toLowerCase();
-  }
-  function clasificar(txt){
-    if(hasWord(txt,['chau','adios','me voy','nos vemos','hasta luego'])) return 'despedida';
-    if(hasWord(txt,['gracias','genia','crack','grosa'])) return 'gracias';
-    if(hasWord(txt,['gano','ganar','es seguro','apuesto','apostar','cuanto pongo','cuanto apuesto','es estafa','plata facil'])) return 'ganar';
-    if(hasWord(txt,['quien sos','quien es vichy','de donde sos','tu historia','quien eres'])) return 'quien';
-    if(hasWord(txt,['como funciona','que es esto','como lees','como sabes','como se juega'])) return 'como';
+  function clasificar(t){
+    if(hasWord(t,['chau','adios','me voy','nos vemos','hasta luego']))return 'despedida';
+    if(hasWord(t,['gracias','genia','crack','grosa']))return 'gracias';
+    if(hasWord(t,['gano','ganar','es seguro','apuesto','apostar','cuanto pongo','cuanto apuesto','es estafa','plata facil']))return 'ganar';
+    if(hasWord(t,['quien sos','quien es vichy','de donde sos','tu historia','quien eres']))return 'quien';
+    if(hasWord(t,['como funciona','que es esto','como lees','como sabes','como se juega']))return 'como';
     return 'consulta';
   }
 
-  // una consulta SIEMPRE puede terminar en una carta (salvo charla aparte)
-  function consulta(text, name){
-    const txt=norm(text);
-    const intent=clasificar(txt);
-    if(intent==='ganar')    return [{who:'vichy', text: pick(DIALOGO.ganar_apostar.respuestas)}];
-    if(intent==='quien')    return [{who:'vichy', text: pick(DIALOGO.quien_es_vichy.respuestas)}];
-    if(intent==='como')     return [{who:'vichy', text: pick(DIALOGO.como_funciona.respuestas).replace('{tirada}','').trim()}];
-    if(intent==='gracias')  return [{who:'vichy', text: pick(DIALOGO.agradecimiento.respuestas)}];
-    if(intent==='despedida')return [{who:'vichy', text: pick(DIALOGO.despedida.respuestas)}];
-    const ave=buscarAve(txt), sue=buscarSueno(txt);
-    const card=ave||drawCard();
-    const msgs=[{who:'vichy', text:'Mirá vos. '+pick(APERTURAS)}, {who:'card', card:{n:card.n,palo:card.palo}}, {who:'vichy', parts: lecturaParts(card)}];
-    if(sue) msgs.push({who:'vichy', parts:['Y lo que me contaste, '+name+', deja el ', {num:sue.numero}, ', ', sue.figura, '. Pensá qué te está diciendo.']});
-    msgs.push({who:'vichy', text: pick(CIERRES(name))});
-    return msgs;
+  // ---- DEVOLUCIÓN (lo que se revela al destapar la carta) ----
+  function devolucion(card, ctx, sue){
+    const name=ctx.name||'mijo', sign=ctx.sign||'', age=ctx.age||null;
+    const sg=sign&&ORACLE.signos[sign]?ORACLE.signos[sign]:null;
+    const dir=ultimaFrase(card.lectura);
+    const n1=sue?sue.numero:card.numero;
+    let n2=card.numero;
+    if(sg){ n2=sg.suerte.find(x=>x!==n1)||sg.suerte[0]; } else if(sue){ n2=card.numero; }
+    // A — la carta
+    const A={who:'vichy', parts:[{em:card.nombre}, '. El '+card.ave.toLowerCase()+', '+primeraClausula(card.simbolo)+'. '+dir]};
+    // B — atando signo + sueño + número
+    const B=['Y mirá, '+name+'. '];
+    if(sg) B.push(primeraFrase(sg.lectura)+' ');
+    if(sue) B.push('Lo que me contaste es el ', {num:sue.numero}, ', '+sue.figura+'. ');
+    B.push('El '+card.ave.toLowerCase()+' trae el ', {num:card.numero}, ', '+card.figura+'.');
+    // C — números + reflexión + cierre
+    const C=['Tres números para que te lleves: el ', {num:n1}];
+    if(n2&&n2!==n1){ C.push(', el ', {num:n2}); }
+    C.push(', y el tercero lo ponés vos — la edad de alguien que quieras, una fecha que te pese. ');
+    if(age) C.push('A los '+age+', '+pick(REFLEX_EDAD)+' ');
+    C.push(pick(ORACLE.cierre_frases));
+    return [A, {who:'vichy', parts:B}, {who:'vichy', parts:C}, {who:'closure'}];
   }
 
-  // máquina de estados de la secuencia
+  function consulta(text, ctx){
+    const t=norm(text), intent=clasificar(t), name=ctx.name||'mijo';
+    if(intent==='ganar')    return {step:'consulta', msgs:[{who:'vichy', text:pick(DIALOGO.ganar_apostar.respuestas)}]};
+    if(intent==='quien')    return {step:'consulta', msgs:[{who:'vichy', text:pick(DIALOGO.quien_es_vichy.respuestas)}]};
+    if(intent==='como')     return {step:'consulta', msgs:[{who:'vichy', text:pick(DIALOGO.como_funciona.respuestas).replace('{tirada}','').trim()}]};
+    if(intent==='gracias')  return {step:'consulta', msgs:[{who:'vichy', text:pick(DIALOGO.agradecimiento.respuestas)}]};
+    if(intent==='despedida')return {step:'consulta', msgs:[{who:'vichy', text:pick(DIALOGO.despedida.respuestas)}]};
+    const ave=buscarAve(t), sue=buscarSueno(t);
+    const card=ave||drawCard();
+    const reveal=devolucion(card, ctx, sue);
+    return {step:'cerrado', msgs:[{who:'vichy', text:'Mirá vos. '+pick(APERTURAS)}, {who:'card', card:{n:card.n,palo:card.palo}, reveal}]};
+  }
+
   function guided(text, ctx){
-    const step=(ctx&&ctx.step)||'name';
-    let name=(ctx&&ctx.name)||'';
+    ctx=ctx||{}; const step=ctx.step||'name'; let name=ctx.name||'', sign=ctx.sign||'', age=ctx.age||null;
     if(step==='name'){
       name=limpiarNombre(text);
-      return { step:'sign', name, msgs:[{who:'vichy', text: name+'. '+pick(NAME_LINES)+' Decime, ¿de qué signo sos? La edad redonda nomás, no me importa el día.'}] };
+      return {step:'sign', name, sign, age, msgs:[{who:'vichy', text:name+'. '+pick(NAME_LINES)+' Decime, ¿de qué signo sos? Y la edad redonda nomás, no me importa el día.'}]};
     }
     if(step==='sign'){
-      return { step:'team', name, msgs:[{who:'vichy', text: signoQuip(text)+' Una más y arrancamos: ¿sos hincha de algún equipo? Te pregunto, no es por nada.'}] };
+      sign=detectSigno(text)||sign; age=detectEdad(text)||age;
+      const sg=sign&&ORACLE.signos[sign]?ORACLE.signos[sign]:null;
+      const quip=sg?primeraFrase(sg.lectura):'Mirá vos. Algo de eso se te nota.';
+      return {step:'team', name, sign, age, msgs:[{who:'vichy', text:quip+' Una más y arrancamos: ¿sos hincha de algún equipo? Te pregunto, no es por nada.'}]};
     }
     if(step==='team'){
-      return { step:'consulta', name, msgs:[
+      return {step:'consulta', name, sign, age, msgs:[
         {who:'vichy', text:'Bueno, '+name+'. Sentate cómodo.'},
         {who:'vichy', text:'Ahora sí: contame qué te trajo. ¿Soñaste algo, se te aparece un número, te pasó algo raro esta semana?'}
-      ] };
+      ]};
     }
-    return { step:'consulta', name, msgs: consulta(text, name||'mijo') };
+    if(step==='cerrado'){
+      return {step:'cerrado', name, sign, age, msgs:[{who:'vichy', text:pick(CERRADO(name))}]};
+    }
+    const r=consulta(text, {name, sign, age});
+    return {step:r.step, name, sign, age, msgs:r.msgs};
   }
 
   function provider(text, ctx){ return new Promise(res=>setTimeout(()=>res(guided(text,ctx)), 1100)); }
-  return { provider, guided, consulta, drawCard, byId, _clasificar:clasificar, _norm:norm, _limpiarNombre:limpiarNombre };
+  return { provider, guided, drawCard, byId, _clasificar:clasificar, _norm:norm, _detectSigno:detectSigno, _detectEdad:detectEdad };
 }
 
-const VICHY_BRAIN = makeVichyBrain(VICHY_MAZO, VICHY_DIALOGO, VICHY_SUENOS);
+const VICHY_BRAIN = makeVichyBrain(VICHY_MAZO, VICHY_DIALOGO, VICHY_SUENOS, VICHY_ORACLE);
 const VICHY_PROVIDER = (texto, ctx) => VICHY_BRAIN.provider(texto, ctx);
+
+/* Carta del chat: sale TAPADA (sello); al tocarla se da vuelta y recién ahí
+   Vichy entrega la devolución (onReveal). */
+function ChatCard({ card, reveal, tw, onReveal }){
+  const [flipped, setFlipped] = useState(false);
+  const c = findCard(card.n, card.palo);
+  function flip(){ if(!flipped){ setFlipped(true); if(onReveal && reveal) onReveal(reveal); } }
+  return (
+    <React.Fragment>
+      <div className="orn-trebol"><TrebolRed /></div>
+      <div style={{...iridStyle(tw), '--cw':'190px', display:'flex', flexDirection:'column', alignItems:'center', gap:'12px', margin:'24px 0'}}>
+        <IridescentCard card={c} flipped={flipped} onToggle={flip} tilt={tw.tilt} eager={true} />
+        {!flipped && <div style={{font:"12px/1.3 'Inter',sans-serif", letterSpacing:'.18em', textTransform:'uppercase', color:'var(--leather)', opacity:.85}}>tocá la carta para darla vuelta</div>}
+      </div>
+    </React.Fragment>
+  );
+}
 
 /* ───────── Root ───────── */
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
@@ -928,17 +947,8 @@ const BASE_OPTIONS = [
 function App(){
   const t = TWEAK_DEFAULTS;
   const [screen, setScreen] = useState('entry');
-  useEffect(() => {
-    const saved = (typeof localStorage!=='undefined') && localStorage.getItem('lavichy-screen');
-    if (saved === 'chat') setScreen('chat');
-  }, []);
-  useEffect(() => { if (typeof localStorage!=='undefined') localStorage.setItem('lavichy-screen', screen); }, [screen]);
-  return (
-    <React.Fragment>
-      {screen === 'entry'
-        ? <EntryScreen onEnter={() => setScreen('chat')} />
-        : <ChatScreen onBack={() => setScreen('entry')} tw={t} />}
-    </React.Fragment>
-  );
+  useEffect(() => { const s=(typeof localStorage!=='undefined')&&localStorage.getItem('lavichy-screen'); if(s==='chat') setScreen('chat'); }, []);
+  useEffect(() => { if(typeof localStorage!=='undefined') localStorage.setItem('lavichy-screen', screen); }, [screen]);
+  return (<React.Fragment>{screen==='entry' ? <EntryScreen onEnter={()=>setScreen('chat')} /> : <ChatScreen onBack={()=>setScreen('entry')} tw={t} />}</React.Fragment>);
 }
 export default App;
