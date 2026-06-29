@@ -1,0 +1,35 @@
+---
+import type { MesNavItem } from '../lib/la-data';
+
+interface Props {
+  meses: MesNavItem[];
+  activeLabel: string;
+}
+
+const { meses, activeLabel } = Astro.props;
+
+const byYear = new Map<number, MesNavItem[]>();
+for (const m of meses) {
+  const year = parseInt(m.mesStr.split('-')[0], 10);
+  if (!byYear.has(year)) byYear.set(year, []);
+  byYear.get(year)!.push(m);
+}
+const years = [...byYear.keys()].sort((a, b) => b - a);
+---
+
+<nav aria-label="Historial de La Data" style="background:var(--paper-warmer);border-bottom:1px solid var(--ink-line);max-width:1180px;margin:0 auto;">
+  <div style="display:flex;align-items:center;gap:16px;padding:9px 28px;flex-wrap:wrap;">
+    <span style="font-family:var(--font-sans);font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--cuero);white-space:nowrap;flex-shrink:0;">Historial</span>
+    {years.map((year) => (
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+        <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-muted);letter-spacing:0.08em;flex-shrink:0;margin-right:2px;">{year}</span>
+        {byYear.get(year)!.map((m) => {
+          const isActive = m.label === activeLabel;
+          return isActive
+            ? <span style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.04em;padding:4px 10px;background:var(--cuero);color:var(--paper-warm);">{m.label}</span>
+            : <a href={m.url} style="font-family:var(--font-sans);font-size:12px;font-weight:500;color:var(--cuero);letter-spacing:0.04em;padding:4px 10px;border:1px solid var(--ink-line);text-decoration:none;">{m.label}</a>;
+        })}
+      </div>
+    ))}
+  </div>
+</nav>

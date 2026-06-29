@@ -125,3 +125,31 @@ export const ZONA_SLUG: Record<string, string> = {
   cordoba:     'cordoba',
   comparativa: 'comparativa',
 };
+
+// ─── NAVEGACIÓN DE MESES ──────────────────────────────────────────────────────
+
+export interface MesNavItem {
+  mesStr: string;
+  label: string;
+  url: string;
+}
+
+/**
+ * Convierte el glob de datos.json en la lista ordenada (desc) para el nav.
+ * El mes más reciente apunta a /la-data (URL canónica); los anteriores a /la-data/AAAA-MM.
+ */
+export function computeMesesNav(datosGlob: Record<string, unknown>): MesNavItem[] {
+  const keys = Object.keys(datosGlob).sort();
+  const latestMesStr = keys.at(-1)!.match(/(\d{4}-\d{2})\.datos\.json/)![1];
+  return keys
+    .slice()
+    .reverse()
+    .map((key) => {
+      const mesStr = key.match(/(\d{4}-\d{2})\.datos\.json/)![1];
+      return {
+        mesStr,
+        label: formatMes(mesStr),
+        url: mesStr === latestMesStr ? '/la-data' : `/la-data/${mesStr}`,
+      };
+    });
+}

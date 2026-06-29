@@ -3,22 +3,32 @@ import LaDataLayout from '../../layouts/LaDataLayout.astro';
 import LaData from '../../components/LaData.astro';
 import { formatMes, computeMesesNav } from '../../lib/la-data';
 
-const datosGlob = import.meta.glob('../../data/la-data/*.datos.json', { eager: true });
-const textosGlob = import.meta.glob('../../data/la-data/*.textos.json', { eager: true });
+export async function getStaticPaths() {
+  const datosGlob = import.meta.glob('../../data/la-data/*.datos.json', { eager: true });
+  const textosGlob = import.meta.glob('../../data/la-data/*.textos.json', { eager: true });
 
-const meses = computeMesesNav(datosGlob);
+  const meses = computeMesesNav(datosGlob);
 
-const datosKey = Object.keys(datosGlob).sort().at(-1)!;
-const mesStr = datosKey.match(/(\d{4}-\d{2})\.datos\.json/)![1];
-const textosKey = Object.keys(textosGlob).find(k => k.includes(mesStr))!;
+  return Object.keys(datosGlob).map((key) => {
+    const mesStr = key.match(/(\d{4}-\d{2})\.datos\.json/)![1];
+    const textosKey = Object.keys(textosGlob).find(k => k.includes(mesStr))!;
+    return {
+      params: { mes: mesStr },
+      props: {
+        datos: datosGlob[key],
+        textos: textosGlob[textosKey] ?? {},
+        meses,
+        mesStr,
+      },
+    };
+  });
+}
 
-const datos = datosGlob[datosKey] as any;
-const textos = textosGlob[textosKey] as any;
-
+const { datos, textos, meses, mesStr } = Astro.props as any;
 const mesLabel = formatMes(mesStr);
 
 // ─── SEO / structured data ──────────────────────────────────────────────────
-const laDataUrl = new URL('/la-data', Astro.site).toString();
+const laDataUrl = new URL(`/la-data/${mesStr}`, Astro.site).toString();
 const laDataDesc = `La Data — Informe mensual de la quiniela argentina (${mesLabel}). ${datos.totales.sorteos} sorteos, ${datos.totales.extracciones.toLocaleString('es-AR')} extracciones. Análisis estadístico de Nacional, Buenos Aires y Córdoba por Tomás Vera. No damos picks: mostramos qué pasó, en números.`;
 
 const laDataSchema = {
@@ -65,7 +75,7 @@ const laDataSchema = {
 };
 ---
 
-<LaDataLayout title={`La Data · ${mesLabel}`} mesLabel={mesLabel} description={laDataDesc}>
+<LaDataLayout title={`La Data · ${mesLabel}`} mesLabel={mesLabel} description={laDataDesc} canonical={laDataUrl}>
   <script type="application/ld+json" slot="head" set:html={JSON.stringify(laDataSchema)} />
   <LaData datos={datos} textos={textos} mesLabel={mesLabel} meses={meses} activeLabel={mesLabel} />
 </LaDataLayout>
