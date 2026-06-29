@@ -1,0 +1,58 @@
+{
+  "label": "2026-06",
+  "headline": "",
+  "subhead": "",
+  "ticker": "",
+  "zonas": {
+    "nacional": {
+      "aperturaTitle": "",
+      "apertura": "",
+      "temaTitle": "",
+      "tema": "",
+      "cajas": [
+        {
+          "label": "",
+          "valor": "",
+          "valorNota": "",
+          "texto": ""
+        }
+      ],
+      "cierre": ""
+    },
+    "buenosAires": {
+      "aperturaTitle": "",
+      "apertura": "",
+      "temaTitle": "",
+      "tema": "",
+      "cajas": [
+        {
+          "label": "",
+          "valor": "",
+          "valorNota": "",
+          "texto": ""
+        }
+      ],
+      "cierre": ""
+    },
+    "cordoba": {
+      "aperturaTitle": "",
+      "apertura": "",
+      "temaTitle": "",
+      "tema": "",
+      "cajas": [
+        {
+          "label": "",
+          "valor": "",
+          "valorNota": "",
+          "texto": ""
+        }
+      ],
+      "cierre": ""
+    },
+    "comparativa": {
+      "apertura": "",
+      "cierre": ""
+    }
+  },
+  "cierreInforme": ""
+}
