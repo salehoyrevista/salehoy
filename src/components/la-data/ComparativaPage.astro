@@ -5,9 +5,10 @@ interface Props {
   datos: any;
   textos: any;
   mesLabel: string;
+  portadaUrl?: string;
 }
 
-const { datos, textos: t, mesLabel } = Astro.props;
+const { datos, textos: t, mesLabel, portadaUrl = '/la-data' } = Astro.props;
 const comp = datos.comparativa;
 const zonas = datos.zonas;
 const mesUpper = mesLabel.toUpperCase();
@@ -324,7 +325,7 @@ const aperturaHTML = renderProseHTML(t?.zonas?.comparativa?.apertura || '');
 
     <div style="margin-top:32px;text-align:center;">
       <div style="color:var(--cuero);letter-spacing:0.6em;font-size:14px;margin-bottom:20px;">* * *</div>
-      <a href="/la-data" style="font-family:var(--font-sans);font-size:13px;font-weight:500;padding:10px 20px;background:transparent;color:var(--ink);border:1px solid var(--ink);border-radius:2px;text-decoration:none;letter-spacing:0.02em;">← Volver a La Data</a>
+      <a href={portadaUrl} style="font-family:var(--font-sans);font-size:13px;font-weight:500;padding:10px 20px;background:transparent;color:var(--ink);border:1px solid var(--ink);border-radius:2px;text-decoration:none;letter-spacing:0.02em;">← Volver a La Data</a>
     </div>
   </section>
 

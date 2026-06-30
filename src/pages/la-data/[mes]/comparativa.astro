@@ -1,0 +1,31 @@
+---
+import LaDataLayout from '../../../layouts/LaDataLayout.astro';
+import ComparativaPage from '../../../components/la-data/ComparativaPage.astro';
+import { formatMes } from '../../../lib/la-data';
+
+export async function getStaticPaths() {
+  const datosGlob = import.meta.glob('../../../data/la-data/*.datos.json', { eager: true });
+  const textosGlob = import.meta.glob('../../../data/la-data/*.textos.json', { eager: true });
+
+  return Object.keys(datosGlob).map((key) => {
+    const mesStr = key.match(/(\d{4}-\d{2})\.datos\.json/)![1];
+    const textosKey = Object.keys(textosGlob).find(k => k.includes(mesStr))!;
+    return {
+      params: { mes: mesStr },
+      props: { datos: datosGlob[key], textos: textosGlob[textosKey] ?? {}, mesStr },
+    };
+  });
+}
+
+const { datos, textos, mesStr } = Astro.props as any;
+const mesLabel = formatMes(mesStr);
+const portadaUrl = `/la-data/${mesStr}`;
+---
+
+<LaDataLayout
+  title={`La Data · Comparativa · ${mesLabel}`}
+  description={`Las tres quinielas comparadas — ${mesLabel}. Coincidencias, promedios y desviaciones entre Nacional, Buenos Aires y Córdoba.`}
+  mesLabel={mesLabel}
+>
+  <ComparativaPage datos={datos} textos={textos} mesLabel={mesLabel} portadaUrl={portadaUrl} />
+</LaDataLayout>

@@ -77,5 +77,5 @@ const laDataSchema = {
 
 <LaDataLayout title={`La Data · ${mesLabel}`} mesLabel={mesLabel} description={laDataDesc} canonical={laDataUrl}>
   <script type="application/ld+json" slot="head" set:html={JSON.stringify(laDataSchema)} />
-  <LaData datos={datos} textos={textos} mesLabel={mesLabel} meses={meses} activeLabel={mesLabel} />
+  <LaData datos={datos} textos={textos} mesLabel={mesLabel} mesStr={mesStr} meses={meses} activeLabel={mesLabel} />
 </LaDataLayout>

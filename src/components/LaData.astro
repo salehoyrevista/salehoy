@@ -7,11 +7,12 @@ interface Props {
   datos: any;
   textos: any;
   mesLabel: string;
+  mesStr: string;
   meses: MesNavItem[];
   activeLabel: string;
 }
 
-const { datos, textos, mesLabel, meses, activeLabel } = Astro.props;
+const { datos, textos, mesLabel, mesStr, meses, activeLabel } = Astro.props;
 
 const mesUpper = mesLabel.toUpperCase();
 const generadoEl = formatGeneradoEl(datos.generadoEl);
@@ -154,7 +155,7 @@ const ZONES = {
   <!-- Grilla 2x2 de zone buttons -->
   <div class="ld-zone-grid" style="padding:0 56px 36px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
     <!-- Nacional -->
-    <a href="/la-data/nacional" style={`background:${ZONES.nacional.bg};color:${ZONES.nacional.fg};border:1px solid ${ZONES.nacional.bgDeep};padding:24px 22px 20px;min-height:160px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;text-decoration:none;position:relative;`}>
+    <a href={`/la-data/${mesStr}/nacional`} style={`background:${ZONES.nacional.bg};color:${ZONES.nacional.fg};border:1px solid ${ZONES.nacional.bgDeep};padding:24px 22px 20px;min-height:160px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;text-decoration:none;position:relative;`}>
       <div style={`position:absolute;top:14px;right:18px;font-family:var(--font-mono);font-size:10px;color:${ZONES.nacional.fgMuted};letter-spacing:0.06em;`}>/ NAC</div>
       <div style={`color:${ZONES.nacional.accent};margin-bottom:18px;height:44px;display:flex;align-items:flex-end;`}>
         <svg width="44" height="44" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round">
@@ -175,7 +176,7 @@ const ZONES = {
     </a>
 
     <!-- Buenos Aires -->
-    <a href="/la-data/buenos-aires" style={`background:${ZONES.buenosAires.bg};color:${ZONES.buenosAires.fg};border:1px solid ${ZONES.buenosAires.bgDeep};padding:24px 22px 20px;min-height:160px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;text-decoration:none;position:relative;`}>
+    <a href={`/la-data/${mesStr}/buenos-aires`} style={`background:${ZONES.buenosAires.bg};color:${ZONES.buenosAires.fg};border:1px solid ${ZONES.buenosAires.bgDeep};padding:24px 22px 20px;min-height:160px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;text-decoration:none;position:relative;`}>
       <div style={`position:absolute;top:14px;right:18px;font-family:var(--font-mono);font-size:10px;color:${ZONES.buenosAires.fgMuted};letter-spacing:0.06em;`}>/ BSA</div>
       <div style={`color:${ZONES.buenosAires.accent};margin-bottom:18px;height:44px;display:flex;align-items:flex-end;`}>
         <svg width="44" height="44" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round">
@@ -194,7 +195,7 @@ const ZONES = {
     </a>
 
     <!-- Córdoba -->
-    <a href="/la-data/cordoba" style={`background:${ZONES.cordoba.bg};color:${ZONES.cordoba.fg};border:1px solid ${ZONES.cordoba.bgDeep};padding:24px 22px 20px;min-height:160px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;text-decoration:none;position:relative;`}>
+    <a href={`/la-data/${mesStr}/cordoba`} style={`background:${ZONES.cordoba.bg};color:${ZONES.cordoba.fg};border:1px solid ${ZONES.cordoba.bgDeep};padding:24px 22px 20px;min-height:160px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;text-decoration:none;position:relative;`}>
       <div style={`position:absolute;top:14px;right:18px;font-family:var(--font-mono);font-size:10px;color:${ZONES.cordoba.fgMuted};letter-spacing:0.06em;`}>/ CBA</div>
       <div style={`color:${ZONES.cordoba.accent};margin-bottom:18px;height:44px;display:flex;align-items:flex-end;`}>
         <svg width="44" height="44" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" stroke-linecap="round">
@@ -212,7 +213,7 @@ const ZONES = {
     </a>
 
     <!-- Comparativa -->
-    <a href="/la-data/comparativa" style="background:#F5F1E8;color:var(--ink);border:1px solid var(--ink);padding:24px 22px 20px;min-height:160px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;text-decoration:none;position:relative;">
+    <a href={`/la-data/${mesStr}/comparativa`} style="background:#F5F1E8;color:var(--ink);border:1px solid var(--ink);padding:24px 22px 20px;min-height:160px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;text-decoration:none;position:relative;">
       <div style="position:absolute;top:14px;right:18px;font-family:var(--font-mono);font-size:10px;color:var(--ink-muted);letter-spacing:0.06em;">/ X3</div>
       <div style="color:var(--cuero);margin-bottom:18px;height:44px;display:flex;align-items:flex-end;">
         <svg width="44" height="44" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round">

@@ -1,0 +1,38 @@
+---
+import LaDataLayout from '../../../layouts/LaDataLayout.astro';
+import ZonaDataPage from '../../../components/la-data/ZonaDataPage.astro';
+import { formatMes } from '../../../lib/la-data';
+
+export async function getStaticPaths() {
+  const datosGlob = import.meta.glob('../../../data/la-data/*.datos.json', { eager: true });
+  const textosGlob = import.meta.glob('../../../data/la-data/*.textos.json', { eager: true });
+
+  return Object.keys(datosGlob).map((key) => {
+    const mesStr = key.match(/(\d{4}-\d{2})\.datos\.json/)![1];
+    const textosKey = Object.keys(textosGlob).find(k => k.includes(mesStr))!;
+    return {
+      params: { mes: mesStr },
+      props: { datos: datosGlob[key], textos: textosGlob[textosKey] ?? {}, mesStr },
+    };
+  });
+}
+
+const { datos, textos, mesStr } = Astro.props as any;
+const mesLabel = formatMes(mesStr);
+const portadaUrl = `/la-data/${mesStr}`;
+---
+
+<LaDataLayout
+  title={`La Data · Buenos Aires · ${mesLabel}`}
+  description={`Informe quinielistico de la Quiniela Buenos Aires — ${mesLabel}. Frecuencias, décadas, terminaciones y análisis estadístico.`}
+  mesLabel={mesLabel}
+>
+  <ZonaDataPage
+    zonaKey="buenosAires"
+    datos={datos}
+    textos={textos}
+    mesLabel={mesLabel}
+    portadaUrl={portadaUrl}
+    comparativaUrl={`${portadaUrl}/comparativa`}
+  />
+</LaDataLayout>

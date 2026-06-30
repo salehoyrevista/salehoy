@@ -7,9 +7,11 @@ interface Props {
   datos: any;
   textos: any;
   mesLabel: string;
+  portadaUrl?: string;
+  comparativaUrl?: string;
 }
 
-const { zonaKey, datos: fullDatos, textos: fullTextos, mesLabel } = Astro.props;
+const { zonaKey, datos: fullDatos, textos: fullTextos, mesLabel, portadaUrl = '/la-data', comparativaUrl = '/la-data/comparativa' } = Astro.props;
 const d = fullDatos.zonas[zonaKey];
 const t = (fullTextos?.zonas?.[zonaKey]) || {};
 
@@ -352,8 +354,8 @@ const aperturaHTML = renderProseHTML(t.apertura || '');
     <div style="color:var(--cuero);letter-spacing:0.6em;font-size:14px;margin-bottom:18px;">* * *</div>
     <p style="font-family:var(--font-serif);font-style:italic;font-size:18px;color:var(--ink-soft);margin:0 0 22px;max-width:52ch;margin-left:auto;margin-right:auto;line-height:1.5;" set:html={renderInlineHTML(t.cierre)}></p>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-      <a href="/la-data" style="font-family:var(--font-sans);font-size:13px;font-weight:500;padding:10px 20px;background:transparent;color:var(--ink);border:1px solid var(--ink);border-radius:2px;text-decoration:none;letter-spacing:0.02em;">← Volver a La Data</a>
-      <a href="/la-data/comparativa" style="font-family:var(--font-sans);font-size:13px;font-weight:500;padding:10px 20px;background:var(--ink);color:var(--paper-warm);border:1px solid var(--ink);border-radius:2px;text-decoration:none;letter-spacing:0.02em;">Ver la comparativa →</a>
+      <a href={portadaUrl} style="font-family:var(--font-sans);font-size:13px;font-weight:500;padding:10px 20px;background:transparent;color:var(--ink);border:1px solid var(--ink);border-radius:2px;text-decoration:none;letter-spacing:0.02em;">← Volver a La Data</a>
+      <a href={comparativaUrl} style="font-family:var(--font-sans);font-size:13px;font-weight:500;padding:10px 20px;background:var(--ink);color:var(--paper-warm);border:1px solid var(--ink);border-radius:2px;text-decoration:none;letter-spacing:0.02em;">Ver la comparativa →</a>
     </div>
   </section>
 
