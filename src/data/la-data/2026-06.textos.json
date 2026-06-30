@@ -1,58 +1,112 @@
 {
   "label": "2026-06",
-  "headline": "",
-  "subhead": "",
-  "ticker": "",
+  "headline": "NINGÚN NÚMERO FUE EL MÁS CALIENTE EN LAS TRES PLAZAS —PERO NACIONAL Y BUENOS AIRES CRUZARON DOS",
+  "subhead": "0 coincidencias entre las tres · el 72 y el 99, compartidos por Nacional y Buenos Aires",
+  "ticker": "El 75 lideró la Nacional con 37 salidas · el 71 hizo punta en la provincia con 36 · en Córdoba empataron arriba el 15 y el 38 con 40 salidas · la cabeza promedió cerca de 5.200 en las tres plazas",
   "zonas": {
     "nacional": {
-      "aperturaTitle": "",
-      "apertura": "",
-      "temaTitle": "",
-      "tema": "",
+      "aperturaTitle": "Nacional — la rueda repartió parejo",
+      "apertura": "Ciento quince sorteos, dos mil trescientas bolillas, cien números para repartirlas. Le tocaba a cada uno unas 23 salidas, y casi todos quedaron cerca de esa cuenta. Los que se despegaron no rompieron ninguna ley: son el relieve que deja el azar cuando lo dejás trabajar suficientes veces.",
+      "temaTitle": "El 75 arriba, el 35 escondido",
+      "tema": "El 75 fue el más madrugador del mes con 37 apariciones, catorce por encima de lo esperado. Atrás vinieron el 54 y el 72 con 33, y un pelotón de 32 (28, 66, 87, 99). En la otra punta, el 35 se hizo el difícil: 12 salidas, casi la mitad de lo que le correspondía, seguido por el 90 y el 03 con 13. Conviene decirlo sin vueltas: ese 75 no está 'caliente' ni ese 35 'debe' nada. Con cien casilleros y miles de tiradas, que alguno trepe a 37 y otro se quede en 12 es exactamente lo que la matemática anticipa. La sorpresa sería que salieran todos clavados en 23. Las terminaciones lo confirman: todas pegadas al 10 %, con la 6 apenas arriba (239) y la 3 apenas abajo (211).",
       "cajas": [
         {
-          "label": "",
-          "valor": "",
-          "valorNota": "",
-          "texto": ""
+          "label": "El que más asomó",
+          "valor": "75",
+          "valorNota": "37 salidas · esperaba 23",
+          "texto": "El tope del mes, catorce por encima de la media. Llamativo a la vista, ordinario para la cuenta."
+        },
+        {
+          "label": "La deuda más larga",
+          "valor": "35",
+          "valorNota": "12 salidas · casi la mitad",
+          "texto": "El número que se hizo rogar. No le debe nada a nadie: le tocó esconderse, y nada más."
+        },
+        {
+          "label": "Cabeza promedio",
+          "valor": "5.312",
+          "valorNota": "franja 4000–5999: 13,9 %",
+          "texto": "La cabeza esquivó el centro: la banda media salió bastante menos que el 20 % que le tocaba."
+        },
+        {
+          "label": "Repetidos de cuatro cifras",
+          "valor": "224",
+          "valorNota": "sobre 2.300 números",
+          "texto": "De 2.300 cabezas, 2.062 fueron distintas. Que algunas repitan no es memoria: es puro cálculo de coincidencias."
         }
       ],
-      "cierre": ""
+      "cierre": "Un mes prolijo: el azar firmó con su letra de siempre."
     },
     "buenosAires": {
-      "aperturaTitle": "",
-      "apertura": "",
-      "temaTitle": "",
-      "tema": "",
+      "aperturaTitle": "Buenos Aires — sin grandes sobresaltos",
+      "apertura": "Mismo volumen que la Nacional —115 sorteos, 2.300 bolillas— y el mismo veredicto: la provincia repartió dentro de lo previsible. Las puntas se movieron un poco más arriba y abajo de la media, pero nada que escape al margen normal de cualquier mes.",
+      "temaTitle": "El 71 al frente, el 98 a la sombra",
+      "tema": "El 71 encabezó con 36 salidas, escoltado por el 13 (35) y por el 88 y el 99, empatados en 34. En el fondo, el 98 fue el gran ausente con 12, seguido del 45 (13) y del 24 (14). Por décadas, la franja 30–39 fue la más transitada (258) y las puntas bajas y medias (00–09 y 40–49) las más flacas (205). En las terminaciones, la 1 fue la más insistente (255) y la 5 la más tímida (208), siempre dentro del entorno del 10 %. La cabeza promedió 5.167 y la banda media cayó en el 18,3 %, esta vez bien cerca del 20 % de manual.",
       "cajas": [
         {
-          "label": "",
-          "valor": "",
-          "valorNota": "",
-          "texto": ""
+          "label": "El que más asomó",
+          "valor": "71",
+          "valorNota": "36 salidas · esperaba 23",
+          "texto": "Puntero del mes en la provincia, sin despegarse demasiado del pelotón."
+        },
+        {
+          "label": "La deuda más larga",
+          "valor": "98",
+          "valorNota": "12 salidas · casi la mitad",
+          "texto": "El más escurridizo de junio. Le tocó el papel de número fantasma."
+        },
+        {
+          "label": "Terminación que mandó",
+          "valor": "1",
+          "valorNota": "255 cierres · la más activa",
+          "texto": "Empujó apenas por encima del resto; la 5 quedó atrás con 208. Diferencias de ruido, no de rumbo."
+        },
+        {
+          "label": "Milar más visitado",
+          "valor": "7000–7999",
+          "valorNota": "260 veces · tope del mes",
+          "texto": "La franja de los siete mil fue la más concurrida; la de los cuatro mil, la más vacía (200)."
         }
       ],
-      "cierre": ""
+      "cierre": "Provincia tranquila: ninguna bolilla se salió del libreto."
     },
     "cordoba": {
-      "aperturaTitle": "",
-      "apertura": "",
-      "temaTitle": "",
-      "tema": "",
+      "aperturaTitle": "Córdoba — más tiradas, mismo orden",
+      "apertura": "Córdoba juega más seguido: 138 sorteos en el mes —los cinco turnos más la Tómbola Turista— y 2.760 bolillas en total. Por eso sus números absolutos pisan más alto que los de Nacional o provincia; no es que 'salga más', es que se tira más. La proporción, una vez ordenada, cuenta la misma historia de siempre.",
+      "temaTitle": "El 15 y el 38 mandan; la Turista mete ruido",
+      "tema": "Arriba quedó un empate: el 15 y el 38, los dos con 40 salidas, escoltados por el 42 (38) y el 49 (37). Abajo, el 33 y el 12 compartieron el sótano con 15. La década 40–49 fue la más cargada (298) y la 80–89 la más floja (264); en terminaciones, la 3 fue otra vez la más esquiva (248) —como en la Nacional— mientras la 8 fue la más presente (292). Capítulo aparte para la Tómbola Turista: con apenas 23 sorteos, el 64 saltó diez veces y parece un fenómeno, pero en una muestra tan chica el azar grita y conviene no escucharlo demasiado. La cabeza general promedió 5.195 y clavó la banda media en 20,3 %, el valor más fiel al manual de las tres plazas.",
       "cajas": [
         {
-          "label": "",
-          "valor": "",
-          "valorNota": "",
-          "texto": ""
+          "label": "Los que más asomaron",
+          "valor": "15 y 38",
+          "valorNota": "40 salidas cada uno",
+          "texto": "Empate en la cima cordobesa. Sobre 138 sorteos, una ventaja esperable, no una señal."
+        },
+        {
+          "label": "La deuda más larga",
+          "valor": "33 y 12",
+          "valorNota": "15 salidas · el sótano",
+          "texto": "Los dos más reservados del mes. Les tocó turno corto, sin más misterio."
+        },
+        {
+          "label": "Cabeza más fiel",
+          "valor": "5.195",
+          "valorNota": "franja 4000–5999: 20,3 %",
+          "texto": "La banda media cayó casi exacta en su 20 % teórico: Córdoba fue la más 'de manual' del mes."
+        },
+        {
+          "label": "Aviso de la Turista",
+          "valor": "64",
+          "valorNota": "10 salidas en 23 sorteos",
+          "texto": "Impresiona, pero la muestra es mínima. En pocas tiradas el ruido se disfraza de patrón."
         }
       ],
-      "cierre": ""
+      "cierre": "Más sorteos, mismas reglas: la docta también baila al compás del azar."
     },
     "comparativa": {
-      "apertura": "",
-      "cierre": ""
+      "apertura": "Tres jurisdicciones, tres ruedas que no se hablan entre sí, y el mes lo dejó claro: ningún número fue el más caliente en las tres a la vez. El único cruce arriba fue entre Nacional y Buenos Aires, que compartieron dos —el 72 y el 99—; Córdoba armó su tabla por su cuenta, sin pisar la de nadie. Hubo ecos más tenues —la terminación 3 tocó piso en Nacional y Córdoba, y el milar 9000–9999 fue el más visitado en esas mismas dos—, pero ni siquiera esos guiños abarcan a las tres: en la provincia la terminación floja fue la 5 y el milar puntero, el de los siete mil. Coincidencias parciales, de las que el azar reparte y que conviene no ascender a señal.",
+      "cierre": "Lo único que sí compartieron las tres fue el centro: la cabeza promedió alrededor de 5.200 en todas (5.312, 5.167 y 5.195). El punto de equilibrio quedó donde la teoría lo pone, sin importar quién tire la bolilla."
     }
   },
-  "cierreInforme": ""
+  "cierreInforme": "Junio volvió a confirmar lo de siempre: la rueda no tiene memoria. Lo que de lejos parece tendencia es apenas el dibujo que deja el azar al repetirse muchas veces sobre la misma pizarra. Anotamos los relieves del mes no para adivinar el próximo, sino por el gusto de leerlos. Nos vemos en julio, contando otra vez desde cero. — Tomás Vera"
 }
