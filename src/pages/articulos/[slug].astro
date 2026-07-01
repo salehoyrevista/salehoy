@@ -29,7 +29,7 @@ const formatFecha = (d: Date) => d.toLocaleDateString('es-AR', {
   year: 'numeric', month: 'long', day: 'numeric'
 });
 
-const ogImage = `/og/articulo-${articulo.id}.png`;
+const ogImage = articulo.data.imagen || '/og-default.png';
 
 const articleUrl = new URL(`/articulos/${articulo.id}`, Astro.site).toString();
 const articleImageUrl = articulo.data.imagen
@@ -58,7 +58,7 @@ const articleSchema: Record<string, unknown> = {
     url: Astro.site?.toString(),
     logo: {
       '@type': 'ImageObject',
-      url: new URL('/img/logo-dark.svg', Astro.site).toString(),
+      url: new URL('/img/logo-512.png', Astro.site).toString(),
     },
   },
   datePublished: articulo.data.fecha.toISOString(),

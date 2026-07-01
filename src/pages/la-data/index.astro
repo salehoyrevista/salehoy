@@ -37,7 +37,7 @@ const laDataSchema = {
         '@type': 'Organization',
         name: 'SaleHoy',
         url: Astro.site?.toString(),
-        logo: { '@type': 'ImageObject', url: new URL('/img/logo-dark.svg', Astro.site).toString() },
+        logo: { '@type': 'ImageObject', url: new URL('/img/logo-512.png', Astro.site).toString() },
       },
       variableMeasured: ['frecuencia de números', 'desvío vs. promedio teórico', 'distribución por década', 'coincidencias entre zonas'],
       temporalCoverage: mesStr,
@@ -49,13 +49,13 @@ const laDataSchema = {
       url: laDataUrl,
       headline: `La Data · ${mesLabel}`,
       description: laDataDesc,
-      image: [new URL('/og-default.png', Astro.site).toString()],
+      image: [new URL('/og/la-data.png', Astro.site).toString()],
       author: { '@type': 'Person', name: 'Tomás Vera', url: new URL('/narradores/el-matematico', Astro.site).toString() },
       publisher: {
         '@type': 'Organization',
         name: 'SaleHoy',
         url: Astro.site?.toString(),
-        logo: { '@type': 'ImageObject', url: new URL('/img/logo-dark.svg', Astro.site).toString() },
+        logo: { '@type': 'ImageObject', url: new URL('/img/logo-512.png', Astro.site).toString() },
       },
       inLanguage: 'es-AR',
       articleSection: 'La Data',
@@ -65,7 +65,7 @@ const laDataSchema = {
 };
 ---
 
-<LaDataLayout title={`La Data · ${mesLabel}`} mesLabel={mesLabel} description={laDataDesc}>
+<LaDataLayout title={`La Data · ${mesLabel}`} mesLabel={mesLabel} description={laDataDesc} image="/og/la-data.png">
   <script type="application/ld+json" slot="head" set:html={JSON.stringify(laDataSchema)} />
   <LaData datos={datos} textos={textos} mesLabel={mesLabel} mesStr={mesStr} meses={meses} activeLabel={mesLabel} />
 </LaDataLayout>
