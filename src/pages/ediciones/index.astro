@@ -22,6 +22,11 @@ const narradores = await getCollection('narradores');
       {ediciones.map(e => (
         <li>
           <a href={`/ediciones/${e.id}`} class="edition-card">
+            {e.data.tapa && (
+              <div class="edition-card__tapa">
+                <img src={e.data.tapa} alt={`Tapa del número #${e.data.numero} de SaleHoy`} loading="lazy" />
+              </div>
+            )}
             <span class="edition-card__num">#{e.data.numero}</span>
             <h2 class="edition-card__title">{e.data.titulo}</h2>
             <p class="edition-card__bajada">{e.data.bajada}</p>
@@ -101,6 +106,25 @@ const narradores = await getCollection('narradores');
   .edition-card:hover {
     border-color: var(--color-accent-gold);
     transform: translateY(-2px);
+  }
+
+  .edition-card__tapa {
+    aspect-ratio: 16 / 9;
+    margin: calc(var(--space-xl) * -1) calc(var(--space-xl) * -1) 0;
+    overflow: hidden;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+  }
+
+  .edition-card__tapa img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform var(--transition-fast);
+  }
+
+  .edition-card:hover .edition-card__tapa img {
+    transform: scale(1.03);
   }
 
   .edition-card__num {
@@ -196,32 +220,4 @@ const narradores = await getCollection('narradores');
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid var(--color-line);
-    transition: border-color var(--transition-fast);
-  }
-
-  .narrador-mini:hover .narrador-mini__avatar {
-    border-color: var(--color-accent-gold);
-  }
-
-  .narrador-mini__name {
-    font-family: var(--font-display);
-    font-size: var(--text-lg);
-    font-weight: var(--font-semibold);
-    color: var(--color-text);
-  }
-
-  .narrador-mini__disc {
-    font-family: var(--font-body);
-    font-size: var(--text-xs);
-    color: var(--color-text-tertiary);
-    text-transform: lowercase;
-  }
-
-  .narrador-mini__q {
-    font-family: var(--font-display);
-    font-size: var(--text-xs);
-    color: var(--color-text-secondary);
-    line-height: var(--leading-normal);
-    margin-top: var(--space-xs);
-  }
-</style>
+    transition: border-color var(--t
