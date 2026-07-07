@@ -195,7 +195,7 @@ Solo `git push`. Netlify rebuild automáticamente.
 ## Pendientes para sumar
 
 - [ ] **Newsletter (Beehiiv)**: crear cuenta, obtener form ID, reemplazar en `newsletter.astro` el form simulado por el embed real.
-- [ ] **Motor estadístico**: portar el JS de la versión anterior (`salehoy.netlify.app`) al nuevo entorno. Por ahora `/quiniela` es placeholder.
+- [ ] **Motor estadístico**: portar el JS de la versión anterior del sitio al nuevo entorno. Por ahora `/quiniela` es placeholder.
 - [ ] **Pictogramas de narradores**: 5 SVG coherentes.
 - [ ] **Imágenes Open Graph**: generar las tapas de cada artículo y edición para que aparezca lindo al compartir en redes.
 - [ ] **Tratamiento fotográfico**: cuando Pedro tenga las fotos, subirlas a `public/images/` y referenciarlas en el frontmatter de cada artículo.
