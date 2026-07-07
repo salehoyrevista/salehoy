@@ -25,6 +25,7 @@ const fechaStr = carta.data.fecha.toLocaleDateString('es-AR', {
   title={`Carta del editor · SaleHoy #${carta.data.edicion}`}
   description={`Carta del editor de SaleHoy #${carta.data.edicion}, firmada por ${carta.data.firma}.`}
   type="article"
+  image={edicion?.data.tapa || '/og-default.png'}
 >
   <article class="carta">
     <header class="carta__header container-narrow">

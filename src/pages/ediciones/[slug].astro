@@ -37,6 +37,7 @@ const fechaStr = edicion.data.fecha.toLocaleDateString('es-AR', {
   title={`#${edicion.data.numero} · ${edicion.data.titulo}`}
   description={edicion.data.bajada}
   type="article"
+  image={edicion.data.tapa || '/og-default.png'}
 >
   <article class="edition">
     <header class="edition__hero container-narrow">
