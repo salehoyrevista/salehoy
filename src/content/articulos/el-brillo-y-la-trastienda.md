@@ -7,7 +7,7 @@ categoria: cultura
 fecha: 2026-07-01
 palabras: 591
 tiempoLectura: 5
-destacado: false
+destacado: true
 imagen: /img/articulos/02/el-brillo-y-la-trastienda.webp
 ---
 

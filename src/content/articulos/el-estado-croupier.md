@@ -7,7 +7,7 @@ categoria: historia
 fecha: 2026-07-01
 palabras: 508
 tiempoLectura: 4
-destacado: false
+destacado: true
 imagen: /img/articulos/02/el-estado-croupier.webp
 ---
 

@@ -4,10 +4,10 @@ subtitle: "Lo que el cuerpo dice en la mesa cuando el sujeto se calla."
 narrador: la-cientifica
 edicion: "02"
 categoria: ciencia
-fecha: 2026-07-01
+fecha: 2026-07-01T12:00:00
 palabras: 599
 tiempoLectura: 5
-destacado: false
+destacado: true
 imagen: /img/articulos/02/las-manos.webp
 ---
 
