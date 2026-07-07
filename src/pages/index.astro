@@ -95,7 +95,7 @@ const articulosDestacados = (conDestacado.length > 0 ? conDestacado : articulosN
         </a>
 
         {ultimaReco && (
-          <a href={`/el-trio/${ultimaReco.id}`} class="univ">
+          <a href="/el-trio" class="univ">
             <span class="univ__glyph" aria-hidden="true">✦</span>
             <div class="univ__body">
               <span class="univ__label">Recomendaciones</span>
@@ -683,3 +683,26 @@ const articulosDestacados = (conDestacado.length > 0 ? conDestacado : articulosN
     .sh-section { padding: 60px 0; }
     .trio__box { padding: 18px; gap: 14px; }
     .trio__title { font-size: 16px; }
+  }
+</style>
+
+<script>
+  (function () {
+    const root = document.querySelector('.sh-home');
+    if (!root) return;
+    const els = root.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) {
+      els.forEach(el => el.classList.add('is-in'));
+      return;
+    }
+    const io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.06, rootMargin: '0px 0px -40px 0px' });
+    els.forEach(el => io.observe(el));
+  })();
+</script>
