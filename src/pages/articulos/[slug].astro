@@ -411,6 +411,74 @@ const nombreFirma = narrador?.data.nombreReal ?? narrador?.data.nombre;
   }
 
   /* ============================================================
+     Referencias desplegables — cuerpo chico (captions / Inter)
+     ============================================================ */
+  .article__body :global(.ref-block) {
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--color-line);
+  }
+
+  .article__body :global(.ref-block > summary) {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-leather);
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+
+  .article__body :global(.ref-block > summary::-webkit-details-marker) {
+    display: none;
+  }
+
+  .article__body :global(.ref-block > summary::before) {
+    content: "+ ";
+    color: var(--narrator-accent);
+  }
+
+  .article__body :global(.ref-block[open] > summary::before) {
+    content: "– ";
+  }
+
+  .article__body :global(.ref-block > summary:hover) {
+    color: var(--narrator-accent);
+  }
+
+  .article__body :global(.ref-block p) {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;   /* ~13px, tipografía de captions */
+    line-height: 1.55;
+    color: var(--color-text-tertiary);
+    margin: 0 0 0.9em;
+    text-indent: 0;
+  }
+
+  .article__body :global(.ref-block p:first-of-type) {
+    margin-top: var(--space-lg);
+  }
+
+  .article__body :global(.ref-block p strong) {
+    font-weight: var(--font-semibold);
+    color: var(--color-text-secondary);
+    letter-spacing: 0.04em;
+  }
+
+  .article__body :global(.ref-block a) {
+    color: var(--color-text-tertiary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    word-break: break-word;
+  }
+
+  .article__body :global(.ref-block a:hover) {
+    color: var(--narrator-accent);
+  }
+
+  /* ============================================================
      Firma del narrador
      ============================================================ */
   .article__sig {
