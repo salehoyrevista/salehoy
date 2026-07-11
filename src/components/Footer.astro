@@ -105,8 +105,10 @@ const cols = [
   }
   .footer-brand .logo__wm--for-light { display: block; }
   .footer-brand .logo__wm--for-dark { display: none; }
-  [data-theme='dark'] .footer-brand .logo__wm--for-light { display: none; }
-  [data-theme='dark'] .footer-brand .logo__wm--for-dark { display: block; }
+  /* :global() en el ancestro es necesario: [data-theme] vive en <html>, fuera del
+     scope de este componente, y Astro rompe el selector si no se libera del hash. */
+  :global([data-theme='dark']) .footer-brand .logo__wm--for-light { display: none; }
+  :global([data-theme='dark']) .footer-brand .logo__wm--for-dark { display: block; }
 
   .footer-subtitle {
     font-family: var(--font-display);

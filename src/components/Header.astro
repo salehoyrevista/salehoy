@@ -166,8 +166,10 @@ const navItems = [
 
   .logo__wordmark--for-light { display: block; }
   .logo__wordmark--for-dark { display: none; }
-  [data-theme='dark'] .logo__wordmark--for-light { display: none; }
-  [data-theme='dark'] .logo__wordmark--for-dark { display: block; }
+  /* :global() en el ancestro es necesario: [data-theme] vive en <html>, fuera del
+     scope de este componente, y Astro rompe el selector si no se libera del hash. */
+  :global([data-theme='dark']) .logo__wordmark--for-light { display: none; }
+  :global([data-theme='dark']) .logo__wordmark--for-dark { display: block; }
 
   @media (max-width: 480px) {
     .logo__wordmark { height: 30px; }
