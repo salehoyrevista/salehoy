@@ -15,6 +15,13 @@ const articulos = defineCollection({
     tiempoLectura: z.number().optional(),
     destacado: z.boolean().default(false),
     imagen: z.string().optional(),
+    // Override por artículo del recorte de la imagen de cabecera.
+    // Por defecto se banner-crop a 480px de alto centrado; si la imagen
+    // tiene el sujeto importante fuera del centro (p. ej. una figura arriba
+    // y el resto de la composición abajo), usar imagenAltura: "none" para
+    // mostrarla completa sin recortar, o imagenPosicion para reubicar el foco.
+    imagenAltura: z.string().optional(),
+    imagenPosicion: z.string().optional(),
   }),
 });
 

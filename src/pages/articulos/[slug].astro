@@ -153,6 +153,7 @@ const nombreFirma = narrador?.data.nombreReal ?? narrador?.data.nombre;
           alt={articulo.data.title}
           loading="eager"
           decoding="async"
+          style={`--cover-max-height: ${articulo.data.imagenAltura ?? '480px'}; --cover-position: ${articulo.data.imagenPosicion ?? 'center'};`}
         />
       </figure>
     )}
@@ -368,8 +369,9 @@ const nombreFirma = narrador?.data.nombreReal ?? narrador?.data.nombre;
   .article__cover img {
     width: 100%;
     height: auto;
-    max-height: 480px;
+    max-height: var(--cover-max-height, 480px);
     object-fit: cover;
+    object-position: var(--cover-position, center);
     display: block;
   }
 

@@ -9,6 +9,7 @@ palabras: 1477
 tiempoLectura: 11
 destacado: false
 imagen: /img/articulos/02/la-cancha-interna.webp
+imagenAltura: none
 ---
 
 Enrique Pichon-Rivière murió en 1977, diez años antes de que naciera Messi. Nunca lo vio jugar. Psiquiatra y psicoanalista, criado en el Chaco y en Goya entre el francés de sus padres y el guaraní de sus vecinos, fue el fundador de la psicología social argentina y el hombre que sacó el diván a la calle: en vez de esperar al paciente en el consultorio, se puso a pensar lo que la gente hace junta —el grupo, el club, el hincha, el ídolo—. Y qué mejor objeto social de estudio, en este país, que el fútbol. En una vieja entrevista sobre el tema dejó una distinción que conviene explicar bien, porque es la que ordena todo lo demás.
