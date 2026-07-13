@@ -66,7 +66,16 @@ const fechaStr = edicion.data.fecha.toLocaleDateString('es-AR', {
       </section>
     )}
 
-    <section class="edition__articles container-wide">
+    <nav class="edition__sumario container-narrow" aria-label="En este número">
+      <span class="meta-label">En este número</span>
+      <ul class="sumario-links">
+        <li><a href="#articulos">Los {articulosEdicion.length} artículos</a></li>
+        <li><a href="#trio">El Trío</a></li>
+        {vocesEdicion && <li><a href="#voces">Voces del #{vocesEdicion.data.numero}</a></li>}
+      </ul>
+    </nav>
+
+    <section id="articulos" class="edition__articles container-wide">
       <span class="meta-label">Los artículos del número</span>
       <h2 class="edition__section-title">Cinco voces sobre el azar</h2>
       <div class="articles-grid">
@@ -76,10 +85,12 @@ const fechaStr = edicion.data.fecha.toLocaleDateString('es-AR', {
       </div>
     </section>
 
-    <ElTrio edicion={edicion.data.numero} />
+    <div id="trio">
+      <ElTrio edicion={edicion.data.numero} />
+    </div>
 
     {vocesEdicion && (
-      <section class="edition__voces container-narrow">
+      <section id="voces" class="edition__voces container-narrow">
         <span class="meta-label">Sección coral</span>
         <div class="voces-teaser">
           <VocasCarta
@@ -96,6 +107,12 @@ const fechaStr = edicion.data.fecha.toLocaleDateString('es-AR', {
         </div>
       </section>
     )}
+
+    <aside class="edition__cta container-narrow">
+      <h2 class="edition__cta-title">¿Te gustó el número?</h2>
+      <p>Cuando sale la próxima edición, te llega al mail. Sin spam, sin picks.</p>
+      <a href="/newsletter" class="btn-primary">Suscribirme al newsletter</a>
+    </aside>
   </article>
 </BaseLayout>
 
@@ -136,6 +153,41 @@ const fechaStr = edicion.data.fecha.toLocaleDateString('es-AR', {
   .edition__voces {
     padding-block: var(--space-2xl);
   }
+
+  /* Sumario — jump-nav para no enterrar El Trío y Voces bajo las 7 notas */
+  .edition__sumario {
+    text-align: center;
+    padding-block: var(--space-lg);
+    border-block: 1px solid var(--color-line);
+  }
+
+  .sumario-links {
+    list-style: none;
+    margin: var(--space-sm) 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-sm) var(--space-lg);
+  }
+
+  .sumario-links a {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    color: var(--color-text);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--transition-fast), color var(--transition-fast);
+  }
+
+  .sumario-links a:hover {
+    color: var(--color-accent-gold);
+    border-bottom-color: var(--color-accent-gold);
+  }
+
+  html { scroll-behavior: smooth; }
+  :target { scroll-margin-top: var(--space-2xl); }
 
   .edition__section-title {
     font-family: var(--font-display);
@@ -200,6 +252,46 @@ const fechaStr = edicion.data.fecha.toLocaleDateString('es-AR', {
 
   .btn-secondary:hover {
     border-color: var(--color-accent-gold);
+    color: var(--color-accent-gold);
+  }
+
+  /* CTA newsletter — cierre de la edición */
+  .edition__cta {
+    text-align: center;
+    padding-block: var(--space-3xl);
+    border-top: 1px solid var(--color-line);
+    margin-top: var(--space-xl);
+  }
+
+  .edition__cta-title {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-semibold);
+    margin-bottom: var(--space-sm);
+  }
+
+  .edition__cta p {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-lg);
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    padding: var(--space-md) var(--space-xl);
+    border-radius: var(--radius-full);
+    background: var(--color-accent-gold);
+    color: var(--color-bg);
+    border: 1px solid var(--color-accent-gold);
+    transition: all var(--transition-fast);
+  }
+
+  .btn-primary:hover {
+    background: transparent;
     color: var(--color-accent-gold);
   }
 </style>
