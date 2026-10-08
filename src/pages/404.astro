@@ -1,67 +1,25 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
 ---
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>SaleHoy</title>
+  </head>
+  <body>
+    <main><a href="/">SaleHoy</a></main>
+  </body>
+</html>
 
-<BaseLayout title="Esta página no existe" description="La página que buscás no existe en SaleHoy.">
-  <article class="inst-page">
-    <header class="inst-page__header">
-      <h1 class="inst-page__title">Esta página no existe</h1>
-      <p class="inst-page__lead">Capaz era un número que no salió. Capaz se perdió en la mesa.</p>
-    </header>
-
-    <div class="inst-page__body">
-      <p>Lo que buscabas no está en esta dirección.</p>
-      <p><a href="/">Volvé al inicio</a> o entrá a <a href="/la-sala">La sala</a>.</p>
-    </div>
-  </article>
-</BaseLayout>
-
-<style>
-  .inst-page {
-    padding-block: var(--space-4xl);
-    max-width: 640px;
-    margin-inline: auto;
-    padding-inline: var(--gutter-xs);
-    text-align: center;
+<style is:global>
+  html, body { height: 100%; margin: 0; }
+  body {
+    display: grid;
+    place-items: center;
+    font-family: system-ui, sans-serif;
+    background: Canvas;
+    color: CanvasText;
   }
-
-  .inst-page__header {
-    margin-bottom: var(--space-2xl);
-  }
-
-  .inst-page__title {
-    font-family: var(--font-display);
-    font-size: var(--text-4xl);
-    font-weight: var(--font-semibold);
-    line-height: var(--leading-tight);
-    letter-spacing: -0.02em;
-    margin-bottom: var(--space-md);
-  }
-
-  .inst-page__lead {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: var(--text-xl);
-    line-height: var(--leading-normal);
-    color: var(--color-text-secondary);
-  }
-
-  .inst-page__body {
-    font-size: var(--text-md);
-    line-height: var(--leading-relaxed);
-    color: var(--color-text-secondary);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-md);
-  }
-
-  .inst-page__body a {
-    color: var(--color-accent-gold);
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
-  }
-
-  .inst-page__body a:hover {
-    color: var(--color-text);
-  }
+  a { color: inherit; font-size: 1.25rem; opacity: 0.8; }
 </style>
