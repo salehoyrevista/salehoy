@@ -410,7 +410,18 @@
     } catch (e) { return new Date(ms).toISOString().slice(0, 10); }
   }
 
+  // El ✱ propio: seis trazos, igual al de og.png. Toma el color del texto.
+  var SVG_ASTERISCO = '<svg class="ast" viewBox="-15 -15 30 30" aria-hidden="true" focusable="false">' +
+    '<path d="M0-13V13M-11.26-6.5L11.26 6.5M-11.26 6.5L11.26-6.5" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/></svg>';
+
+  // "N ✱ · " para el contador, con el ✱ dibujado.
+  function pintarCuenta(el, regalos) {
+    el.innerHTML = regalos ? regalos.length + " " + SVG_ASTERISCO + " · " : "";
+  }
+
   window.SaleHoy = {
+    SVG_ASTERISCO: SVG_ASTERISCO,
+    pintarCuenta: pintarCuenta,
     DIRECCION: DIRECCION,
     USDC_BASE: USDC_BASE,
     AUTOR: AUTOR,

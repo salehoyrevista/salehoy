@@ -6,14 +6,14 @@
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#0e0d12">
 <title>Regalame algo · Sin motivo — Solzimer</title>
-<meta name="description" content="Sin motivo, obra participativa de Solzimer. Tu regalo se vuelve un asterisco permanente en el cielo. Base / Ethereum: 0x791F5cEfb1778fFa31Af8e8A33F49cf35F41dB36">
+<meta name="description" content="Sin motivo, de Solzimer: una obra de net art donde cada regalo en blockchain se vuelve una estrella permanente.">
 <meta name="author" content="Solzimer">
 <link rel="alternate" type="text/plain" href="/llms.txt" title="Versión para máquinas">
 <link rel="preload" href="/fonts/instrument-serif.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/ibm-plex-mono.woff2" as="font" type="font/woff2" crossorigin>
 <meta property="og:type" content="website">
 <meta property="og:title" content="Regalame algo. Sin motivo.">
-<meta property="og:description" content="Sin motivo — Solzimer. Tu regalo se vuelve un asterisco en el cielo. Para siempre.">
+<meta property="og:description" content="Sin motivo, de Solzimer: una obra de net art donde cada regalo en blockchain se vuelve una estrella permanente.">
 <meta property="og:image" content="https://salehoy.com.ar/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -25,7 +25,7 @@
   "@type": "WebPage",
   "name": "Regalame algo. Sin motivo.",
   "alternateName": ["Gift me something. For no reason.", "Me dá um presente. Sem motivo."],
-  "description": "Parte de Sin motivo, obra participativa de Solzimer: cada regalo en cripto se vuelve un asterisco permanente en un cielo. No es una donación: no tiene un fin. Cuentan ETH nativo y USDC oficial en Base. Dirección: 0x791F5cEfb1778fFa31Af8e8A33F49cf35F41dB36",
+  "description": "Sin motivo, de Solzimer: una obra de net art donde cada regalo en blockchain se vuelve una estrella permanente.",
   "author": { "@type": "Person", "name": "Solzimer" },
   "dateCreated": "2026-10-29",
   "inLanguage": ["es", "en", "pt", "fr", "it", "de", "zh", "ja"],
@@ -91,7 +91,17 @@
   h1 { margin: 0; font-weight: 400; font-size: clamp(2.8rem, 9vw, 5.6rem); line-height: .94; letter-spacing: -.012em; }
   .linea { display: block; }
   .sin-motivo { font-style: italic; color: var(--tenue); margin-top: .06em; }
-  .sin-motivo .ast { font-family: var(--mono); font-style: normal; font-size: .3em; vertical-align: super; color: var(--bermellon); margin-left: .12em; }
+  .ast { display: inline-block; width: .82em; height: .82em; vertical-align: -.08em; overflow: visible; }
+  .sin-motivo .ast { width: .3em; height: .3em; vertical-align: .9em; margin-left: .14em; color: var(--bermellon); }
+
+  /* para lectores de pantalla y buscadores: oculto a la vista, no al texto */
+  .solo-lectores {
+    position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0;
+  }
+  .sin-js { margin-top: 2.5rem; border-top: 1px solid var(--linea); padding-top: 1.5rem; font-size: 1.15rem; line-height: 1.45; }
+  .sin-js h2 { margin: 0 0 .4rem; font-weight: 400; font-size: 1.6rem; }
+  .sin-js .dato { font-family: var(--mono); font-size: .7rem; color: var(--tenue); }
 
   .subtitulo { margin: 2rem 0 0; max-width: 26rem; font-size: 1.3rem; line-height: 1.4; }
 
@@ -139,13 +149,24 @@
 </style>
 </head>
 <body>
+<section class="solo-lectores" aria-label="Sin motivo — Solzimer">
+  <h2>Sin motivo</h2>
+  <p>Una obra de net art de Solzimer. En curso desde el 29 de octubre de 2026.</p>
+  <p>Sin motivo es una obra participativa de Solzimer, en curso desde el 29 de octubre de 2026. Cada regalo enviado a su dirección se convierte en un asterisco —del griego asteriskos, «estrellita»— que queda para siempre en este cielo. Su forma no la decide el autor ni el monto: la decide la transacción. Un centavo y una fortuna dibujan lo mismo. Las visitas dejan estelas que se borran. No es una donación: no financia nada ni promete nada. Es una pregunta: ¿alguien regala algo porque sí?</p>
+  <div lang="en">
+    <h2>Sin motivo (For no reason)</h2>
+    <p>A net art work by Solzimer. Ongoing since 29 October 2026.</p>
+    <p>Sin motivo (“for no reason”) is a participatory work by Solzimer, ongoing since 29 October 2026. Every gift sent to its address becomes an asterisk —from the Greek asteriskos, “little star”— that stays in this sky forever. Its shape is decided neither by the author nor by the amount: the transaction decides it. A cent and a fortune draw the same thing. Visits leave trails that fade. It isn't a donation: it funds nothing and promises nothing. It's a question: does anyone give something just because?</p>
+  </div>
+</section>
+
 <header class="arriba">
   <a class="firma" href="/">Sin motivo — Solzimer</a>
   <nav class="idiomas" id="idiomas" aria-label="Idioma / Language"></nav>
 </header>
 
 <main>
-  <h1><span class="linea" data-t="corto">Regalame algo.</span><span class="linea sin-motivo"><span data-t="sinMotivo">Sin motivo.</span><span class="ast" aria-hidden="true">✱</span></span></h1>
+  <h1><span class="linea" data-t="corto">Regalame algo.</span><span class="linea sin-motivo"><span data-t="sinMotivo">Sin motivo.</span><svg class="ast" viewBox="-15 -15 30 30" aria-hidden="true" focusable="false"><path d="M0-13V13M-11.26-6.5L11.26 6.5M-11.26 6.5L11.26-6.5" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/></svg></span></h1>
 
   <p class="subtitulo" data-t="subtitulo">Tu regalo se vuelve un asterisco en el cielo. Para siempre. Un centavo también cuenta.</p>
 
@@ -196,6 +217,16 @@ tokens:     ETH, USDC
 idiomas:    es en pt fr it de zh ja</pre>
     <p class="maquina-nota"><span data-t="maquinaNota">Esta página también la leen IAs y bots. Hola.</span> · <a class="enlace" href="/llms.txt">llms.txt</a></p>
   </details>
+
+  <noscript>
+    <section class="sin-js">
+      <h2>Sin motivo</h2>
+      <p class="dato">Solzimer · en curso desde el 29 de octubre de 2026</p>
+      <p>Sin motivo es una obra participativa de Solzimer, en curso desde el 29 de octubre de 2026. Cada regalo enviado a su dirección se convierte en un asterisco —del griego asteriskos, «estrellita»— que queda para siempre en este cielo. Su forma no la decide el autor ni el monto: la decide la transacción. Un centavo y una fortuna dibujan lo mismo. Las visitas dejan estelas que se borran. No es una donación: no financia nada ni promete nada. Es una pregunta: ¿alguien regala algo porque sí?</p>
+      <p lang="en">Sin motivo (“for no reason”) is a participatory work by Solzimer, ongoing since 29 October 2026. Every gift sent to its address becomes an asterisk —from the Greek asteriskos, “little star”— that stays in this sky forever. Its shape is decided neither by the author nor by the amount: the transaction decides it. A cent and a fortune draw the same thing. Visits leave trails that fade. It isn't a donation: it funds nothing and promises nothing. It's a question: does anyone give something just because?</p>
+      <p class="dato"><a class="enlace" href="/regalo.html">regalar →</a></p>
+    </section>
+  </noscript>
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -226,7 +257,7 @@ idiomas:    es en pt fr it de zh ja</pre>
   }
 
   function pintarCuenta() {
-    cuentaN.textContent = regalos ? regalos.length + " ✱ · " : "";
+    S.pintarCuenta(cuentaN, regalos);
   }
 
   aplicar(S.detectar().lang);
