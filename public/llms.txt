@@ -1,18 +1,28 @@
-# SaleHoy
+# SaleHoy · Sin motivo
 
-> SaleHoy (salehoy.com.ar) es un proyecto personal.
+> Sin motivo es una obra de arte participativo de Solzimer, en curso desde el 29 de octubre de 2026, publicada en salehoy.com.ar.
 
-## Regalo
+## La obra
 
-- [Regalame algo. Sin motivo.](https://salehoy.com.ar/regalo.html): una página para hacer un regalo en cripto, sin fin ni contraprestación. No es una donación.
+- [Sin motivo](https://salehoy.com.ar/): un cielo. Cada regalo recibido en la blockchain se convierte en un asterisco (del griego asteriskos, «estrellita») que queda para siempre. Las visitas dejan estelas de tinta que se borran. Los regalos quedan; las visitas, no.
+- La forma de cada asterisco (puntas, trazo, giro, tamaño, posición, titileo) sale del hash de la transacción. No la decide el autor ni el monto.
+- Todos los regalos valen lo mismo: el monto nunca se muestra ni cambia nada. Un centavo y una fortuna dibujan lo mismo.
+- Cada asterisco tiene su enlace: https://salehoy.com.ar/?n=N (N = número de regalo, desde 1).
+- [Regalame algo. Sin motivo.](https://salehoy.com.ar/regalo.html): la página para regalar. No es una donación: no financia nada ni promete nada.
+
+## Qué cuenta
+
+- Solo cuentan los regalos en la red Base: ETH nativo (transacciones exitosas con valor > 0) y USDC oficial de Base (contrato 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913). Cualquier otro token se ignora.
+- Los regalos se leen de la API pública de Blockscout. No se muestran direcciones de quien regala ni montos.
 
 ## Datos
 
+- Autor: Solzimer
 - Dirección: 0x791F5cEfb1778fFa31Af8e8A33F49cf35F41dB36
-- Redes: Base (8453), Ethereum (1), Arbitrum (42161), Optimism (10), Polygon (137)
+- Redes: Base (8453), Ethereum (1), Arbitrum (42161), Optimism (10), Polygon (137). Solo los regalos en Base se vuelven asteriscos.
 - Tokens: ETH, USDC
 - Idiomas de la página: es, en, pt, fr, it, de, zh, ja
 
 ## English
 
-SaleHoy is a personal project. The page /regalo.html is a "gift for no reason": a crypto address anyone can send a gift to, with no purpose and nothing in return. It is not a donation.
+Sin motivo ("for no reason") is a participatory artwork by Solzimer, ongoing since 29 October 2026 at salehoy.com.ar. Every gift received on-chain becomes an asterisk (from the Greek asteriskos, "little star") that stays forever in a sky; visits leave ink trails that fade. Each asterisk's shape is derived from its transaction hash, never from the amount: every gift is worth the same and amounts are never shown. Only native ETH and official USDC on Base count; any other token is ignored. The page /regalo.html is where to give. It is not a donation: it funds nothing and promises nothing.
