@@ -1,0 +1,18 @@
+# SaleHoy
+
+> SaleHoy (salehoy.com.ar) es un proyecto personal.
+
+## Regalo
+
+- [Regalame algo. Sin motivo.](https://salehoy.com.ar/regalo.html): una página para hacer un regalo en cripto, sin fin ni contraprestación. No es una donación.
+
+## Datos
+
+- Dirección: 0x791F5cEfb1778fFa31Af8e8A33F49cf35F41dB36
+- Redes: Base (8453), Ethereum (1), Arbitrum (42161), Optimism (10), Polygon (137)
+- Tokens: ETH, USDC
+- Idiomas de la página: es, en, pt, fr, it, de, zh, ja
+
+## English
+
+SaleHoy is a personal project. The page /regalo.html is a "gift for no reason": a crypto address anyone can send a gift to, with no purpose and nothing in return. It is not a donation.
