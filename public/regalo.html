@@ -9,6 +9,12 @@
 <link rel="alternate" type="text/plain" href="/llms.txt" title="Versión para máquinas">
 <meta property="og:title" content="Regalame algo. Sin motivo.">
 <meta property="og:description" content="Un regalo sin motivo. A gift for no reason.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://salehoy.com.ar/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://salehoy.com.ar/regalo.html">
+<meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -70,6 +76,21 @@
     display: inline-block; margin-top: .9rem; font-family: system-ui, sans-serif;
     font-size: .85rem; color: var(--fg); text-underline-offset: 3px;
   }
+  .centavo { margin: -1.25rem auto 2rem; font-size: .9rem; font-style: italic; color: var(--muted); }
+  .contador { margin: .6rem 0 0; font-family: system-ui, sans-serif; font-size: .72rem; color: var(--muted); }
+
+  .ya {
+    display: block; margin: .9rem auto 0; padding: .45rem 1rem;
+    background: none; border: 1px solid var(--line); border-radius: 999px;
+    color: var(--fg); font-family: system-ui, sans-serif; font-size: .8rem; cursor: pointer;
+  }
+  .gracias {
+    min-height: 1.6em; margin: .9rem 0 0; font-size: 1.05rem; font-style: italic; line-height: 1.5;
+    opacity: 0; transition: opacity .7s ease;
+  }
+  .gracias.visible { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { .gracias { transition: none; } }
+
   .red { margin: 1rem 0 0; font-family: system-ui, sans-serif; font-size: .75rem; line-height: 1.5; color: var(--muted); }
 
   details {
@@ -102,6 +123,8 @@
 
   <p class="texto" data-t="texto">No es una donación: no tiene un fin ni financia nada. Es un regalo, del tamaño que quieras, y no hace falta explicarlo.</p>
 
+  <p class="centavo" data-t="centavo">Un centavo también es un regalo.</p>
+
   <div class="qr" id="qr" role="img" aria-label="QR 0x791F5cEfb1778fFa31Af8e8A33F49cf35F41dB36"></div>
 
   <button class="dir" id="dir" type="button">
@@ -109,7 +132,12 @@
     <span class="aviso" id="aviso" data-t="copiar">tocá para copiar</span>
   </button>
 
+  <p class="contador" id="contador" aria-live="polite" hidden></p>
+
   <a class="billetera" href="ethereum:0x791F5cEfb1778fFa31Af8e8A33F49cf35F41dB36@8453" data-t="billetera">Abrir en mi billetera</a>
+
+  <button class="ya" id="ya" type="button" data-t="yaRegale">Ya regalé</button>
+  <p class="gracias" id="gracias" aria-live="polite"></p>
 
   <p class="red" data-t="red">USDC o ETH en red Base. También llega por Ethereum, Arbitrum, OP o Polygon.</p>
 
@@ -141,136 +169,38 @@ idiomas:    es en pt fr it de zh ja</pre>
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="/salehoy.js"></script>
 <script>
 (function () {
-  var DIRECCION = "0x791F5cEfb1778fFa31Af8e8A33F49cf35F41dB36";
+  var S = window.SaleHoy;
+  if (!S) return;
+  var DIRECCION = S.DIRECCION;
+  var T = S.T;
+  var contador = document.getElementById("contador");
+  var gracias = document.getElementById("gracias");
+  var datos;
+  var actual;
+  var frase = -1;
 
-  var T = {
-    es: { nombre: "Español",
-      titulo: "Si querés, regalame algo.", sinMotivo: "Sin motivo.",
-      texto: "No es una donación: no tiene un fin ni financia nada. Es un regalo, del tamaño que quieras, y no hace falta explicarlo.",
-      copiar: "tocá para copiar", copiado: "copiada ✓", mantener: "mantené apretado para copiar",
-      billetera: "Abrir en mi billetera",
-      red: "USDC o ETH en red Base. También llega por Ethereum, Arbitrum, OP o Polygon.",
-      como: "¿Cómo se regala?",
-      paso1: "Abrí tu billetera (MetaMask, Coinbase Wallet u otra).",
-      paso2: "Elegí la red Base y tocá Enviar.",
-      paso3: "Escaneá el QR o pegá la dirección, poné el monto que quieras y confirmá.",
-      maquinas: "Para máquinas", maquinaNota: "Esta página también la leen IAs y bots. Hola." },
-    en: { nombre: "English",
-      titulo: "If you want, gift me something.", sinMotivo: "For no reason.",
-      texto: "It's not a donation: it has no purpose and funds nothing. It's a gift, any size you like, and it needs no explanation.",
-      copiar: "tap to copy", copiado: "copied ✓", mantener: "press and hold to copy",
-      billetera: "Open in my wallet",
-      red: "USDC or ETH on Base. It also arrives via Ethereum, Arbitrum, OP or Polygon.",
-      como: "How do I give?",
-      paso1: "Open your wallet (MetaMask, Coinbase Wallet or another).",
-      paso2: "Choose the Base network and tap Send.",
-      paso3: "Scan the QR or paste the address, enter any amount and confirm.",
-      maquinas: "For machines", maquinaNota: "This page is read by AIs and bots too. Hello." },
-    pt: { nombre: "Português",
-      titulo: "Se quiser, me dá um presente.", sinMotivo: "Sem motivo.",
-      texto: "Não é uma doação: não tem um fim nem financia nada. É um presente, do tamanho que você quiser, e não precisa de explicação.",
-      copiar: "toque para copiar", copiado: "copiado ✓", mantener: "mantenha pressionado para copiar",
-      billetera: "Abrir na minha carteira",
-      red: "USDC ou ETH na rede Base. Também chega via Ethereum, Arbitrum, OP ou Polygon.",
-      como: "Como presentear?",
-      paso1: "Abra sua carteira (MetaMask, Coinbase Wallet ou outra).",
-      paso2: "Escolha a rede Base e toque em Enviar.",
-      paso3: "Escaneie o QR ou cole o endereço, coloque o valor que quiser e confirme.",
-      maquinas: "Para máquinas", maquinaNota: "Esta página também é lida por IAs e bots. Olá." },
-    fr: { nombre: "Français",
-      titulo: "Si tu veux, offre-moi quelque chose.", sinMotivo: "Sans raison.",
-      texto: "Ce n'est pas un don : il n'a pas de but et ne finance rien. C'est un cadeau, de la taille que tu veux, et il n'a pas besoin d'explication.",
-      copiar: "touche pour copier", copiado: "copiée ✓", mantener: "appuie longuement pour copier",
-      billetera: "Ouvrir dans mon portefeuille",
-      red: "USDC ou ETH sur Base. Arrive aussi via Ethereum, Arbitrum, OP ou Polygon.",
-      como: "Comment offrir ?",
-      paso1: "Ouvre ton portefeuille (MetaMask, Coinbase Wallet ou autre).",
-      paso2: "Choisis le réseau Base et touche Envoyer.",
-      paso3: "Scanne le QR ou colle l'adresse, mets le montant que tu veux et confirme.",
-      maquinas: "Pour les machines", maquinaNota: "Cette page est aussi lue par des IA et des bots. Bonjour." },
-    it: { nombre: "Italiano",
-      titulo: "Se vuoi, regalami qualcosa.", sinMotivo: "Senza motivo.",
-      texto: "Non è una donazione: non ha uno scopo e non finanzia niente. È un regalo, grande quanto vuoi, e non serve spiegarlo.",
-      copiar: "tocca per copiare", copiado: "copiato ✓", mantener: "tieni premuto per copiare",
-      billetera: "Apri nel mio wallet",
-      red: "USDC o ETH su Base. Arriva anche via Ethereum, Arbitrum, OP o Polygon.",
-      como: "Come si regala?",
-      paso1: "Apri il tuo wallet (MetaMask, Coinbase Wallet o un altro).",
-      paso2: "Scegli la rete Base e tocca Invia.",
-      paso3: "Scansiona il QR o incolla l'indirizzo, metti l'importo che vuoi e conferma.",
-      maquinas: "Per le macchine", maquinaNota: "Questa pagina la leggono anche IA e bot. Ciao." },
-    de: { nombre: "Deutsch",
-      titulo: "Wenn du willst, schenk mir etwas.", sinMotivo: "Ohne Grund.",
-      texto: "Es ist keine Spende: Sie hat keinen Zweck und finanziert nichts. Es ist ein Geschenk, so groß du willst, und braucht keine Erklärung.",
-      copiar: "zum Kopieren tippen", copiado: "kopiert ✓", mantener: "zum Kopieren gedrückt halten",
-      billetera: "In meiner Wallet öffnen",
-      red: "USDC oder ETH auf Base. Kommt auch über Ethereum, Arbitrum, OP oder Polygon an.",
-      como: "Wie schenke ich?",
-      paso1: "Öffne deine Wallet (MetaMask, Coinbase Wallet oder eine andere).",
-      paso2: "Wähle das Netzwerk Base und tippe auf Senden.",
-      paso3: "Scanne den QR-Code oder füge die Adresse ein, gib einen beliebigen Betrag ein und bestätige.",
-      maquinas: "Für Maschinen", maquinaNota: "Diese Seite lesen auch KIs und Bots. Hallo." },
-    zh: { nombre: "中文",
-      titulo: "如果你愿意，送我点什么吧。", sinMotivo: "没有理由。",
-      texto: "这不是捐款：它没有目的，也不资助任何东西。这是一份礼物，多少都可以，不需要解释。",
-      copiar: "点击复制", copiado: "已复制 ✓", mantener: "长按复制",
-      billetera: "在我的钱包中打开",
-      red: "Base 网络上的 USDC 或 ETH。也可通过 Ethereum、Arbitrum、OP 或 Polygon 到达。",
-      como: "怎么送？",
-      paso1: "打开你的钱包（MetaMask、Coinbase Wallet 或其他）。",
-      paso2: "选择 Base 网络，点击发送。",
-      paso3: "扫描二维码或粘贴地址，输入任意金额并确认。",
-      maquinas: "给机器看的", maquinaNota: "这个页面也会被 AI 和机器人读取。你好。" },
-    ja: { nombre: "日本語",
-      titulo: "よかったら、何か贈ってください。", sinMotivo: "理由はありません。",
-      texto: "寄付ではありません。目的もなく、何かの資金にもなりません。好きな額の、説明のいらない贈り物です。",
-      copiar: "タップしてコピー", copiado: "コピーしました ✓", mantener: "長押ししてコピー",
-      billetera: "ウォレットで開く",
-      red: "Base ネットワークの USDC または ETH。Ethereum、Arbitrum、OP、Polygon でも届きます。",
-      como: "贈り方",
-      paso1: "ウォレット（MetaMask、Coinbase Wallet など）を開きます。",
-      paso2: "Base ネットワークを選び、「送信」をタップします。",
-      paso3: "QR を読み取るかアドレスを貼り付け、好きな金額を入れて確認します。",
-      maquinas: "機械のために", maquinaNota: "このページは AI やボットも読んでいます。こんにちは。" }
-  };
-
-  var actual = "es";
+  var marcar = S.fila(document.getElementById("idiomas"), aplicar);
 
   function aplicar(lang) {
-    actual = T[lang] ? lang : "es";
-    var t = T[actual];
-    document.documentElement.lang = actual;
-    var nodos = document.querySelectorAll("[data-t]");
-    for (var i = 0; i < nodos.length; i++) {
-      var k = nodos[i].getAttribute("data-t");
-      if (t[k]) nodos[i].textContent = t[k];
-    }
-    var botones = document.querySelectorAll("#idiomas button");
-    for (var j = 0; j < botones.length; j++) {
-      botones[j].setAttribute("aria-pressed", botones[j].dataset.lang === actual ? "true" : "false");
-    }
-    try { localStorage.setItem("salehoy-idioma", actual); } catch (e) {}
+    actual = lang;
+    S.aplicarTextos(lang);
+    marcar(lang);
+    S.pintarContador(contador, datos, lang);
+    if (frase >= 0) gracias.textContent = T[lang].frases[frase];
   }
 
-  // botones de idioma
-  var nav = document.getElementById("idiomas");
-  Object.keys(T).forEach(function (code) {
-    var b = document.createElement("button");
-    b.type = "button";
-    b.dataset.lang = code;
-    b.lang = code;
-    b.textContent = T[code].nombre;
-    b.addEventListener("click", function () { aplicar(code); });
-    nav.appendChild(b);
-  });
+  aplicar(S.detectar().lang);
 
-  // idioma inicial: ?lang= , el elegido antes, o el del navegador
-  var inicial = new URLSearchParams(location.search).get("lang");
-  if (!inicial) { try { inicial = localStorage.getItem("salehoy-idioma"); } catch (e) {} }
-  if (!inicial) { inicial = (navigator.language || "es").slice(0, 2).toLowerCase(); }
-  aplicar(inicial);
+  function contar(denuevo) {
+    S.cargarContador(denuevo).then(function (d) {
+      datos = d;
+      S.pintarContador(contador, datos, actual);
+    });
+  }
+  contar(false);
 
   // QR
   if (window.QRCode) {
@@ -283,9 +213,23 @@ idiomas:    es en pt fr it de zh ja</pre>
   var aviso = document.getElementById("aviso");
   document.getElementById("dir").addEventListener("click", function () {
     var t = T[actual];
-    function ok() { aviso.textContent = t.copiado; setTimeout(function () { aviso.textContent = t.copiar; }, 1800); }
+    function ok() { aviso.textContent = t.copiado; setTimeout(function () { aviso.textContent = T[actual].copiar; }, 1800); }
     function falla() { aviso.textContent = t.mantener; }
     if (navigator.clipboard) navigator.clipboard.writeText(DIRECCION).then(ok, falla); else falla();
+  });
+
+  // ya regalé: una frase al azar, sin repetir la anterior
+  document.getElementById("ya").addEventListener("click", function () {
+    var total = T[actual].frases.length;
+    var nueva = Math.floor(Math.random() * (frase < 0 ? total : total - 1));
+    if (frase >= 0 && nueva >= frase) nueva++;
+    frase = nueva;
+    gracias.classList.remove("visible");
+    setTimeout(function () {
+      gracias.textContent = T[actual].frases[frase];
+      gracias.classList.add("visible");
+      contar(true);
+    }, gracias.textContent ? 350 : 0);
   });
 })();
 </script>

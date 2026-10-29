@@ -5,28 +5,137 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light dark" />
-    <title>SaleHoy</title>
+    <title>SaleHoy · Regalame algo. Sin motivo.</title>
+    <meta name="description" content="Un regalo sin motivo. A gift for no reason." />
+    <link rel="alternate" type="text/plain" href="/llms.txt" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Regalame algo. Sin motivo." />
+    <meta property="og:description" content="Un regalo sin motivo. A gift for no reason." />
+    <meta property="og:image" content="https://salehoy.com.ar/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:url" content="https://salehoy.com.ar/" />
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
-    <main>
-      SaleHoy
-      <a class="regalo" href="/regalo.html">regalame algo</a>
+    <header class="marca">SaleHoy</header>
+
+    <main id="centro">
+      <h1>
+        <span data-t="corto">Regalame algo.</span>
+        <span class="sin-motivo" data-t="sinMotivo">Sin motivo.</span>
+      </h1>
+      <a class="regalar" id="regalar" href="/regalo.html?lang=es" data-t="regalar">regalar →</a>
+      <p class="contador" id="contador" aria-live="polite" hidden></p>
     </main>
+
+    <nav class="idiomas" id="idiomas" aria-label="Idioma / Language"></nav>
+
+    <script is:inline src="/salehoy.js"></script>
+    <script is:inline>
+      (function () {
+        var S = window.SaleHoy;
+        if (!S) return;
+        var centro = document.getElementById("centro");
+        var regalar = document.getElementById("regalar");
+        var contador = document.getElementById("contador");
+        var datos;
+        var actual;
+
+        function aplicar(lang) {
+          actual = lang;
+          S.aplicarTextos(lang);
+          regalar.href = "/regalo.html?lang=" + lang;
+          marcar(lang);
+          S.pintarContador(contador, datos, lang);
+        }
+
+        var marcar = S.fila(document.getElementById("idiomas"), function (lang) {
+          parar();
+          aplicar(lang);
+        });
+
+        var inicio = S.detectar();
+        aplicar(inicio.lang);
+
+        S.cargarContador().then(function (d) {
+          datos = d;
+          S.pintarContador(contador, datos, actual);
+        });
+
+        // Si todavía no eligió idioma, la frase rota por los 8.
+        var reloj = null;
+        function parar() {
+          if (reloj) { clearInterval(reloj); reloj = null; }
+          centro.classList.remove("fuera");
+        }
+        var quieto = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (!inicio.elegido && !quieto) {
+          reloj = setInterval(function () {
+            centro.classList.add("fuera");
+            setTimeout(function () {
+              if (!reloj) return;
+              var i = S.IDIOMAS.indexOf(actual);
+              aplicar(S.IDIOMAS[(i + 1) % S.IDIOMAS.length]);
+              centro.classList.remove("fuera");
+            }, 600);
+          }, 3500);
+        }
+      })();
+    </script>
   </body>
 </html>
 
 <style is:global>
-  html, body { height: 100%; margin: 0; }
-  body {
-    display: grid;
-    place-items: center;
-    font-family: system-ui, sans-serif;
-    background: Canvas;
-    color: CanvasText;
+  :root {
+    --fg: #1b1a17; --muted: #7a766d; --bg: #faf8f3;
   }
-  main { font-size: 1.25rem; letter-spacing: 0.02em; opacity: 0.8; text-align: center; }
-  .regalo {
-    display: block; margin-top: 0.75rem; font-size: 0.8rem;
-    color: inherit; opacity: 0.6; text-underline-offset: 3px;
+  @media (prefers-color-scheme: dark) {
+    :root { --fg: #ece8df; --muted: #9a958a; --bg: #151412; }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--fg); }
+  body {
+    min-height: 100vh; min-height: 100svh;
+    display: grid; grid-template-rows: auto 1fr auto;
+    padding: 20px 16px; overflow-x: hidden;
+    font-family: system-ui, sans-serif;
+  }
+
+  .marca { font-size: .8rem; letter-spacing: .03em; color: var(--muted); }
+
+  main {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 3rem 0;
+    transition: opacity .6s ease;
+  }
+  main.fuera { opacity: 0; }
+
+  h1 {
+    margin: 0; max-width: 100%;
+    font-family: Georgia, "Times New Roman", serif; font-weight: normal;
+    font-size: clamp(2.6rem, 9vw, 7rem); line-height: 1.02; letter-spacing: -.01em;
+    overflow-wrap: break-word;
+  }
+  .sin-motivo { display: block; font-style: italic; color: var(--muted); }
+
+  .regalar {
+    margin-top: 2.5rem; font-size: 1.05rem; color: var(--fg);
+    text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 1px;
+  }
+  .regalar:hover { text-decoration-thickness: 2px; }
+
+  .contador { margin: 1rem 0 0; font-size: .72rem; color: var(--muted); }
+
+  .idiomas {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 12px;
+    font-size: .75rem;
+  }
+  .idiomas button {
+    background: none; border: 0; padding: 4px 0; cursor: pointer;
+    color: var(--muted); font: inherit;
+  }
+  .idiomas button[aria-pressed="true"] {
+    color: var(--fg); text-decoration: underline; text-underline-offset: 3px;
   }
 </style>
