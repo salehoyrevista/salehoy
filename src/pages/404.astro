@@ -3,23 +3,131 @@
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="light dark" />
-    <title>SaleHoy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0e0d12" />
+    <meta name="robots" content="noindex" />
+    <title>Esto ya no está · Sin motivo — Solzimer</title>
+    <link rel="preload" href="/fonts/instrument-serif.woff2" as="font" type="font/woff2" crossorigin />
   </head>
   <body>
-    <main><a href="/">SaleHoy</a></main>
+    <a class="firma" href="/">Sin motivo — Solzimer</a>
+
+    <main>
+      <h1>
+        <span class="linea" data-t="noEsta">Esto ya no está.</span>
+        <span class="linea tenue" data-t="hayCielo">Pero hay un cielo.</span>
+      </h1>
+      <a class="enlace" id="alCielo" href="/" data-t="irCielo">ir al cielo →</a>
+    </main>
+
+    <!-- un asterisco incompleto, quieto: le faltan dos puntas -->
+    <svg class="incompleto" viewBox="-15 -15 30 30" aria-hidden="true" focusable="false">
+      <path d="M0 0V-13M0 0L11.26 6.5M0 0V13M0 0L-11.26-6.5" fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" />
+    </svg>
+
+    <nav class="idiomas" id="idiomas" aria-label="Idioma / Language"></nav>
+
+    <script is:inline src="/salehoy.js"></script>
+    <script is:inline>
+      (function () {
+        var S = window.SaleHoy;
+        if (!S) return;
+        var alCielo = document.getElementById("alCielo");
+        var marcar = S.fila(document.getElementById("idiomas"), aplicar);
+        function aplicar(lang) {
+          S.aplicarTextos(lang);
+          document.title = S.T[lang].noEsta.replace(/[.。]$/, "") + " · Sin motivo — Solzimer";
+          alCielo.href = "/?lang=" + lang;
+          marcar(lang);
+        }
+        aplicar(S.detectar().lang);
+      })();
+    </script>
   </body>
 </html>
 
 <style is:global>
-  html, body { height: 100%; margin: 0; }
-  body {
-    display: grid;
-    place-items: center;
-    font-family: system-ui, sans-serif;
-    background: Canvas;
-    color: CanvasText;
+  @font-face {
+    font-family: "Instrument Serif"; font-style: normal; font-weight: 400; font-display: swap;
+    src: url("/fonts/instrument-serif.woff2") format("woff2");
   }
-  a { color: inherit; font-size: 1.25rem; opacity: 0.8; }
+  @font-face {
+    font-family: "Instrument Serif"; font-style: italic; font-weight: 400; font-display: swap;
+    src: url("/fonts/instrument-serif-italic.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "IBM Plex Mono"; font-style: normal; font-weight: 400; font-display: swap;
+    src: url("/fonts/ibm-plex-mono.woff2") format("woff2");
+  }
+
+  :root {
+    --tinta: #0e0d12;
+    --crema: #f2e9d8;
+    --tenue: rgba(242, 233, 216, 0.55);
+    --bermellon: #e2553a;
+    --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; background: var(--tinta); color: var(--crema); }
+  body { min-height: 100vh; min-height: 100svh; font-family: var(--serif); overflow-x: hidden; }
+
+  /* grano de papel: ruido generado, sin imágenes externas */
+  body::after {
+    content: ""; position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: .07;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .95 0 0 0 0 .91 0 0 0 0 .85 0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>");
+  }
+
+  .enlace {
+    color: var(--bermellon);
+    text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px;
+  }
+  .enlace:hover { text-decoration-thickness: 2px; }
+  :focus-visible { outline: 1px solid var(--bermellon); outline-offset: 4px; }
+
+  .firma {
+    position: absolute; top: max(18px, env(safe-area-inset-top)); left: 16px;
+    font-family: var(--mono); font-size: .68rem; letter-spacing: .04em;
+    color: var(--tenue); text-decoration: none;
+  }
+  .firma:hover { color: var(--crema); }
+
+  main {
+    position: absolute; left: clamp(16px, 9vw, 10rem); right: 16px; top: 30vh;
+    max-width: 58rem;
+  }
+  h1 {
+    margin: 0; font-weight: 400;
+    font-size: clamp(2.8rem, 8vw, 6.5rem); line-height: .96; letter-spacing: -.012em;
+    overflow-wrap: break-word;
+  }
+  .linea { display: block; }
+  .tenue { font-style: italic; color: var(--tenue); margin-top: .06em; }
+  main .enlace {
+    display: inline-block; margin-top: clamp(1.6rem, 4vh, 2.6rem);
+    font-family: var(--mono); font-size: .8rem;
+  }
+
+  .incompleto {
+    position: absolute; right: 16vw; top: 40vh; width: 68px; height: 68px;
+    color: var(--crema); opacity: .32;
+  }
+
+  .idiomas {
+    position: absolute; left: 16px; right: 16px; bottom: max(16px, env(safe-area-inset-bottom));
+    display: flex; flex-wrap: wrap; gap: 2px 12px;
+    font-family: var(--mono); font-size: .68rem;
+  }
+  .idiomas button {
+    background: none; border: 0; padding: 4px 0; cursor: pointer;
+    font: inherit; color: var(--tenue);
+  }
+  .idiomas button[aria-pressed="true"] { color: var(--crema); text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+
+  @media (max-width: 760px) {
+    main { top: 24vh; }
+    .incompleto { right: auto; left: 50%; top: auto; bottom: 22vh; transform: translateX(-50%); width: 56px; height: 56px; }
+  }
 </style>

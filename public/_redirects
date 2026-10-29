@@ -1,0 +1,38 @@
+# Redirecciones del SaleHoy anterior (revista, hasta el commit "Pizarra en blanco").
+# Todo lo que Google tenga indexado de entonces vuelve al cielo con un 301.
+
+# Artículos
+/articulos/*                /                301
+/articulos                  /                301
+/articulo/*                 /                301
+
+# Sitemaps viejos
+/sitemap-0.xml              /sitemap.xml     301
+/sitemap-index.xml          /sitemap.xml     301
+
+# Secciones con páginas propias
+/ediciones/*                /                301
+/ediciones                  /                301
+/el-trio/*                  /                301
+/el-trio                    /                301
+/la-data/*                  /                301
+/la-data                    /                301
+/narradores/*               /                301
+/narradores                 /                301
+/quiniela/*                 /                301
+/quiniela                   /                301
+/voces/*                    /                301
+
+# Páginas sueltas
+/anecdotario                /                301
+/aviso-legal                /                301
+/contacto                   /                301
+/ig                         /                301
+/la-sala                    /                301
+/la-vichy                   /                301
+/maquina-de-frases          /                301
+/newsletter                 /                301
+/privacidad                 /                301
+/ruleta                     /                301
+/sobre                      /                301
+/rss.xml                    /                301

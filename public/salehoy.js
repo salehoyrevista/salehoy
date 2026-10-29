@@ -14,6 +14,7 @@
       regalar: "regalar →",
       esperando: "Esperando el primero.",
       enCurso: "en curso desde 29.10.2026",
+      noEsta: "Esto ya no está.", hayCielo: "Pero hay un cielo.", irCielo: "ir al cielo →",
       num: "n.º {n}", copiarEnlace: "copiar enlace",
       nota: "nota al pie", cerrar: "cerrar",
       notaTexto: "Sin motivo es una obra participativa de Solzimer, en curso desde el 29 de octubre de 2026. Cada regalo enviado a su dirección se convierte en un asterisco —del griego asteriskos, «estrellita»— que queda para siempre en este cielo. Su forma no la decide el autor ni el monto: la decide la transacción. Un centavo y una fortuna dibujan lo mismo. Las visitas dejan estelas que se borran. No es una donación: no financia nada ni promete nada. Es una pregunta: ¿alguien regala algo porque sí?",
@@ -43,6 +44,7 @@
       regalar: "give →",
       esperando: "Waiting for the first one.",
       enCurso: "ongoing since 29.10.2026",
+      noEsta: "This isn’t here anymore.", hayCielo: "But there’s a sky.", irCielo: "go to the sky →",
       num: "no. {n}", copiarEnlace: "copy link",
       nota: "footnote", cerrar: "close",
       notaTexto: "Sin motivo (“for no reason”) is a participatory work by Solzimer, ongoing since 29 October 2026. Every gift sent to its address becomes an asterisk —from the Greek asteriskos, “little star”— that stays in this sky forever. Its shape is decided neither by the author nor by the amount: the transaction decides it. A cent and a fortune draw the same thing. Visits leave trails that fade. It isn't a donation: it funds nothing and promises nothing. It's a question: does anyone give something just because?",
@@ -72,6 +74,7 @@
       regalar: "presentear →",
       esperando: "Esperando o primeiro.",
       enCurso: "em curso desde 29.10.2026",
+      noEsta: "Isto já não está aqui.", hayCielo: "Mas há um céu.", irCielo: "ir para o céu →",
       num: "n.º {n}", copiarEnlace: "copiar link",
       nota: "nota de rodapé", cerrar: "fechar",
       notaTexto: "Sin motivo («sem motivo») é uma obra participativa de Solzimer, em curso desde 29 de outubro de 2026. Cada presente enviado ao seu endereço vira um asterisco —do grego asteriskos, «estrelinha»— que fica para sempre neste céu. Sua forma não é decidida pelo autor nem pelo valor: quem decide é a transação. Um centavo e uma fortuna desenham a mesma coisa. As visitas deixam rastros que se apagam. Não é uma doação: não financia nada nem promete nada. É uma pergunta: alguém dá um presente só porque sim?",
@@ -101,6 +104,7 @@
       regalar: "offrir →",
       esperando: "En attendant le premier.",
       enCurso: "en cours depuis le 29.10.2026",
+      noEsta: "Ceci n’est plus là.", hayCielo: "Mais il y a un ciel.", irCielo: "aller au ciel →",
       num: "n° {n}", copiarEnlace: "copier le lien",
       nota: "note", cerrar: "fermer",
       notaTexto: "Sin motivo (« sans raison ») est une œuvre participative de Solzimer, en cours depuis le 29 octobre 2026. Chaque cadeau envoyé à son adresse devient un astérisque — du grec asteriskos, « petite étoile » — qui reste pour toujours dans ce ciel. Sa forme, ce n'est ni l'auteur ni le montant qui la décide : c'est la transaction. Un centime et une fortune dessinent la même chose. Les visites laissent des traînées qui s'effacent. Ce n'est pas un don : il ne finance rien et ne promet rien. C'est une question : est-ce que quelqu'un offre quelque chose, juste comme ça ?",
@@ -130,6 +134,7 @@
       regalar: "regala →",
       esperando: "In attesa del primo.",
       enCurso: "in corso dal 29.10.2026",
+      noEsta: "Questo non c’è più.", hayCielo: "Ma c’è un cielo.", irCielo: "vai al cielo →",
       num: "n. {n}", copiarEnlace: "copia link",
       nota: "nota", cerrar: "chiudi",
       notaTexto: "Sin motivo («senza motivo») è un'opera partecipativa di Solzimer, in corso dal 29 ottobre 2026. Ogni regalo inviato al suo indirizzo diventa un asterisco —dal greco asteriskos, «stellina»— che resta per sempre in questo cielo. La sua forma non la decide l'autore né l'importo: la decide la transazione. Un centesimo e una fortuna disegnano la stessa cosa. Le visite lasciano scie che si cancellano. Non è una donazione: non finanzia niente e non promette niente. È una domanda: qualcuno regala qualcosa così, senza un perché?",
@@ -159,6 +164,7 @@
       regalar: "schenken →",
       esperando: "Warten auf das erste.",
       enCurso: "fortlaufend seit 29.10.2026",
+      noEsta: "Das gibt es nicht mehr.", hayCielo: "Aber es gibt einen Himmel.", irCielo: "zum Himmel →",
       num: "Nr. {n}", copiarEnlace: "Link kopieren",
       nota: "Fußnote", cerrar: "schließen",
       notaTexto: "Sin motivo („ohne Grund“) ist ein partizipatives Werk von Solzimer, fortlaufend seit dem 29. Oktober 2026. Jedes Geschenk an seine Adresse wird zu einem Asterisk – vom griechischen asteriskos, „Sternchen“ –, der für immer an diesem Himmel bleibt. Seine Form bestimmt weder der Autor noch der Betrag, sondern die Transaktion. Ein Cent und ein Vermögen zeichnen dasselbe. Besuche hinterlassen Spuren, die verblassen. Es ist keine Spende: Es finanziert nichts und verspricht nichts. Es ist eine Frage: Schenkt jemand etwas, einfach so?",
@@ -188,6 +194,7 @@
       regalar: "去送 →",
       esperando: "等待第一颗。",
       enCurso: "始于 2026.10.29，仍在继续",
+      noEsta: "这里已经没有了。", hayCielo: "但有一片天空。", irCielo: "去天空 →",
       num: "第 {n} 号", copiarEnlace: "复制链接",
       nota: "注释", cerrar: "关闭",
       notaTexto: "《Sin motivo》（“没有理由”）是 Solzimer 的一件参与式作品，自 2026 年 10 月 29 日起持续进行。每一份寄到这个地址的礼物，都会变成一个星号——源自希腊语 asteriskos，意为“小星星”——永远留在这片天空里。它的形状既不由作者决定，也不由金额决定，而是由那笔交易决定。一分钱和一笔巨款，画出的是同样的东西。来访者留下的痕迹会慢慢消失。这不是捐款：它不资助任何事，也不承诺任何事。它是一个问题：会有人无缘无故地送出礼物吗？",
@@ -217,6 +224,7 @@
       regalar: "贈る →",
       esperando: "最初のひとつを待っています。",
       enCurso: "2026.10.29 から継続中",
+      noEsta: "ここにはもうありません。", hayCielo: "でも、空があります。", irCielo: "空へ →",
       num: "No. {n}", copiarEnlace: "リンクをコピー",
       nota: "注", cerrar: "閉じる",
       notaTexto: "『Sin motivo』（「理由なく」）は、Solzimer による参加型の作品で、2026年10月29日から続いています。このアドレスに贈られた贈り物は、ひとつずつアスタリスク——ギリシャ語の asteriskos、「小さな星」——になり、この空にずっと残ります。その形を決めるのは作者でも金額でもなく、取引そのものです。1セントでも大金でも、描かれるものは同じです。訪れた人の軌跡は消えていきます。これは寄付ではありません。何の資金にもならず、何も約束しません。ひとつの問いです——誰かが、理由もなく何かを贈るだろうか？",
@@ -414,9 +422,9 @@
   var SVG_ASTERISCO = '<svg class="ast" viewBox="-15 -15 30 30" aria-hidden="true" focusable="false">' +
     '<path d="M0-13V13M-11.26-6.5L11.26 6.5M-11.26 6.5L11.26-6.5" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/></svg>';
 
-  // "N ✱ · " para el contador, con el ✱ dibujado.
+  // "N ✱ · " para el contador, con el ✱ dibujado; "— ✱ · " mientras carga o si no hay datos.
   function pintarCuenta(el, regalos) {
-    el.innerHTML = regalos ? regalos.length + " " + SVG_ASTERISCO + " · " : "";
+    el.innerHTML = (regalos ? regalos.length : "—") + " " + SVG_ASTERISCO + " · ";
   }
 
   window.SaleHoy = {

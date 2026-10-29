@@ -57,7 +57,7 @@
         <a class="enlace" id="regalar" href="/regalo.html?lang=es" data-t="regalar">regalar →</a>
       </main>
 
-      <p class="esperando" id="esperando" data-t="esperando" hidden>Esperando el primero.</p>
+      <p class="esperando" id="esperando" data-t="esperando">Esperando el primero.</p>
 
       <footer class="pie">
         <nav class="idiomas" id="idiomas" aria-label="Idioma / Language"></nav>
@@ -258,9 +258,28 @@
           return 0;
         }
 
+        // Visible desde el primer instante; se retira con un fundido solo si
+        // llegan regalos.
+        var esperaVisible = true;
+        var retiro = null;
+        var FUNDIDO = 1200;
+
+        function retirarEspera() {
+          if (retiro !== null) return;
+          retiro = performance.now();
+          esperando.classList.add("retirada");
+          setTimeout(function () { esperando.hidden = true; }, quieto ? 0 : FUNDIDO);
+          pedirCuadro();
+        }
+
         function dibujarEspera(ahora) {
           var u = ahora % CICLO;
-          ctx.strokeStyle = "rgba(" + CREMA + "," + (quieto ? 0.35 : 0.6) + ")";
+          var f = 1;
+          if (retiro !== null) {
+            f = quieto ? 0 : Math.max(0, 1 - (ahora - retiro) / FUNDIDO);
+            if (f <= 0) { esperaVisible = false; return; }
+          }
+          ctx.strokeStyle = "rgba(" + CREMA + "," + ((quieto ? 0.35 : 0.6) * f).toFixed(3) + ")";
           ctx.lineWidth = 1.2;
           ctx.lineCap = "round";
           ctx.beginPath();
@@ -365,7 +384,7 @@
             e.cx = cx; e.cy = cy;
           }
 
-          if (regalos && regalos.length === 0) dibujarEspera(ahora);
+          if (esperaVisible) dibujarEspera(ahora);
 
           dibujarEstela(ahora);
 
@@ -458,6 +477,7 @@
         // Escritorio: mitad derecha, a la altura del título, como contrapeso.
         // Celular: debajo del bloque del título, sin tocar el pie.
         function ubicarEsperando() {
+          if (!espera || !ancho) return;   // todavía no se midió el lienzo
           var obra = document.getElementById("obra").getBoundingClientRect();
           var h1 = titulo.getBoundingClientRect();
           var pie = document.querySelector(".pie").getBoundingClientRect();
@@ -488,7 +508,7 @@
           if (!lista) return;
           estrellas = lista.map(crearEstrella);
           pintarCuenta();
-          if (!lista.length) { esperando.hidden = false; ubicarEsperando(); }
+          if (lista.length) retirarEspera();
           var n = parseInt(S.parametro("n"), 10);
           if (n >= 1 && n <= lista.length) {
             resaltado = n;
@@ -741,7 +761,9 @@
     position: absolute; left: 50%; top: 0; margin: 0; transform: translateX(-50%);
     white-space: nowrap; text-align: center;
     font-family: var(--mono); font-size: .68rem; letter-spacing: .03em; color: var(--tenue);
+    transition: opacity 1.2s ease;
   }
+  .esperando.retirada { opacity: 0; }
 
   .pie {
     position: absolute; left: 16px; right: 16px; bottom: max(16px, env(safe-area-inset-bottom));
