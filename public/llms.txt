@@ -21,7 +21,7 @@ En curso desde el 29 de octubre de 2026, en salehoy.com.ar.
 
 - Autor: Solzimer
 - Dirección: 0x791F5cEfb1778fFa31Af8e8A33F49cf35F41dB36
-- Redes: Base (8453), Ethereum (1), Arbitrum (42161), Optimism (10), Polygon (137). Solo los regalos en Base se vuelven asteriscos.
+- Red: Base (8453). Solo los regalos en Base se vuelven asteriscos; otras redes no se cuentan.
 - Tokens: ETH, USDC
 - Idiomas de la página: es, en, pt, fr, it, de, zh, ja
 

@@ -92,7 +92,7 @@
   .linea { display: block; }
   .sin-motivo { font-style: italic; color: var(--tenue); margin-top: .06em; }
   .ast { display: inline-block; width: .82em; height: .82em; vertical-align: -.08em; overflow: visible; }
-  .sin-motivo .ast { width: .3em; height: .3em; vertical-align: .9em; margin-left: .14em; color: var(--bermellon); }
+  .sin-motivo .ast { width: .3em; height: .3em; vertical-align: .42em; margin-left: .14em; color: var(--bermellon); }
 
   /* para lectores de pantalla y buscadores: oculto a la vista, no al texto */
   .solo-lectores {
@@ -117,6 +117,29 @@
   .dir code { display: block; font-family: var(--mono); font-size: .8rem; line-height: 1.6; word-break: break-all; }
   .dir .aviso { display: block; margin-top: .2rem; font-family: var(--mono); font-size: .66rem; color: var(--tenue); }
   .solo { margin: .9rem 0 0; font-family: var(--mono); font-size: .66rem; line-height: 1.6; color: var(--tenue); }
+
+  .clic { margin-top: 2.25rem; padding-top: 1.25rem; border-top: 1px solid var(--linea); font-family: var(--mono); font-size: .8rem; }
+  .clic-titulo { margin: 0 0 .9rem; font-size: .7rem; color: var(--tenue); }
+  .clic-fila { display: flex; flex-wrap: wrap; align-items: baseline; gap: .7rem 1.6rem; margin-bottom: 1rem; }
+  .tokens, .sugeridos { display: flex; gap: .9rem; }
+  .opcion { background: none; border: 0; padding: 2px 0; cursor: pointer; font: inherit; color: var(--tenue); }
+  .opcion:hover { color: var(--crema); }
+  .opcion[aria-pressed="true"] { color: var(--crema); text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+  .monto { display: inline-flex; align-items: baseline; gap: .5rem; color: var(--tenue); }
+  .monto input {
+    width: 7.5rem; padding: 2px 0; background: transparent; color: var(--crema);
+    border: 0; border-bottom: 1px solid var(--linea); border-radius: 0;
+    font-family: var(--mono); font-size: 1.05rem;
+  }
+  .monto input:focus { outline: none; border-bottom-color: var(--bermellon); }
+  #regalarClic { font-size: .9rem; }
+  #regalarClic[disabled] { opacity: .5; cursor: progress; }
+  .estado { min-height: 1.6em; margin: 0; font-size: .74rem; line-height: 1.6; color: var(--crema); }
+  .estado a, .novedad a { margin-left: .6em; }
+  .movil { margin: 1rem 0 0; font-family: var(--mono); font-size: .68rem; line-height: 1.9; color: var(--tenue); }
+  .movil a { margin-right: 1.1rem; }
+  .novedad { min-height: 0; margin: 0 0 .7rem !important; font-family: var(--mono); font-size: .74rem !important; font-style: normal !important; color: var(--crema); }
+  .novedad:empty { display: none; }
 
   .acciones { display: flex; flex-direction: column; align-items: flex-start; gap: .8rem; margin-top: 2rem; font-family: var(--mono); font-size: .82rem; }
 
@@ -170,6 +193,27 @@
 
   <p class="subtitulo" data-t="subtitulo">Tu regalo se vuelve un asterisco en el cielo. Para siempre. Un centavo también cuenta.</p>
 
+  <!-- Regalo en un clic: solo aparece si el navegador tiene una billetera -->
+  <section class="clic" id="clic" hidden aria-labelledby="clicTitulo">
+    <p class="clic-titulo" id="clicTitulo" data-t="clicTitulo">Regalá desde esta billetera</p>
+    <div class="clic-fila">
+      <div class="tokens" role="group" aria-label="token">
+        <button class="opcion" type="button" data-token="USDC" aria-pressed="true">USDC</button>
+        <button class="opcion" type="button" data-token="ETH" aria-pressed="false">ETH</button>
+      </div>
+      <div class="sugeridos" id="sugeridos"></div>
+    </div>
+    <div class="clic-fila">
+      <label class="monto">
+        <span class="solo-lectores" data-t="monto">monto</span>
+        <input id="monto" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="1">
+        <span id="montoToken">USDC</span>
+      </label>
+      <button class="enlace" id="regalarClic" type="button" data-t="clicBoton">Regalar →</button>
+    </div>
+    <p class="estado" id="estado" aria-live="polite"></p>
+  </section>
+
   <div class="regalar">
     <div class="qr" id="qr" role="img" aria-label="QR 0x791F5cEfb1778fFa31Af8e8A33F49cf35F41dB36"></div>
     <p class="cuenta" id="cuenta"><span id="cuentaN"></span><span data-t="enCurso">en curso desde 29.10.2026</span></p>
@@ -187,8 +231,16 @@
     <button class="enlace" id="ya" type="button" data-t="yaRegale">Ya regalé →</button>
   </div>
 
+  <!-- Sin billetera en el navegador: abrir esta misma página dentro de una -->
+  <p class="movil" id="movil" hidden>
+    <span data-t="movil">¿Desde el celular? Abrí esta página dentro de tu billetera:</span><br>
+    <a class="enlace" id="enMetaMask" href="https://metamask.app.link/dapp/salehoy.com.ar/regalo.html" rel="noopener">MetaMask ↗</a>
+    <a class="enlace" id="enCoinbase" href="https://go.cb-w.com/dapp?cb_url=https%3A%2F%2Fsalehoy.com.ar%2Fregalo.html" rel="noopener">Coinbase Wallet ↗</a>
+  </p>
+
   <div class="gracias" id="gracias" aria-live="polite" hidden>
     <p id="frase"></p>
+    <p class="novedad" id="novedad"></p>
     <a class="enlace" id="buscar" href="/" data-t="buscar">buscá tu asterisco →</a>
   </div>
 
@@ -211,8 +263,7 @@ motivo:     ninguno
 a_cambio:   nada
 direccion:  0x791F5cEfb1778fFa31Af8e8A33F49cf35F41dB36
 cuentan:    ETH nativo y USDC oficial en Base
-redes:      base (8453), ethereum (1), arbitrum (42161),
-            optimism (10), polygon (137)
+red:        base (8453) — otras redes no se cuentan
 tokens:     ETH, USDC
 idiomas:    es en pt fr it de zh ja</pre>
     <p class="maquina-nota"><span data-t="maquinaNota">Esta página también la leen IAs y bots. Hola.</span> · <a class="enlace" href="/llms.txt">llms.txt</a></p>
@@ -254,6 +305,7 @@ idiomas:    es en pt fr it de zh ja</pre>
     buscar.href = "/?lang=" + lang;
     pintarCuenta();
     if (frase >= 0) fraseEl.textContent = T[lang].frases[frase];
+    if (typeof pintarAvisos === "function") pintarAvisos();
   }
 
   function pintarCuenta() {
@@ -298,8 +350,214 @@ idiomas:    es en pt fr it de zh ja</pre>
     setTimeout(function () {
       fraseEl.textContent = T[actual].frases[frase];
       gracias.classList.add("visible");
-      leer(true);
+      esperarNuevo();
     }, habia ? 450 : 30);
+  });
+
+  // ---------- avisos que dependen del idioma ----------
+
+  var estadoEl = document.getElementById("estado");
+  var novedadEl = document.getElementById("novedad");
+  var estado = null;    // { clave, n, enlace: { href, clave } }
+  var novedad = null;
+
+  function pintarAviso(el, aviso) {
+    el.textContent = "";
+    if (!aviso) return;
+    var t = T[actual];
+    el.appendChild(document.createTextNode(t[aviso.clave].replace("{n}", aviso.n)));
+    if (aviso.enlace) {
+      var a = document.createElement("a");
+      a.className = "enlace";
+      a.href = aviso.enlace.href;
+      if (/^https?:/.test(aviso.enlace.href)) { a.target = "_blank"; a.rel = "noopener"; }
+      a.textContent = t[aviso.enlace.clave];
+      el.appendChild(a);
+    }
+  }
+  function pintarAvisos() {
+    if (!estadoEl) return;   // el primer aplicar() corre antes de llegar acá
+    pintarAviso(estadoEl, estado);
+    pintarAviso(novedadEl, novedad);
+  }
+  function decir(aviso) { estado = aviso; pintarAviso(estadoEl, estado); }
+
+  function alCielo(n) { return { href: "/?n=" + n + "&lang=" + actual, clave: "verCielo" }; }
+
+  // ---------- esperar a que el regalo aparezca en el cielo ----------
+
+  var INTERVALO = 5000, INTENTOS = 36;   // unos 3 minutos
+
+  // Con el hash de la transacción: se sabe exactamente cuál es.
+  function esperarHash(hash) {
+    var buscado = hash.toLowerCase(), intentos = 0;
+    (function mirar() {
+      S.cargarRegalos(true).then(function (lista) {
+        if (lista) { regalos = lista; pintarCuenta(); }
+        var r = lista && lista.filter(function (x) { return String(x.hash).toLowerCase() === buscado; })[0];
+        if (r) { decir({ clave: "ahiEsta", n: r.n, enlace: alCielo(r.n) }); return; }
+        if (++intentos >= INTENTOS) {
+          decir({ clave: "tarda", enlace: { href: "https://base.blockscout.com/tx/" + hash, clave: "verificar" } });
+          return;
+        }
+        setTimeout(mirar, INTERVALO);
+      });
+    })();
+  }
+
+  // Después de "Ya regalé": no hay hash, así que se avisa del primer regalo
+  // nuevo que llegue desde ese momento (sin afirmar que sea el suyo).
+  var esperandoNuevo = false;
+  function esperarNuevo() {
+    if (esperandoNuevo) return;
+    esperandoNuevo = true;
+    var base = regalos ? regalos.length : null, intentos = 0;
+    (function mirar() {
+      S.cargarRegalos(true).then(function (lista) {
+        if (lista) {
+          regalos = lista; pintarCuenta();
+          if (base === null) base = lista.length;
+          else if (lista.length > base) {
+            var n = lista[lista.length - 1].n;
+            novedad = { clave: "nuevo", n: n, enlace: alCielo(n) };
+            pintarAviso(novedadEl, novedad);
+            esperandoNuevo = false;
+            return;
+          }
+        }
+        if (++intentos >= INTENTOS) { esperandoNuevo = false; return; }
+        setTimeout(mirar, INTERVALO);
+      });
+    })();
+  }
+
+  // ---------- regalo en un clic ----------
+
+  var BASE = "0x2105";   // 8453
+  var SUGERIDOS = { USDC: ["1", "5", "20"], ETH: ["0.0005", "0.002", "0.01"] };
+  var DECIMALES = { USDC: 6, ETH: 18 };
+  var clic = document.getElementById("clic");
+  var movil = document.getElementById("movil");
+  var montoEl = document.getElementById("monto");
+  var montoToken = document.getElementById("montoToken");
+  var sugeridosEl = document.getElementById("sugeridos");
+  var boton = document.getElementById("regalarClic");
+  var token = "USDC";
+  var proveedor = null;
+  var ocupado = false;
+
+  // Billeteras del navegador: EIP-6963 y, si no, window.ethereum.
+  window.addEventListener("eip6963:announceProvider", function (ev) {
+    if (!proveedor && ev.detail && ev.detail.provider) { proveedor = ev.detail.provider; mostrarClic(); }
+  });
+  try { window.dispatchEvent(new Event("eip6963:requestProvider")); } catch (e) {}
+
+  function mostrarClic() {
+    if (typeof BigInt !== "function") return;
+    clic.hidden = false;
+    movil.hidden = true;
+  }
+  setTimeout(function () {
+    if (!proveedor && window.ethereum) proveedor = window.ethereum;
+    if (proveedor) mostrarClic(); else movil.hidden = false;
+  }, 350);
+
+  // los enlaces para abrir esta página dentro de una billetera llevan el idioma
+  var aqui = "salehoy.com.ar/regalo.html?lang=";
+  function enlacesMovil() {
+    document.getElementById("enMetaMask").href = "https://metamask.app.link/dapp/" + aqui + actual;
+    document.getElementById("enCoinbase").href = "https://go.cb-w.com/dapp?cb_url=" + encodeURIComponent("https://" + aqui + actual);
+  }
+  enlacesMovil();
+  document.getElementById("idiomas").addEventListener("click", function () { setTimeout(enlacesMovil, 0); });
+
+  function elegirToken(nuevo) {
+    token = nuevo;
+    var opciones = clic.querySelectorAll("[data-token]");
+    for (var i = 0; i < opciones.length; i++) {
+      opciones[i].setAttribute("aria-pressed", opciones[i].dataset.token === token ? "true" : "false");
+    }
+    montoToken.textContent = token;
+    sugeridosEl.textContent = "";
+    SUGERIDOS[token].forEach(function (v) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "opcion";
+      b.textContent = v;
+      b.addEventListener("click", function () { montoEl.value = v; marcarSugerido(); });
+      sugeridosEl.appendChild(b);
+    });
+    montoEl.value = SUGERIDOS[token][0];
+    marcarSugerido();
+  }
+  function marcarSugerido() {
+    var bs = sugeridosEl.querySelectorAll("button");
+    for (var i = 0; i < bs.length; i++) bs[i].setAttribute("aria-pressed", bs[i].textContent === montoEl.value.trim() ? "true" : "false");
+  }
+  clic.querySelectorAll("[data-token]").forEach(function (b) {
+    b.addEventListener("click", function () { elegirToken(b.dataset.token); });
+  });
+  montoEl.addEventListener("input", marcarSugerido);
+  elegirToken("USDC");
+
+  // "1,5" o "1.5" a unidades enteras del token, sin pasar por coma flotante.
+  function aUnidades(texto, decimales) {
+    var m = /^(\d*)(?:[.,](\d*))?$/.exec(String(texto).trim());
+    if (!m || (!m[1] && !m[2])) return null;
+    var frac = (m[2] || "").slice(0, decimales);
+    while (frac.length < decimales) frac += "0";
+    var v = BigInt((m[1] || "0") + frac);
+    return v > BigInt(0) ? v : null;
+  }
+  function relleno64(hex) { return ("0".repeat(64) + hex).slice(-64); }
+
+  function pasarABase() {
+    return proveedor.request({ method: "eth_chainId" }).then(function (id) {
+      if (String(id).toLowerCase() === BASE) return;
+      decir({ clave: "red" });
+      return proveedor.request({ method: "wallet_switchEthereumChain", params: [{ chainId: BASE }] }).catch(function (e) {
+        var codigo = e && (e.code || (e.data && e.data.originalError && e.data.originalError.code));
+        if (codigo !== 4902) throw e;
+        return proveedor.request({ method: "wallet_addEthereumChain", params: [{
+          chainId: BASE, chainName: "Base",
+          nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+          rpcUrls: ["https://mainnet.base.org"],
+          blockExplorerUrls: ["https://base.blockscout.com"]
+        }] });
+      });
+    });
+  }
+
+  boton.addEventListener("click", function () {
+    if (ocupado || !proveedor) return;
+    var unidades = aUnidades(montoEl.value, DECIMALES[token]);
+    if (!unidades) { decir({ clave: "montoInvalido" }); montoEl.focus(); return; }
+    ocupado = true;
+    boton.disabled = true;
+    decir({ clave: "abriendo" });
+    var desde;
+    proveedor.request({ method: "eth_requestAccounts" }).then(function (cuentas) {
+      desde = cuentas && cuentas[0];
+      if (!desde) throw new Error("sin cuenta");
+      return pasarABase();
+    }).then(function () {
+      decir({ clave: "confirmar" });
+      var tx = token === "ETH"
+        ? { from: desde, to: DIRECCION, value: "0x" + unidades.toString(16) }
+        // transfer(address,uint256) del USDC oficial de Base
+        : { from: desde, to: S.USDC_BASE,
+            data: "0xa9059cbb" + relleno64(DIRECCION.slice(2).toLowerCase()) + relleno64(unidades.toString(16)) };
+      return proveedor.request({ method: "eth_sendTransaction", params: [tx] });
+    }).then(function (hash) {
+      decir({ clave: "enviado" });
+      esperarHash(String(hash));
+    }).catch(function (e) {
+      var codigo = e && (e.code || (e.data && e.data.originalError && e.data.originalError.code));
+      decir({ clave: codigo === 4001 || codigo === "ACTION_REJECTED" ? "cancelado" : "fallo" });
+    }).then(function () {
+      ocupado = false;
+      boton.disabled = false;
+    });
   });
 })();
 </script>
