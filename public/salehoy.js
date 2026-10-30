@@ -15,6 +15,8 @@
       esperando: "Esperando el primero.",
       enCurso: "en curso desde 29.10.2026",
       noEsta: "Esto ya no está.", hayCielo: "Pero hay un cielo.", irCielo: "ir al cielo →",
+      silencio: "{t} sin respuesta", recien: "Alguien acaba de responder.",
+      momento: {"formato":"{dia} {franja}, {luna}","dias":["un domingo","un lunes","un martes","un miércoles","un jueves","un viernes","un sábado"],"franjas":["de madrugada","a la mañana","al mediodía","a la tarde","de noche"],"lunas":["con luna nueva","con luna creciente","con luna llena","con luna menguante"]},
       clicTitulo: "Regalá desde esta billetera",
       monto: "monto",
       clicBoton: "Regalar →",
@@ -60,6 +62,8 @@
       esperando: "Waiting for the first one.",
       enCurso: "ongoing since 29.10.2026",
       noEsta: "This isn’t here anymore.", hayCielo: "But there’s a sky.", irCielo: "go to the sky →",
+      silencio: "{t} without an answer", recien: "Someone just answered.",
+      momento: {"formato":"{dia} {franja}, {luna}","dias":["on a Sunday","on a Monday","on a Tuesday","on a Wednesday","on a Thursday","on a Friday","on a Saturday"],"franjas":["before dawn","in the morning","at noon","in the afternoon","at night"],"lunas":["under a new moon","under a waxing moon","under a full moon","under a waning moon"]},
       clicTitulo: "Give from this wallet",
       monto: "amount",
       clicBoton: "Give →",
@@ -105,6 +109,8 @@
       esperando: "Esperando o primeiro.",
       enCurso: "em curso desde 29.10.2026",
       noEsta: "Isto já não está aqui.", hayCielo: "Mas há um céu.", irCielo: "ir para o céu →",
+      silencio: "{t} sem resposta", recien: "Alguém acabou de responder.",
+      momento: {"formato":"{dia} {franja}, {luna}","dias":["num domingo","numa segunda","numa terça","numa quarta","numa quinta","numa sexta","num sábado"],"franjas":["de madrugada","de manhã","ao meio-dia","à tarde","à noite"],"lunas":["com lua nova","com lua crescente","com lua cheia","com lua minguante"]},
       clicTitulo: "Presenteie desta carteira",
       monto: "valor",
       clicBoton: "Presentear →",
@@ -150,6 +156,8 @@
       esperando: "En attendant le premier.",
       enCurso: "en cours depuis le 29.10.2026",
       noEsta: "Ceci n’est plus là.", hayCielo: "Mais il y a un ciel.", irCielo: "aller au ciel →",
+      silencio: "{t} sans réponse", recien: "Quelqu’un vient de répondre.",
+      momento: {"formato":"{dia} {franja}, {luna}","dias":["un dimanche","un lundi","un mardi","un mercredi","un jeudi","un vendredi","un samedi"],"franjas":["avant l’aube","le matin","à midi","l’après-midi","la nuit"],"lunas":["sous une lune nouvelle","sous une lune croissante","sous la pleine lune","sous une lune décroissante"]},
       clicTitulo: "Offrir depuis ce portefeuille",
       monto: "montant",
       clicBoton: "Offrir →",
@@ -195,6 +203,8 @@
       esperando: "In attesa del primo.",
       enCurso: "in corso dal 29.10.2026",
       noEsta: "Questo non c’è più.", hayCielo: "Ma c’è un cielo.", irCielo: "vai al cielo →",
+      silencio: "{t} senza risposta", recien: "Qualcuno ha appena risposto.",
+      momento: {"formato":"{dia} {franja}, {luna}","dias":["di domenica","di lunedì","di martedì","di mercoledì","di giovedì","di venerdì","di sabato"],"franjas":["prima dell’alba","di mattina","a mezzogiorno","di pomeriggio","di notte"],"lunas":["con la luna nuova","con la luna crescente","con la luna piena","con la luna calante"]},
       clicTitulo: "Regala da questo wallet",
       monto: "importo",
       clicBoton: "Regala →",
@@ -240,6 +250,8 @@
       esperando: "Warten auf das erste.",
       enCurso: "fortlaufend seit 29.10.2026",
       noEsta: "Das gibt es nicht mehr.", hayCielo: "Aber es gibt einen Himmel.", irCielo: "zum Himmel →",
+      silencio: "{t} ohne Antwort", recien: "Gerade hat jemand geantwortet.",
+      momento: {"formato":"{dia} {franja}, {luna}","dias":["an einem Sonntag","an einem Montag","an einem Dienstag","an einem Mittwoch","an einem Donnerstag","an einem Freitag","an einem Samstag"],"franjas":["vor dem Morgengrauen","am Morgen","am Mittag","am Nachmittag","in der Nacht"],"lunas":["bei Neumond","bei zunehmendem Mond","bei Vollmond","bei abnehmendem Mond"]},
       clicTitulo: "Aus dieser Wallet schenken",
       monto: "Betrag",
       clicBoton: "Schenken →",
@@ -285,6 +297,8 @@
       esperando: "等待第一颗。",
       enCurso: "始于 2026.10.29，仍在继续",
       noEsta: "这里已经没有了。", hayCielo: "但有一片天空。", irCielo: "去天空 →",
+      silencio: "{t}没有回应", recien: "刚刚有人回应了。",
+      momento: {"formato":"{dia}{franja}，{luna}","dias":["一个星期日","一个星期一","一个星期二","一个星期三","一个星期四","一个星期五","一个星期六"],"franjas":["凌晨","早上","中午","下午","夜里"],"lunas":["新月之时","月渐盈时","满月之时","月渐亏时"]},
       clicTitulo: "用这个钱包送",
       monto: "金额",
       clicBoton: "送出 →",
@@ -330,6 +344,8 @@
       esperando: "最初のひとつを待っています。",
       enCurso: "2026.10.29 から継続中",
       noEsta: "ここにはもうありません。", hayCielo: "でも、空があります。", irCielo: "空へ →",
+      silencio: "{t}、応答なし", recien: "たったいま、誰かが応えました。",
+      momento: {"formato":"{dia}{franja}、{luna}の下で","dias":["ある日曜日の","ある月曜日の","ある火曜日の","ある水曜日の","ある木曜日の","ある金曜日の","ある土曜日の"],"franjas":["明け方","朝","昼","午後","夜"],"lunas":["新月","満ちていく月","満月","欠けていく月"]},
       clicTitulo: "このウォレットから贈る",
       monto: "金額",
       clicBoton: "贈る →",
@@ -571,7 +587,39 @@
     el.innerHTML = (regalos ? regalos.length : "—") + " " + SVG_ASTERISCO + " · ";
   }
 
+  // "1 día y 4 horas", en el idioma del visitante.
+  function duracion(ms, lang) {
+    var d = Math.floor(ms / 86400000), h = Math.floor(ms % 86400000 / 3600000), m = Math.floor(ms % 3600000 / 60000);
+    var partes = d ? [[d, "day"], [h, "hour"]] : h ? [[h, "hour"], [m, "minute"]] : [[Math.max(1, m), "minute"]];
+    partes = partes.filter(function (p) { return p[0] > 0; });
+    try {
+      var textos = partes.map(function (p) {
+        return new Intl.NumberFormat(lang, { style: "unit", unit: p[1], unitDisplay: "long" }).format(p[0]);
+      });
+      return new Intl.ListFormat(lang, { type: "conjunction" }).format(textos);
+    } catch (e) {
+      return partes.map(function (p) { return p[0] + p[1].charAt(0); }).join(" ");
+    }
+  }
+
+  // La línea de cada regalo: día de la semana, franja del día y fase de la
+  // luna, en la hora de Argentina (UTC-3, sin horario de verano). No usa
+  // montos ni direcciones: solo el momento.
+  var LUNA_NUEVA = Date.UTC(2000, 0, 6, 18, 14);
+  var MES_SINODICO = 29.530588853;
+  function momento(ms, lang) {
+    var m = T[lang].momento;
+    var arg = new Date(ms - 3 * 3600000);
+    var hora = arg.getUTCHours();
+    var franja = hora < 6 ? 0 : hora < 12 ? 1 : hora < 14 ? 2 : hora < 20 ? 3 : 4;
+    var fase = (((ms - LUNA_NUEVA) / 86400000 / MES_SINODICO) % 1 + 1) % 1;
+    var luna = fase < 0.034 || fase > 0.966 ? 0 : fase < 0.466 ? 1 : fase < 0.534 ? 2 : 3;
+    return m.formato.replace("{dia}", m.dias[arg.getUTCDay()]).replace("{franja}", m.franjas[franja]).replace("{luna}", m.lunas[luna]);
+  }
+
   window.SaleHoy = {
+    duracion: duracion,
+    momento: momento,
     SVG_ASTERISCO: SVG_ASTERISCO,
     pintarCuenta: pintarCuenta,
     DIRECCION: DIRECCION,

@@ -47,6 +47,7 @@
 
     <div class="ui" id="ui">
       <p class="firma">Sin motivo — Solzimer</p>
+      <p class="silencio" id="silencio" aria-live="off" hidden></p>
 
       <main class="obra" id="obra">
         <h1 id="titulo">
@@ -68,6 +69,7 @@
     <div class="etiqueta" id="etiqueta" role="status" hidden>
       <span id="etiquetaTexto"></span>
       <button class="enlace" id="copiarEnlace" type="button" data-t="copiarEnlace">copiar enlace</button>
+      <span class="momento" id="etiquetaMomento"></span>
     </div>
 
     <div class="nota" id="nota" hidden>
@@ -98,17 +100,20 @@
         var CREMA = "242,233,216";
         var BERMELLON = "226,85,58";
         var quieto = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+        var INICIO = Date.parse("2026-10-29T00:00:00-03:00");
 
         var lienzo = document.getElementById("cielo");
         var ctx = lienzo.getContext("2d");
-        var ui = document.getElementById("ui");
         var titulo = document.getElementById("titulo");
+        var obraEl = document.getElementById("obra");
         var regalar = document.getElementById("regalar");
         var notaRegalar = document.getElementById("notaRegalar");
         var cuentaN = document.getElementById("cuentaN");
         var esperando = document.getElementById("esperando");
+        var silencioEl = document.getElementById("silencio");
         var etiqueta = document.getElementById("etiqueta");
         var etiquetaTexto = document.getElementById("etiquetaTexto");
+        var etiquetaMomento = document.getElementById("etiquetaMomento");
         var copiarEnlace = document.getElementById("copiarEnlace");
         var nota = document.getElementById("nota");
         var registro = document.getElementById("registro");
@@ -120,6 +125,7 @@
         var actual;
         var regalos = null;      // null: sin datos (cargando o la API falló)
         var estrellas = [];
+        var constelaciones = []; // pares [a, b] de regalos del mismo día
         var resaltado = null;    // n.º pedido con ?n=
         var abierta = null;      // estrella con la etiqueta abierta
         var fijada = false;      // la etiqueta se abrió con un toque o con ?n=
@@ -132,9 +138,11 @@
           regalar.href = notaRegalar.href = "/regalo.html?lang=" + lang;
           marcar(lang);
           pintarCuenta();
+          pintarSilencio();
           if (abierta) mostrarEtiqueta(abierta, fijada);
           if (!registro.hidden) armarRegistro();
           if (!esperando.hidden) ubicarEsperando();
+          medirTitulo();
         }
 
         var marcar = S.fila(document.getElementById("idiomas"), function (lang) {
@@ -164,7 +172,7 @@
           }, 4000);
         }
 
-        // ---------- forma de cada asterisco, a partir del hash ----------
+        // ---------- forma y lugar de cada asterisco, a partir del hash ----------
 
         function semilla(texto) {
           var h = 1779033703 ^ texto.length;
@@ -181,23 +189,17 @@
           };
         }
 
-        // Zonas libres: no tapar el título, la firma ni el pie.
-        function libre(x, y) {
-          if (x < 0.8 && y > 0.2 && y < 0.72) return false;
-          if (x < 0.4 && y < 0.08) return false;
-          if (y > 0.87) return false;
-          return true;
-        }
-
+        // Cada regalo tiene un lugar fijo en el cielo: un ángulo y una distancia
+        // al polo. Lo que se mueve es el cielo entero (ver giroDelCielo).
         function crearEstrella(regalo) {
           var r = semilla(regalo.clave);
           var puntas = 5 + Math.floor(r() * 4);
-          var x, y, intentos = 0;
-          do { x = 0.03 + r() * 0.94; y = 0.04 + r() * 0.9; intentos++; } while (!libre(x, y) && intentos < 40);
           var brazos = [];
           for (var i = 0; i < puntas; i++) brazos.push(0.82 + r() * 0.3);
           return {
-            n: regalo.n, fecha: regalo.fecha, x: x, y: y,
+            n: regalo.n, fecha: regalo.fecha,
+            angulo: r() * Math.PI * 2,
+            rho: 0.1 + 0.9 * Math.sqrt(r()),
             puntas: puntas, brazos: brazos,
             tam: 5 + r() * 11,
             grosor: 0.8 + r() * 1.3,
@@ -205,8 +207,84 @@
             alfa: 0.5 + r() * 0.5,
             periodo: 3500 + r() * 6000,
             fase: r() * Math.PI * 2,
+            nace: null,          // instante en que empieza a dibujarse; null: ya está
             dx: 0, dy: 0
           };
+        }
+
+        // Regalos del mismo día (en Argentina) forman una constelación: se unen
+        // por el camino más corto entre ellos (árbol de expansión mínima, en
+        // coordenadas del cielo, así no cambia al girar), sin hilos larguísimos.
+        var HILO_MAX = 0.75;
+        function lugar(e) { return { x: Math.cos(e.angulo) * e.rho, y: Math.sin(e.angulo) * e.rho }; }
+        function armarConstelaciones() {
+          constelaciones = [];
+          var porDia = {};
+          estrellas.forEach(function (e) {
+            var dia = new Date(e.fecha - 3 * 3600000).toISOString().slice(0, 10);
+            (porDia[dia] = porDia[dia] || []).push(e);
+          });
+          Object.keys(porDia).forEach(function (dia) {
+            var grupo = porDia[dia];
+            if (grupo.length < 2) return;
+            var p = grupo.map(lugar);
+            var dentro = [true], mejor = [], de = [];
+            for (var i = 1; i < grupo.length; i++) { mejor[i] = Math.hypot(p[i].x - p[0].x, p[i].y - p[0].y); de[i] = 0; }
+            for (var vuelta = 1; vuelta < grupo.length; vuelta++) {
+              var k = -1;
+              for (var j = 1; j < grupo.length; j++) if (!dentro[j] && (k < 0 || mejor[j] < mejor[k])) k = j;
+              dentro[k] = true;
+              if (mejor[k] <= HILO_MAX) constelaciones.push([grupo[de[k]], grupo[k]]);
+              for (var m = 1; m < grupo.length; m++) {
+                if (dentro[m]) continue;
+                var d = Math.hypot(p[m].x - p[k].x, p[m].y - p[k].y);
+                if (d < mejor[m]) { mejor[m] = d; de[m] = k; }
+              }
+            }
+          });
+        }
+
+        // ---------- el cielo gira ----------
+
+        // Una vuelta por día sideral, en sentido horario como el cielo del sur.
+        // Depende de la hora real: todos ven el mismo cielo al mismo tiempo.
+        var DIA_SIDERAL = 86164090.5;
+        var giroQuieto = null;
+        function giroDelCielo() {
+          if (quieto) {
+            if (giroQuieto === null) giroQuieto = (Date.now() / DIA_SIDERAL % 1) * Math.PI * 2;
+            return giroQuieto;
+          }
+          return (Date.now() / DIA_SIDERAL % 1) * Math.PI * 2;
+        }
+
+        var polo = { x: 0, y: 0, ax: 0, ay: 0 };
+        function posicion(e, giro) {
+          var a = e.angulo + giro;
+          return { x: polo.x + Math.cos(a) * e.rho * polo.ax, y: polo.y + Math.sin(a) * e.rho * polo.ay };
+        }
+
+        // Lo que pasa por detrás de un texto (título, firma, silencio, pie) se
+        // atenúa, para no ensuciar la lectura.
+        var zonas = [];
+        function medirTitulo() {
+          if (!obraEl) return;
+          zonas = [];
+          var o = obraEl.getBoundingClientRect();
+          zonas.push({ l: o.left - 12, t: o.top - 12, r: o.left + Math.min(o.width, titulo.scrollWidth) + 12, b: o.bottom + 12 });
+          [".firma", "#silencio", ".pie"].forEach(function (sel) {
+            var el = document.querySelector(sel);
+            if (!el || el.hidden) return;
+            var z = el.getBoundingClientRect();
+            if (z.width) zonas.push({ l: z.left - 10, t: z.top - 8, r: z.right + 10, b: z.bottom + 8 });
+          });
+        }
+        function detrasDelTitulo(x, y) {
+          for (var i = 0; i < zonas.length; i++) {
+            var z = zonas[i];
+            if (x > z.l && x < z.r && y > z.t && y < z.b) return true;
+          }
+          return false;
         }
 
         // ---------- lienzo ----------
@@ -221,76 +299,99 @@
           lienzo.style.width = ancho + "px";
           lienzo.style.height = alto + "px";
           escala = Math.max(0.7, Math.min(1.3, Math.min(ancho, alto) / 800));
+          // el cielo es una elipse inscripta en la ventana: girando, ningún
+          // regalo se sale de la pantalla
+          polo = { x: ancho * 0.5, y: alto * 0.5, ax: ancho * 0.5 - 22, ay: alto * 0.5 - 22 };
+          medirTitulo();
           if (!esperando.hidden) ubicarEsperando();
           if (abierta) mostrarEtiqueta(abierta, fijada);
           pedirCuadro();
         }
 
-        function dibujarAsterisco(cx, cy, e, color, alfa) {
+        // Brillo: un halo suave, pintado una vez y reusado.
+        function halo(color) {
+          var c = document.createElement("canvas");
+          c.width = c.height = 64;
+          var g = c.getContext("2d");
+          var gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+          gr.addColorStop(0, "rgba(" + color + ",0.9)");
+          gr.addColorStop(0.25, "rgba(" + color + ",0.35)");
+          gr.addColorStop(1, "rgba(" + color + ",0)");
+          g.fillStyle = gr;
+          g.fillRect(0, 0, 64, 64);
+          return c;
+        }
+        var haloCrema = halo(CREMA), haloBermellon = halo(BERMELLON);
+
+        function suave(x) { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); }
+
+        // Nacer: cada punta crece desde el centro, una después de otra.
+        var NACE_PASO = 150, NACE_CRECE = 380;
+        function duracionNacimiento(e) { return (e.puntas - 1) * NACE_PASO + NACE_CRECE; }
+
+        function dibujarAsterisco(cx, cy, e, color, alfa, vida) {
           var radio = e.tam * escala;
           ctx.strokeStyle = "rgba(" + color + "," + alfa + ")";
           ctx.lineWidth = e.grosor;
           ctx.lineCap = "round";
           ctx.beginPath();
           for (var i = 0; i < e.puntas; i++) {
+            var l = vida == null ? 1 : suave((vida - i * NACE_PASO) / NACE_CRECE);
+            if (l <= 0) continue;
             var ang = e.giro + (i / e.puntas) * Math.PI * 2;
             ctx.moveTo(cx, cy);
-            ctx.lineTo(cx + Math.cos(ang) * radio * e.brazos[i], cy + Math.sin(ang) * radio * e.brazos[i]);
+            ctx.lineTo(cx + Math.cos(ang) * radio * e.brazos[i] * l, cy + Math.sin(ang) * radio * e.brazos[i] * l);
           }
           ctx.stroke();
         }
 
-        // El asterisco que espera al primer regalo: grande, fino, y respira.
-        // Cada punta crece desde el centro, una tras otra; queda completo un
-        // momento y se borra en orden inverso. Ciclo de 7 s.
+        // ---------- el asterisco que espera ----------
+
+        // Grande, fino, y respira: cada punta crece desde el centro, una tras
+        // otra; queda completo un momento y se borra en orden inverso (7 s).
+        // Cuando llega un regalo no se va: se completa, viaja y se vuelve ese regalo.
         var espera = { x: 0, y: 0, r: 0 };
         var CICLO = 7000, CRECE = 500, PASO = 480, QUIETO_HASTA = 4300, BORRA = 380;
-
-        function suave(x) { return x * x * (3 - 2 * x); }
+        var VIAJE = 1700;
+        var esperaVisible = true;
+        var viaje = null;        // { t0, hacia: estrella }
 
         function largoPunta(k, u) {
-          var inicio = k * PASO;
+          var ini = k * PASO;
           var fin = QUIETO_HASTA + (5 - k) * BORRA;
-          if (u < inicio) return 0;
-          if (u < inicio + CRECE) return suave((u - inicio) / CRECE);
+          if (u < ini) return 0;
+          if (u < ini + CRECE) return suave((u - ini) / CRECE);
           if (u < fin) return 1;
           if (u < fin + BORRA) return 1 - suave((u - fin) / BORRA);
           return 0;
         }
 
-        // Visible desde el primer instante; se retira con un fundido solo si
-        // llegan regalos.
-        var esperaVisible = true;
-        var retiro = null;
-        var FUNDIDO = 1200;
-
-        function retirarEspera() {
-          if (retiro !== null) return;
-          retiro = performance.now();
-          esperando.classList.add("retirada");
-          setTimeout(function () { esperando.hidden = true; }, quieto ? 0 : FUNDIDO);
-          pedirCuadro();
-        }
-
-        function dibujarEspera(ahora) {
-          var u = ahora % CICLO;
-          var f = 1;
-          if (retiro !== null) {
-            f = quieto ? 0 : Math.max(0, 1 - (ahora - retiro) / FUNDIDO);
-            if (f <= 0) { esperaVisible = false; return; }
+        function dibujarEspera(ahora, giro) {
+          var x = espera.x, y = espera.y, r = espera.r, alfa = quieto ? 0.35 : 0.6, completo = 0;
+          if (viaje) {
+            var p = (ahora - viaje.t0) / VIAJE;
+            if (p >= 1) { esperaVisible = false; viaje = null; return; }
+            var destino = posicion(viaje.hacia, giro);
+            var m = suave(p);
+            x = espera.x + (destino.x - espera.x) * m;
+            y = espera.y + (destino.y - espera.y) * m;
+            r = espera.r + (viaje.hacia.tam * escala - espera.r) * m;
+            completo = suave(p * 3);
+            alfa *= 1 - suave((p - 0.7) / 0.3);
           }
-          ctx.strokeStyle = "rgba(" + CREMA + "," + ((quieto ? 0.35 : 0.6) * f).toFixed(3) + ")";
+          var u = ahora % CICLO;
+          ctx.strokeStyle = "rgba(" + CREMA + "," + alfa.toFixed(3) + ")";
           ctx.lineWidth = 1.2;
           ctx.lineCap = "round";
           ctx.beginPath();
           // Empieza (y termina) por una punta diagonal: una sola raya vertical
           // parecería un cursor de texto.
           for (var k = 0; k < 6; k++) {
-            var l = quieto ? 1 : largoPunta(k, u);
+            var l = quieto ? 1 : Math.max(largoPunta(k, u), completo);
             if (l <= 0) continue;
             var ang = -Math.PI / 2 + ((k + 1) % 6) * Math.PI / 3;
-            ctx.moveTo(espera.x, espera.y);
-            ctx.lineTo(espera.x + Math.cos(ang) * espera.r * l, espera.y + Math.sin(ang) * espera.r * l);
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + Math.cos(ang) * r * l, y + Math.sin(ang) * r * l);
           }
           ctx.stroke();
         }
@@ -327,8 +428,8 @@
             ctx.strokeStyle = "rgba(" + CREMA + "," + (0.5 * vida * vida).toFixed(3) + ")";
             ctx.lineWidth = 0.4 + 1.1 * vida;
             ctx.beginPath();
-            ctx.moveTo(a.x * dpr, a.y * dpr);
-            ctx.lineTo(b.x * dpr, b.y * dpr);
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
             ctx.stroke();
           }
         }
@@ -346,16 +447,19 @@
           ctx.clearRect(0, 0, lienzo.width, lienzo.height);
           ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
+          var giro = giroDelCielo();
           var ultimo = estrellas.length ? estrellas[estrellas.length - 1].n : 0;
           var RADIO = 110;
+          var naciendo = false;
 
+          // posiciones del cuadro (con el leve apartarse ante el puntero)
           for (var i = 0; i < estrellas.length; i++) {
             var e = estrellas[i];
-            var px = e.x * ancho, py = e.y * alto;
+            var p = posicion(e, giro);
             if (!quieto) {
               var tx = 0, ty = 0;
               if (puntero) {
-                var vx = px - puntero.x, vy = py - puntero.y;
+                var vx = p.x - puntero.x, vy = p.y - puntero.y;
                 var d = Math.sqrt(vx * vx + vy * vy);
                 if (d < RADIO && d > 0.01) {
                   var f = (1 - d / RADIO);
@@ -366,31 +470,62 @@
               e.dx += (tx - e.dx) * 0.06;
               e.dy += (ty - e.dy) * 0.06;
             }
-            var cx = px + e.dx, cy = py + e.dy;
-            var rojo = e.n === ultimo || e.n === resaltado;
-            if (e.n === resaltado) {
+            e.cx = p.x + e.dx;
+            e.cy = p.y + e.dy;
+            e.vida = e.nace === null ? null : ahora - e.nace;
+            if (e.vida !== null && e.vida >= duracionNacimiento(e)) { e.nace = null; e.vida = null; }
+            if (e.vida !== null) naciendo = true;
+          }
+
+          // constelaciones: hilos finísimos entre regalos del mismo día
+          ctx.lineWidth = 0.6;
+          for (var c = 0; c < constelaciones.length; c++) {
+            var a = constelaciones[c][0], b = constelaciones[c][1];
+            if ((a.vida !== null && a.vida < 0) || (b.vida !== null && b.vida < 0)) continue;
+            var va = a.vida === null ? 1 : suave(a.vida / duracionNacimiento(a));
+            var vb = b.vida === null ? 1 : suave(b.vida / duracionNacimiento(b));
+            var tenue = detrasDelTitulo(a.cx, a.cy) || detrasDelTitulo(b.cx, b.cy) ? 0.35 : 1;
+            ctx.strokeStyle = "rgba(" + CREMA + "," + (0.16 * Math.min(va, vb) * tenue).toFixed(3) + ")";
+            ctx.beginPath();
+            ctx.moveTo(a.cx, a.cy);
+            ctx.lineTo(b.cx, b.cy);
+            ctx.stroke();
+          }
+
+          for (var j = 0; j < estrellas.length; j++) {
+            var s = estrellas[j];
+            if (s.vida !== null && s.vida < 0) continue;      // todavía no nació
+            var rojo = s.n === ultimo || s.n === resaltado;
+            var cx = s.cx, cy = s.cy;
+            var atras = detrasDelTitulo(cx, cy) ? (rojo ? 0.6 : 0.3) : 1;
+            var progreso = s.vida === null ? 1 : suave(s.vida / duracionNacimiento(s));
+            if (s.n === resaltado) {
               var pulso = quieto ? 0.5 : 0.5 + 0.5 * Math.sin(ahora / 1300);
-              var halo = e.tam * escala * (3.2 + pulso * 1.2);
-              var g = ctx.createRadialGradient(cx, cy, 0, cx, cy, halo);
-              g.addColorStop(0, "rgba(" + BERMELLON + "," + (0.22 + 0.14 * pulso).toFixed(3) + ")");
+              var radioHalo = s.tam * escala * (3.2 + pulso * 1.2);
+              var g = ctx.createRadialGradient(cx, cy, 0, cx, cy, radioHalo);
+              g.addColorStop(0, "rgba(" + BERMELLON + "," + ((0.22 + 0.14 * pulso) * progreso).toFixed(3) + ")");
               g.addColorStop(1, "rgba(" + BERMELLON + ",0)");
               ctx.fillStyle = g;
               ctx.beginPath();
-              ctx.arc(cx, cy, halo, 0, Math.PI * 2);
+              ctx.arc(cx, cy, radioHalo, 0, Math.PI * 2);
               ctx.fill();
             }
-            var alfa = rojo ? 0.95 * (0.85 + 0.15 * brillo(e, ahora)) : e.alfa * brillo(e, ahora);
-            dibujarAsterisco(cx, cy, e, rojo ? BERMELLON : CREMA, alfa.toFixed(3));
-            e.cx = cx; e.cy = cy;
+            var alfa = (rojo ? 0.95 * (0.85 + 0.15 * brillo(s, ahora)) : s.alfa * brillo(s, ahora)) * atras;
+            // brillo: luz alrededor del trazo
+            var R = s.tam * escala * 2.6;
+            ctx.globalAlpha = Math.min(1, alfa * 0.32 * progreso);
+            ctx.drawImage(rojo ? haloBermellon : haloCrema, cx - R, cy - R, R * 2, R * 2);
+            ctx.globalAlpha = 1;
+            dibujarAsterisco(cx, cy, s, rojo ? BERMELLON : CREMA, alfa.toFixed(3), s.vida);
           }
 
-          if (esperaVisible) dibujarEspera(ahora);
+          if (esperaVisible) dibujarEspera(ahora, giro);
 
           dibujarEstela(ahora);
 
-          if (abierta && !fijada && abierta.cx != null) ubicarEtiqueta(abierta);
+          if (abierta) ubicarEtiqueta(abierta);
 
-          var mueve = !quieto || estela.length > 0;
+          var mueve = !quieto || estela.length > 0 || naciendo;
           if (mueve) pedirCuadro();
         }
 
@@ -401,23 +536,25 @@
 
         // ---------- etiqueta ----------
 
+        function visible(e) { return e.nace === null || performance.now() >= e.nace; }
+
         function buscarEstrella(x, y) {
           var mejor = null, dist = Infinity;
           for (var i = 0; i < estrellas.length; i++) {
             var e = estrellas[i];
-            var ex = e.cx != null ? e.cx : e.x * ancho, ey = e.cy != null ? e.cy : e.y * alto;
-            var d = Math.hypot(ex - x, ey - y);
+            if (e.cx == null || !visible(e)) continue;
+            var d = Math.hypot(e.cx - x, e.cy - y);
             if (d < Math.max(e.tam * escala + 8, 18) && d < dist) { mejor = e; dist = d; }
           }
           return mejor;
         }
 
+        var etiquetaAncho = 0, etiquetaAlto = 0;
         function ubicarEtiqueta(e) {
-          var ex = e.cx != null ? e.cx : e.x * ancho, ey = e.cy != null ? e.cy : e.y * alto;
-          var w = etiqueta.offsetWidth, h = etiqueta.offsetHeight;
-          var x = Math.min(Math.max(16, ex + 18), ancho - w - 16);
-          var y = ey - h - 14;
-          if (y < 16) y = ey + 18;
+          if (e.cx == null) return;
+          var x = Math.min(Math.max(16, e.cx + 18), ancho - etiquetaAncho - 16);
+          var y = e.cy - etiquetaAlto - 14;
+          if (y < 16) y = e.cy + 18;
           etiqueta.style.transform = "translate(" + Math.round(x) + "px," + Math.round(y) + "px)";
         }
 
@@ -425,9 +562,13 @@
           abierta = e;
           fijada = !!fijar;
           etiquetaTexto.textContent = S.T[actual].num.replace("{n}", e.n) + " · " + S.hace(e.fecha, actual);
+          etiquetaMomento.textContent = S.momento(e.fecha, actual);
           copiarEnlace.textContent = S.T[actual].copiarEnlace;
           etiqueta.hidden = false;
+          etiquetaAncho = etiqueta.offsetWidth;
+          etiquetaAlto = etiqueta.offsetHeight;
           ubicarEtiqueta(e);
+          pedirCuadro();
         }
 
         function ocultarEtiqueta() {
@@ -478,7 +619,7 @@
         // Celular: debajo del bloque del título, sin tocar el pie.
         function ubicarEsperando() {
           if (!espera || !ancho) return;   // todavía no se midió el lienzo
-          var obra = document.getElementById("obra").getBoundingClientRect();
+          var obra = obraEl.getBoundingClientRect();
           var h1 = titulo.getBoundingClientRect();
           var pie = document.querySelector(".pie").getBoundingClientRect();
           var r = Math.round(30 * escala);
@@ -503,22 +644,92 @@
           S.pintarCuenta(cuentaN, regalos);
         }
 
-        S.cargarRegalos().then(function (lista) {
-          regalos = lista;
-          if (!lista) return;
+        // Cuánto hace que nadie responde: desde el último regalo, o desde el
+        // inicio de la obra si todavía no hubo ninguno.
+        function pintarSilencio() {
+          if (!silencioEl) return;
+          if (!regalos) { silencioEl.hidden = true; return; }
+          var desde = regalos.length ? regalos[regalos.length - 1].fecha : INICIO;
+          var t = S.T[actual];
+          var ms = Date.now() - desde;
+          silencioEl.textContent = ms < 60000 ? t.recien : t.silencio.replace("{t}", S.duracion(ms, actual));
+          var antes = silencioEl.hidden;
+          silencioEl.hidden = false;
+          if (antes) medirTitulo();
+        }
+        setInterval(pintarSilencio, 30000);
+
+        // Primera vez que hay regalos: el asterisco que espera viaja hasta el
+        // regalo elegido (el más reciente, o el de ?n=) y se vuelve ese regalo;
+        // los demás nacen en orden, del primero al último, como una historia.
+        function revelar(lista, destinoN) {
           estrellas = lista.map(crearEstrella);
+          armarConstelaciones();
+          if (!lista.length) return;
+          var destino = estrellas[(destinoN || lista.length) - 1];
+          esperando.classList.add("retirada");
+          setTimeout(function () { esperando.hidden = true; }, quieto ? 0 : 1200);
+          if (quieto) { esperaVisible = false; return; }
+          var t0 = performance.now();
+          if (esperaVisible) {
+            viaje = { t0: t0, hacia: destino };
+            destino.nace = t0 + VIAJE - 350;
+          } else {
+            destino.nace = t0;
+          }
+          var otros = estrellas.filter(function (e) { return e !== destino; });
+          var paso = otros.length ? Math.min(160, 3200 / otros.length) : 0;
+          otros.forEach(function (e, i) { e.nace = t0 + 400 + i * paso; });
+        }
+
+        // Regalos que llegan mientras alguien mira: nacen ahí mismo.
+        function sumarNuevos(lista) {
+          if (!estrellas.length) { revelar(lista); return; }
+          var t0 = performance.now();
+          lista.slice(estrellas.length).forEach(function (r, i) {
+            var e = crearEstrella(r);
+            e.nace = quieto ? null : t0 + i * 700;
+            estrellas.push(e);
+          });
+          armarConstelaciones();
+        }
+
+        var conN = S.parametro("n") != null;
+        var pendiente = null;    // lista que llegó durante el prólogo
+
+        function recibir(lista, primera) {
+          if (!lista) { if (primera) pintarCuenta(); return; }
+          var antes = regalos ? regalos.length : -1;
+          regalos = lista;
           pintarCuenta();
-          if (lista.length) retirarEspera();
-          var n = parseInt(S.parametro("n"), 10);
-          if (n >= 1 && n <= lista.length) {
-            resaltado = n;
-            var e = estrellas[n - 1];
-            e.cx = e.x * ancho; e.cy = e.y * alto;
-            mostrarEtiqueta(e, true);
+          pintarSilencio();
+          if (primera || antes < 0) {
+            var n = parseInt(S.parametro("n"), 10);
+            var conDestino = n >= 1 && n <= lista.length;
+            if (conDestino) resaltado = n;
+            if (enPrologo) pendiente = { lista: lista, n: conDestino ? n : null };
+            else revelar(lista, conDestino ? n : null);
+            if (conDestino) {
+              setTimeout(function () {
+                var e = estrellas[n - 1];
+                if (e) mostrarEtiqueta(e, true);
+              }, quieto ? 0 : VIAJE + 500);
+            }
+          } else if (lista.length > antes) {
+            sumarNuevos(lista);
           }
           if (!registro.hidden) armarRegistro();
           pedirCuadro();
-        });
+        }
+
+        S.cargarRegalos().then(function (lista) { recibir(lista, true); });
+
+        // Cada minuto y medio, mientras la pestaña está a la vista, se mira si
+        // llegó algo nuevo (directo a Blockscout, que está al día).
+        setInterval(function () {
+          if (document.hidden) return;
+          S.cargarRegalos(true).then(function (lista) { recibir(lista, false); });
+        }, 90000);
 
         // ---------- nota al pie ----------
 
@@ -596,6 +807,11 @@
             prologo.hidden = true;
             prologo.classList.remove("saliendo");
           }, quieto ? 0 : 1100);
+          if (pendiente) {
+            var p = pendiente;
+            pendiente = null;
+            setTimeout(function () { revelar(p.lista, p.n); pedirCuadro(); }, quieto ? 0 : 900);
+          }
           rotar();
           pedirCuadro();
         }
@@ -646,7 +862,6 @@
 
         var visto = false;
         try { visto = localStorage.getItem(MARCA) === "1"; } catch (e) {}
-        var conN = S.parametro("n") != null;
         if (!conN && (S.parametro("prologo") === "1" || !visto)) correrPrologo();
         else rotar();
       })();
@@ -786,6 +1001,23 @@
     border-left: 1px solid var(--bermellon);
   }
   .etiqueta[hidden] { display: none; }
+  .etiqueta { flex-wrap: wrap; max-width: 300px; row-gap: 4px; }
+  .etiqueta .momento {
+    flex-basis: 100%; white-space: normal;
+    font-family: var(--serif); font-style: italic; font-size: .95rem; line-height: 1.25;
+    color: var(--crema); opacity: .85;
+  }
+  .etiqueta .momento:empty { display: none; }
+
+  /* cuánto hace que nadie responde */
+  .silencio {
+    position: absolute; top: max(18px, env(safe-area-inset-top)); right: 16px; margin: 0;
+    font-family: var(--mono); font-size: .68rem; letter-spacing: .03em; color: var(--tenue);
+    text-align: right;
+  }
+  @media (max-width: 640px) {
+    .silencio { top: calc(max(18px, env(safe-area-inset-top)) + 1.3rem); left: 16px; right: auto; text-align: left; }
+  }
 
   .nota {
     position: fixed; inset: 0; z-index: 5; overflow-y: auto; touch-action: pan-y;
