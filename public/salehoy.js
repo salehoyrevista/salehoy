@@ -493,24 +493,48 @@
     return pagina(null, tope);
   }
 
+  // Caché compartida en /api/regalos (función de Netlify, se renueva cada
+  // minuto): responde rápido. Trae lo mismo que Blockscout, sin remitentes.
+  function desdeCache(senal) {
+    var ctrl = window.AbortController ? new AbortController() : null;
+    var reloj = setTimeout(function () { if (ctrl) ctrl.abort(); }, 2500);
+    if (senal && ctrl) senal.addEventListener("abort", function () { ctrl.abort(); });
+    return fetch("/api/regalos", ctrl ? { signal: ctrl.signal } : undefined).then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      return r.json();
+    }).then(function (j) {
+      clearTimeout(reloj);
+      if (!j || !Array.isArray(j.transacciones) || !Array.isArray(j.transferencias)) throw new Error("formato");
+      return [j.transacciones, j.transferencias];
+    }, function (e) { clearTimeout(reloj); throw e; });
+  }
+
+  // Blockscout directo desde el navegador: siempre al día, pero tarda más.
+  function desdeBlockscout(senal) {
+    var base = "https://base.blockscout.com/api/v2/addresses/" + DIRECCION;
+    return Promise.all([
+      traerTodo(base + "/transactions?filter=to", senal, 20),
+      traerTodo(base + "/token-transfers?type=ERC-20&filter=to&token=" + USDC_BASE, senal, 20)
+    ]);
+  }
+
   // Lista de regalos (del más viejo al más nuevo, numerados desde 1),
-  // o null si la API falla o tarda más de 6 s.
+  // o null si no hay datos en 6 s. Primero la caché; con "denuevo" (cuando
+  // alguien espera ver su regalo) primero Blockscout, que está al día.
   var pedido = null;
 
   function cargarRegalos(denuevo) {
     if (pedido && !denuevo) return pedido;
-    var base = "https://base.blockscout.com/api/v2/addresses/" + DIRECCION;
     var ctrl = window.AbortController ? new AbortController() : null;
     var reloj;
     var limite = new Promise(function (_, rechazar) {
       reloj = setTimeout(function () { if (ctrl) ctrl.abort(); rechazar(new Error("timeout")); }, 6000);
     });
     var senal = ctrl ? ctrl.signal : null;
+    var primero = denuevo ? desdeBlockscout : desdeCache;
+    var segundo = denuevo ? desdeCache : desdeBlockscout;
     pedido = Promise.race([
-      Promise.all([
-        traerTodo(base + "/transactions?filter=to", senal, 20),
-        traerTodo(base + "/token-transfers?type=ERC-20&filter=to&token=" + USDC_BASE, senal, 20)
-      ]),
+      primero(senal).catch(function () { return segundo(senal); }),
       limite
     ]).then(function (res) {
       return filtrarRegalos(res[0], res[1]);
