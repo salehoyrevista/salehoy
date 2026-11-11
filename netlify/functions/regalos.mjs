@@ -100,8 +100,11 @@ export default async function () {
       clearTimeout(reloj);
     }
   }
-  // Un error se guarda poco, para no martillar a las fuentes ni quedar pegado.
-  return json({ error: "sin fuente", detalle: errores }, 503, "public, s-maxage=15");
+  // Sin fuente disponible (hoy: falta BLOCKSCOUT_API_KEY). Se responde 200 con
+  // "sinFuente" y el CDN lo guarda una hora: el navegador pasa a Blockscout
+  // directo sin error en consola y sin gastar una invocación por visita. Un
+  // deploy nuevo (por ejemplo, al cargar la clave) vacía esa caché.
+  return json({ sinFuente: true, detalle: errores }, 200, "public, durable, s-maxage=3600");
 }
 
 export const config = { path: "/api/regalos" };
