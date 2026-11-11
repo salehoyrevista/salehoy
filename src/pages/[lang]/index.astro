@@ -1,0 +1,10 @@
+---
+// El cielo en cada idioma, con su propia dirección: /en/, /pt/, /fr/...
+import Cielo from "../../components/Cielo.astro";
+
+export function getStaticPaths() {
+  return ["en", "pt", "fr", "it", "de", "zh", "ja"].map((lang) => ({ params: { lang } }));
+}
+const { lang } = Astro.params;
+---
+<Cielo lang={lang} fijo />
