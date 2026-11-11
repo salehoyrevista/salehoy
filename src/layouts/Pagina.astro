@@ -1,0 +1,161 @@
+---
+// Plantilla de las páginas de texto: misma tinta, grano y tipografías que el
+// cielo, pero pensadas para leer (y para que las lean buscadores y modelos).
+import { SITIO, RUTAS, NAV } from "../lib/obra.js";
+
+const {
+  lang = "es",
+  titulo,
+  descripcion,
+  ruta,                 // dirección de esta página, p. ej. "/sobre/"
+  alternativas = [],    // [{ lang, href }] de la misma página en otros idiomas
+  ld = null             // datos estructurados (objeto o lista)
+} = Astro.props;
+
+const r = RUTAS[lang] || RUTAS.en;
+const n = NAV[lang] || NAV.en;
+const url = SITIO + ruta;
+const nombres = { es: "Español", en: "English", pt: "Português" };
+const todas = [{ lang, href: ruta }, ...alternativas];
+---
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0e0d12" />
+    <title>{titulo} · Sin motivo — Solzimer</title>
+    <meta name="description" content={descripcion} />
+    <meta name="author" content="Solzimer" />
+    <link rel="canonical" href={url} />
+    {todas.length > 1 && todas.map((a) => <link rel="alternate" hreflang={a.lang} href={SITIO + a.href} />)}
+    {todas.length > 1 && <link rel="alternate" hreflang="x-default" href={SITIO + (todas.find((a) => a.lang === "en") || todas[0]).href} />}
+    <link rel="alternate" type="text/plain" href="/llms.txt" />
+    <link rel="preload" href="/fonts/instrument-serif.woff2" as="font" type="font/woff2" crossorigin />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Sin motivo — Solzimer" />
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={descripcion} />
+    <meta property="og:image" content="https://salehoy.com.ar/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:url" content={url} />
+    <meta name="twitter:card" content="summary_large_image" />
+    {ld && <script type="application/ld+json" set:html={JSON.stringify(ld)} />}
+  </head>
+  <body>
+    <header class="arriba">
+      <a class="firma" href={r.cielo}>Sin motivo — Solzimer</a>
+      <nav aria-label="Sin motivo">
+        <a href={r.cielo}>{n.cielo}</a>
+        <a href={r.regalo}>{n.regalo} →</a>
+      </nav>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="abajo">
+      <nav aria-label={n.otros}>
+        <a href={r.cielo}>{n.cielo}</a>
+        <a href={r.estrella}>{n.estrella}</a>
+        <a href={r.frases}>{n.frases}</a>
+        <a href={r.sobre}>{n.sobre}</a>
+        <a href={r.agentes}>{n.agentes}</a>
+        <a href={r.regalo}>{n.regalo} →</a>
+      </nav>
+      {alternativas.length > 0 && (
+        <p class="otros">{n.otros}: {alternativas.map((a) => <a href={a.href} hreflang={a.lang} lang={a.lang}>{nombres[a.lang] || a.lang}</a>)}</p>
+      )}
+      <p class="otros">Solzimer · 2026 · <a href="/llms.txt">llms.txt</a> · <a href="/obra.json">obra.json</a></p>
+    </footer>
+
+    <script is:inline src="/visita.js" defer></script>
+  </body>
+</html>
+
+<style is:global>
+  @font-face {
+    font-family: "Instrument Serif"; font-style: normal; font-weight: 400; font-display: swap;
+    src: url("/fonts/instrument-serif.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "Instrument Serif"; font-style: italic; font-weight: 400; font-display: swap;
+    src: url("/fonts/instrument-serif-italic.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "IBM Plex Mono"; font-style: normal; font-weight: 400; font-display: swap;
+    src: url("/fonts/ibm-plex-mono.woff2") format("woff2");
+  }
+
+  :root {
+    --tinta: #0e0d12;
+    --crema: #f2e9d8;
+    --tenue: rgba(242, 233, 216, 0.6);
+    --linea: rgba(242, 233, 216, 0.16);
+    --bermellon: #e2553a;
+    --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--tinta); color: var(--crema); }
+  body { min-height: 100vh; font-family: var(--serif); overflow-x: hidden; }
+  body::after {
+    content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .07;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .95 0 0 0 0 .91 0 0 0 0 .85 0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>");
+  }
+  a { color: var(--bermellon); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+  a:hover { text-decoration-thickness: 2px; }
+  :focus-visible { outline: 1px solid var(--bermellon); outline-offset: 4px; }
+
+  .arriba, .abajo, main { position: relative; z-index: 1; }
+  .arriba {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 24px;
+    padding: max(18px, env(safe-area-inset-top)) 16px 0;
+    font-family: var(--mono); font-size: .7rem;
+  }
+  .arriba nav { display: flex; gap: 18px; }
+  .firma { color: var(--tenue); text-decoration: none; letter-spacing: .04em; }
+  .firma:hover { color: var(--crema); }
+
+  main { width: 100%; max-width: 44rem; padding: 11vh 16px 48px clamp(16px, 9vw, 7rem); }
+  h1 { margin: 0 0 1.5rem; font-weight: 400; font-size: clamp(2.5rem, 7.5vw, 4.8rem); line-height: .98; letter-spacing: -.012em; }
+  h1 em { color: var(--tenue); }
+  h2 { margin: 2.75rem 0 .75rem; font-weight: 400; font-size: clamp(1.6rem, 3.6vw, 2.1rem); line-height: 1.1; }
+  h3 { margin: 1.75rem 0 .4rem; font-weight: 400; font-style: italic; font-size: 1.35rem; line-height: 1.2; }
+  p, li { font-size: 1.25rem; line-height: 1.5; }
+  p { margin: 0 0 1rem; }
+  ul, ol { margin: 0 0 1rem; padding-left: 1.3rem; }
+  li { margin-bottom: .45rem; }
+  .entrada { font-size: clamp(1.4rem, 3vw, 1.7rem); line-height: 1.35; color: var(--crema); }
+  .dato, .mono { font-family: var(--mono); font-size: .76rem; line-height: 1.7; color: var(--tenue); }
+  .mono code, code { font-family: var(--mono); font-size: .8em; word-break: break-all; color: var(--crema); }
+  pre {
+    margin: 0 0 1.25rem; padding: 0 0 0 1rem; border-left: 1px solid var(--bermellon); overflow-x: auto;
+    font-family: var(--mono); font-size: .76rem; line-height: 1.7; color: var(--crema); white-space: pre-wrap; word-break: break-word;
+  }
+  .accion { margin: 2rem 0 0; font-family: var(--mono); font-size: .9rem; }
+  hr { border: 0; border-top: 1px solid var(--linea); margin: 2.5rem 0; }
+
+  /* lista de frases */
+  .frases { list-style: none; padding: 0; margin: 1.5rem 0; }
+  .frases li { display: flex; gap: 1rem; align-items: baseline; justify-content: space-between; padding: .8rem 0; border-top: 1px solid var(--linea); margin: 0; }
+  .frases q { quotes: none; font-style: italic; font-size: 1.4rem; line-height: 1.3; }
+  .frases button {
+    flex: none; background: none; border: 0; padding: 0; cursor: pointer;
+    font-family: var(--mono); font-size: .68rem; color: var(--tenue);
+    text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px;
+  }
+  .frases button:hover { color: var(--crema); }
+
+  .abajo {
+    max-width: 44rem; margin-top: 2rem; padding: 1.5rem 16px max(24px, env(safe-area-inset-bottom)) clamp(16px, 9vw, 7rem);
+    border-top: 1px solid var(--linea); font-family: var(--mono); font-size: .7rem; line-height: 2;
+  }
+  .abajo nav { display: flex; flex-wrap: wrap; gap: 2px 18px; }
+  .abajo a { color: var(--tenue); }
+  .abajo a:hover { color: var(--crema); }
+  .otros { margin: .4rem 0 0; font-family: var(--mono); font-size: .7rem; line-height: 2; color: var(--tenue); }
+  .otros a { margin-left: .5em; }
+</style>

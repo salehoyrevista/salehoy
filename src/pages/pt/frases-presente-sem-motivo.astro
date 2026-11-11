@@ -1,0 +1,61 @@
+---
+import Pagina from "../../layouts/Pagina.astro";
+import ListaFrases from "../../components/ListaFrases.astro";
+import { SITIO, RUTAS } from "../../lib/obra.js";
+
+const r = RUTAS.pt;
+const frases = [
+  "Porque sim. Que é o melhor motivo.",
+  "Não é seu aniversário. Por isso mesmo.",
+  "Vi isso e pensei em você. Fim da explicação.",
+  "Não precisa de data para lembrar de alguém.",
+  "Sem motivo, que é como se gosta de verdade.",
+  "Não estou comemorando nada. Estou comemorando você.",
+  "Uma terça-feira qualquer também merece presente.",
+  "Você não me deve nada. Nem o obrigado.",
+  "Isto não é por alguma coisa. É por alguém.",
+  "Me deu vontade. Vontade não se discute.",
+  "Para que hoje tenha algo diferente.",
+  "Não abra procurando o porquê. Não tem.",
+  "Tem presente que avisa. Este não.",
+  "Porque o calendário não decide quando eu penso em você.",
+  "Um mimo pequeno para um dia normal.",
+  "Vi, era você, trouxe.",
+  "Não é um pedido de desculpas nem uma festa. É um presente.",
+  "Presentear sem motivo é o jeito mais estranho de dizer sim."
+];
+const ld = {
+  "@context": "https://schema.org", "@type": "Article",
+  headline: "Frases para um presente sem motivo", inLanguage: "pt",
+  author: { "@type": "Person", name: "Solzimer" }, datePublished: "2026-11-11",
+  mainEntityOfPage: SITIO + r.frases, image: SITIO + "/og.png"
+};
+---
+<Pagina
+  lang="pt"
+  titulo="Frases para um presente sem motivo"
+  descripcion="18 frases curtas para acompanhar um presente porque sim: sem aniversário, sem data, sem desculpa. Originais e de uso livre, para um cartão ou uma mensagem."
+  ruta={r.frases}
+  alternativas={[{ lang: "es", href: RUTAS.es.frases }, { lang: "en", href: RUTAS.en.frases }]}
+  ld={ld}
+>
+  <h1>Frases para um presente <em>sem motivo</em></h1>
+  <p class="entrada">Para quando não há aniversário, nem data, nem desculpa. Só vontade.</p>
+  <p>Um presente sem motivo incomoda um pouco: quem recebe procura o porquê. A frase que vai junto não precisa explicar. Precisa deixar claro que não há nada a explicar.</p>
+
+  <ListaFrases frases={frases} copiar="copiar" copiado="copiada ✓" />
+
+  <p class="dato">Estas frases foram escritas para esta página. São de uso livre: copie, mude, assine com o seu nome.</p>
+
+  <h2>Como usar</h2>
+  <ul>
+    <li><strong>Num cartão.</strong> Uma linha só, à mão. Quanto menos explicar, melhor.</li>
+    <li><strong>Numa mensagem.</strong> Mande antes do presente, sem mais contexto. O mistério faz parte.</li>
+    <li><strong>Para sempre.</strong> Em <a href={r.cielo}><em>Sin motivo</em></a>, uma obra de arte, dá para <a href={r.estrella}>presentear uma estrela</a> e deixar a frase escrita como dedicatória, de forma permanente.</li>
+  </ul>
+
+  <h2>Por que presentear sem motivo</h2>
+  <p>Um presente de aniversário responde a uma data. Um presente sem motivo não responde a nada, e por isso diz mais: que alguém pensou em você num dia em que não precisava.</p>
+  <p>Dessa ideia nasce <a href={r.sobre}><em>Sin motivo</em></a>, uma obra que faz uma única pergunta: alguém dá um presente só porque sim?</p>
+  <p class="accion"><a href={r.cielo}>ver o céu →</a></p>
+</Pagina>

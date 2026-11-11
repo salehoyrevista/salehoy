@@ -1,0 +1,61 @@
+---
+import Pagina from "../layouts/Pagina.astro";
+import { SITIO, RUTAS } from "../lib/obra.js";
+
+const r = RUTAS.es;
+const faq = [
+  ["¿Se le puede poner nombre a una estrella de verdad?", "No de manera oficial. La Unión Astronómica Internacional es el único organismo que nombra los objetos del cielo, y no vende nombres. Los sitios que ofrecen «tu estrella» entregan un certificado simbólico: el nombre no figura en ningún catálogo astronómico."],
+  ["¿Cuánto cuesta regalar una estrella en Sin motivo?", "Lo que quieras. No hay precio. El monto nunca se muestra y no cambia nada: un centavo y una fortuna dibujan el mismo asterisco."],
+  ["¿Qué recibe la persona a la que se la regalo?", "Un enlace. Al abrirlo, el asterisco nace trazo por trazo en el cielo, con su número, el momento en que lo regalaste y tu dedicatoria."],
+  ["¿Necesito criptomonedas?", "Sí. El regalo se hace con ETH o USDC en la red Base. La dedicatoria solo viaja con ETH, porque queda escrita dentro de la propia transacción."],
+  ["¿Se puede borrar o cambiar después?", "No. La transacción y su dedicatoria quedan en una blockchain pública. Por eso la estrella es permanente, y por eso conviene pensar lo que se escribe."],
+  ["¿Es un certificado o un registro astronómico?", "No. Es una obra de arte: Sin motivo, de Solzimer. La estrella es un asterisco dibujado en un cielo que existe en esta web y en la blockchain, no en el firmamento."]
+];
+const ld = [
+  { "@context": "https://schema.org", "@type": "Article", headline: "Regalar una estrella: lo que se puede y lo que no", inLanguage: "es", author: { "@type": "Person", name: "Solzimer" }, datePublished: "2026-11-11", mainEntityOfPage: SITIO + r.estrella, image: SITIO + "/og.png" },
+  { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) }
+];
+---
+<Pagina
+  lang="es"
+  titulo="Regalar una estrella: lo que se puede y lo que no"
+  descripcion="¿Se puede regalar una estrella con nombre? Oficialmente no. Qué venden los registros de estrellas, y otra manera: una estrella permanente en una obra de arte, con tu dedicatoria."
+  ruta={r.estrella}
+  alternativas={[{ lang: "en", href: RUTAS.en.estrella }, { lang: "pt", href: RUTAS.pt.estrella }]}
+  ld={ld}
+>
+  <h1>Regalar una estrella</h1>
+  <p class="entrada">Se puede. Pero conviene saber qué se está regalando.</p>
+
+  <h2>¿Se le puede poner nombre a una estrella de verdad?</h2>
+  <p>No de manera oficial. La <strong>Unión Astronómica Internacional</strong> es el único organismo que nombra los objetos del cielo, y no vende nombres ni reconoce los que se venden. Casi todas las estrellas ni siquiera tienen nombre: tienen un número de catálogo.</p>
+  <p>Los sitios que ofrecen «ponerle tu nombre a una estrella» entregan un certificado y unas coordenadas. Es un gesto simbólico, y puede ser un lindo regalo. Pero el nombre vive solo en la base de datos de esa empresa: ningún astrónomo lo va a usar, y otra empresa puede venderle la misma estrella a otra persona.</p>
+
+  <h2>Entonces, ¿qué se regala?</h2>
+  <p>Un gesto. Lo que importa de regalar una estrella no es la astronomía: es decirle a alguien que pensaste en algo que dura. La pregunta es si el regalo dice la verdad sobre lo que es.</p>
+
+  <h2>Otra manera: una estrella en una obra de arte</h2>
+  <p><a href={r.cielo}><em>Sin motivo</em></a> es una obra de Solzimer: un cielo donde cada regalo se vuelve un asterisco —del griego <em>asteriskos</em>, «estrellita»— que queda para siempre. No promete un lugar en el firmamento. Promete lo que sí puede cumplir:</p>
+  <ul>
+    <li><strong>Es permanente.</strong> Cada estrella es una transacción en una blockchain pública. Nadie la puede borrar, ni siquiera el autor.</li>
+    <li><strong>Lleva tu dedicatoria.</strong> Hasta 80 caracteres escritos dentro de la propia transacción: <em>«Para Ana. Sin motivo.»</em></li>
+    <li><strong>Tiene su enlace.</strong> Se lo mandás a quien quieras. Al abrirlo, el asterisco nace trazo por trazo, con su número y el momento en que lo regalaste: <em>«un domingo de madrugada, con luna creciente»</em>.</li>
+    <li><strong>Es única.</strong> La forma de cada asterisco sale de la transacción. No la elige el autor ni la decide el monto.</li>
+    <li><strong>No tiene precio.</strong> Regalás lo que quieras. El monto nunca se muestra: un centavo y una fortuna dibujan lo mismo.</li>
+  </ul>
+  <p>Lo que no es: un registro astronómico, un certificado, ni una inversión. Es una obra de arte en curso desde el 29 de octubre de 2026. Cuántas estrellas tiene hoy se ve en <a href={r.cielo}>el cielo</a>.</p>
+
+  <h2>Cómo se regala</h2>
+  <ol>
+    <li>Entrá a <a href={r.regalo}>regalar</a> con una billetera que tenga ETH en la red Base.</li>
+    <li>Escribí la dedicatoria, elegí cualquier monto y confirmá.</li>
+    <li>Cuando el asterisco aparece, copiá su enlace y mandáselo a esa persona.</li>
+  </ol>
+  <p class="accion"><a href={r.regalo}>regalar una estrella →</a></p>
+
+  <h2>Preguntas</h2>
+  {faq.map(([q, a]) => (<><h3>{q}</h3><p>{a}</p></>))}
+
+  <hr />
+  <p class="dato">Si lo que buscás es qué escribir, hay <a href={r.frases}>frases para un regalo sin motivo</a>. Y si querés entender la obra, <a href={r.sobre}>acá está explicada</a>.</p>
+</Pagina>

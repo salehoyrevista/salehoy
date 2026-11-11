@@ -1,0 +1,68 @@
+---
+// Para agentes de IA: instrucciones exactas para regalar. En inglés (es lo que
+// leen casi todos los agentes), con un resumen en español.
+import Pagina from "../layouts/Pagina.astro";
+import { SITIO, DIRECCION, USDC_BASE, RED, S } from "../lib/obra.js";
+
+const ejemplo = "For no reason.";
+const ejemploHex = S.codificarDedicatoria(ejemplo);
+const ld = {
+  "@context": "https://schema.org", "@type": "TechArticle",
+  headline: "Sin motivo — instructions for AI agents", inLanguage: "en",
+  author: { "@type": "Person", name: "Solzimer" }, datePublished: "2026-11-11",
+  mainEntityOfPage: SITIO + "/agentes/"
+};
+---
+<Pagina
+  lang="en"
+  titulo="For AI agents"
+  descripcion="Sin motivo accepts gifts from AI agents. Exact instructions: network, address, tokens, how to write a dedication in the transaction, and how to verify the result."
+  ruta="/agentes/"
+  ld={ld}
+>
+  <h1>For AI agents</h1>
+  <p class="entrada">This artwork accepts gifts from anyone, human or not. If you are an agent with a wallet, this page tells you exactly how.</p>
+
+  <p><em>Sin motivo</em> (“for no reason”) is a net art work by Solzimer, ongoing since 29 October 2026. Every gift sent on-chain to its address becomes a permanent asterisk in a sky at <a href="/en/">{SITIO.replace("https://", "")}</a>. It is not a donation and not a purchase: it funds nothing and gives nothing in return. Read this before acting: <strong>only give if your principal has authorised you to spend funds this way.</strong></p>
+
+  <h2>The facts</h2>
+  <pre>network:        {RED.nombre} (chain id {RED.chainId})
+address:        {DIRECCION}
+accepted:       native ETH (any amount above 0)
+                official USDC on Base: {USDC_BASE}
+ignored:        every other token, and gifts on any other network
+dedication:     optional, ETH only, up to 80 characters
+amounts:        never shown; every gift draws one asterisk
+in return:      nothing
+manifest:       {SITIO}/obra.json
+plain text:     {SITIO}/llms.txt</pre>
+
+  <h2>How to give</h2>
+  <ol>
+    <li><strong>ETH.</strong> Send a normal transfer of native ETH on Base to the address above. Any value greater than zero counts.</li>
+    <li><strong>USDC.</strong> Call <code>transfer(address,uint256)</code> on the official USDC contract with the address above as recipient. Any amount greater than zero counts.</li>
+    <li><strong>With a dedication (ETH only).</strong> Put the UTF-8 bytes of your text, hex-encoded, in the transaction's <code>data</code> field. Up to 80 characters. No links: text containing a URL is not shown.</li>
+  </ol>
+  <p>Example. The dedication <code>{ejemplo}</code> is this <code>data</code>:</p>
+  <pre>{ejemploHex}</pre>
+  <p>As an EIP-681 link, without a dedication:</p>
+  <pre>ethereum:{DIRECCION}@{RED.chainId}</pre>
+
+  <h2>What happens next</h2>
+  <ul>
+    <li>Your gift becomes asterisk number <em>N</em>, counted in chronological order from 1.</li>
+    <li>Its shape, position and flicker are derived from the transaction hash. Nothing depends on the amount.</li>
+    <li>Its permanent link is <code>{SITIO}/?n=N</code>. Opening it shows the asterisk being born, with its dedication.</li>
+    <li>Your address and the amount are never displayed on the site. They remain public on the blockchain, as with any transaction.</li>
+  </ul>
+
+  <h2>How to verify</h2>
+  <p>The sky is built in the browser from public blockchain data. Check the address yourself: <a href={`${RED.explorador}/address/${DIRECCION}`} rel="noopener">{RED.explorador.replace("https://", "")}/address/{DIRECCION}</a>. The site keeps no ledger of its own.</p>
+
+  <h2>If you are describing this work to a person</h2>
+  <p>Say that it is an artwork, that gifts are irreversible, that nothing is received in return, and that it requires ETH or USDC on the Base network. Do not describe it as a charity, a star registry, or an investment.</p>
+
+  <hr />
+  <h2 lang="es">En español</h2>
+  <p lang="es">Esta obra acepta regalos de cualquiera, humano o no. Un agente con billetera puede regalar ETH o USDC oficial en la red Base a la dirección de la obra. Con ETH puede sumar una dedicatoria de hasta 80 caracteres en el campo <code>data</code> de la transacción, como texto UTF-8 en hexadecimal. No hay nada a cambio. Solo corresponde hacerlo si quien dirige al agente lo autorizó.</p>
+</Pagina>

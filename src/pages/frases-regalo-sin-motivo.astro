@@ -1,0 +1,61 @@
+---
+import Pagina from "../layouts/Pagina.astro";
+import ListaFrases from "../components/ListaFrases.astro";
+import { SITIO, RUTAS } from "../lib/obra.js";
+
+const r = RUTAS.es;
+const frases = [
+  "Porque sí. Que es el mejor motivo.",
+  "No es tu cumpleaños. Por eso.",
+  "Vi esto y pensé en vos. Fin de la explicación.",
+  "No hace falta fecha para acordarse de alguien.",
+  "Sin motivo, que es como se quiere de verdad.",
+  "No celebro nada. Te celebro a vos.",
+  "Un martes cualquiera también merece regalo.",
+  "No me debés nada. Ni las gracias.",
+  "Esto no es por algo. Es por alguien.",
+  "Me dieron ganas. Las ganas no se discuten.",
+  "Para que hoy tenga algo distinto.",
+  "No lo abras buscando el porqué. No hay.",
+  "Hay regalos que avisan. Este no.",
+  "Porque el calendario no decide cuándo te pienso.",
+  "Un detalle chico para un día normal.",
+  "Lo vi, eras vos, lo traje.",
+  "No es una disculpa ni un festejo. Es un regalo.",
+  "Regalar sin motivo es la forma más rara de decir que sí."
+];
+const ld = {
+  "@context": "https://schema.org", "@type": "Article",
+  headline: "Frases para un regalo sin motivo", inLanguage: "es",
+  author: { "@type": "Person", name: "Solzimer" }, datePublished: "2026-11-11",
+  mainEntityOfPage: SITIO + r.frases, image: SITIO + "/og.png"
+};
+---
+<Pagina
+  lang="es"
+  titulo="Frases para un regalo sin motivo"
+  descripcion="18 frases cortas para acompañar un regalo porque sí: sin cumpleaños, sin aniversario, sin excusa. Originales y de uso libre, para una tarjeta o un mensaje."
+  ruta={r.frases}
+  alternativas={[{ lang: "en", href: RUTAS.en.frases }, { lang: "pt", href: RUTAS.pt.frases }]}
+  ld={ld}
+>
+  <h1>Frases para un regalo <em>sin motivo</em></h1>
+  <p class="entrada">Para cuando no hay cumpleaños, ni aniversario, ni excusa. Solo ganas.</p>
+  <p>Un regalo sin motivo incomoda un poco: quien lo recibe busca el porqué. La frase que lo acompaña no tiene que explicarlo. Tiene que dejar en claro que no hay nada que explicar.</p>
+
+  <ListaFrases frases={frases} copiar="copiar" copiado="copiada ✓" />
+
+  <p class="dato">Estas frases se escribieron para esta página. Son de uso libre: copialas, cambialas, firmalas con tu nombre.</p>
+
+  <h2>Cómo usarlas</h2>
+  <ul>
+    <li><strong>En una tarjeta.</strong> Una sola línea, a mano. Cuanto menos explique, mejor.</li>
+    <li><strong>En un mensaje.</strong> Mandala antes que el regalo, sin más contexto. La intriga es parte.</li>
+    <li><strong>Para siempre.</strong> En <a href={r.cielo}><em>Sin motivo</em></a>, una obra de arte, podés <a href={r.estrella}>regalar una estrella</a> y dejar la frase escrita como dedicatoria, de forma permanente.</li>
+  </ul>
+
+  <h2>Por qué regalar sin motivo</h2>
+  <p>Un regalo de cumpleaños cumple con una fecha. Un regalo sin motivo no cumple con nada, y por eso dice más: que alguien pensó en vos un día en que no hacía falta.</p>
+  <p>De esa idea sale <a href={r.sobre}><em>Sin motivo</em></a>, una obra que solo hace una pregunta: ¿alguien regala algo porque sí?</p>
+  <p class="accion"><a href={r.cielo}>ver el cielo →</a></p>
+</Pagina>

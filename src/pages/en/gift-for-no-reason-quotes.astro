@@ -1,0 +1,61 @@
+---
+import Pagina from "../../layouts/Pagina.astro";
+import ListaFrases from "../../components/ListaFrases.astro";
+import { SITIO, RUTAS } from "../../lib/obra.js";
+
+const r = RUTAS.en;
+const frases = [
+  "Just because. Which is the best reason.",
+  "It's not your birthday. That's why.",
+  "I saw this and thought of you. End of explanation.",
+  "You don't need a date to remember someone.",
+  "For no reason, which is how you really care.",
+  "I'm not celebrating anything. I'm celebrating you.",
+  "An ordinary Tuesday deserves a gift too.",
+  "You owe me nothing. Not even a thank you.",
+  "This isn't for something. It's for someone.",
+  "I felt like it. You can't argue with that.",
+  "So today has something different in it.",
+  "Don't open it looking for the why. There isn't one.",
+  "Some gifts announce themselves. This one doesn't.",
+  "Because the calendar doesn't decide when I think of you.",
+  "A small thing for a normal day.",
+  "I saw it, it was you, I brought it.",
+  "It's not an apology or a celebration. It's a gift.",
+  "Giving for no reason is the strangest way of saying yes."
+];
+const ld = {
+  "@context": "https://schema.org", "@type": "Article",
+  headline: "Words for a gift given for no reason", inLanguage: "en",
+  author: { "@type": "Person", name: "Solzimer" }, datePublished: "2026-11-11",
+  mainEntityOfPage: SITIO + r.frases, image: SITIO + "/og.png"
+};
+---
+<Pagina
+  lang="en"
+  titulo="Just-because gift quotes: words for a gift given for no reason"
+  descripcion="18 short lines to go with a just-because gift: no birthday, no anniversary, no excuse. Original and free to use, for a card or a message."
+  ruta={r.frases}
+  alternativas={[{ lang: "es", href: RUTAS.es.frases }, { lang: "pt", href: RUTAS.pt.frases }]}
+  ld={ld}
+>
+  <h1>Words for a gift given <em>for no reason</em></h1>
+  <p class="entrada">For when there is no birthday, no anniversary, no excuse. You just felt like it.</p>
+  <p>A just-because gift is slightly awkward: the person receiving it looks for the why. The line that goes with it does not have to explain. It has to make clear there is nothing to explain.</p>
+
+  <ListaFrases frases={frases} copiar="copy" copiado="copied ✓" />
+
+  <p class="dato">These lines were written for this page. They are free to use: copy them, change them, sign them with your name.</p>
+
+  <h2>How to use them</h2>
+  <ul>
+    <li><strong>On a card.</strong> One line, by hand. The less it explains, the better.</li>
+    <li><strong>In a message.</strong> Send it before the gift, with no other context. The mystery is part of it.</li>
+    <li><strong>Forever.</strong> In <a href={r.cielo}><em>Sin motivo</em></a>, an artwork, you can <a href={r.estrella}>gift a star</a> and leave the line written as its dedication, permanently.</li>
+  </ul>
+
+  <h2>Why give for no reason</h2>
+  <p>A birthday gift answers to a date. A gift for no reason answers to nothing, and that is why it says more: that someone thought of you on a day when they did not have to.</p>
+  <p>That idea is where <a href={r.sobre}><em>Sin motivo</em></a> comes from, a work that asks one question: does anyone give something just because?</p>
+  <p class="accion"><a href={r.cielo}>see the sky →</a></p>
+</Pagina>

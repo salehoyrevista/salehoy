@@ -1,0 +1,25 @@
+---
+// Lista de frases con botón de copiar.
+const { frases, copiar, copiado } = Astro.props;
+---
+<ul class="frases" data-copiado={copiado}>
+  {frases.map((f) => (
+    <li><q>{f}</q><button type="button" data-frase={f}>{copiar}</button></li>
+  ))}
+</ul>
+
+<script is:inline>
+  (function () {
+    var lista = document.querySelector(".frases");
+    if (!lista) return;
+    lista.addEventListener("click", function (ev) {
+      var b = ev.target.closest("button[data-frase]");
+      if (!b || !navigator.clipboard) return;
+      var original = b.textContent;
+      navigator.clipboard.writeText(b.getAttribute("data-frase")).then(function () {
+        b.textContent = lista.getAttribute("data-copiado");
+        setTimeout(function () { b.textContent = original; }, 1600);
+      });
+    });
+  })();
+</script>

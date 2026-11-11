@@ -1,0 +1,68 @@
+---
+import Pagina from "../layouts/Pagina.astro";
+import { SITIO, RUTAS, DIRECCION, USDC_BASE, RED } from "../lib/obra.js";
+
+const r = RUTAS.es;
+const faq = [
+  ["¿Qué es Sin motivo?", "Una obra de net art de Solzimer, en curso desde el 29 de octubre de 2026. Es un cielo: cada regalo enviado en blockchain a la dirección de la obra se convierte en un asterisco que queda para siempre. Las visitas dejan estelas que se borran."],
+  ["¿Es una donación?", "No. No financia nada ni promete nada a cambio. Es un regalo, y la obra consiste en preguntar si alguien regala algo porque sí."],
+  ["¿A dónde va el dinero?", "Al autor. No hay causa, proyecto ni contraprestación. Decirlo es parte de la obra."],
+  ["¿Por qué un asterisco?", "Asterisco viene del griego asteriskos, «estrellita». Además es la marca de la nota al pie: lo que se agrega al margen, sin que nadie lo pida."],
+  ["¿Quién decide la forma de cada asterisco?", "La transacción. Las puntas, el trazo, el giro, el tamaño y el lugar salen de su identificador (hash). No los elige el autor ni dependen del monto."],
+  ["¿Se muestra cuánto regaló cada uno?", "Nunca. Tampoco quién. Todos los regalos valen lo mismo: un centavo y una fortuna dibujan lo mismo."],
+  ["¿Qué es la dedicatoria?", "Un texto de hasta 80 caracteres que quien regala puede escribir dentro de la propia transacción (solo con ETH). Queda en la blockchain, pública y para siempre. El sitio no la guarda: la lee."],
+  ["¿Qué regalos cuentan?", "Solo los de la red Base: ETH nativo y USDC oficial. Cualquier otro token se ignora, para que el cielo no se llene de basura."],
+  ["¿Quién es Solzimer?", "Es el seudónimo del autor de la obra."],
+  ["¿El sitio me rastrea?", "No usa cookies ni guarda datos personales. Cuenta visitas de forma anónima: un número por día, por página. Las estelas que dejás en el cielo no se guardan en ningún lado."]
+];
+const ld = [
+  { "@context": "https://schema.org", "@type": "AboutPage", name: "Sobre Sin motivo", inLanguage: "es", url: SITIO + r.sobre,
+    about: { "@type": "VisualArtwork", name: "Sin motivo", artform: "Net art", creator: { "@type": "Person", name: "Solzimer" }, dateCreated: "2026-10-29", url: SITIO + "/" } },
+  { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) }
+];
+---
+<Pagina
+  lang="es"
+  titulo="Sobre la obra"
+  descripcion="Qué es Sin motivo, la obra de net art de Solzimer: un cielo donde cada regalo en blockchain se vuelve un asterisco permanente. Cómo funciona, qué cuenta y qué no es."
+  ruta={r.sobre}
+  alternativas={[{ lang: "en", href: RUTAS.en.sobre }]}
+  ld={ld}
+>
+  <h1>Sobre <em>Sin motivo</em></h1>
+  <p class="entrada"><em>Sin motivo</em> es una obra de net art de Solzimer, en curso desde el 29 de octubre de 2026. Es un cielo. Cada regalo que alguien envía se convierte en un asterisco que queda para siempre.</p>
+
+  <p>La obra hace una sola pregunta: <strong>¿alguien regala algo porque sí?</strong> No es una donación: no financia nada ni promete nada. Tampoco es una venta: nadie recibe algo a cambio. Lo único que queda es la marca de que alguien respondió.</p>
+
+  <h2>Cómo funciona</h2>
+  <ul>
+    <li><strong>Un regalo, un asterisco.</strong> Cada regalo recibido en la blockchain aparece en <a href={r.cielo}>el cielo</a> como un asterisco, del griego <em>asteriskos</em>, «estrellita».</li>
+    <li><strong>La forma la decide la transacción.</strong> Puntas, trazo, giro, tamaño y lugar salen de su identificador. Ni el autor ni el monto intervienen.</li>
+    <li><strong>Todos valen lo mismo.</strong> El monto nunca se muestra. Un centavo y una fortuna dibujan lo mismo.</li>
+    <li><strong>Los regalos quedan; las visitas, no.</strong> Quien pasa por el cielo deja una estela que se borra en dos segundos.</li>
+    <li><strong>El cielo gira.</strong> Da una vuelta por día sideral, como el cielo real. Los regalos del mismo día forman constelaciones.</li>
+    <li><strong>El silencio también se cuenta.</strong> La obra muestra cuánto hace que nadie responde.</li>
+    <li><strong>Cada regalo puede llevar una dedicatoria</strong> de hasta 80 caracteres, escrita en la propia transacción. Así se puede <a href={r.estrella}>regalarle una estrella a alguien</a>.</li>
+  </ul>
+
+  <h2>Ficha</h2>
+  <p class="mono">
+    título: Sin motivo<br />
+    autor: Solzimer<br />
+    tipo: net art, obra participativa en curso<br />
+    inicio: 29 de octubre de 2026<br />
+    soporte: sitio web y blockchain ({RED.nombre}, cadena {RED.chainId})<br />
+    dirección de la obra: <code>{DIRECCION}</code><br />
+    cuentan: ETH nativo y USDC oficial de Base (<code>{USDC_BASE}</code>)<br />
+    idiomas: español, inglés, portugués, francés, italiano, alemán, chino, japonés<br />
+    verificación pública: <a href={`${RED.explorador}/address/${DIRECCION}`} rel="noopener">{RED.explorador.replace("https://", "")}</a>
+  </p>
+
+  <h2>Preguntas</h2>
+  {faq.map(([q, a]) => (<><h3>{q}</h3><p>{a}</p></>))}
+
+  <p class="accion"><a href={r.cielo}>ver el cielo →</a> &nbsp; <a href={r.regalo}>regalar →</a></p>
+
+  <hr />
+  <p class="dato">Para citar la obra: Solzimer, <em>Sin motivo</em>, 2026–en curso, net art, {SITIO.replace("https://", "")}. Versión para máquinas: <a href="/llms.txt">llms.txt</a>, <a href="/obra.json">obra.json</a>, <a href={r.agentes}>para agentes de IA</a>.</p>
+</Pagina>

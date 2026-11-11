@@ -1,0 +1,68 @@
+---
+import Pagina from "../../layouts/Pagina.astro";
+import { SITIO, RUTAS, DIRECCION, USDC_BASE, RED } from "../../lib/obra.js";
+
+const r = RUTAS.en;
+const faq = [
+  ["What is Sin motivo?", "A net art work by Solzimer, ongoing since 29 October 2026. It is a sky: every gift sent on-chain to the work's address becomes an asterisk that stays forever. Visits leave trails that fade."],
+  ["Is it a donation?", "No. It funds nothing and promises nothing in return. It is a gift, and the work consists of asking whether anyone gives something just because."],
+  ["Where does the money go?", "To the author. There is no cause, project or reward. Saying so is part of the work."],
+  ["Why an asterisk?", "Asterisk comes from the Greek asteriskos, “little star”. It is also the mark of a footnote: what gets added in the margin, without anyone asking."],
+  ["Who decides the shape of each asterisk?", "The transaction. Its points, stroke, rotation, size and place are derived from its identifier (hash). The author does not choose them and the amount has no effect."],
+  ["Is the amount each person gave shown?", "Never. Nor who gave it. Every gift is worth the same: a cent and a fortune draw the same thing."],
+  ["What is the dedication?", "A text of up to 80 characters that the giver can write inside the transaction itself (ETH only). It stays on the blockchain, public and forever. The site does not store it: it reads it."],
+  ["Which gifts count?", "Only those on the Base network: native ETH and official USDC. Any other token is ignored, so the sky does not fill up with junk."],
+  ["Who is Solzimer?", "It is the pseudonym of the work's author."],
+  ["Does the site track me?", "It uses no cookies and stores no personal data. It counts visits anonymously: one number per day, per page. The trails you leave in the sky are not stored anywhere."]
+];
+const ld = [
+  { "@context": "https://schema.org", "@type": "AboutPage", name: "About Sin motivo", inLanguage: "en", url: SITIO + r.sobre,
+    about: { "@type": "VisualArtwork", name: "Sin motivo", artform: "Net art", creator: { "@type": "Person", name: "Solzimer" }, dateCreated: "2026-10-29", url: SITIO + "/en/" } },
+  { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) }
+];
+---
+<Pagina
+  lang="en"
+  titulo="About the work"
+  descripcion="What Sin motivo is: a net art work by Solzimer, a sky where every blockchain gift becomes a permanent asterisk. How it works, what counts, and what it is not."
+  ruta={r.sobre}
+  alternativas={[{ lang: "es", href: RUTAS.es.sobre }]}
+  ld={ld}
+>
+  <h1>About <em>Sin motivo</em></h1>
+  <p class="entrada"><em>Sin motivo</em> (“for no reason”) is a net art work by Solzimer, ongoing since 29 October 2026. It is a sky. Every gift someone sends becomes an asterisk that stays forever.</p>
+
+  <p>The work asks a single question: <strong>does anyone give something just because?</strong> It is not a donation: it funds nothing and promises nothing. It is not a sale either: no one receives anything in return. All that remains is the mark that someone answered.</p>
+
+  <h2>How it works</h2>
+  <ul>
+    <li><strong>One gift, one asterisk.</strong> Every gift received on the blockchain appears in <a href={r.cielo}>the sky</a> as an asterisk, from the Greek <em>asteriskos</em>, “little star”.</li>
+    <li><strong>The transaction decides the shape.</strong> Points, stroke, rotation, size and place come from its identifier. Neither the author nor the amount plays a part.</li>
+    <li><strong>Every gift is worth the same.</strong> The amount is never shown. A cent and a fortune draw the same thing.</li>
+    <li><strong>Gifts stay; visits do not.</strong> Whoever passes through the sky leaves a trail that fades in two seconds.</li>
+    <li><strong>The sky turns.</strong> One rotation per sidereal day, like the real sky. Gifts made on the same day form constellations.</li>
+    <li><strong>Silence is counted too.</strong> The work shows how long it has been since anyone answered.</li>
+    <li><strong>Each gift can carry a dedication</strong> of up to 80 characters, written in the transaction itself. That is how you can <a href={r.estrella}>gift a star to someone</a>.</li>
+  </ul>
+
+  <h2>Record</h2>
+  <p class="mono">
+    title: Sin motivo<br />
+    author: Solzimer<br />
+    type: net art, ongoing participatory work<br />
+    started: 29 October 2026<br />
+    medium: website and blockchain ({RED.nombre}, chain {RED.chainId})<br />
+    address of the work: <code>{DIRECCION}</code><br />
+    what counts: native ETH and official USDC on Base (<code>{USDC_BASE}</code>)<br />
+    languages: Spanish, English, Portuguese, French, Italian, German, Chinese, Japanese<br />
+    public verification: <a href={`${RED.explorador}/address/${DIRECCION}`} rel="noopener">{RED.explorador.replace("https://", "")}</a>
+  </p>
+
+  <h2>Questions</h2>
+  {faq.map(([q, a]) => (<><h3>{q}</h3><p>{a}</p></>))}
+
+  <p class="accion"><a href={r.cielo}>see the sky →</a> &nbsp; <a href={r.regalo}>give →</a></p>
+
+  <hr />
+  <p class="dato">To cite the work: Solzimer, <em>Sin motivo</em>, 2026–ongoing, net art, {SITIO.replace("https://", "")}. Machine-readable: <a href="/llms.txt">llms.txt</a>, <a href="/obra.json">obra.json</a>, <a href={r.agentes}>for AI agents</a>.</p>
+</Pagina>

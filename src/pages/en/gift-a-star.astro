@@ -1,0 +1,61 @@
+---
+import Pagina from "../../layouts/Pagina.astro";
+import { SITIO, RUTAS } from "../../lib/obra.js";
+
+const r = RUTAS.en;
+const faq = [
+  ["Can you officially name a real star?", "No. The International Astronomical Union is the only body that names celestial objects, and it does not sell names. Sites that offer to “name a star” give you a symbolic certificate: the name appears in no astronomical catalogue."],
+  ["How much does it cost to gift a star in Sin motivo?", "Whatever you like. There is no price. The amount is never shown and changes nothing: a cent and a fortune draw the same asterisk."],
+  ["What does the other person receive?", "A link. When they open it, the asterisk is born stroke by stroke in the sky, with its number, the moment you gave it, and your dedication."],
+  ["Do I need crypto?", "Yes. The gift is made with ETH or USDC on the Base network. The dedication only travels with ETH, because it is written inside the transaction itself."],
+  ["Can it be deleted or changed later?", "No. The transaction and its dedication stay on a public blockchain. That is why the star is permanent, and why it is worth thinking about what you write."],
+  ["Is it a certificate or an astronomical registry?", "No. It is an artwork: Sin motivo, by Solzimer. The star is an asterisk drawn in a sky that exists on this website and on the blockchain, not in the firmament."]
+];
+const ld = [
+  { "@context": "https://schema.org", "@type": "Article", headline: "Gift a star: what you can and can't really give", inLanguage: "en", author: { "@type": "Person", name: "Solzimer" }, datePublished: "2026-11-11", mainEntityOfPage: SITIO + r.estrella, image: SITIO + "/og.png" },
+  { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) }
+];
+---
+<Pagina
+  lang="en"
+  titulo="Gift a star: what you can and can't really give"
+  descripcion="Can you name a star as a gift? Not officially. What star registries actually sell, and another way: a permanent star in an artwork, with your own dedication."
+  ruta={r.estrella}
+  alternativas={[{ lang: "es", href: RUTAS.es.estrella }, { lang: "pt", href: RUTAS.pt.estrella }]}
+  ld={ld}
+>
+  <h1>Gift a star</h1>
+  <p class="entrada">You can. But it helps to know what you are giving.</p>
+
+  <h2>Can you officially name a real star?</h2>
+  <p>No. The <strong>International Astronomical Union</strong> is the only body that names celestial objects, and it neither sells names nor recognises the ones that are sold. Most stars do not even have a name: they have a catalogue number.</p>
+  <p>Sites that offer to “name a star after someone” send a certificate and a set of coordinates. It is a symbolic gesture, and it can be a lovely gift. But the name lives only in that company's database: no astronomer will ever use it, and another company can sell the same star to someone else.</p>
+
+  <h2>So what are you giving?</h2>
+  <p>A gesture. What matters about gifting a star is not the astronomy: it is telling someone you thought of something that lasts. The question is whether the gift tells the truth about what it is.</p>
+
+  <h2>Another way: a star in an artwork</h2>
+  <p><a href={r.cielo}><em>Sin motivo</em></a> (“for no reason”) is a work by Solzimer: a sky where every gift becomes an asterisk —from the Greek <em>asteriskos</em>, “little star”— that stays forever. It does not promise a place in the firmament. It promises what it can keep:</p>
+  <ul>
+    <li><strong>It is permanent.</strong> Each star is a transaction on a public blockchain. No one can delete it, not even the author.</li>
+    <li><strong>It carries your dedication.</strong> Up to 80 characters written inside the transaction itself: <em>“For Ana. For no reason.”</em></li>
+    <li><strong>It has its own link.</strong> Send it to anyone. When they open it, the asterisk is born stroke by stroke, with its number and the moment you gave it: <em>“on a Sunday before dawn, under a waxing moon”</em>.</li>
+    <li><strong>It is unique.</strong> The shape of each asterisk comes from the transaction. The author does not choose it and the amount does not decide it.</li>
+    <li><strong>It has no price.</strong> Give whatever you like. The amount is never shown: a cent and a fortune draw the same thing.</li>
+  </ul>
+  <p>What it is not: an astronomical registry, a certificate, or an investment. It is an artwork, ongoing since 29 October 2026. How many stars it holds today is there to see in <a href={r.cielo}>the sky</a>.</p>
+
+  <h2>How to give one</h2>
+  <ol>
+    <li>Open <a href={r.regalo}>give</a> with a wallet that holds ETH on the Base network.</li>
+    <li>Write the dedication, choose any amount, and confirm.</li>
+    <li>When the asterisk appears, copy its link and send it to that person.</li>
+  </ol>
+  <p class="accion"><a href={r.regalo}>gift a star →</a></p>
+
+  <h2>Questions</h2>
+  {faq.map(([q, a]) => (<><h3>{q}</h3><p>{a}</p></>))}
+
+  <hr />
+  <p class="dato">Looking for what to write? Here are <a href={r.frases}>words for a gift given for no reason</a>. To understand the work, <a href={r.sobre}>read about it</a>.</p>
+</Pagina>
