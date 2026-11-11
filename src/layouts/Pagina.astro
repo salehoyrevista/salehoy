@@ -42,6 +42,7 @@ const todas = [{ lang, href: ruta }, ...alternativas];
     <meta property="og:url" content={url} />
     <meta name="twitter:card" content="summary_large_image" />
     {ld && <script type="application/ld+json" set:html={JSON.stringify(ld)} />}
+    <slot name="head" />
   </head>
   <body>
     <header class="arriba">

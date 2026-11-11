@@ -141,6 +141,7 @@ const ld = {
       <button class="prologo-boton" id="prologoBoton" type="button"></button>
     </div>
 
+    <script is:inline src="/visita.js" defer></script>
     <script is:inline src="/salehoy.js"></script>
     <script is:inline>
       (function () {
@@ -653,6 +654,7 @@ const ld = {
           if (!abierta) return;
           var url = "https://salehoy.com.ar/?n=" + abierta.n;
           var t = S.T[actual];
+          if (window.SaleHoyVisita) SaleHoyVisita.evento("copiar-enlace");
           function ok() { copiarEnlace.textContent = t.copiado; setTimeout(function () { copiarEnlace.textContent = S.T[actual].copiarEnlace; }, 1800); }
           if (navigator.clipboard) navigator.clipboard.writeText(url).then(ok, function () { prompt("", url); });
           else prompt("", url);

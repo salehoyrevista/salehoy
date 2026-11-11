@@ -1,0 +1,53 @@
+---
+// Página para mirar los números del sitio. No se indexa.
+import Pagina from "../layouts/Pagina.astro";
+---
+<Pagina
+  lang="es"
+  titulo="Estadísticas"
+  descripcion="Visitas anónimas a Sin motivo: por día, página, idioma y origen, y visitas de buscadores y crawlers de IA."
+  ruta="/estadisticas/"
+>
+  <meta slot="head" name="robots" content="noindex" />
+  <h1>Estadísticas</h1>
+  <p class="dato">Números agregados y anónimos de los últimos 60 días. Sin cookies ni datos personales. Fuente: <a href="/api/estadisticas">/api/estadisticas</a>.</p>
+  <div id="datos"><p class="dato">cargando…</p></div>
+
+  <script is:inline>
+    (function () {
+      var caja = document.getElementById("datos");
+      function tabla(titulo, obj) {
+        var claves = Object.keys(obj || {}).sort(function (a, b) { return obj[b] - obj[a]; }).slice(0, 15);
+        if (!claves.length) return "";
+        return "<h3>" + titulo + "</h3><p class='mono'>" + claves.map(function (k) {
+          return String(obj[k]).padStart(5, " ").replace(/ /g, "&nbsp;") + "&nbsp;&nbsp;" + k.replace(/</g, "&lt;");
+        }).join("<br>") + "</p>";
+      }
+      function sumar(dias, campo) {
+        var t = {};
+        dias.forEach(function (d) { Object.keys(d[campo] || {}).forEach(function (k) { t[k] = (t[k] || 0) + d[campo][k]; }); });
+        return t;
+      }
+      fetch("/api/estadisticas").then(function (r) { return r.json(); }).then(function (j) {
+        var dias = j.dias || [];
+        if (!dias.length) { caja.innerHTML = "<p>Todavía no hay datos.</p>"; return; }
+        var total = dias.reduce(function (s, d) { return s + (d.visitas || 0); }, 0);
+        var porEnlace = dias.reduce(function (s, d) { return s + (d.porEnlaceDeAsterisco || 0); }, 0);
+        var bots = {};
+        dias.forEach(function (d) { Object.keys(d.bots || {}).forEach(function (k) { bots[k] = (bots[k] || 0) + d.bots[k].total; }); });
+        var porDia = {};
+        dias.forEach(function (d) { porDia[d.dia] = d.visitas || 0; });
+        caja.innerHTML =
+          "<p class='entrada'>" + total + " visitas de personas · " + porEnlace + " llegaron por el enlace de un asterisco</p>" +
+          "<h3>Por día</h3><p class='mono'>" + dias.map(function (d) {
+            return d.dia + "&nbsp;&nbsp;" + String(d.visitas || 0).padStart(5, " ").replace(/ /g, "&nbsp;");
+          }).join("<br>") + "</p>" +
+          tabla("Páginas", sumar(dias, "paginas")) +
+          tabla("Idiomas", sumar(dias, "idiomas")) +
+          tabla("De dónde llegan", sumar(dias, "origenes")) +
+          tabla("Camino al regalo", sumar(dias, "eventos")) +
+          tabla("Buscadores y crawlers de IA", bots);
+      }).catch(function () { caja.innerHTML = "<p>No se pudieron cargar los datos.</p>"; });
+    })();
+  </script>
+</Pagina>

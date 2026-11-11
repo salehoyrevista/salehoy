@@ -8,7 +8,9 @@
 <title>Regalame algo · Sin motivo — Solzimer</title>
 <meta name="description" content="Sin motivo, de Solzimer: una obra de net art donde cada regalo en blockchain se vuelve una estrella permanente.">
 <meta name="author" content="Solzimer">
+<link rel="canonical" href="https://salehoy.com.ar/regalo.html">
 <link rel="alternate" type="text/plain" href="/llms.txt" title="Versión para máquinas">
+<link rel="alternate" type="application/json" href="/obra.json" title="Sin motivo — manifiesto para máquinas">
 <link rel="preload" href="/fonts/instrument-serif.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/ibm-plex-mono.woff2" as="font" type="font/woff2" crossorigin>
 <meta property="og:type" content="website">
@@ -171,6 +173,7 @@
     font-family: var(--mono); font-size: .68rem; line-height: 1.7; color: var(--crema);
     white-space: pre-wrap; word-break: break-all;
   }
+  .mas { margin: 2.25rem 0 0; font-family: var(--mono); font-size: .68rem; line-height: 2; color: var(--tenue); }
   .maquina-nota { margin: .8rem 0 0; font-family: var(--mono); font-size: .66rem; color: var(--tenue); }
 
   @media (max-width: 520px) {
@@ -282,8 +285,10 @@ cuentan:    ETH nativo y USDC oficial en Base
 red:        base (8453) — otras redes no se cuentan
 tokens:     ETH, USDC
 idiomas:    es en pt fr it de zh ja</pre>
-    <p class="maquina-nota"><span data-t="maquinaNota">Esta página también la leen IAs y bots. Hola.</span> · <a class="enlace" href="/llms.txt">llms.txt</a></p>
+    <p class="maquina-nota"><span data-t="maquinaNota">Esta página también la leen IAs y bots. Hola.</span> · <a class="enlace" href="/llms.txt">llms.txt</a> · <a class="enlace" href="/obra.json">obra.json</a> · <a class="enlace" href="/agentes/">for AI agents</a></p>
   </details>
+
+  <p class="mas"><a class="enlace" href="/sobre/">sobre la obra</a> · <a class="enlace" href="/en/about/">about</a> · <a class="enlace" href="/regalar-una-estrella/">regalar una estrella</a> · <a class="enlace" href="/en/gift-a-star/">gift a star</a></p>
 
   <noscript>
     <section class="sin-js">
@@ -297,6 +302,7 @@ idiomas:    es en pt fr it de zh ja</pre>
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="/visita.js"></script>
 <script src="/salehoy.js"></script>
 <script>
 (function () {
@@ -351,11 +357,13 @@ idiomas:    es en pt fr it de zh ja</pre>
     var t = T[actual];
     function ok() { aviso.textContent = t.copiado; setTimeout(function () { aviso.textContent = T[actual].copiar; }, 1800); }
     function falla() { aviso.textContent = t.mantener; }
+    if (window.SaleHoyVisita) SaleHoyVisita.evento("copiar-direccion");
     if (navigator.clipboard) navigator.clipboard.writeText(DIRECCION).then(ok, falla); else falla();
   });
 
   // ya regalé: una frase al azar, sin repetir la anterior
   document.getElementById("ya").addEventListener("click", function () {
+    if (window.SaleHoyVisita) SaleHoyVisita.evento("ya-regale");
     var total = T[actual].frases.length;
     var nueva = Math.floor(Math.random() * (frase < 0 ? total : total - 1));
     if (frase >= 0 && nueva >= frase) nueva++;
@@ -555,6 +563,7 @@ idiomas:    es en pt fr it de zh ja</pre>
 
   boton.addEventListener("click", function () {
     if (ocupado || !proveedor) return;
+    if (window.SaleHoyVisita) SaleHoyVisita.evento("clic-regalar");
     var unidades = aUnidades(montoEl.value, DECIMALES[token]);
     if (!unidades) { decir({ clave: "montoInvalido" }); montoEl.focus(); return; }
     ocupado = true;
@@ -578,6 +587,7 @@ idiomas:    es en pt fr it de zh ja</pre>
       return proveedor.request({ method: "eth_sendTransaction", params: [tx] });
     }).then(function (hash) {
       decir({ clave: "enviado" });
+      if (window.SaleHoyVisita) SaleHoyVisita.evento("regalo-enviado");
       esperarHash(String(hash));
     }).catch(function (e) {
       var codigo = e && (e.code || (e.data && e.data.originalError && e.data.originalError.code));
