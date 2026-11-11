@@ -125,6 +125,16 @@
   .opcion { background: none; border: 0; padding: 2px 0; cursor: pointer; font: inherit; color: var(--tenue); }
   .opcion:hover { color: var(--crema); }
   .opcion[aria-pressed="true"] { color: var(--crema); text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+  .dedica { margin: 0 0 1.1rem; }
+  .dedica label { display: block; margin-bottom: .35rem; font-size: .7rem; color: var(--tenue); }
+  .dedica input {
+    width: 100%; max-width: 26rem; padding: 3px 0; background: transparent; color: var(--crema);
+    border: 0; border-bottom: 1px solid var(--linea); border-radius: 0;
+    font-family: var(--serif); font-style: italic; font-size: 1.25rem;
+  }
+  .dedica input::placeholder { color: var(--tenue); opacity: .6; }
+  .dedica input:focus { outline: none; border-bottom-color: var(--bermellon); }
+  .dedica-ayuda { margin: .4rem 0 0; font-size: .64rem; line-height: 1.5; color: var(--tenue); max-width: 26rem; }
   .monto { display: inline-flex; align-items: baseline; gap: .5rem; color: var(--tenue); }
   .monto input {
     width: 7.5rem; padding: 2px 0; background: transparent; color: var(--crema);
@@ -202,6 +212,12 @@
         <button class="opcion" type="button" data-token="ETH" aria-pressed="false">ETH</button>
       </div>
       <div class="sugeridos" id="sugeridos"></div>
+    </div>
+    <!-- Dedicatoria: viaja en los datos de la transacción (solo ETH) -->
+    <div class="dedica">
+      <label for="dedicatoria" data-t="dedicatoria">Dedicatoria (opcional)</label>
+      <input id="dedicatoria" type="text" maxlength="80" autocomplete="off" placeholder="Para Ana. Sin motivo.">
+      <p class="dedica-ayuda" data-t="dedAyuda">Queda escrita en la blockchain: pública y para siempre. Hasta 80 caracteres. Solo con ETH.</p>
     </div>
     <div class="clic-fila">
       <label class="monto">
@@ -500,6 +516,15 @@ idiomas:    es en pt fr it de zh ja</pre>
   montoEl.addEventListener("input", marcarSugerido);
   elegirToken("USDC");
 
+  // La dedicatoria solo puede viajar con ETH: al escribirla, se pasa a ETH.
+  var dedicatoriaEl = document.getElementById("dedicatoria");
+  dedicatoriaEl.addEventListener("input", function () {
+    if (dedicatoriaEl.value.trim() && token !== "ETH") elegirToken("ETH");
+  });
+  function ponerEjemplo() { dedicatoriaEl.placeholder = T[actual].dedEjemplo; }
+  ponerEjemplo();
+  document.getElementById("idiomas").addEventListener("click", function () { setTimeout(ponerEjemplo, 0); });
+
   // "1,5" o "1.5" a unidades enteras del token, sin pasar por coma flotante.
   function aUnidades(texto, decimales) {
     var m = /^(\d*)(?:[.,](\d*))?$/.exec(String(texto).trim());
@@ -542,8 +567,11 @@ idiomas:    es en pt fr it de zh ja</pre>
       return pasarABase();
     }).then(function () {
       decir({ clave: "confirmar" });
+      var dedicada = token === "ETH" ? S.codificarDedicatoria(dedicatoriaEl.value) : null;
       var tx = token === "ETH"
-        ? { from: desde, to: DIRECCION, value: "0x" + unidades.toString(16) }
+        ? (dedicada
+            ? { from: desde, to: DIRECCION, value: "0x" + unidades.toString(16), data: dedicada }
+            : { from: desde, to: DIRECCION, value: "0x" + unidades.toString(16) })
         // transfer(address,uint256) del USDC oficial de Base
         : { from: desde, to: S.USDC_BASE,
             data: "0xa9059cbb" + relleno64(DIRECCION.slice(2).toLowerCase()) + relleno64(unidades.toString(16)) };

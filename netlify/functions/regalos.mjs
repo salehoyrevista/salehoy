@@ -51,6 +51,7 @@ async function traerTodo(fuente, ruta, senal) {
 function recortarTx(tx) {
   return {
     hash: tx.hash, status: tx.status, result: tx.result, value: tx.value,
+    raw_input: tx.raw_input,   // la dedicatoria, si la hay
     to: tx.to ? { hash: tx.to.hash } : null,
     timestamp: tx.timestamp, block_number: tx.block_number, position: tx.position
   };

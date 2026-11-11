@@ -15,6 +15,8 @@
       esperando: "Esperando el primero.",
       enCurso: "en curso desde 29.10.2026",
       noEsta: "Esto ya no está.", hayCielo: "Pero hay un cielo.", irCielo: "ir al cielo →",
+      dedicatoria: "Dedicatoria (opcional)", dedAyuda: "Queda escrita en la blockchain: pública y para siempre. Hasta 80 caracteres. Solo con ETH.", dedEjemplo: "Para Ana. Sin motivo.",
+      desc: "Sin motivo, de Solzimer: una obra de net art donde cada regalo en blockchain se vuelve una estrella permanente.", sobre: "sobre la obra",
       silencio: "{t} sin respuesta", recien: "Alguien acaba de responder.",
       momento: {"formato":"{dia} {franja}, {luna}","dias":["un domingo","un lunes","un martes","un miércoles","un jueves","un viernes","un sábado"],"franjas":["de madrugada","a la mañana","al mediodía","a la tarde","de noche"],"lunas":["con luna nueva","con luna creciente","con luna llena","con luna menguante"]},
       clicTitulo: "Regalá desde esta billetera",
@@ -62,6 +64,8 @@
       esperando: "Waiting for the first one.",
       enCurso: "ongoing since 29.10.2026",
       noEsta: "This isn’t here anymore.", hayCielo: "But there’s a sky.", irCielo: "go to the sky →",
+      dedicatoria: "Dedication (optional)", dedAyuda: "It is written on the blockchain: public and forever. Up to 80 characters. ETH only.", dedEjemplo: "For Ana. For no reason.",
+      desc: "Sin motivo, by Solzimer: a net art work where every blockchain gift becomes a permanent star.", sobre: "about the work",
       silencio: "{t} without an answer", recien: "Someone just answered.",
       momento: {"formato":"{dia} {franja}, {luna}","dias":["on a Sunday","on a Monday","on a Tuesday","on a Wednesday","on a Thursday","on a Friday","on a Saturday"],"franjas":["before dawn","in the morning","at noon","in the afternoon","at night"],"lunas":["under a new moon","under a waxing moon","under a full moon","under a waning moon"]},
       clicTitulo: "Give from this wallet",
@@ -109,6 +113,8 @@
       esperando: "Esperando o primeiro.",
       enCurso: "em curso desde 29.10.2026",
       noEsta: "Isto já não está aqui.", hayCielo: "Mas há um céu.", irCielo: "ir para o céu →",
+      dedicatoria: "Dedicatória (opcional)", dedAyuda: "Fica escrita na blockchain: pública e para sempre. Até 80 caracteres. Só com ETH.", dedEjemplo: "Para Ana. Sem motivo.",
+      desc: "Sin motivo, de Solzimer: uma obra de net art em que cada presente em blockchain vira uma estrela permanente.", sobre: "sobre a obra",
       silencio: "{t} sem resposta", recien: "Alguém acabou de responder.",
       momento: {"formato":"{dia} {franja}, {luna}","dias":["num domingo","numa segunda","numa terça","numa quarta","numa quinta","numa sexta","num sábado"],"franjas":["de madrugada","de manhã","ao meio-dia","à tarde","à noite"],"lunas":["com lua nova","com lua crescente","com lua cheia","com lua minguante"]},
       clicTitulo: "Presenteie desta carteira",
@@ -156,6 +162,8 @@
       esperando: "En attendant le premier.",
       enCurso: "en cours depuis le 29.10.2026",
       noEsta: "Ceci n’est plus là.", hayCielo: "Mais il y a un ciel.", irCielo: "aller au ciel →",
+      dedicatoria: "Dédicace (facultative)", dedAyuda: "Elle reste écrite sur la blockchain : publique et pour toujours. 80 caractères maximum. Seulement en ETH.", dedEjemplo: "Pour Ana. Sans raison.",
+      desc: "Sin motivo, de Solzimer : une œuvre de net art où chaque cadeau sur la blockchain devient une étoile permanente.", sobre: "à propos de l’œuvre",
       silencio: "{t} sans réponse", recien: "Quelqu’un vient de répondre.",
       momento: {"formato":"{dia} {franja}, {luna}","dias":["un dimanche","un lundi","un mardi","un mercredi","un jeudi","un vendredi","un samedi"],"franjas":["avant l’aube","le matin","à midi","l’après-midi","la nuit"],"lunas":["sous une lune nouvelle","sous une lune croissante","sous la pleine lune","sous une lune décroissante"]},
       clicTitulo: "Offrir depuis ce portefeuille",
@@ -203,6 +211,8 @@
       esperando: "In attesa del primo.",
       enCurso: "in corso dal 29.10.2026",
       noEsta: "Questo non c’è più.", hayCielo: "Ma c’è un cielo.", irCielo: "vai al cielo →",
+      dedicatoria: "Dedica (facoltativa)", dedAyuda: "Resta scritta sulla blockchain: pubblica e per sempre. Fino a 80 caratteri. Solo con ETH.", dedEjemplo: "Per Ana. Senza motivo.",
+      desc: "Sin motivo, di Solzimer: un’opera di net art in cui ogni regalo su blockchain diventa una stella permanente.", sobre: "sull’opera",
       silencio: "{t} senza risposta", recien: "Qualcuno ha appena risposto.",
       momento: {"formato":"{dia} {franja}, {luna}","dias":["di domenica","di lunedì","di martedì","di mercoledì","di giovedì","di venerdì","di sabato"],"franjas":["prima dell’alba","di mattina","a mezzogiorno","di pomeriggio","di notte"],"lunas":["con la luna nuova","con la luna crescente","con la luna piena","con la luna calante"]},
       clicTitulo: "Regala da questo wallet",
@@ -250,6 +260,8 @@
       esperando: "Warten auf das erste.",
       enCurso: "fortlaufend seit 29.10.2026",
       noEsta: "Das gibt es nicht mehr.", hayCielo: "Aber es gibt einen Himmel.", irCielo: "zum Himmel →",
+      dedicatoria: "Widmung (optional)", dedAyuda: "Sie steht in der Blockchain: öffentlich und für immer. Bis zu 80 Zeichen. Nur mit ETH.", dedEjemplo: "Für Ana. Ohne Grund.",
+      desc: "Sin motivo von Solzimer: ein Net-Art-Werk, in dem jedes Blockchain-Geschenk zu einem bleibenden Stern wird.", sobre: "über das Werk",
       silencio: "{t} ohne Antwort", recien: "Gerade hat jemand geantwortet.",
       momento: {"formato":"{dia} {franja}, {luna}","dias":["an einem Sonntag","an einem Montag","an einem Dienstag","an einem Mittwoch","an einem Donnerstag","an einem Freitag","an einem Samstag"],"franjas":["vor dem Morgengrauen","am Morgen","am Mittag","am Nachmittag","in der Nacht"],"lunas":["bei Neumond","bei zunehmendem Mond","bei Vollmond","bei abnehmendem Mond"]},
       clicTitulo: "Aus dieser Wallet schenken",
@@ -297,6 +309,8 @@
       esperando: "等待第一颗。",
       enCurso: "始于 2026.10.29，仍在继续",
       noEsta: "这里已经没有了。", hayCielo: "但有一片天空。", irCielo: "去天空 →",
+      dedicatoria: "题词（可选）", dedAyuda: "它会写在区块链上：公开且永久。最多 80 个字符。仅限 ETH。", dedEjemplo: "给安娜。没有理由。",
+      desc: "Solzimer 的网络艺术作品《Sin motivo》：每一份区块链上的礼物，都会变成一颗永久的星。", sobre: "关于作品",
       silencio: "{t}没有回应", recien: "刚刚有人回应了。",
       momento: {"formato":"{dia}{franja}，{luna}","dias":["一个星期日","一个星期一","一个星期二","一个星期三","一个星期四","一个星期五","一个星期六"],"franjas":["凌晨","早上","中午","下午","夜里"],"lunas":["新月之时","月渐盈时","满月之时","月渐亏时"]},
       clicTitulo: "用这个钱包送",
@@ -344,6 +358,8 @@
       esperando: "最初のひとつを待っています。",
       enCurso: "2026.10.29 から継続中",
       noEsta: "ここにはもうありません。", hayCielo: "でも、空があります。", irCielo: "空へ →",
+      dedicatoria: "献辞（任意）", dedAyuda: "ブロックチェーンに書き込まれ、公開されたまま永久に残ります。80 文字まで。ETH のみ。", dedEjemplo: "アナへ。理由はありません。",
+      desc: "Solzimer のネットアート作品『Sin motivo』。ブロックチェーン上の贈り物がひとつずつ、永遠の星になります。", sobre: "作品について",
       silencio: "{t}、応答なし", recien: "たったいま、誰かが応えました。",
       momento: {"formato":"{dia}{franja}、{luna}の下で","dias":["ある日曜日の","ある月曜日の","ある火曜日の","ある水曜日の","ある木曜日の","ある金曜日の","ある土曜日の"],"franjas":["明け方","朝","昼","午後","夜"],"lunas":["新月","満ちていく月","満月","欠けていく月"]},
       clicTitulo: "このウォレットから贈る",
@@ -400,6 +416,8 @@
   // ?lang= , lo elegido antes, el idioma del navegador, o "es".
   // "elegido" dice si el visitante ya fijó un idioma.
   function detectar() {
+    var fijo = valido(document.documentElement.getAttribute("data-idioma"));
+    if (fijo) return { lang: fijo, elegido: true };
     var q = valido(parametro("lang"));
     if (q) return { lang: q, elegido: true };
     var guardado = null;
@@ -459,6 +477,46 @@
 
   function minus(x) { return String(x || "").toLowerCase(); }
 
+  // Dedicatorias. Quien regala ETH puede escribir un texto en los datos de la
+  // transacción: queda en la blockchain, público y para siempre. El sitio no
+  // lo guarda, solo lo lee. Se muestra como texto plano, hasta 80 caracteres,
+  // sin enlaces. Para ocultar una dedicatoria ofensiva, agregar el hash de su
+  // transacción (en minúsculas) a OCULTAS.
+  var DEDICATORIA_MAX = 80;
+  var OCULTAS = [];
+
+  // caracteres de control, de formato invisible y separadores de línea
+  var INVISIBLES = new RegExp("[\\u0000-\\u001f\\u007f-\\u009f\\u200b-\\u200f\\u2028-\\u202f\\ufeff]", "g");
+  var BINARIO = new RegExp("[\\u0000-\\u0008\\u000e-\\u001f]");
+  var ENLACE = /(https?:|www\.|\w\.(com|net|org|io|xyz|ar|ly|me|app)\b)/i;
+
+  function limpiarDedicatoria(texto) {
+    var limpio = String(texto || "").replace(INVISIBLES, " ").replace(/\s+/g, " ").trim();
+    return Array.from(limpio).slice(0, DEDICATORIA_MAX).join("").trim();
+  }
+
+  // De los datos de una transacción (hex) al texto, o null si no es texto.
+  function leerDedicatoria(hex, hash) {
+    if (typeof hex !== "string" || !/^0x([0-9a-fA-F]{2})+$/.test(hex) || hex.length > 2 + 2 * 400) return null;
+    if (OCULTAS.indexOf(String(hash).toLowerCase()) >= 0) return null;
+    var bytes = new Uint8Array((hex.length - 2) / 2);
+    for (var i = 0; i < bytes.length; i++) bytes[i] = parseInt(hex.substr(2 + i * 2, 2), 16);
+    var texto;
+    try { texto = new TextDecoder("utf-8", { fatal: true }).decode(bytes); } catch (e) { return null; }
+    if (BINARIO.test(texto)) return null;   // datos binarios, no un texto
+    if (ENLACE.test(texto)) return null;    // sin enlaces
+    return limpiarDedicatoria(texto) || null;
+  }
+
+  // Del texto a los datos (hex) para la transacción, o null si queda vacío.
+  function codificarDedicatoria(texto) {
+    var limpio = limpiarDedicatoria(texto);
+    if (!limpio) return null;
+    var bytes = new TextEncoder().encode(limpio), hex = "0x";
+    for (var i = 0; i < bytes.length; i++) hex += ("0" + bytes[i].toString(16)).slice(-2);
+    return hex;
+  }
+
   // Filtro antispam. Cuentan solo:
   //  (a) transacciones exitosas de ETH nativo con value > 0 hacia la dirección;
   //  (b) transferencias del USDC oficial de Base con monto > 0 hacia la dirección.
@@ -472,6 +530,7 @@
       if (!tx.to || minus(tx.to.hash) !== dir) return;
       if (!mayorQueCero(tx.value)) return;
       regalos.push({ hash: tx.hash, clave: tx.hash, fecha: Date.parse(tx.timestamp),
+                     dedicatoria: leerDedicatoria(tx.raw_input, tx.hash),
                      bloque: Number(tx.block_number) || 0, orden: Number(tx.position) || 0 });
     });
     (transferencias || []).forEach(function (tr) {
@@ -633,6 +692,9 @@
     aplicarTextos: aplicarTextos,
     fila: fila,
     filtrarRegalos: filtrarRegalos,
+    leerDedicatoria: leerDedicatoria,
+    codificarDedicatoria: codificarDedicatoria,
+    DEDICATORIA_MAX: DEDICATORIA_MAX,
     cargarRegalos: cargarRegalos,
     hace: hace,
     fecha: fecha
