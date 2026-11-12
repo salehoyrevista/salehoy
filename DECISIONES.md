@@ -3,6 +3,37 @@
 Cada decisión, por qué se tomó y cómo revertirla. La más reciente arriba.
 Para deshacer un cambio: `git revert <commit>` y `git push origin master` (Netlify publica solo).
 
+## 2026-11-12 — Sesión "director creativo": la obra como experiencia que se comparte
+
+Pedido completo en el historial de la sesión. Objetivo: visitas que traen visitas. Sin más foco en SEO ni idiomas.
+
+### Estado (punto de control; actualizar al cerrar cada etapa)
+- **Hecho y publicado — `e5d1c5d`:** registro verificado + API pública (decisión 11).
+- **En curso, con subagentes (archivos nuevos, sin integrar):**
+  - `public/sonido.js` — capa sonora generada (terminada, falta integrarla y escucharla).
+  - `public/cielo-gl.js` — fondo WebGL con profundidad, paralaje e inclinación, y ambiente por hora/día/estación/luna.
+  - `public/estela.js` — la estela del visitante como imagen y video vertical, con URL propia (`?e=`).
+  - `netlify/lib/dibujo.mjs`, `og-base.mjs`, `netlify/functions/og-estela.mjs`, `og-estrella.mjs` — imágenes de vista previa generadas en el servidor.
+  - `public/guia.js` — guía para quien nunca usó cripto (8 idiomas).
+  - Prensa (`public/prensa/`, `src/pages/prensa.astro`, `en/press.astro`), `README.md`, `LICENSE`, `COMUNIDADES.md`.
+- **Falta (lo hace quien retome):**
+  1. Integrar en `src/components/Cielo.astro`: fondo WebGL (canvas `#fondo` detrás de `#cielo`), sonido (botón, apagado por defecto), inclinación del celular, apertura de 3 s sin texto (el prólogo de frases queda solo a pedido), botón "guardar mi estela" (imagen / video / enlace), y abrir `?e=` mostrando primero esa estela.
+  2. Edge function que cambie `og:image` y el título cuando la URL trae `?e=` o `?n=`/`?tx=`.
+  3. Versión embebible `/embed/` (sacar `X-Frame-Options: DENY` global de `netlify.toml` y dejarlo solo en `/regalo.html`).
+  4. Página de la API (`/api/` documentada), y pasar `/agentes/` a tono solo informativo (límite nuevo: nada dirigido a que un agente mande dinero).
+  5. Guía sin cripto en `regalo.html`.
+  6. Capturas y video con Playwright (instalado en el scratchpad) para el kit de prensa y el README; armar `public/prensa/sin-motivo-kit.zip`.
+  7. `RESUMEN.md` nuevo y `PENDIENTES_PEDRO.md` con los textos de `COMUNIDADES.md`.
+
+### 11. Registro verificado contra la red y API pública — `e5d1c5d`
+- **Qué:** el servidor puede comprobar por su cuenta si una transacción es un regalo a la obra, preguntándole a la red Base por su acceso público (`netlify/lib/cadena.mjs`). `/api/avistar` recibe el hash que vio un navegador, lo verifica y recién entonces lo suma al registro (Netlify Blobs, store `cielo`). `/api/cielo` publica el estado del cielo: estrellas, fechas, dedicatorias y tiempo sin respuesta. El navegador lee primero ese registro (inmediato) y después Blockscout (al día).
+- **Por qué:** resuelve sin claves ni cuentas lo que antes pedía la API key de Blockscout: carga instantánea, API pública y, más adelante, vistas previas por estrella. Nada puede entrar al registro si no existe en la blockchain.
+- **Límite honesto:** el registro se completa cuando alguna visita ve el regalo; puede faltarle uno muy reciente. La API lo dice en `sobreEstosDatos.aviso`.
+- **Una sola fuente para la dirección:** `scripts/nucleo.mjs` genera `netlify/lib/salehoy-nucleo.mjs` desde `public/salehoy.js` antes de cada build (`npm run build` ya lo corre).
+- **Reemplaza a** `/api/regalos` (eliminada). El pendiente de la clave de Blockscout deja de ser necesario.
+- **Probado en producción:** cielo vacío correcto; una transacción ajena y un hash inválido no suman nada.
+- **Revertir:** `git revert e5d1c5d`.
+
 ## 2026-11-12 — Sobre la obra en los 8 idiomas
 
 ### 10. "Sobre la obra" en pt, fr, it, de, zh, ja
