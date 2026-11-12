@@ -91,6 +91,7 @@ const ld = {
       </section>
     </noscript>
 
+    <canvas id="fondo" aria-hidden="true"></canvas>
     <canvas id="cielo" aria-hidden="true"></canvas>
 
     <div class="ui" id="ui">
@@ -112,7 +113,7 @@ const ld = {
         <nav class="idiomas" id="idiomas" aria-label="Idioma / Language">
           {S.IDIOMAS.map((l) => <a href={ruta(l)} lang={l} hreflang={l} aria-current={l === lang ? "true" : "false"}>{S.T[l].nombre}</a>)}
         </nav>
-        <p class="cuenta" id="cuenta"><a class="a-sobre" href={sobre} data-t="sobre">{t.sobre}</a> · <span id="cuentaN"></span><span data-t="enCurso">{t.enCurso}</span></p>
+        <p class="cuenta" id="cuenta"><button class="a-sobre" id="sonido" type="button" aria-pressed="false" data-t="sonOn" hidden>{t.sonOn}</button><span id="sonidoSep" hidden> · </span><a class="a-sobre" href={sobre} data-t="sobre">{t.sobre}</a> · <span id="cuentaN"></span><span data-t="enCurso">{t.enCurso}</span></p>
       </footer>
     </div>
 
@@ -145,6 +146,8 @@ const ld = {
 
     <script is:inline src="/visita.js" defer></script>
     <script is:inline src="/salehoy.js"></script>
+    <script is:inline src="/cielo-gl.js"></script>
+    <script is:inline src="/sonido.js"></script>
     <script is:inline>
       (function () {
         var S = window.SaleHoy;
@@ -156,6 +159,14 @@ const ld = {
         var INICIO = Date.parse("2026-10-29T00:00:00-03:00");
 
         var lienzo = document.getElementById("cielo");
+        var fondo = document.getElementById("fondo");
+        var hayGL = false;                       // fondo WebGL con profundidad
+        var sonidoActivo = false;
+        var inclinacion = { x: 0, y: 0 };        // del celular, -1..1
+        var paralaje = { x: 0, y: 0 };           // suavizado
+        var energia = 0;                         // cuánto se movió el visitante recién
+        var ultimoX = null, ultimoY = null;
+        var estadoGL = { ahora: 0, giro: 0, px: null, py: null, incX: 0, incY: 0, energia: 0, hora: 0, dia: 0, estacion: 0, luna: 0.25 };
         var ctx = lienzo.getContext("2d");
         var titulo = document.getElementById("titulo");
         var obraEl = document.getElementById("obra");
@@ -268,6 +279,7 @@ const ld = {
           return {
             n: regalo.n, fecha: regalo.fecha,
             dedicatoria: regalo.dedicatoria || null,
+            clave: regalo.clave,
             angulo: r() * Math.PI * 2,
             rho: 0.1 + 0.9 * Math.sqrt(r()),
             puntas: puntas, brazos: brazos,
@@ -372,6 +384,7 @@ const ld = {
           // el cielo es una elipse inscripta en la ventana: girando, ningún
           // regalo se sale de la pantalla
           polo = { x: ancho * 0.5, y: alto * 0.5, ax: ancho * 0.5 - 22, ay: alto * 0.5 - 22 };
+          if (hayGL) SaleHoyGL.medir(ancho, alto, dpr);
           medirTitulo();
           if (!esperando.hidden) ubicarEsperando();
           if (abierta) mostrarEtiqueta(abierta, fijada);
@@ -518,6 +531,27 @@ const ld = {
           ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
           var giro = giroDelCielo();
+
+          // Profundidad: el puntero y la inclinación del celular corren las capas.
+          if (!quieto) {
+            var objX = (puntero ? (puntero.x / ancho) * 2 - 1 : 0) * 0.5 + inclinacion.x;
+            var objY = (puntero ? (puntero.y / alto) * 2 - 1 : 0) * 0.5 + inclinacion.y;
+            paralaje.x += (objX - paralaje.x) * 0.05;
+            paralaje.y += (objY - paralaje.y) * 0.05;
+            energia *= 0.94;
+          }
+          if (hayGL) {
+            estadoGL.ahora = ahora;
+            estadoGL.giro = giro;
+            estadoGL.px = puntero ? (puntero.x / ancho) * 2 - 1 : null;
+            estadoGL.py = puntero ? (puntero.y / alto) * 2 - 1 : null;
+            estadoGL.incX = inclinacion.x;
+            estadoGL.incY = inclinacion.y;
+            estadoGL.energia = energia;
+            SaleHoyGL.cuadro(estadoGL);
+          }
+          if (sonidoActivo) SaleHoySonido.cielo(giro);
+
           var ultimo = estrellas.length ? estrellas[estrellas.length - 1].n : 0;
           var RADIO = 110;
           var naciendo = false;
@@ -540,8 +574,8 @@ const ld = {
               e.dx += (tx - e.dx) * 0.06;
               e.dy += (ty - e.dy) * 0.06;
             }
-            e.cx = p.x + e.dx;
-            e.cy = p.y + e.dy;
+            e.cx = p.x + e.dx - paralaje.x * (5 + 14 * e.alfa);
+            e.cy = p.y + e.dy - paralaje.y * (5 + 14 * e.alfa);
             e.vida = e.nace === null ? null : ahora - e.nace;
             if (e.vida !== null && e.vida >= duracionNacimiento(e)) { e.nace = null; e.vida = null; }
             if (e.vida !== null) naciendo = true;
@@ -632,6 +666,7 @@ const ld = {
           abierta = e;
           fijada = !!fijar;
           etiquetaTexto.textContent = S.T[actual].num.replace("{n}", e.n) + " · " + S.hace(e.fecha, actual);
+          if (sonidoActivo && e !== abierta && e.clave) SaleHoySonido.nota(e.clave);
           etiquetaMomento.textContent = S.momento(e.fecha, actual);
           etiquetaDedicatoria.textContent = e.dedicatoria ? "«" + e.dedicatoria + "»" : "";
           // el enlace de un asterisco se presenta con su número y su dedicatoria
@@ -671,6 +706,10 @@ const ld = {
           if (!prologo.hidden) return;
           puntero = { x: ev.clientX, y: ev.clientY };
           sumarPunto(ev.clientX, ev.clientY);
+          var vel = ultimoX === null ? 0 : Math.min(1, Math.hypot(ev.clientX - ultimoX, ev.clientY - ultimoY) / 60);
+          ultimoX = ev.clientX; ultimoY = ev.clientY;
+          energia = Math.min(1, energia + vel * 0.25);
+          if (sonidoActivo) SaleHoySonido.gesto(ev.clientX / ancho, ev.clientY / alto, vel);
           if (ev.pointerType === "mouse" && !fijada && !interactivo(ev.target)) {
             var e = buscarEstrella(ev.clientX, ev.clientY);
             if (e) { if (e !== abierta) mostrarEtiqueta(e, false); lienzo.style.cursor = "pointer"; }
@@ -754,6 +793,7 @@ const ld = {
           } else {
             destino.nace = t0;
           }
+          sonarNacimiento(destino);
           var otros = estrellas.filter(function (e) { return e !== destino; });
           var paso = otros.length ? Math.min(160, 3200 / otros.length) : 0;
           otros.forEach(function (e, i) { e.nace = t0 + 400 + i * paso; });
@@ -767,6 +807,7 @@ const ld = {
             var e = crearEstrella(r);
             e.nace = quieto ? null : t0 + i * 700;
             estrellas.push(e);
+            sonarNacimiento(e);
           });
           armarConstelaciones();
         }
@@ -937,6 +978,95 @@ const ld = {
           relojes.push(setTimeout(terminarPrologo, 300 + t.prologo.length * paso));
         }
 
+        // ---------- escena: fondo, sonido, inclinación, apertura ----------
+
+        function sonarNacimiento(e) {
+          if (!sonidoActivo || !e || e.nace === null) return;
+          setTimeout(function () {
+            if (sonidoActivo) SaleHoySonido.nacer(e.clave, e.puntas);
+          }, Math.max(0, e.nace - performance.now()));
+        }
+
+        // El cielo cambia con la hora local, el día, la estación y la luna real.
+        var LUNA_NUEVA = Date.UTC(2000, 0, 6, 18, 14);
+        function ambiente() {
+          var d = new Date();
+          var local = d.getTime() - d.getTimezoneOffset() * 60000;
+          estadoGL.hora = d.getHours() + d.getMinutes() / 60;
+          estadoGL.dia = Math.floor(local / 86400000);
+          estadoGL.estacion = ((local - Date.UTC(d.getFullYear(), 0, 1)) / 86400000 / 365.25) % 1;
+          estadoGL.luna = (((d.getTime() - LUNA_NUEVA) / 86400000 / 29.530588853) % 1 + 1) % 1;
+        }
+        ambiente();
+        setInterval(ambiente, 60000);
+
+        if (window.SaleHoyGL && fondo) {
+          try { hayGL = SaleHoyGL.iniciar(fondo, { quieto: quieto }) === true; } catch (e) { hayGL = false; }
+          if (!hayGL) fondo.hidden = true;
+        }
+
+        // Inclinación del celular. En iOS hay que pedir permiso dentro de un
+        // gesto: se pide al activar el sonido, nunca al entrar.
+        function escucharInclinacion() {
+          window.addEventListener("deviceorientation", function (ev) {
+            if (ev.gamma == null || ev.beta == null) return;
+            inclinacion.x = Math.max(-1, Math.min(1, ev.gamma / 28));
+            inclinacion.y = Math.max(-1, Math.min(1, (ev.beta - 50) / 28));
+          });
+        }
+        if (!quieto && window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission !== "function") escucharInclinacion();
+
+        // Sonido: generado, opcional, apagado hasta que la persona lo activa.
+        var botonSonido = document.getElementById("sonido");
+        if (window.SaleHoySonido && SaleHoySonido.disponible()) {
+          botonSonido.hidden = false;
+          document.getElementById("sonidoSep").hidden = false;
+          botonSonido.addEventListener("click", function () {
+            if (!quieto && window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === "function") {
+              DeviceOrientationEvent.requestPermission().then(function (r) { if (r === "granted") escucharInclinacion(); }).catch(function () {});
+            }
+            if (sonidoActivo) {
+              sonidoActivo = false;
+              SaleHoySonido.desactivar();
+              marcarSonido();
+            } else {
+              var r = SaleHoySonido.activar();
+              var listo = function (ok) { sonidoActivo = ok === true; marcarSonido(); };
+              if (r && r.then) r.then(listo, function () { listo(false); }); else listo(r);
+            }
+          });
+        }
+        function marcarSonido() {
+          var clave = sonidoActivo ? "sonOff" : "sonOn";
+          botonSonido.setAttribute("data-t", clave);
+          botonSonido.setAttribute("aria-pressed", sonidoActivo ? "true" : "false");
+          botonSonido.textContent = S.T[actual][clave];
+        }
+
+        // Apertura: en los primeros segundos, sin leer nada, se ve de qué se
+        // trata. El fondo florece y una estela cruza el cielo y se borra.
+        function apertura() {
+          if (quieto || conN) return;
+          document.body.classList.add("abriendo");
+          setTimeout(function () { document.body.classList.remove("abriendo"); }, 700);
+          var t0 = null, DURA = 1900;
+          function paso(ahora) {
+            if (t0 === null) t0 = ahora;
+            var u = Math.min(1, (ahora - t0) / DURA);
+            var m = u * u * (3 - 2 * u);
+            // un arco de abajo a la izquierda hacia arriba a la derecha
+            var x = ancho * (-0.05 + 1.02 * m);
+            var y = alto * (0.86 - 0.62 * m - 0.16 * Math.sin(m * Math.PI));
+            sumarPunto(x, y);
+            energia = Math.min(1, energia + 0.05);
+            if (u < 1 && puntero === null) requestAnimationFrame(paso); else cortarEstela();
+          }
+          setTimeout(function () { requestAnimationFrame(paso); }, 500);
+        }
+        function cortarEstela() {
+          if (estela.length && estela[estela.length - 1]) estela.push(null);
+        }
+
         // ---------- arranque ----------
 
         window.addEventListener("resize", medir);
@@ -945,8 +1075,8 @@ const ld = {
 
         var visto = false;
         try { visto = localStorage.getItem(MARCA) === "1"; } catch (e) {}
-        if (!conN && (S.parametro("prologo") === "1" || !visto)) correrPrologo();
-        else rotar();
+        if (S.parametro("prologo") === "1") correrPrologo();
+        else { apertura(); rotar(); }
       })();
     </script>
   </body>
@@ -989,16 +1119,21 @@ const ld = {
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .95 0 0 0 0 .91 0 0 0 0 .85 0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>");
   }
 
+  #fondo { position: fixed; inset: 0; z-index: 0; display: block; width: 100%; height: 100%; transition: opacity 1.4s ease; }
+  #fondo[hidden] { display: none; }
   #cielo { position: fixed; inset: 0; z-index: 0; display: block; }
+  body.abriendo .ui { opacity: 0; }
+  button.a-sobre { background: none; border: 0; padding: 0; font: inherit; cursor: pointer; }
 
   .ui {
     position: fixed; inset: 0; z-index: 2; pointer-events: none;
     transition: opacity 1.2s ease;
   }
   .ui a, .ui button { pointer-events: auto; }
-  body.en-prologo .ui, body.en-prologo #cielo { opacity: 0; }
+  body.en-prologo .ui, body.en-prologo #cielo, body.en-prologo #fondo { opacity: 0; }
   #cielo { transition: opacity 1.4s ease; }
   body.con-nota .ui, body.con-nota #cielo { opacity: .28; }
+  body.con-nota #fondo { opacity: .5; }
 
   .enlace {
     background: none; border: 0; padding: 0; cursor: pointer;
