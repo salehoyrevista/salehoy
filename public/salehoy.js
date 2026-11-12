@@ -568,19 +568,25 @@
     return pagina(null, tope);
   }
 
-  // Caché compartida en /api/regalos (función de Netlify, se renueva cada
-  // minuto): responde rápido. Trae lo mismo que Blockscout, sin remitentes.
-  function desdeCache(senal) {
+  // Registro del sitio (/api/cielo): los regalos que el servidor ya verificó
+  // contra la red. Responde al instante, pero puede faltarle uno muy reciente.
+  var conocidos = null;   // claves que el registro ya tiene
+
+  function desdeCielo(senal) {
     var ctrl = window.AbortController ? new AbortController() : null;
     var reloj = setTimeout(function () { if (ctrl) ctrl.abort(); }, 2500);
     if (senal && ctrl) senal.addEventListener("abort", function () { ctrl.abort(); });
-    return fetch("/api/regalos", ctrl ? { signal: ctrl.signal } : undefined).then(function (r) {
+    return fetch("/api/cielo", ctrl ? { signal: ctrl.signal } : undefined).then(function (r) {
       if (!r.ok) throw new Error(r.status);
       return r.json();
     }).then(function (j) {
       clearTimeout(reloj);
-      if (!j || !Array.isArray(j.transacciones) || !Array.isArray(j.transferencias)) throw new Error("formato");
-      return [j.transacciones, j.transferencias];
+      if (!j || !Array.isArray(j.estrellas) || !j.sobreEstosDatos || j.sobreEstosDatos.disponible === false) throw new Error("formato");
+      conocidos = {};
+      return j.estrellas.map(function (e, i) {
+        conocidos[e.semilla] = true;
+        return { hash: e.transaccion, clave: e.semilla, fecha: Date.parse(e.fecha), dedicatoria: e.dedicatoria || null, n: i + 1 };
+      });
     }, function (e) { clearTimeout(reloj); throw e; });
   }
 
@@ -590,12 +596,34 @@
     return Promise.all([
       traerTodo(base + "/transactions?filter=to", senal, 20),
       traerTodo(base + "/token-transfers?type=ERC-20&filter=to&token=" + USDC_BASE, senal, 20)
-    ]);
+    ]).then(function (res) {
+      var lista = filtrarRegalos(res[0], res[1]);
+      avistar(lista);
+      return lista;
+    });
   }
 
-  // Lista de regalos (del más viejo al más nuevo, numerados desde 1),
-  // o null si no hay datos en 6 s. Primero la caché; con "denuevo" (cuando
-  // alguien espera ver su regalo) primero Blockscout, que está al día.
+  // Le avisa al registro del sitio de los regalos que todavía no tiene. El
+  // servidor verifica cada uno contra la red antes de sumarlo: este aviso
+  // solo le dice dónde mirar.
+  function avistar(lista) {
+    if (!conocidos || location.hostname !== "salehoy.com.ar") return;
+    var faltan = [];
+    for (var i = 0; i < lista.length && faltan.length < 5; i++) {
+      if (!conocidos[lista[i].clave] && faltan.indexOf(lista[i].hash) < 0) faltan.push(lista[i].hash);
+    }
+    if (!faltan.length) return;
+    try {
+      fetch("/api/avistar", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ hashes: faltan }), keepalive: true })
+        .then(function (r) { if (r.ok) faltan.forEach(function (h) { lista.forEach(function (g) { if (g.hash === h) conocidos[g.clave] = true; }); }); })
+        .catch(function () {});
+    } catch (e) {}
+  }
+
+  // Lista de regalos (del más viejo al más nuevo, numerados desde 1), o null
+  // si no hay datos en 6 s. Primero el registro del sitio, que es inmediato;
+  // con "denuevo" primero Blockscout, que está al día (y de paso se avisa al
+  // registro de lo que le falte).
   var pedido = null;
 
   function cargarRegalos(denuevo) {
@@ -606,14 +634,12 @@
       reloj = setTimeout(function () { if (ctrl) ctrl.abort(); rechazar(new Error("timeout")); }, 6000);
     });
     var senal = ctrl ? ctrl.signal : null;
-    var primero = denuevo ? desdeBlockscout : desdeCache;
-    var segundo = denuevo ? desdeCache : desdeBlockscout;
+    var primero = denuevo ? desdeBlockscout : desdeCielo;
+    var segundo = denuevo ? desdeCielo : desdeBlockscout;
     pedido = Promise.race([
       primero(senal).catch(function () { return segundo(senal); }),
       limite
-    ]).then(function (res) {
-      return filtrarRegalos(res[0], res[1]);
-    }).catch(function () { return null; }).then(function (regalos) {
+    ]).catch(function () { return null; }).then(function (regalos) {
       clearTimeout(reloj);
       return regalos;
     });
