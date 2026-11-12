@@ -9,6 +9,7 @@
 # Sitemaps viejos
 /sitemap-0.xml              /sitemap.xml     301
 /sitemap-index.xml          /sitemap.xml     301
+/sitemap_index.xml          /sitemap.xml     301
 
 # Secciones con páginas propias
 /ediciones/*                /                301
