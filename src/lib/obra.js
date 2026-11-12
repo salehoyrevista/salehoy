@@ -22,12 +22,34 @@ export const RED = { nombre: "Base", chainId: 8453, explorador: "https://base.bl
 export const RUTAS = {
   es: { cielo: "/", sobre: "/sobre/", estrella: "/regalar-una-estrella/", frases: "/frases-regalo-sin-motivo/", regalo: "/regalo.html?lang=es", agentes: "/agentes/" },
   en: { cielo: "/en/", sobre: "/en/about/", estrella: "/en/gift-a-star/", frases: "/en/gift-for-no-reason-quotes/", regalo: "/regalo.html?lang=en", agentes: "/agentes/" },
-  pt: { cielo: "/pt/", sobre: "/en/about/", estrella: "/pt/presentear-uma-estrela/", frases: "/pt/frases-presente-sem-motivo/", regalo: "/regalo.html?lang=pt", agentes: "/agentes/" }
+  pt: { cielo: "/pt/", sobre: "/en/about/", estrella: "/pt/presentear-uma-estrela/", frases: "/pt/frases-presente-sem-motivo/", regalo: "/regalo.html?lang=pt", agentes: "/agentes/" },
+  fr: { cielo: "/fr/", sobre: "/en/about/", estrella: "/fr/offrir-une-etoile/", frases: "/fr/phrases-cadeau-sans-raison/", regalo: "/regalo.html?lang=fr", agentes: "/agentes/" },
+  it: { cielo: "/it/", sobre: "/en/about/", estrella: "/it/regalare-una-stella/", frases: "/it/frasi-regalo-senza-motivo/", regalo: "/regalo.html?lang=it", agentes: "/agentes/" },
+  de: { cielo: "/de/", sobre: "/en/about/", estrella: "/de/einen-stern-schenken/", frases: "/de/sprueche-geschenk-ohne-grund/", regalo: "/regalo.html?lang=de", agentes: "/agentes/" },
+  zh: { cielo: "/zh/", sobre: "/en/about/", estrella: "/zh/song-xingxing/", frases: "/zh/song-li-zengyan/", regalo: "/regalo.html?lang=zh", agentes: "/agentes/" },
+  ja: { cielo: "/ja/", sobre: "/en/about/", estrella: "/ja/hoshi-wo-okuru/", frases: "/ja/okurimono-kotoba/", regalo: "/regalo.html?lang=ja", agentes: "/agentes/" }
 };
+
+// En qué idiomas existe cada página de texto.
+export const IDIOMAS_PAGINA = {
+  estrella: ["es", "en", "pt", "fr", "it", "de", "zh", "ja"],
+  frases: ["es", "en", "pt", "fr", "it", "de", "zh", "ja"],
+  sobre: ["es", "en"]
+};
+
+// La misma página en los otros idiomas, para hreflang y el pie.
+export function alternativas(clave, lang) {
+  return IDIOMAS_PAGINA[clave].filter((l) => l !== lang).map((l) => ({ lang: l, href: RUTAS[l][clave] }));
+}
 
 // Rótulos de la navegación de las páginas de texto.
 export const NAV = {
   es: { cielo: "el cielo", regalo: "regalar", sobre: "sobre la obra", estrella: "regalar una estrella", frases: "frases", agentes: "para agentes de IA", otros: "también en" },
   en: { cielo: "the sky", regalo: "give", sobre: "about the work", estrella: "gift a star", frases: "quotes", agentes: "for AI agents", otros: "also in" },
-  pt: { cielo: "o céu", regalo: "presentear", sobre: "sobre a obra", estrella: "presentear uma estrela", frases: "frases", agentes: "para agentes de IA", otros: "também em" }
+  pt: { cielo: "o céu", regalo: "presentear", sobre: "sobre a obra", estrella: "presentear uma estrela", frases: "frases", agentes: "para agentes de IA", otros: "também em" },
+  fr: { cielo: "le ciel", regalo: "offrir", sobre: "à propos de l’œuvre", estrella: "offrir une étoile", frases: "phrases", agentes: "pour les agents IA", otros: "aussi en" },
+  it: { cielo: "il cielo", regalo: "regala", sobre: "sull’opera", estrella: "regalare una stella", frases: "frasi", agentes: "per agenti IA", otros: "anche in" },
+  de: { cielo: "der Himmel", regalo: "schenken", sobre: "über das Werk", estrella: "einen Stern schenken", frases: "Sprüche", agentes: "für KI-Agenten", otros: "auch auf" },
+  zh: { cielo: "天空", regalo: "送礼", sobre: "关于作品", estrella: "送一颗星星", frases: "赠言", agentes: "给 AI 智能体", otros: "其他语言" },
+  ja: { cielo: "空", regalo: "贈る", sobre: "作品について", estrella: "星を贈る", frases: "言葉", agentes: "AI エージェント向け", otros: "ほかの言語" }
 };

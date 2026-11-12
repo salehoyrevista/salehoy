@@ -1,7 +1,7 @@
 ---
 // Plantilla de las páginas de texto: misma tinta, grano y tipografías que el
 // cielo, pero pensadas para leer (y para que las lean buscadores y modelos).
-import { SITIO, RUTAS, NAV } from "../lib/obra.js";
+import { SITIO, RUTAS, NAV, S } from "../lib/obra.js";
 
 const {
   lang = "es",
@@ -15,7 +15,7 @@ const {
 const r = RUTAS[lang] || RUTAS.en;
 const n = NAV[lang] || NAV.en;
 const url = SITIO + ruta;
-const nombres = { es: "Español", en: "English", pt: "Português" };
+const nombres = Object.fromEntries(S.IDIOMAS.map((l) => [l, S.T[l].nombre]));
 const todas = [{ lang, href: ruta }, ...alternativas];
 ---
 <html lang={lang}>

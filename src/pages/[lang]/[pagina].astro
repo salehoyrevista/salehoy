@@ -1,0 +1,90 @@
+---
+// "Regalar una estrella" y "frases" en francés, italiano, alemán, chino y
+// japonés. Los textos están en src/lib/textos-paginas.js; las direcciones,
+// en RUTAS (src/lib/obra.js).
+import Pagina from "../../layouts/Pagina.astro";
+import ListaFrases from "../../components/ListaFrases.astro";
+import { SITIO, RUTAS, alternativas } from "../../lib/obra.js";
+import { ESTRELLA, FRASES } from "../../lib/textos-paginas.js";
+
+export function getStaticPaths() {
+  const caminos = [];
+  for (const lang of Object.keys(ESTRELLA)) {
+    for (const tipo of ["estrella", "frases"]) {
+      const pagina = RUTAS[lang][tipo].split("/")[2];
+      caminos.push({ params: { lang, pagina }, props: { tipo } });
+    }
+  }
+  return caminos;
+}
+
+const { lang } = Astro.params;
+const { tipo } = Astro.props;
+const r = RUTAS[lang];
+const t = tipo === "estrella" ? ESTRELLA[lang] : FRASES[lang];
+
+// {cielo}, {regalo}, etc. por las direcciones de este idioma
+const conEnlaces = (html) => html.replace(/\{(cielo|regalo|frases|sobre|estrella)\}/g, (_, k) => r[k]);
+const sinHtml = (html) => html.replace(/<[^>]+>/g, "");
+
+const ld = tipo === "estrella"
+  ? [
+      { "@context": "https://schema.org", "@type": "Article", headline: t.titulo, inLanguage: lang, author: { "@type": "Person", name: "Solzimer" }, datePublished: "2026-11-12", mainEntityOfPage: SITIO + r.estrella, image: SITIO + "/og.png" },
+      { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: t.faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) }
+    ]
+  : { "@context": "https://schema.org", "@type": "Article", headline: sinHtml(t.h1), inLanguage: lang, author: { "@type": "Person", name: "Solzimer" }, datePublished: "2026-11-12", mainEntityOfPage: SITIO + r.frases, image: SITIO + "/og.png" };
+---
+<Pagina
+  lang={lang}
+  titulo={t.titulo}
+  descripcion={t.descripcion}
+  ruta={r[tipo]}
+  alternativas={alternativas(tipo, lang)}
+  ld={ld}
+>
+  {tipo === "estrella" ? (
+    <>
+      <h1>{t.h1}</h1>
+      <p class="entrada">{t.entrada}</p>
+
+      {t.secciones.map(([titulo, parrafos]) => (
+        <>
+          <h2>{titulo}</h2>
+          {parrafos.map((p) => <p set:html={conEnlaces(p)} />)}
+        </>
+      ))}
+
+      <h2>{t.otraManera}</h2>
+      <p set:html={conEnlaces(t.intro)} />
+      <ul>{t.lista.map((li) => <li set:html={conEnlaces(li)} />)}</ul>
+      <p set:html={conEnlaces(t.noEs)} />
+
+      <h2>{t.como}</h2>
+      <ol>{t.pasos.map((li) => <li set:html={conEnlaces(li)} />)}</ol>
+      <p class="accion"><a href={r.regalo}>{t.accion}</a></p>
+
+      <h2>{t.preguntas}</h2>
+      {t.faq.map(([q, a]) => (<><h3>{q}</h3><p>{a}</p></>))}
+
+      <hr />
+      <p class="dato" set:html={conEnlaces(t.cierre)} />
+    </>
+  ) : (
+    <>
+      <h1 set:html={t.h1} />
+      <p class="entrada">{t.entrada}</p>
+      <p>{t.intro}</p>
+
+      <ListaFrases frases={t.frases} copiar={t.copiar} copiado={t.copiado} />
+
+      <p class="dato">{t.nota}</p>
+
+      <h2>{t.usoTitulo}</h2>
+      <ul>{t.usos.map((li) => <li set:html={conEnlaces(li)} />)}</ul>
+
+      <h2>{t.porTitulo}</h2>
+      {t.por.map((p) => <p set:html={conEnlaces(p)} />)}
+      <p class="accion"><a href={r.cielo}>{t.accion}</a></p>
+    </>
+  )}
+</Pagina>
