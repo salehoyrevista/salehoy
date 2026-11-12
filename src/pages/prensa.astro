@@ -1,0 +1,90 @@
+---
+// Prensa: textos listos para copiar, datos rápidos y materiales para descargar.
+// Los archivos viven en public/prensa/. El contacto queda como https://github.com/salehoyrevista/salehoy/issues
+// hasta que haya uno público.
+import Pagina from "../layouts/Pagina.astro";
+import { SITIO, RUTAS, DIRECCION, RED } from "../lib/obra.js";
+
+const r = RUTAS.es;
+const ruta = "/prensa/";
+const ld = [
+  { "@context": "https://schema.org", "@type": "WebPage", name: "Prensa · Sin motivo", inLanguage: "es", url: SITIO + ruta,
+    description: "Textos, datos e imágenes de Sin motivo, obra de net art de Solzimer, para prensa y difusión.",
+    about: { "@type": "VisualArtwork", name: "Sin motivo", artform: "Net art", creator: { "@type": "Person", name: "Solzimer" }, dateCreated: "2026-10-29", url: SITIO + "/",
+      license: "https://creativecommons.org/licenses/by-nc-sa/4.0/" } }
+];
+---
+<Pagina
+  lang="es"
+  titulo="Prensa"
+  descripcion="Kit de prensa de Sin motivo, obra de net art de Solzimer: textos listos para copiar, datos rápidos, imágenes y video para descargar, condiciones de uso y cómo citar."
+  ruta={ruta}
+  alternativas={[{ lang: "en", href: "/en/press/" }]}
+  ld={ld}
+>
+  <h1>Prensa</h1>
+  <p class="entrada"><em>Sin motivo</em>: un cielo en la web donde cada regalo en blockchain se vuelve un asterisco permanente. Hoy está vacío.</p>
+
+  <p>Obra de net art de Solzimer, en curso desde el 29 de octubre de 2026. No es una donación: no financia nada ni promete nada. Es una pregunta: <strong>¿alguien regala algo porque sí?</strong></p>
+
+  <p class="dato">Textos actualizados al 12 de noviembre de 2026. Pueden copiarse tal cual.</p>
+
+  <h2>Texto corto</h2>
+  <p><em>Sin motivo</em> es una obra de net art de Solzimer, en curso desde el 29 de octubre de 2026. Es un cielo. Cada regalo enviado en blockchain a la dirección de la obra se vuelve un asterisco permanente. No es una donación: no financia nada ni promete nada. Es una pregunta: ¿alguien regala algo porque sí? Hoy el cielo está vacío.</p>
+
+  <h2>Texto medio</h2>
+  <p><em>Sin motivo</em> es una obra participativa de net art de Solzimer, en curso desde el 29 de octubre de 2026 en salehoy.com.ar. Es un cielo. Cada regalo en ETH o USDC enviado en la red Base a la dirección de la obra se vuelve un asterisco permanente, del griego <em>asteriskos</em>, «estrellita». La forma de cada asterisco sale del identificador de la transacción, nunca del monto. El monto y quién regala no se muestran: todos los regalos valen lo mismo. Las visitas, en cambio, dejan estelas que se borran.</p>
+  <p>El cielo gira una vuelta por día sideral. Los regalos del mismo día forman constelaciones. La obra muestra cuánto hace que nadie regala.</p>
+  <p>No es una donación ni una venta: no financia nada, no promete nada y no da nada a cambio. Es una pregunta: ¿alguien regala algo porque sí? Al 12 de noviembre de 2026 no hay ningún regalo. El cielo está vacío, y eso también es parte de la obra.</p>
+  <p class="dato">El texto largo, las preguntas frecuentes y la ficha completa están en el <a href="/prensa/sin-motivo-prensa-es.md">kit de prensa</a>.</p>
+
+  <h2>Datos rápidos</h2>
+  <ul>
+    <li><strong>Título:</strong> <em>Sin motivo</em>.</li>
+    <li><strong>Autor:</strong> Solzimer (seudónimo).</li>
+    <li><strong>Año:</strong> 2026–en curso. Empezó el 29 de octubre de 2026.</li>
+    <li><strong>Tipo:</strong> net art, obra participativa.</li>
+    <li><strong>Soporte:</strong> sitio web y blockchain ({RED.nombre}, cadena {RED.chainId}).</li>
+    <li><strong>Regalos que cuentan:</strong> ETH nativo y USDC oficial de Base.</li>
+    <li><strong>Regalos recibidos al 12 de noviembre de 2026:</strong> ninguno.</li>
+    <li><strong>Forma de cada asterisco:</strong> sale del identificador de la transacción, nunca del monto.</li>
+    <li><strong>Lo que no se muestra:</strong> el monto y quién regala.</li>
+    <li><strong>Dedicatoria:</strong> opcional, solo con ETH, hasta 80 caracteres, escrita en la transacción.</li>
+    <li><strong>El cielo:</strong> escena en tiempo real que responde al toque, al mouse y a la inclinación del celular. Gira una vuelta por día sideral.</li>
+    <li><strong>Sonido:</strong> capa sonora generada, opcional. Nunca arranca sola.</li>
+    <li><strong>Estelas:</strong> cada visitante puede guardar la suya como imagen o video y compartirla con un enlace propio.</li>
+    <li><strong>Registro:</strong> el servidor verifica cada regalo directamente contra la red Base, sin claves ni servicios pagos. El estado del cielo se publica en <a href="/api/cielo">/api/cielo</a>, una API de solo lectura.</li>
+    <li><strong>Privacidad:</strong> sin cookies ni datos personales.</li>
+    <li><strong>Técnica:</strong> JavaScript sin frameworks de interfaz, sitio estático con Astro, Netlify.</li>
+    <li><strong>Idiomas:</strong> español, inglés, portugués, francés, italiano, alemán, chino, japonés.</li>
+  </ul>
+  <p class="mono">
+    dirección de la obra: <code>{DIRECCION}</code><br />
+    verificación pública: <a href={`${RED.explorador}/address/${DIRECCION}`} rel="noopener">{RED.explorador.replace("https://", "")}</a>
+  </p>
+
+  <h2>Materiales</h2>
+  <ul>
+    <li><a href="/prensa/sin-motivo-kit.zip" download>Kit completo</a> (zip): textos, imágenes y video.</li>
+    <li><a href="/prensa/sin-motivo-prensa-es.md" download>Kit de prensa en español</a> (texto): ficha, textos corto, medio y largo, preguntas frecuentes.</li>
+    <li><a href="/prensa/sin-motivo-press-en.md" download>Press kit in English</a> (texto).</li>
+    <li><a href="/prensa/cielo-escritorio.png" download>El cielo, escritorio</a> (png).</li>
+    <li><a href="/prensa/cielo-celular.png" download>El cielo, celular</a> (png).</li>
+    <li><a href="/prensa/estela.jpg" download>Una estela guardada</a> (png).</li>
+    <li><a href="/prensa/sin-motivo.webm" download>Video</a> (webm).</li>
+    <li><a href="/og.png" download>Imagen para compartir</a> (png, 1200 × 630).</li>
+  </ul>
+
+  <h2>Condiciones de uso</h2>
+  <p>Las imágenes, el video y los textos de esta página son de libre uso para prensa y difusión, sin pedir permiso, con el crédito «Solzimer, <em>Sin motivo</em>, 2026–en curso».</p>
+  <p>Las imágenes pueden recortarse para adaptarlas a un formato. No pueden alterarse de modo que muestren algo que la obra no muestra: por ejemplo, regalos que no existen.</p>
+  <p class="dato">Para cualquier otro uso, la obra, sus textos y sus imágenes se publican con licencia <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es" rel="license noopener">CC BY-NC-SA 4.0</a>. El código del sitio, con licencia MIT.</p>
+
+  <h2>Cómo citar</h2>
+  <p>Solzimer, <em>Sin motivo</em>, 2026–en curso, net art, {SITIO.replace("https://", "")}.</p>
+
+  <h2>Contacto</h2>
+  <p>https://github.com/salehoyrevista/salehoy/issues</p>
+
+  <p class="accion"><a href={r.cielo}>ver el cielo →</a> &nbsp; <a href={r.sobre}>sobre la obra →</a></p>
+</Pagina>
