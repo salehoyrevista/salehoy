@@ -45,7 +45,7 @@ export const ESTRELLA = {
       ["Peut-on l’effacer ou la modifier ensuite ?", "Non. La transaction et sa dédicace restent sur une blockchain publique. C’est pour ça que l’étoile est permanente, et qu’il vaut mieux réfléchir à ce qu’on écrit."],
       ["Est-ce un certificat ou un registre astronomique ?", "Non. C’est une œuvre d’art : Sin motivo, de Solzimer. L’étoile est un astérisque dessiné dans un ciel qui existe sur ce site et sur la blockchain, pas dans le firmament."]
     ],
-    cierre: "Tu cherches quoi écrire ? Voici des <a href=\"{frases}\">phrases pour un cadeau sans raison</a>. Pour comprendre l’œuvre, <a href=\"{sobre}\">lis sa présentation</a> (en anglais)."
+    cierre: "Tu cherches quoi écrire ? Voici des <a href=\"{frases}\">phrases pour un cadeau sans raison</a>. Pour comprendre l’œuvre, <a href=\"{sobre}\">lis sa présentation</a>."
   },
 
   it: {
@@ -88,7 +88,7 @@ export const ESTRELLA = {
       ["Si può cancellare o cambiare dopo?", "No. La transazione e la sua dedica restano su una blockchain pubblica. Per questo la stella è permanente, e per questo conviene pensare a cosa si scrive."],
       ["È un certificato o un registro astronomico?", "No. È un’opera d’arte: Sin motivo, di Solzimer. La stella è un asterisco disegnato in un cielo che esiste su questo sito e sulla blockchain, non nel firmamento."]
     ],
-    cierre: "Cerchi cosa scrivere? Ecco delle <a href=\"{frases}\">frasi per un regalo senza motivo</a>. Per capire l’opera, <a href=\"{sobre}\">leggi la presentazione</a> (in inglese)."
+    cierre: "Cerchi cosa scrivere? Ecco delle <a href=\"{frases}\">frasi per un regalo senza motivo</a>. Per capire l’opera, <a href=\"{sobre}\">leggi la presentazione</a>."
   },
 
   de: {
@@ -131,7 +131,7 @@ export const ESTRELLA = {
       ["Kann man ihn später löschen oder ändern?", "Nein. Die Transaktion und ihre Widmung bleiben auf einer öffentlichen Blockchain. Darum bleibt der Stern, und darum lohnt es sich, gut zu überlegen, was man schreibt."],
       ["Ist das eine Urkunde oder ein Sternregister?", "Nein. Es ist ein Kunstwerk: Sin motivo von Solzimer. Der Stern ist ein Sternchen in einem Himmel, der auf dieser Website und in der Blockchain existiert, nicht am Firmament."]
     ],
-    cierre: "Suchst du Worte dafür? Hier sind <a href=\"{frases}\">Sprüche für ein Geschenk ohne Grund</a>. Mehr über das Werk <a href=\"{sobre}\">liest du hier</a> (auf Englisch)."
+    cierre: "Suchst du Worte dafür? Hier sind <a href=\"{frases}\">Sprüche für ein Geschenk ohne Grund</a>. Mehr über das Werk <a href=\"{sobre}\">liest du hier</a>."
   },
 
   zh: {
@@ -174,7 +174,7 @@ export const ESTRELLA = {
       ["之后能删除或修改吗？", "不能。交易和题词都留在公开的区块链上。所以这颗星是永久的，也所以写之前值得想一想。"],
       ["这是证书或天文登记吗？", "不是。这是一件艺术作品：Solzimer 的《Sin motivo》。这颗星是一个画在天空里的星号，这片天空存在于这个网站和区块链上，而不在真正的苍穹中。"]
     ],
-    cierre: "不知道写什么？这里有<a href=\"{frases}\">无缘无故送礼时可以写的话</a>。想了解这件作品，<a href=\"{sobre}\">请看介绍</a>（英文）。"
+    cierre: "不知道写什么？这里有<a href=\"{frases}\">无缘无故送礼时可以写的话</a>。想了解这件作品，<a href=\"{sobre}\">请看介绍</a>。"
   },
 
   ja: {
@@ -217,7 +217,7 @@ export const ESTRELLA = {
       ["あとから消したり変えたりできますか？", "できません。取引と献辞は公開されたブロックチェーンに残ります。だから星は永遠で、だから書く言葉はよく考えたほうがいいのです。"],
       ["証明書や天文登録ですか？", "いいえ。アート作品です。Solzimer の『Sin motivo』。星は、このサイトとブロックチェーンの中にある空に描かれたアスタリスクで、本物の天空の星ではありません。"]
     ],
-    cierre: "何を書けばいいか迷ったら、<a href=\"{frases}\">理由のない贈り物に添える言葉</a>をどうぞ。作品について知りたいときは、<a href=\"{sobre}\">紹介ページ</a>（英語）へ。"
+    cierre: "何を書けばいいか迷ったら、<a href=\"{frases}\">理由のない贈り物に添える言葉</a>をどうぞ。作品について知りたいときは、<a href=\"{sobre}\">紹介ページ</a>へ。"
   }
 };
 

@@ -2,6 +2,7 @@
 // El cielo. Se genera una vez por idioma: "/" (español, con la frase que rota
 // si el visitante no eligió idioma) y "/en/", "/pt/", etc. (idioma fijo).
 import fs from "node:fs";
+import { RUTAS } from "../lib/obra.js";
 
 const { lang = "es", fijo = false } = Astro.props;
 
@@ -19,7 +20,8 @@ const en = S.T.en;
 const SITIO = "https://salehoy.com.ar";
 const ruta = (l) => (l === "es" ? "/" : `/${l}/`);
 const url = SITIO + ruta(lang);
-const sobre = lang === "es" ? "/sobre/" : "/en/about/";
+const sobre = RUTAS[lang].sobre;
+const sobres = JSON.stringify(Object.fromEntries(Object.keys(RUTAS).map((l) => [l, RUTAS[l].sobre])));
 const titulo = lang === "es" ? "Sin motivo — Solzimer" : `${t.corto} ${t.sinMotivo} · Sin motivo — Solzimer`;
 
 const ld = {
@@ -38,7 +40,7 @@ const ld = {
   isAccessibleForFree: true
 };
 ---
-<html lang={lang} data-idioma={fijo ? lang : undefined}>
+<html lang={lang} data-idioma={fijo ? lang : undefined} data-sobres={sobres}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -190,7 +192,8 @@ const ld = {
           S.aplicarTextos(lang);
           regalar.href = notaRegalar.href = "/regalo.html?lang=" + lang;
           var sobres = document.querySelectorAll(".a-sobre");
-          for (var si = 0; si < sobres.length; si++) sobres[si].href = lang === "es" ? "/sobre/" : "/en/about/";
+          var rutasSobre = JSON.parse(document.documentElement.getAttribute("data-sobres") || "{}");
+          for (var si = 0; si < sobres.length; si++) sobres[si].href = rutasSobre[lang] || "/en/about/";
           marcar(lang);
           pintarCuenta();
           pintarSilencio();

@@ -16,7 +16,7 @@ Sin motivo es una obra de arte participativo de Solzimer, en curso desde el 29 d
 ## La obra
 
 - [El cielo](${u(es.cielo)}): la obra. También en [English](${u(en.cielo)}), [Português](${u(pt.cielo)}), [Français](${u("/fr/")}), [Italiano](${u("/it/")}), [Deutsch](${u("/de/")}), [中文](${u("/zh/")}) y [日本語](${u("/ja/")}).
-- [Sobre la obra](${u(es.sobre)}): qué es, cómo funciona, ficha y preguntas frecuentes. [About the work](${u(en.sobre)}) en inglés.
+- [Sobre la obra](${u(es.sobre)}): qué es, cómo funciona, ficha y preguntas frecuentes. También en ${otras("sobre")}.
 - [Regalar](${u("/regalo.html")}): la página para hacer un regalo.
 
 ## Reglas
