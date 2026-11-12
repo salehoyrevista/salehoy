@@ -841,7 +841,7 @@ const ld = {
           armarConstelaciones();
         }
 
-        var conN = S.parametro("n") != null;
+        var conN = S.parametro("n") != null || S.parametro("tx") != null || S.parametro("e") != null;
         var pendiente = null;    // lista que llegó durante el prólogo
 
         function recibir(lista, primera) {
@@ -852,6 +852,9 @@ const ld = {
           pintarSilencio();
           if (primera || antes < 0) {
             var n = parseInt(S.parametro("n"), 10);
+            // también vale el enlace por transacción: ?tx=0x…
+            var txPedida = String(S.parametro("tx") || "").toLowerCase();
+            if (txPedida) for (var ti = 0; ti < lista.length; ti++) if (String(lista[ti].hash).toLowerCase() === txPedida) { n = ti + 1; break; }
             var conDestino = n >= 1 && n <= lista.length;
             if (conDestino) resaltado = n;
             if (enPrologo) pendiente = { lista: lista, n: conDestino ? n : null };

@@ -38,14 +38,14 @@ import Pagina from "../layouts/Pagina.astro";
         var porDia = {};
         dias.forEach(function (d) { porDia[d.dia] = d.visitas || 0; });
         caja.innerHTML =
-          "<p class='entrada'>" + total + " visitas de personas · " + porEnlace + " llegaron por el enlace de un asterisco</p>" +
+          "<p class='entrada'>" + total + " visitas de personas · " + porEnlace + " por el enlace de un asterisco · " + dias.reduce(function (s, d) { return s + (d.porEnlaceDeEstela || 0); }, 0) + " por el enlace de una estela</p>" +
           "<h3>Por día</h3><p class='mono'>" + dias.map(function (d) {
             return d.dia + "&nbsp;&nbsp;" + String(d.visitas || 0).padStart(5, " ").replace(/ /g, "&nbsp;");
           }).join("<br>") + "</p>" +
           tabla("Páginas", sumar(dias, "paginas")) +
           tabla("Idiomas", sumar(dias, "idiomas")) +
           tabla("De dónde llegan", sumar(dias, "origenes")) +
-          tabla("Camino al regalo", sumar(dias, "eventos")) +
+          tabla("Qué hace la gente (regalar, guardar su estela, sonido)", sumar(dias, "eventos")) +
           tabla("Buscadores y crawlers de IA", bots);
       }).catch(function () { caja.innerHTML = "<p>No se pudieron cargar los datos.</p>"; });
     })();
