@@ -3,7 +3,9 @@
 ## Actualización del 12 de noviembre de 2026
 "Regalar una estrella" y "Frases para un regalo sin motivo" ya están en los 8 idiomas: se sumaron francés, italiano, alemán, chino y japonés (10 páginas nuevas). Todas se enlazan entre sí con `hreflang`, y el sitemap pasó de 18 a 28 direcciones. Publicado y verificado: las 28 responden 200, sin enlaces rotos y sin desbordes en celular.
 
-Lo próximo sigue siendo lo mismo: enviar el sitemap en Search Console (ahora con 28 páginas) y hacer el primer regalo con dedicatoria. Ver `PENDIENTES_PEDRO.md`.
+Más tarde, ese mismo día: "Sobre la obra" también quedó en los 8 idiomas (6 páginas nuevas). El sitio tiene ahora 34 páginas indexables, y cada idioma tiene su cielo, su página de estrellas, sus frases y su explicación de la obra.
+
+Lo próximo sigue siendo lo mismo: enviar el sitemap en Search Console (ahora con 34 páginas) y hacer el primer regalo con dedicatoria. Ver `PENDIENTES_PEDRO.md`.
 
 ---
 

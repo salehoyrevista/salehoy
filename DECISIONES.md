@@ -3,6 +3,14 @@
 Cada decisión, por qué se tomó y cómo revertirla. La más reciente arriba.
 Para deshacer un cambio: `git revert <commit>` y `git push origin master` (Netlify publica solo).
 
+## 2026-11-12 — Sobre la obra en los 8 idiomas
+
+### 10. "Sobre la obra" en pt, fr, it, de, zh, ja
+- **Qué:** 6 páginas nuevas (`/pt/sobre-a-obra/`, `/fr/a-propos/`, `/it/sull-opera/`, `/de/ueber-das-werk/`, `/zh/guanyu-zuopin/`, `/ja/sakuhin-ni-tsuite/`), generadas desde `src/lib/textos-sobre.js` con la misma plantilla que las demás. Ficha, 10 preguntas frecuentes y datos estructurados `AboutPage` + `FAQPage`. El sitemap pasa a 34 direcciones.
+- **Por qué:** es la página que un buscador o un modelo de IA usa para explicar qué es la obra. Antes, en esos idiomas, mandaba a la versión inglesa.
+- **Efecto en el resto:** el cielo de cada idioma, las páginas de estrellas y `llms.txt` enlazan ahora la página de su propio idioma; se quitaron los "(en inglés)".
+- **Revertir:** `git revert 6569bc0` y luego el commit anterior a ese.
+
 ## 2026-11-12 — Páginas de texto en los 8 idiomas
 
 ### 9. "Regalar una estrella" y "frases" en fr, it, de, zh, ja
