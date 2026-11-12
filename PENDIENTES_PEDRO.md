@@ -1,39 +1,38 @@
 # Pendientes de Pedro
 
-Lo que solo vos podés hacer, porque requiere una cuenta o una decisión de autor. Ordenado por impacto. Nada de esto es urgente: el sitio funciona sin ninguno.
+Lo que solo vos podés hacer. Nada es urgente: el sitio funciona sin ninguno. Ordenado por cuánto mueve la aguja.
 
-## 1. Google Search Console: enviar el sitemap (5 minutos)
-El sitio ya está verificado (existe `google8e1f665f197be771.html`).
-1. Entrá a https://search.google.com/search-console con la cuenta que verificó el sitio.
-2. En "Sitemaps", agregá `https://salehoy.com.ar/sitemap.xml`.
-3. En "Inspección de URLs", pedí la indexación de `https://salehoy.com.ar/regalar-una-estrella/` y `https://salehoy.com.ar/en/gift-a-star/`.
+## 1. Mirarlo y escucharlo en tu celular (10 minutos)
+Hay tres cosas que solo se pueden juzgar con un celular real y un par de oídos:
+- **El sonido.** Tocá "sonido" abajo. Nadie lo escuchó todavía: se construyó y corre sin errores, pero el volumen y el timbre se ajustan de oído. Decime si molesta, si no se oye o si está bien.
+- **La inclinación.** Mové el celular: el fondo y los asteriscos deberían correrse apenas. En iPhone el permiso se pide al tocar "sonido".
+- **Tu estela.** Movete por el cielo, tocá "mi estela →" y guardá la imagen y el video. Fijate si el video se puede subir a una historia de Instagram desde tu teléfono.
 
-Sirve para que Google encuentre las 34 páginas en días y no en semanas, y es donde vas a ver qué búsquedas traen gente.
-
-## 2. Bing Webmaster Tools (5 minutos, opcional pero útil)
-https://www.bing.com/webmasters → agregar el sitio (se puede importar desde Search Console) y enviar el mismo sitemap. Bing alimenta a ChatGPT y a Copilot.
+## 2. Compartir tu propia estela una vez
+Es el experimento más barato para saber si el mecanismo funciona: guardá tu estela y mandásela a una persona, o subila a una historia. Después mirá en https://salehoy.com.ar/estadisticas/ si aparece "por el enlace de una estela".
 
 ## 3. Hacer el primer regalo, con dedicatoria (5 minutos)
-Desde `https://salehoy.com.ar/regalo.html`, con una billetera que tenga un poco de ETH en la red Base. Escribí una dedicatoria y mandá el mínimo.
-- Verifica el circuito completo con una billetera real (hasta ahora se probó con una simulada).
-- Deja el n.º 1 en el cielo, que es lo que hace que el siguiente se anime.
-- Si algo falla o la billetera muestra un aviso raro, contámelo en la próxima sesión.
+Desde `https://salehoy.com.ar/regalo.html`, con una billetera que tenga un poco de ETH en la red Base. Sigue sin probarse el circuito con una billetera real, y un cielo con una estrella invita más que uno vacío. Si no querés, también está bien: la espera es parte de la obra.
 
-## 4. Clave de Blockscout (10 minutos, opcional)
-Hace que el cielo cargue al instante y habilita la vista previa propia por asterisco.
-1. Crear una cuenta gratuita en Blockscout y generar una API key.
-2. En Netlify → Site configuration → Environment variables, crear `BLOCKSCOUT_API_KEY`.
-3. Volver a publicar el sitio.
+## 4. Publicar en comunidades, si querés
+`COMUNIDADES.md` tiene textos listos y adaptados para net art, arte generativo, creative coding, arte cripto y comunidades en español, con dónde publicarlos y cinco reglas para no hacer spam. Nada se publica solo. Mi recomendación, en este orden:
+1. **Rhizome ArtBase** (archivo de net art): una presentación, un enlace permanente desde un sitio con autoridad.
+2. **Show HN en Hacker News**, con el ángulo técnico (verificación contra la red sin claves, forma desde el hash).
+3. **Farcaster**, donde está la gente que ya tiene billetera en Base.
 
-No pude confirmar el formato exacto en que la API espera la clave; lo ajusto cuando exista.
+Antes de publicar, revisá las normas de cada lugar y actualizá la fecha si ya hubo algún regalo.
 
-## 5. Moderar dedicatorias (solo si hace falta)
-Las dedicatorias son públicas y no se pueden borrar de la blockchain. Si aparece una ofensiva, se oculta del sitio: agregar el hash de esa transacción, en minúsculas, a la lista `OCULTAS` en `public/salehoy.js` y publicar. O pedímelo.
+## 5. Revisar las licencias del repositorio
+El repositorio de GitHub ya es público. Quedó presentado con `README.md`, `LICENSE` (MIT para el código) y `LICENSE-OBRA.md` (CC BY-NC-SA 4.0 para la obra, los textos y las imágenes). Revisá que estés de acuerdo con esas dos licencias; si preferís otras, se cambian esos dos archivos.
 
-## 6. Decisiones de autor (cuando quieras)
-- **Camino sin cripto.** Aceptar Mercado Pago o tarjeta y convertir cada aporte en un regalo en la blockchain, mostrado distinto ("regalo traducido"). Necesita una cuenta de cobro a tu nombre. Lo recomiendo solo si las estadísticas muestran que la gente llega a la página de regalo y se va.
-- **Ediciones físicas.** Lámina anual con la carta del cielo. Necesita imprenta o servicio de impresión y un medio de cobro.
-- **Finitud.** Decidir si el cielo se cierra en una fecha o en un número de regalos.
+## 6. Contacto de prensa
+No había un contacto público, así que en la página de prensa y en el kit puse las "issues" del repositorio (`github.com/salehoyrevista/salehoy/issues`). Si querés un correo u otra vía, pasámelo y lo cambio.
 
-## Qué no tenés que hacer
-No hace falta promocionar nada. El sitio ahora tiene páginas que responden búsquedas, una dirección por idioma y un enlace que quien regala quiere mandar. Lo único que acelera todo es el punto 1.
+## 7. Google Search Console (5 minutos)
+Enviar `https://salehoy.com.ar/sitemap.xml` (ahora tiene 37 páginas). Sigue siendo la forma más rápida de que Google vea lo nuevo.
+
+## Ya no hace falta
+- **La clave de Blockscout.** El servidor ahora verifica los regalos directamente contra la red Base, sin claves.
+
+## Moderar dedicatorias (solo si hace falta)
+Si aparece una dedicatoria ofensiva, se oculta del sitio agregando el hash de esa transacción, en minúsculas, a la lista `OCULTAS` en `public/salehoy.js`. O pedímelo.
