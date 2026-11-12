@@ -4,7 +4,7 @@
 import fs from "node:fs";
 import { RUTAS } from "../lib/obra.js";
 
-const { lang = "es", fijo = false } = Astro.props;
+const { lang = "es", fijo = false, embebido = false } = Astro.props;
 
 // Los textos viven en public/salehoy.js, que es lo que usa el navegador. Acá
 // se leen una vez, al construir, para que el HTML ya salga traducido.
@@ -40,7 +40,7 @@ const ld = {
   isAccessibleForFree: true
 };
 ---
-<html lang={lang} data-idioma={fijo ? lang : undefined} data-sobres={sobres}>
+<html lang={lang} data-idioma={fijo ? lang : undefined} data-sobres={sobres} data-embebido={embebido ? "si" : undefined}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -49,6 +49,7 @@ const ld = {
     <title>{titulo}</title>
     <meta name="description" content={t.desc} />
     <meta name="author" content="Solzimer" />
+    {embebido && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={url} />
     {S.IDIOMAS.map((l) => <link rel="alternate" hreflang={l} href={SITIO + ruta(l)} />)}
     <link rel="alternate" hreflang="x-default" href={SITIO + "/"} />
@@ -114,7 +115,7 @@ const ld = {
         <nav class="idiomas" id="idiomas" aria-label="Idioma / Language">
           {S.IDIOMAS.map((l) => <a href={ruta(l)} lang={l} hreflang={l} aria-current={l === lang ? "true" : "false"}>{S.T[l].nombre}</a>)}
         </nav>
-        <p class="cuenta" id="cuenta"><button class="a-sobre" id="sonido" type="button" aria-pressed="false" data-t="sonOn" hidden>{t.sonOn}</button><span id="sonidoSep" hidden> · </span><a class="a-sobre" href={sobre} data-t="sobre">{t.sobre}</a> · <span id="cuentaN"></span><span data-t="enCurso">{t.enCurso}</span></p>
+        <p class="cuenta" id="cuenta"><button class="a-sobre" id="sonido" type="button" aria-pressed="false" data-t="sonOn" hidden>{t.sonOn}</button><span id="sonidoSep" hidden> · </span><a class="a-sobre" href={sobre} data-t="sobre">{t.sobre}</a><span class="a-sobre-sep"> · </span><span id="cuentaN"></span><span data-t="enCurso">{t.enCurso}</span></p>
       </footer>
     </div>
 
@@ -1203,6 +1204,14 @@ const ld = {
           }
         }
 
+        // Embebido en otro sitio: los enlaces salen del marco hacia la obra.
+        if (document.documentElement.getAttribute("data-embebido")) {
+          var salidas = document.querySelectorAll("a[href]");
+          for (var sa = 0; sa < salidas.length; sa++) { salidas[sa].target = "_blank"; salidas[sa].rel = "noopener"; }
+          var firma = document.querySelector(".firma");
+          if (firma) firma.innerHTML = '<a href="https://salehoy.com.ar/" target="_blank" rel="noopener">Sin motivo — Solzimer ↗</a>';
+        }
+
         // ---------- arranque ----------
 
         window.addEventListener("resize", medir);
@@ -1267,6 +1276,13 @@ const ld = {
   .estela-vista { display: block; height: min(52vh, 30rem); width: auto; max-width: 100%; aspect-ratio: 9 / 16; background: var(--tinta); border: 1px solid rgba(242, 233, 216, .12); }
   .estela-leyenda { margin: 0 2.5rem 1rem 0; font-size: 1.2rem; font-style: italic; line-height: 1.3; }
   .estela-estado { min-height: 1.4em; margin: .8rem 0 0; font-family: var(--mono); font-size: .7rem; color: var(--tenue); }
+  /* versión embebida: solo el cielo, el título y el enlace de vuelta */
+  [data-embebido] .idiomas, [data-embebido] #sonido, [data-embebido] #sonidoSep, [data-embebido] .a-sobre,
+  [data-embebido] #miEstela, [data-embebido] .a-sobre-sep, [data-embebido] .asterisco, [data-embebido] #silencio { display: none !important; }
+  [data-embebido] .firma { pointer-events: auto; }
+  [data-embebido] .firma a { color: var(--tenue); text-decoration: none; }
+  [data-embebido] .obra { top: 18vh; }
+  [data-embebido] h1 { font-size: clamp(2rem, 8vw, 4.5rem); }
   button.a-sobre { background: none; border: 0; padding: 0; font: inherit; cursor: pointer; }
 
   .ui {

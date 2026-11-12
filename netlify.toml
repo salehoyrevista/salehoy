@@ -8,7 +8,17 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# La página de regalo abre la billetera: nunca dentro de un marco ajeno.
+[[headers]]
+  for = "/regalo.html"
+  [headers.values]
+    X-Frame-Options = "DENY"
+
+[[headers]]
+  for = "/regalo"
+  [headers.values]
+    X-Frame-Options = "DENY"
