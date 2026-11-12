@@ -8,7 +8,7 @@ El sitio ya está verificado (existe `google8e1f665f197be771.html`).
 2. En "Sitemaps", agregá `https://salehoy.com.ar/sitemap.xml`.
 3. En "Inspección de URLs", pedí la indexación de `https://salehoy.com.ar/regalar-una-estrella/` y `https://salehoy.com.ar/en/gift-a-star/`.
 
-Sirve para que Google encuentre las 18 páginas nuevas en días y no en semanas, y es donde vas a ver qué búsquedas traen gente.
+Sirve para que Google encuentre las 28 páginas en días y no en semanas, y es donde vas a ver qué búsquedas traen gente.
 
 ## 2. Bing Webmaster Tools (5 minutos, opcional pero útil)
 https://www.bing.com/webmasters → agregar el sitio (se puede importar desde Search Console) y enviar el mismo sitemap. Bing alimenta a ChatGPT y a Copilot.

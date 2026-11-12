@@ -3,6 +3,15 @@
 Cada decisión, por qué se tomó y cómo revertirla. La más reciente arriba.
 Para deshacer un cambio: `git revert <commit>` y `git push origin master` (Netlify publica solo).
 
+## 2026-11-12 — Páginas de texto en los 8 idiomas
+
+### 9. "Regalar una estrella" y "frases" en fr, it, de, zh, ja
+- **Qué:** 10 páginas nuevas. Los textos viven en `src/lib/textos-paginas.js` y una sola plantilla (`src/pages/[lang]/[pagina].astro`) las genera. Las páginas de es, en y pt, el sitemap y `llms.txt` ahora enlazan los 8 idiomas con `alternativas()` e `IDIOMAS_PAGINA` (`src/lib/obra.js`). El sitemap pasa de 18 a 28 direcciones.
+- **Por qué:** cada idioma tenía solo la portada; ahora tiene una página que responde una búsqueda real ("Sternpatenschaft", "offrir une étoile", "星 名前 プレゼント"...) y lleva a la obra.
+- **Criterio:** traducciones propias, no literales, con el mismo tono y la misma honestidad (ningún registro de nombres de estrellas es oficial). "Sobre la obra" sigue solo en es y en; los demás idiomas enlazan la versión inglesa y lo dicen.
+- **Para sumar un idioma o una página:** agregar sus textos en `textos-paginas.js` y su ruta en `RUTAS` y `IDIOMAS_PAGINA`.
+- **Revertir:** `git revert 39031bb` y luego el commit anterior a ese.
+
 ## 2026-11-11 — Sesión "responsable total"
 
 Punto de partida: `1214982`. Ver `AUDITORIA.md` y `ESTRATEGIA.md`.

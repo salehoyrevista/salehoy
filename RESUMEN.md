@@ -1,4 +1,13 @@
-# Resumen de la sesión del 11 de noviembre de 2026
+# Resumen
+
+## Actualización del 12 de noviembre de 2026
+"Regalar una estrella" y "Frases para un regalo sin motivo" ya están en los 8 idiomas: se sumaron francés, italiano, alemán, chino y japonés (10 páginas nuevas). Todas se enlazan entre sí con `hreflang`, y el sitemap pasó de 18 a 28 direcciones. Publicado y verificado: las 28 responden 200, sin enlaces rotos y sin desbordes en celular.
+
+Lo próximo sigue siendo lo mismo: enviar el sitemap en Search Console (ahora con 28 páginas) y hacer el primer regalo con dedicatoria. Ver `PENDIENTES_PEDRO.md`.
+
+---
+
+## Sesión del 11 de noviembre de 2026
 
 ## En una línea
 El sitio dejó de ser una sola página que hay que presentar: ahora tiene 18 páginas indexables en hasta 8 idiomas, un regalo que se puede dedicar y mandar, instrucciones para agentes de IA y medición propia. Sigue con 0 regalos: eso no se inventa.

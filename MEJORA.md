@@ -33,7 +33,7 @@ Cómo seguir mejorando el sitio sin adivinar. Se revisa una vez por semana; llev
 ## Qué probar después (en orden)
 
 1. **Probar un regalo real con dedicatoria.** Un envío mínimo de ETH en Base desde la página de regalo. Verifica todo el circuito y deja el n.º 1.
-2. **Páginas de texto en los otros 5 idiomas** (fr, it, de, zh, ja): "regalar una estrella" y "frases". Es repetir lo hecho en `src/pages/`.
+2. ~~Páginas de texto en los otros 5 idiomas~~ — hecho el 12/11/2026. Lo que queda: "Sobre la obra" en pt, fr, it, de, zh y ja.
 3. **Vista previa propia por asterisco.** Que `?n=N` muestre en WhatsApp o X la imagen de ese asterisco y su dedicatoria. Necesita una función que arme la imagen y una fuente de datos que un servidor pueda leer (la clave de Blockscout).
 4. **Más búsquedas cercanas:** "regalos originales para alguien que tiene todo", "qué regalar sin motivo", "regalo simbólico", y en inglés "just because gift ideas". Una página por intención, siempre útil por sí misma.
 5. **Camino sin cripto**, si las métricas muestran que ahí se cae la gente.
