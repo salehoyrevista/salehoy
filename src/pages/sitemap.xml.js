@@ -6,11 +6,12 @@ const ruta = (l) => (l === "es" ? "/" : `/${l}/`);
 // Cada grupo es una misma página en varios idiomas.
 const grupos = [
   { defecto: "es", paginas: Object.fromEntries(S.IDIOMAS.map((l) => [l, ruta(l)])) },
-  ...["estrella", "frases", "sobre"].map((clave) => ({
+  ...["estrella", "frases", "sobre", "prensa"].map((clave) => ({
     defecto: "en",
     paginas: Object.fromEntries(IDIOMAS_PAGINA[clave].map((l) => [l, RUTAS[l][clave]]))
   })),
   { defecto: "en", paginas: { en: "/agentes/" } },
+  { defecto: "es", paginas: { es: "/api/" } },
   { defecto: "es", paginas: { es: "/regalo.html" } }
 ];
 

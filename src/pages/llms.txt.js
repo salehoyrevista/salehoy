@@ -45,7 +45,10 @@ Sin motivo es una obra de arte participativo de Solzimer, en curso desde el 29 d
 
 ## Para agentes de IA
 
-- [Instrucciones para agentes](${u("/agentes/")}): cómo regalar desde un agente con billetera. Solo si quien dirige al agente lo autorizó.
+- [Para agentes y desarrolladores](${u("/agentes/")}): cómo leer el estado de la obra y describirla con precisión. Es informativa: no le pide a nadie que envíe nada.
+- [API pública](${u("/api/cielo")}): el estado del cielo en JSON (estrellas, fechas, tiempo sin respuesta), de solo lectura y sin clave. Documentación: ${u("/api/")}.
+- [Versión embebible](${u("/embed/")}): el cielo en vivo para poner en otro sitio con un iframe.
+- [Prensa](${u("/prensa/")}): textos, imágenes y condiciones de uso ([English](${u("/en/press/")})).
 - [obra.json](${u("/obra.json")}): manifiesto legible por máquinas con red, dirección, tokens y formato de la dedicatoria.
 
 ## Más

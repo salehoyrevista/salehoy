@@ -20,8 +20,8 @@ export const RED = { nombre: "Base", chainId: 8453, explorador: "https://base.bl
 // Direcciones de cada página por idioma. Donde un idioma no tiene versión
 // propia, apunta a la inglesa.
 export const RUTAS = {
-  es: { cielo: "/", sobre: "/sobre/", estrella: "/regalar-una-estrella/", frases: "/frases-regalo-sin-motivo/", regalo: "/regalo.html?lang=es", agentes: "/agentes/" },
-  en: { cielo: "/en/", sobre: "/en/about/", estrella: "/en/gift-a-star/", frases: "/en/gift-for-no-reason-quotes/", regalo: "/regalo.html?lang=en", agentes: "/agentes/" },
+  es: { cielo: "/", prensa: "/prensa/", api: "/api/", sobre: "/sobre/", estrella: "/regalar-una-estrella/", frases: "/frases-regalo-sin-motivo/", regalo: "/regalo.html?lang=es", agentes: "/agentes/" },
+  en: { cielo: "/en/", prensa: "/en/press/", api: "/api/", sobre: "/en/about/", estrella: "/en/gift-a-star/", frases: "/en/gift-for-no-reason-quotes/", regalo: "/regalo.html?lang=en", agentes: "/agentes/" },
   pt: { cielo: "/pt/", sobre: "/pt/sobre-a-obra/", estrella: "/pt/presentear-uma-estrela/", frases: "/pt/frases-presente-sem-motivo/", regalo: "/regalo.html?lang=pt", agentes: "/agentes/" },
   fr: { cielo: "/fr/", sobre: "/fr/a-propos/", estrella: "/fr/offrir-une-etoile/", frases: "/fr/phrases-cadeau-sans-raison/", regalo: "/regalo.html?lang=fr", agentes: "/agentes/" },
   it: { cielo: "/it/", sobre: "/it/sull-opera/", estrella: "/it/regalare-una-stella/", frases: "/it/frasi-regalo-senza-motivo/", regalo: "/regalo.html?lang=it", agentes: "/agentes/" },
@@ -34,7 +34,8 @@ export const RUTAS = {
 export const IDIOMAS_PAGINA = {
   estrella: ["es", "en", "pt", "fr", "it", "de", "zh", "ja"],
   frases: ["es", "en", "pt", "fr", "it", "de", "zh", "ja"],
-  sobre: ["es", "en", "pt", "fr", "it", "de", "zh", "ja"]
+  sobre: ["es", "en", "pt", "fr", "it", "de", "zh", "ja"],
+  prensa: ["es", "en"]
 };
 
 // La misma página en los otros idiomas, para hreflang y el pie.
@@ -44,8 +45,8 @@ export function alternativas(clave, lang) {
 
 // Rótulos de la navegación de las páginas de texto.
 export const NAV = {
-  es: { cielo: "el cielo", regalo: "regalar", sobre: "sobre la obra", estrella: "regalar una estrella", frases: "frases", agentes: "para agentes de IA", otros: "también en" },
-  en: { cielo: "the sky", regalo: "give", sobre: "about the work", estrella: "gift a star", frases: "quotes", agentes: "for AI agents", otros: "also in" },
+  es: { cielo: "el cielo", prensa: "prensa", api: "API", regalo: "regalar", sobre: "sobre la obra", estrella: "regalar una estrella", frases: "frases", agentes: "para agentes de IA", otros: "también en" },
+  en: { cielo: "the sky", prensa: "press", api: "API", regalo: "give", sobre: "about the work", estrella: "gift a star", frases: "quotes", agentes: "for AI agents", otros: "also in" },
   pt: { cielo: "o céu", regalo: "presentear", sobre: "sobre a obra", estrella: "presentear uma estrela", frases: "frases", agentes: "para agentes de IA", otros: "também em" },
   fr: { cielo: "le ciel", regalo: "offrir", sobre: "à propos de l’œuvre", estrella: "offrir une étoile", frases: "phrases", agentes: "pour les agents IA", otros: "aussi en" },
   it: { cielo: "il cielo", regalo: "regala", sobre: "sull’opera", estrella: "regalare una stella", frases: "frasi", agentes: "per agenti IA", otros: "anche in" },

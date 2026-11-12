@@ -1,0 +1,57 @@
+---
+// /api/ — documentación de la API pública y de la versión embebible.
+import Pagina from "../layouts/Pagina.astro";
+import { SITIO } from "../lib/obra.js";
+
+const ld = {
+  "@context": "https://schema.org", "@type": "TechArticle",
+  headline: "Sin motivo — API pública y versión embebible", inLanguage: "es",
+  author: { "@type": "Person", name: "Solzimer" }, datePublished: "2026-11-12",
+  mainEntityOfPage: SITIO + "/api/"
+};
+const embed = `<iframe src="${SITIO}/embed/" title="Sin motivo — Solzimer"
+  width="100%" height="480" style="border:0" loading="lazy"></iframe>
+<p><a href="${SITIO}/">Sin motivo</a>, de Solzimer</p>`;
+---
+<Pagina
+  lang="es"
+  titulo="API pública y versión embebible"
+  descripcion="El estado del cielo de Sin motivo en JSON, de solo lectura y sin clave: estrellas, fechas y tiempo sin respuesta. Y cómo embeber la obra en otro sitio."
+  ruta="/api/"
+  ld={ld}
+>
+  <h1>API pública <em>y versión embebible</em></h1>
+  <p class="entrada">El estado del cielo, en JSON. De solo lectura, sin clave, sin límite pensado para uso razonable. Para quien quiera leerlo, mostrarlo o citarlo.</p>
+
+  <h2>El cielo</h2>
+  <pre>GET {SITIO}/api/cielo</pre>
+  <p>Devuelve:</p>
+  <ul>
+    <li><code>cielo.estrellas</code>: cuántos regalos hay.</li>
+    <li><code>cielo.ultimaEstrella</code>, <code>cielo.sinRespuestaDesde</code> y <code>cielo.segundosSinRespuesta</code>: cuánto hace que nadie regala.</li>
+    <li><code>cielo.esperandoLaPrimera</code>: <code>true</code> mientras no haya ninguno.</li>
+    <li><code>estrellas[]</code>: una por regalo, en orden, con <code>n</code>, <code>fecha</code>, <code>transaccion</code>, <code>semilla</code> (de ahí sale la forma del asterisco), <code>dedicatoria</code>, <code>enlace</code>, <code>imagen</code> y <code>verificar</code>.</li>
+    <li><code>reglas</code>: red, dirección de la obra y qué cuenta.</li>
+    <li><code>sobreEstosDatos</code>: cuándo se generó, de dónde sale y sus límites.</li>
+  </ul>
+  <p>No incluye montos ni quién regaló: la obra no los muestra. Cada entrada fue verificada contra la red Base antes de sumarse. Puede faltar un regalo muy reciente durante un rato; la fuente última es la blockchain. Responde con <code>Access-Control-Allow-Origin: *</code> y se renueva cada 30 segundos.</p>
+
+  <h2>Otras direcciones</h2>
+  <pre>GET {SITIO}/obra.json                    manifiesto estático: reglas y formatos
+GET {SITIO}/og/estrella.png?tx=0x…       imagen de una estrella (solo si es un regalo verificado)
+GET {SITIO}/og/estela.png?e=…            imagen de una estela compartida
+GET {SITIO}/llms.txt                     la obra en texto plano
+GET {SITIO}/api/estadisticas             visitas anónimas agregadas</pre>
+
+  <h2>Embeber la obra</h2>
+  <p>El cielo se puede poner en cualquier página con un marco. Es la misma obra, en vivo, sin los controles:</p>
+  <pre>{embed}</pre>
+  <p>Admite <code>?lang=es|en|pt|fr|it|de|zh|ja</code>. No usa cookies. Se agradece el enlace de vuelta.</p>
+
+  <h2>Uso</h2>
+  <p>Los datos son de uso libre. Al citarlos: <em>Solzimer, Sin motivo, {SITIO.replace("https://", "")}</em>. El código es abierto; ver <a href="/prensa/">prensa</a> y <a href="/sobre/">sobre la obra</a>.</p>
+
+  <hr />
+  <h2 lang="en">In English</h2>
+  <p lang="en"><code>GET {SITIO}/api/cielo</code> returns the state of the sky as JSON: the stars (gifts verified against the Base network), their dates and dedications, and how long it has been since anyone gave. Read-only, no key, CORS open. Amounts and senders are never included. To embed the live work, use an iframe pointing to <code>{SITIO}/embed/</code>. More: <a href="/agentes/">for AI agents and developers</a>.</p>
+</Pagina>

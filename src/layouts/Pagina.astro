@@ -64,6 +64,8 @@ const todas = [{ lang, href: ruta }, ...alternativas];
         <a href={r.frases}>{n.frases}</a>
         <a href={r.sobre}>{n.sobre}</a>
         <a href={r.agentes}>{n.agentes}</a>
+        <a href={r.prensa || "/en/press/"}>{n.prensa || "press"}</a>
+        <a href={r.api || "/api/"}>API</a>
         <a href={r.regalo}>{n.regalo} →</a>
       </nav>
       {alternativas.length > 0 && (
@@ -127,6 +129,8 @@ const todas = [{ lang, href: ruta }, ...alternativas];
   h3 { margin: 1.75rem 0 .4rem; font-weight: 400; font-style: italic; font-size: 1.35rem; line-height: 1.2; }
   p, li { font-size: 1.25rem; line-height: 1.5; }
   p { margin: 0 0 1rem; }
+  main p, main li { overflow-wrap: break-word; }
+  main a, main code { overflow-wrap: anywhere; }
   ul, ol { margin: 0 0 1rem; padding-left: 1.3rem; }
   li { margin-bottom: .45rem; }
   .entrada { font-size: clamp(1.4rem, 3vw, 1.7rem); line-height: 1.35; color: var(--crema); }
