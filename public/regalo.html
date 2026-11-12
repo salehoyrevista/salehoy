@@ -160,6 +160,15 @@
   .gracias p { margin: 0 0 .7rem; font-size: 1.45rem; font-style: italic; line-height: 1.3; }
   .gracias a { font-family: var(--mono); font-size: .78rem; }
 
+  .guia { margin-top: 2rem; max-width: 30rem; }
+  .guia summary { color: var(--crema); font-size: .78rem; }
+  .guia-entrada { margin: 1rem 0 0; font-size: 1.15rem; line-height: 1.45; }
+  .guia ol, .guia ul { padding-left: 1.2rem; margin: 1rem 0 0; font-size: 1.08rem; line-height: 1.45; }
+  .guia li { margin-bottom: .6rem; }
+  .guia li strong { font-weight: 400; font-style: italic; }
+  .guia-titulo { margin: 1.5rem 0 0; font-family: var(--mono); font-size: .7rem; color: var(--tenue); }
+  .guia ul { list-style: "· "; font-size: 1rem; color: var(--tenue); }
+  .guia-cierre { margin: 1.25rem 0 0; font-style: italic; font-size: 1.15rem; }
   details { margin-top: 2.25rem; border-top: 1px solid var(--linea); padding-top: 1rem; }
   summary { cursor: pointer; list-style: none; font-family: var(--mono); font-size: .72rem; color: var(--tenue); }
   summary::-webkit-details-marker { display: none; }
@@ -205,6 +214,12 @@
   <h1><span class="linea" data-t="corto">Regalame algo.</span><span class="linea sin-motivo"><span data-t="sinMotivo">Sin motivo.</span><svg class="ast" viewBox="-15 -15 30 30" aria-hidden="true" focusable="false"><path d="M0-13V13M-11.26-6.5L11.26 6.5M-11.26 6.5L11.26-6.5" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/></svg></span></h1>
 
   <p class="subtitulo" data-t="subtitulo">Tu regalo se vuelve un asterisco en el cielo. Para siempre. Un centavo también cuenta.</p>
+
+  <!-- Para quien nunca usó cripto: se arma desde /guia.js en el idioma actual -->
+  <details class="guia" id="guia">
+    <summary id="guiaTitulo">Nunca usé cripto</summary>
+    <div id="guiaCuerpo"></div>
+  </details>
 
   <!-- Regalo en un clic: solo aparece si el navegador tiene una billetera -->
   <section class="clic" id="clic" hidden aria-labelledby="clicTitulo">
@@ -303,6 +318,7 @@ idiomas:    es en pt fr it de zh ja</pre>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="/visita.js"></script>
+<script src="/guia.js"></script>
 <script src="/salehoy.js"></script>
 <script>
 (function () {
@@ -328,6 +344,41 @@ idiomas:    es en pt fr it de zh ja</pre>
     pintarCuenta();
     if (frase >= 0) fraseEl.textContent = T[lang].frases[frase];
     if (typeof pintarAvisos === "function") pintarAvisos();
+    pintarGuia(lang);
+  }
+
+  // La guía para quien nunca usó cripto, en el idioma actual.
+  function pintarGuia(lang) {
+    var g = window.SaleHoyGuia && (window.SaleHoyGuia[lang] || window.SaleHoyGuia.es);
+    var cuerpo = document.getElementById("guiaCuerpo");
+    if (!g || !cuerpo) return;
+    document.getElementById("guiaTitulo").textContent = g.titulo;
+    cuerpo.textContent = "";
+    function sumar(etiqueta, texto, clase) {
+      var el = document.createElement(etiqueta);
+      if (clase) el.className = clase;
+      el.textContent = texto;
+      cuerpo.appendChild(el);
+      return el;
+    }
+    sumar("p", g.entrada, "guia-entrada");
+    var ol = sumar("ol", "");
+    g.pasos.forEach(function (paso) {
+      var li = document.createElement("li");
+      var t = document.createElement("strong");
+      t.textContent = paso.t;
+      li.appendChild(t);
+      li.appendChild(document.createTextNode(" " + paso.d));
+      ol.appendChild(li);
+    });
+    sumar("p", g.notasTitulo, "guia-titulo");
+    var ul = sumar("ul", "");
+    g.notas.forEach(function (nota) {
+      var li = document.createElement("li");
+      li.textContent = nota;
+      ul.appendChild(li);
+    });
+    sumar("p", g.cierre, "guia-cierre");
   }
 
   function pintarCuenta() {
