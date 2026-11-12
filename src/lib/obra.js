@@ -22,19 +22,19 @@ export const RED = { nombre: "Base", chainId: 8453, explorador: "https://base.bl
 export const RUTAS = {
   es: { cielo: "/", sobre: "/sobre/", estrella: "/regalar-una-estrella/", frases: "/frases-regalo-sin-motivo/", regalo: "/regalo.html?lang=es", agentes: "/agentes/" },
   en: { cielo: "/en/", sobre: "/en/about/", estrella: "/en/gift-a-star/", frases: "/en/gift-for-no-reason-quotes/", regalo: "/regalo.html?lang=en", agentes: "/agentes/" },
-  pt: { cielo: "/pt/", sobre: "/en/about/", estrella: "/pt/presentear-uma-estrela/", frases: "/pt/frases-presente-sem-motivo/", regalo: "/regalo.html?lang=pt", agentes: "/agentes/" },
-  fr: { cielo: "/fr/", sobre: "/en/about/", estrella: "/fr/offrir-une-etoile/", frases: "/fr/phrases-cadeau-sans-raison/", regalo: "/regalo.html?lang=fr", agentes: "/agentes/" },
-  it: { cielo: "/it/", sobre: "/en/about/", estrella: "/it/regalare-una-stella/", frases: "/it/frasi-regalo-senza-motivo/", regalo: "/regalo.html?lang=it", agentes: "/agentes/" },
-  de: { cielo: "/de/", sobre: "/en/about/", estrella: "/de/einen-stern-schenken/", frases: "/de/sprueche-geschenk-ohne-grund/", regalo: "/regalo.html?lang=de", agentes: "/agentes/" },
-  zh: { cielo: "/zh/", sobre: "/en/about/", estrella: "/zh/song-xingxing/", frases: "/zh/song-li-zengyan/", regalo: "/regalo.html?lang=zh", agentes: "/agentes/" },
-  ja: { cielo: "/ja/", sobre: "/en/about/", estrella: "/ja/hoshi-wo-okuru/", frases: "/ja/okurimono-kotoba/", regalo: "/regalo.html?lang=ja", agentes: "/agentes/" }
+  pt: { cielo: "/pt/", sobre: "/pt/sobre-a-obra/", estrella: "/pt/presentear-uma-estrela/", frases: "/pt/frases-presente-sem-motivo/", regalo: "/regalo.html?lang=pt", agentes: "/agentes/" },
+  fr: { cielo: "/fr/", sobre: "/fr/a-propos/", estrella: "/fr/offrir-une-etoile/", frases: "/fr/phrases-cadeau-sans-raison/", regalo: "/regalo.html?lang=fr", agentes: "/agentes/" },
+  it: { cielo: "/it/", sobre: "/it/sull-opera/", estrella: "/it/regalare-una-stella/", frases: "/it/frasi-regalo-senza-motivo/", regalo: "/regalo.html?lang=it", agentes: "/agentes/" },
+  de: { cielo: "/de/", sobre: "/de/ueber-das-werk/", estrella: "/de/einen-stern-schenken/", frases: "/de/sprueche-geschenk-ohne-grund/", regalo: "/regalo.html?lang=de", agentes: "/agentes/" },
+  zh: { cielo: "/zh/", sobre: "/zh/guanyu-zuopin/", estrella: "/zh/song-xingxing/", frases: "/zh/song-li-zengyan/", regalo: "/regalo.html?lang=zh", agentes: "/agentes/" },
+  ja: { cielo: "/ja/", sobre: "/ja/sakuhin-ni-tsuite/", estrella: "/ja/hoshi-wo-okuru/", frases: "/ja/okurimono-kotoba/", regalo: "/regalo.html?lang=ja", agentes: "/agentes/" }
 };
 
 // En qué idiomas existe cada página de texto.
 export const IDIOMAS_PAGINA = {
   estrella: ["es", "en", "pt", "fr", "it", "de", "zh", "ja"],
   frases: ["es", "en", "pt", "fr", "it", "de", "zh", "ja"],
-  sobre: ["es", "en"]
+  sobre: ["es", "en", "pt", "fr", "it", "de", "zh", "ja"]
 };
 
 // La misma página en los otros idiomas, para hreflang y el pie.

@@ -1,11 +1,13 @@
 ---
-// "Regalar una estrella" y "frases" en francés, italiano, alemán, chino y
-// japonés. Los textos están en src/lib/textos-paginas.js; las direcciones,
-// en RUTAS (src/lib/obra.js).
+// Páginas de texto generadas desde datos:
+// - "regalar una estrella" y "frases" en fr, it, de, zh, ja (src/lib/textos-paginas.js)
+// - "sobre la obra" en pt, fr, it, de, zh, ja (src/lib/textos-sobre.js)
+// Las direcciones están en RUTAS (src/lib/obra.js).
 import Pagina from "../../layouts/Pagina.astro";
 import ListaFrases from "../../components/ListaFrases.astro";
-import { SITIO, RUTAS, alternativas } from "../../lib/obra.js";
+import { SITIO, RUTAS, RED, DIRECCION, USDC_BASE, alternativas } from "../../lib/obra.js";
 import { ESTRELLA, FRASES } from "../../lib/textos-paginas.js";
+import { SOBRE } from "../../lib/textos-sobre.js";
 
 export function getStaticPaths() {
   const caminos = [];
@@ -15,19 +17,29 @@ export function getStaticPaths() {
       caminos.push({ params: { lang, pagina }, props: { tipo } });
     }
   }
+  for (const lang of Object.keys(SOBRE)) {
+    caminos.push({ params: { lang, pagina: RUTAS[lang].sobre.split("/")[2] }, props: { tipo: "sobre" } });
+  }
   return caminos;
 }
 
 const { lang } = Astro.params;
 const { tipo } = Astro.props;
 const r = RUTAS[lang];
-const t = tipo === "estrella" ? ESTRELLA[lang] : FRASES[lang];
+const t = tipo === "estrella" ? ESTRELLA[lang] : tipo === "frases" ? FRASES[lang] : SOBRE[lang];
+const red = `${RED.nombre}, ${RED.chainId}`;
 
 // {cielo}, {regalo}, etc. por las direcciones de este idioma
-const conEnlaces = (html) => html.replace(/\{(cielo|regalo|frases|sobre|estrella)\}/g, (_, k) => r[k]);
+const conEnlaces = (html) => html.replace(/\{(cielo|regalo|frases|sobre|estrella)\}/g, (_, k) => r[k]).replace("{red}", red);
 const sinHtml = (html) => html.replace(/<[^>]+>/g, "");
 
-const ld = tipo === "estrella"
+const ld = tipo === "sobre"
+  ? [
+      { "@context": "https://schema.org", "@type": "AboutPage", name: t.titulo, inLanguage: lang, url: SITIO + r.sobre,
+        about: { "@type": "VisualArtwork", name: "Sin motivo", artform: "Net art", creator: { "@type": "Person", name: "Solzimer" }, dateCreated: "2026-10-29", url: SITIO + r.cielo } },
+      { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: t.faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) }
+    ]
+  : tipo === "estrella"
   ? [
       { "@context": "https://schema.org", "@type": "Article", headline: t.titulo, inLanguage: lang, author: { "@type": "Person", name: "Solzimer" }, datePublished: "2026-11-12", mainEntityOfPage: SITIO + r.estrella, image: SITIO + "/og.png" },
       { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: t.faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) }
@@ -42,7 +54,38 @@ const ld = tipo === "estrella"
   alternativas={alternativas(tipo, lang)}
   ld={ld}
 >
-  {tipo === "estrella" ? (
+  {tipo === "sobre" && (
+    <>
+      <h1 set:html={t.h1} />
+      <p class="entrada" set:html={t.entrada} />
+      <p set:html={t.pregunta} />
+
+      <h2>{t.comoTitulo}</h2>
+      <ul>{t.como.map((li) => <li set:html={conEnlaces(li)} />)}</ul>
+
+      <h2>{t.fichaTitulo}</h2>
+      <p class="mono">
+        {t.ficha.titulo}: Sin motivo<br />
+        {t.ficha.autor}: Solzimer<br />
+        {t.ficha.tipo}: {t.valores.tipo}<br />
+        {t.ficha.inicio}: {t.valores.inicio}<br />
+        {t.ficha.soporte}: {conEnlaces(t.valores.soporte)}<br />
+        {t.ficha.direccion}: <code>{DIRECCION}</code><br />
+        {t.ficha.cuentan}: {t.valores.cuentan} (<code>{USDC_BASE}</code>)<br />
+        {t.ficha.idiomas}: {t.valores.idiomas}<br />
+        {t.ficha.verificar}: <a href={`${RED.explorador}/address/${DIRECCION}`} rel="noopener">{RED.explorador.replace("https://", "")}</a>
+      </p>
+
+      <h2>{t.preguntas}</h2>
+      {t.faq.map(([q, a]) => (<><h3>{q}</h3><p>{a}</p></>))}
+
+      <p class="accion"><a href={r.cielo}>{t.verCielo}</a> &nbsp; <a href={r.regalo}>{t.regalar}</a></p>
+
+      <hr />
+      <p class="dato" set:html={t.cita} />
+    </>
+  )}
+  {tipo === "estrella" && (
     <>
       <h1>{t.h1}</h1>
       <p class="entrada">{t.entrada}</p>
@@ -69,7 +112,8 @@ const ld = tipo === "estrella"
       <hr />
       <p class="dato" set:html={conEnlaces(t.cierre)} />
     </>
-  ) : (
+  )}
+  {tipo === "frases" && (
     <>
       <h1 set:html={t.h1} />
       <p class="entrada">{t.entrada}</p>
