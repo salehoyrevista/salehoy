@@ -1,57 +1,69 @@
-# Resumen
-
-## Actualización del 12 de noviembre de 2026
-"Regalar una estrella" y "Frases para un regalo sin motivo" ya están en los 8 idiomas: se sumaron francés, italiano, alemán, chino y japonés (10 páginas nuevas). Todas se enlazan entre sí con `hreflang`, y el sitemap pasó de 18 a 28 direcciones. Publicado y verificado: las 28 responden 200, sin enlaces rotos y sin desbordes en celular.
-
-Más tarde, ese mismo día: "Sobre la obra" también quedó en los 8 idiomas (6 páginas nuevas). El sitio tiene ahora 34 páginas indexables, y cada idioma tiene su cielo, su página de estrellas, sus frases y su explicación de la obra.
-
-Lo próximo sigue siendo lo mismo: enviar el sitemap en Search Console (ahora con 34 páginas) y hacer el primer regalo con dedicatoria. Ver `PENDIENTES_PEDRO.md`.
-
----
-
-## Sesión del 11 de noviembre de 2026
+# Resumen — sesión "director creativo" (12 de noviembre de 2026)
 
 ## En una línea
-El sitio dejó de ser una sola página que hay que presentar: ahora tiene 18 páginas indexables en hasta 8 idiomas, un regalo que se puede dedicar y mandar, instrucciones para agentes de IA y medición propia. Sigue con 0 regalos: eso no se inventa.
+El sitio dejó de depender de que alguien regale para tener algo que compartir: ahora cada visita produce una pieza propia (su estela, como imagen, video y enlace con vista previa), el cielo es una escena viva que cambia con la hora y la luna, y la obra se puede embeber, leer por API y citar sin pedirle nada a nadie. Sigue con 0 regalos, y eso no se inventa.
 
-## Qué cambié
-1. **Dedicatorias.** Quien regala ETH puede escribir hasta 80 caracteres que quedan dentro de la transacción. El sitio los muestra en el asterisco, en el registro y en el título del enlace `?n=N`.
-2. **Una portada por idioma.** `/`, `/en/`, `/pt/`, `/fr/`, `/it/`, `/de/`, `/zh/`, `/ja/`, con texto traducido en el HTML, `canonical`, `hreflang` y datos estructurados.
-3. **Páginas que responden búsquedas.** "Regalar una estrella" y "Frases para un regalo sin motivo" (español, inglés, portugués) y "Sobre la obra" (español, inglés).
-4. **Para IA y agentes.** `/agentes/` con instrucciones exactas para regalar, `/obra.json` como manifiesto y `llms.txt` ampliado.
-5. **Medición.** Visitas anónimas y conteo de crawlers, sin cookies ni cuentas externas: https://salehoy.com.ar/estadisticas/
-6. **Técnica.** Sitemap con alternativas por idioma, `og.png` 64% más liviana, `/api/regalos` ya no falla en cada visita.
+## Qué construí y por qué debería traer visitas
 
-## Qué decidí y por qué
-- **El concepto no se toca.** No financia nada, no tiene precio, no muestra montos. Es lo que hace única a la obra.
-- **El ingreso son los regalos, y la dedicatoria es lo que puede multiplicarlos.** Convierte "regalame algo" en "regalale una estrella a alguien", que es algo que la gente ya busca y ya paga, y le da a cada persona un enlace que quiere mandar.
-- **No vendo lo que no es.** La página de estrellas dice que ningún registro de nombres es oficial y que esto es una obra de arte.
-- **Nada falso.** El cielo sigue vacío hasta que alguien regale.
+| Qué | Dónde | Por qué trae visitas |
+|---|---|---|
+| **La estela que te llevás.** Imagen 1080×1920, video vertical y enlace propio | "mi estela →" en el cielo | Es lo único que no necesita regalos: cada visitante sale con algo hermoso y propio, hecho para historias y reels, con la dirección del sitio legible |
+| **Vista previa propia** al pegar el enlace | `?e=…`, `?n=N`, `?tx=0x…` | En WhatsApp, Instagram o X se ve *esa* estela o *esa* estrella, no una imagen genérica. La gente toca lo que ve |
+| **El cielo como escena.** Fondo WebGL con profundidad, respuesta al toque, al mouse y a la inclinación; sonido opcional; apertura de 3 s sin texto | portada | Los primeros segundos deciden si alguien se queda y si lo muestra |
+| **El cielo cambia.** Hora local, día, estación, luna real, rotación sideral | portada | Motivo para volver: nunca se ve igual |
+| **Registro verificado y API pública** | `/api/cielo`, `/api/` | El servidor comprueba cada regalo contra la red Base, sin claves. Desarrolladores, bots y agentes pueden leer y citar el estado del cielo |
+| **Versión embebible** | `/embed/` | Cualquier blog puede pegar el cielo en vivo; cada uno es un enlace de vuelta |
+| **Prensa** con kit descargable | `/prensa/`, `/en/press/` | Un medio o un curador puede publicar sin escribirte |
+| **README y licencias** | repositorio | Las comunidades técnicas enlazan repositorios bien presentados |
+| **Textos para comunidades** | `COMUNIDADES.md` | Listos para que los uses si querés |
+| **Guía "Nunca usé cripto"** | `/regalo.html` | Baja la barrera sin presionar |
 
-El detalle, con cómo revertir cada cosa, está en `DECISIONES.md`.
+Todo lo que la obra muestra sigue siendo real: el fondo nunca dibuja nada que parezca una estrella, y una estrella solo aparece (en el cielo, en la API o en una vista previa) si la transacción existe en la blockchain.
 
-## Qué probé y qué no
-- **Probado en producción:** las 26 direcciones responden 200; la medición cuenta visitas y crawlers.
-- **Probado con datos simulados, en local:** dedicatorias (lectura, escritura, límite, bloqueo de enlaces), portadas por idioma, páginas en celular y escritorio, enlaces internos.
-- **Sin probar:** un regalo real con dedicatoria desde una billetera real. Es el primer pendiente.
-- **Sin verificar:** cómo aparece hoy el sitio en Google; la herramienta de búsqueda que tenía no respeta `site:`.
+## Qué cambió de criterio
+- **`/agentes/` ahora es solo informativa.** Explica cómo leer y describir la obra y dice que no le pide a nadie que envíe nada. La versión anterior invitaba a los agentes a regalar; la retiré.
+- **La clave de Blockscout ya no hace falta.**
+- **El prólogo de frases ya no sale solo.** La apertura se entiende sin leer; el prólogo queda a pedido.
+
+## Cómo lo verifiqué
+- **Chrome headless** en escritorio y celular: capturas, consola sin errores propios, sin desbordes.
+- **La estela de punta a punta:** recorrido simulado → botón → imagen (730 KB) → video mp4 → enlace → el servidor decodifica la misma estela → una visita nueva la ve primero.
+- **Producción:** todas las direcciones responden 200; la vista previa cambia con `?e=`; un enlace inválido o una transacción ajena vuelven a la imagen general; `/api/cielo` informa el cielo vacío.
+- **Rendimiento en producción** (390 px, CPU frenada 4×): 59 cuadros/s con GPU, 29 sin GPU. 112 KB transferidos.
+
+## Qué NO pude verificar
+- **El sonido:** nadie lo escuchó.
+- **La inclinación y el video en un celular real**, sobre todo en iPhone.
+- **Un regalo real:** nunca se probó con una billetera de verdad; por eso tampoco la vista previa de una estrella.
+- **Cómo se ve la vista previa dentro de WhatsApp, Instagram y X:** verifiqué que la página entrega la imagen correcta, no cómo la muestra cada aplicación.
+
+## Qué medir
+En https://salehoy.com.ar/estadisticas/ :
+1. **"por el enlace de una estela"**: visitas que llegaron porque alguien compartió su estela. Es *la* métrica: visitas que traen visitas.
+2. **estela-imagen, estela-video, estela-enlace**: cuánta gente se lleva su estela. Si muchos la guardan y nadie llega por enlace, se comparte como imagen suelta (igual sirve: lleva la dirección).
+3. **`/embed/` en páginas y los dominios de origen**: en qué sitios está embebida.
+4. **sonido**: cuántos lo activan.
+5. **Regalos**: `/api/cielo`.
+
+Si después de un mes "por el enlace de una estela" sigue en cero con visitas entrando, el botón "mi estela" está demasiado escondido o llega tarde: hay que mostrarlo antes y con más peso.
 
 ## Qué tenés que hacer vos
-Está en `PENDIENTES_PEDRO.md`. Lo que más rinde, en 15 minutos:
-1. Enviar `sitemap.xml` en Google Search Console.
-2. Hacer el primer regalo con dedicatoria.
+Está en `PENDIENTES_PEDRO.md`. Lo esencial, 15 minutos:
+1. Abrirlo en tu celular: escuchar el sonido, inclinarlo, guardar tu estela.
+2. Compartir tu estela una vez, para ver el circuito real.
+3. Si querés, publicar en una o dos comunidades con los textos de `COMUNIDADES.md`.
 
-## Qué recomiendo para la próxima sesión
-1. Mirar `/estadisticas/` después de 2 o 3 semanas y decidir con `MEJORA.md` en la mano.
-2. Traducir "regalar una estrella" y "frases" a los otros 5 idiomas.
-3. Vista previa propia por asterisco al compartir `?n=N` (necesita la clave de Blockscout).
-4. Si la gente llega a regalar y no puede, diseñar el camino sin cripto.
+## La próxima apuesta más ambiciosa
+**Un cielo compartido en tiempo real.** Hoy cada visitante ve solo su propia estela. La apuesta es que veas, tenues, las estelas de quienes están en el cielo en ese mismo momento, en cualquier lugar del mundo: puntos de luz que se mueven y se borran, sin nombres ni datos. Convierte una obra que se mira en un lugar donde se está con otros, y eso es lo que más hace que alguien diga "entrá ahora". Necesita un canal en tiempo real (hay opciones sin servidor propio) y cuidado para que siga sin guardar nada.
+
+Segunda opción, más simple: **un modo proyección** a pantalla completa para muestras y eventos, donde quien regala ve nacer su asterisco en la pared.
 
 ## Dónde está cada cosa
 | Archivo | Para qué |
 |---|---|
-| `AUDITORIA.md` | Diagnóstico del punto de partida |
-| `ESTRATEGIA.md` | Qué se decidió hacer y por qué |
-| `DECISIONES.md` | Registro de decisiones, con cómo revertirlas |
-| `MEJORA.md` | Métricas, cómo leerlas y qué probar después |
-| `PENDIENTES_PEDRO.md` | Lo que requiere una cuenta o una decisión tuya |
+| `DECISIONES.md` | Cada decisión, por qué, y cómo revertirla |
+| `PENDIENTES_PEDRO.md` | Lo que requiere tus manos o tu criterio |
+| `COMUNIDADES.md` | Textos listos por comunidad |
+| `MEJORA.md` | Cómo leer las métricas y qué probar después |
+| `README.md` | Presentación del repositorio |
+| `AUDITORIA.md`, `ESTRATEGIA.md` | Diagnóstico y estrategia de la sesión anterior |

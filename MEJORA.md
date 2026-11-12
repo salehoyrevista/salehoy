@@ -11,7 +11,11 @@ Cómo seguir mejorando el sitio sin adivinar. Se revisa una vez por semana; llev
 | Regalos reales | https://base.blockscout.com/address/0x791F5cEfb1778fFa31Af8e8A33F49cf35F41dB36 o el "registro" en la nota al pie del cielo |
 | Qué búsquedas traen gente | Google Search Console (ver `PENDIENTES_PEDRO.md`) |
 
-## Las cinco métricas
+## La métrica principal
+
+**Visitas que llegan por el enlace de una estela** (`porEnlaceDeEstela` en `/estadisticas/`). Es la medida directa de si la obra se difunde sola. Le siguen los hitos `estela-imagen`, `estela-video` y `estela-enlace` (cuánta gente se lleva su estela) y las visitas a `/embed/`.
+
+## Las otras cinco métricas
 
 1. **Visitas por semana.** ¿Llega alguien sin que lo presenten?
 2. **Origen.** Cuántas vienen de buscadores (`google.com`, `bing.com`, `duckduckgo.com`), de IA (`chatgpt.com`, `perplexity.ai`, `gemini.google.com`, `claude.ai`) y directas.

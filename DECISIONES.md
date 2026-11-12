@@ -7,23 +7,55 @@ Para deshacer un cambio: `git revert <commit>` y `git push origin master` (Netli
 
 Pedido completo en el historial de la sesión. Objetivo: visitas que traen visitas. Sin más foco en SEO ni idiomas.
 
-### Estado (punto de control; actualizar al cerrar cada etapa)
-- **Hecho y publicado — `e5d1c5d`:** registro verificado + API pública (decisión 11).
-- **En curso, con subagentes (archivos nuevos, sin integrar):**
-  - `public/sonido.js` — capa sonora generada (terminada, falta integrarla y escucharla).
-  - `public/cielo-gl.js` — fondo WebGL con profundidad, paralaje e inclinación, y ambiente por hora/día/estación/luna.
-  - `public/estela.js` — la estela del visitante como imagen y video vertical, con URL propia (`?e=`).
-  - `netlify/lib/dibujo.mjs`, `og-base.mjs`, `netlify/functions/og-estela.mjs`, `og-estrella.mjs` — imágenes de vista previa generadas en el servidor.
-  - `public/guia.js` — guía para quien nunca usó cripto (8 idiomas).
-  - Prensa (`public/prensa/`, `src/pages/prensa.astro`, `en/press.astro`), `README.md`, `LICENSE`, `COMUNIDADES.md`.
-- **Falta (lo hace quien retome):**
-  1. Integrar en `src/components/Cielo.astro`: fondo WebGL (canvas `#fondo` detrás de `#cielo`), sonido (botón, apagado por defecto), inclinación del celular, apertura de 3 s sin texto (el prólogo de frases queda solo a pedido), botón "guardar mi estela" (imagen / video / enlace), y abrir `?e=` mostrando primero esa estela.
-  2. Edge function que cambie `og:image` y el título cuando la URL trae `?e=` o `?n=`/`?tx=`.
-  3. Versión embebible `/embed/` (sacar `X-Frame-Options: DENY` global de `netlify.toml` y dejarlo solo en `/regalo.html`).
-  4. Página de la API (`/api/` documentada), y pasar `/agentes/` a tono solo informativo (límite nuevo: nada dirigido a que un agente mande dinero).
-  5. Guía sin cripto en `regalo.html`.
-  6. Capturas y video con Playwright (instalado en el scratchpad) para el kit de prensa y el README; armar `public/prensa/sin-motivo-kit.zip`.
-  7. `RESUMEN.md` nuevo y `PENDIENTES_PEDRO.md` con los textos de `COMUNIDADES.md`.
+### Estado al cierre: todo publicado
+Lo que pedía el encargo está construido, verificado en Chrome headless y en producción. Lo que quedó sin hacer o sin verificar está al final de esta sección.
+
+### 12. El cielo como escena — `bdc6947`
+- **Qué:** un fondo WebGL (`public/cielo-gl.js`, sin librerías) detrás del canvas de los asteriscos: niebla de tinta y polvo fino en capas, con paralaje al puntero y a la inclinación del celular. Los asteriscos también se corren según su brillo (los más brillantes están "más cerca"). Capa sonora generada con Web Audio (`public/sonido.js`), apagada hasta que la persona toca "sonido". Apertura de 3 s sin texto: el fondo florece y una estela cruza el cielo y se borra.
+- **Regla que no se negocia:** el fondo nunca dibuja nada que parezca una estrella. Solo los regalos son estrellas.
+- **Motivos para volver:** la niebla cambia con la hora local del visitante, el día (cada día es otra región del ruido), la estación y la fase real de la luna. Sumado a la rotación sideral, el cielo no se ve igual dos veces.
+- **El prólogo de frases** ya no sale solo: queda en la nota al pie ("ver el prólogo otra vez") y con `?prologo=1`.
+- **Rendimiento medido en producción** (390 px, CPU frenada 4×): 59 cuadros/s con GPU, 29 sin GPU (dibujo por software). 112 KB transferidos. El fondo baja su calidad solo si los cuadros se atrasan.
+- **Sin verificar:** el sonido no fue escuchado por nadie (se revisó el código y corre sin errores); la inclinación no se probó en un celular real; en iOS el permiso de movimiento se pide al tocar "sonido".
+- **Revertir:** `git revert bdc6947`.
+
+### 13. La estela que se lleva el visitante — `9e64a5b`
+- **Qué:** cuando la persona ya se movió por el cielo aparece "mi estela →". Abre su recorrido como una pieza: trazo de tinta luminosa, una frase, el momento ("un jueves de madrugada, con luna creciente") y la marca del sitio. Se guarda como imagen (JPEG 1080×1920, ~700 KB), como video vertical (mp4 donde el navegador lo permite, si no webm) y como enlace `?e=…`.
+- **Privacidad:** solo el recorrido y el momento, en memoria. Nada identifica a nadie y nada se envía a ningún servidor salvo, si la persona lo comparte, el propio enlace.
+- **Determinística:** la imagen sale del recorrido (remuestreado a 160 puntos) y de la semilla; el mismo enlace dibuja siempre la misma pieza.
+- **El enlace** abre el sitio mostrando primero esa estela ("Alguien pasó por este cielo. Esta es su estela.") y después deja entrar al cielo.
+- **Por qué:** es el mecanismo de difusión que no depende de que haya regalos. Cada visita produce algo propio que se puede mandar.
+- **Tensión con la obra:** "las visitas no quedan" sigue siendo cierto en el sitio; la estela solo sale de ahí si la persona se la lleva.
+- **Revertir:** `git revert 9e64a5b`.
+
+### 14. Vista previa propia por estela y por estrella — `5ef1736`
+- **Qué:** `/og/estela.png?e=…` y `/og/estrella.png?tx=0x…` generan el PNG en el servidor con JavaScript puro (`netlify/lib/dibujo.mjs`, sin dependencias nativas, ~150 ms). Una función en el borde (`netlify/edge-functions/vista-previa.js`) cambia `og:image` cuando el enlace trae `?e=`, `?n=` o `?tx=`.
+- **Nada falso:** la estrella solo se dibuja si la transacción es un regalo verificado contra la red; si no, vuelve a la imagen general.
+- **Probado en producción** con una estela de ejemplo. La de estrella no se pudo probar con un regalo real porque no hay ninguno.
+- **Revertir:** `git revert 5ef1736`.
+
+### 15. Versión embebible — commit "Versión embebible del cielo (/embed/)"
+- **Qué:** `/embed/` es el cielo en vivo sin controles, para poner en otro sitio con un iframe; los enlaces salen hacia la obra. Código para copiar en `/api/`.
+- **Costo:** hubo que quitar `X-Frame-Options: DENY` del sitio entero. Queda solo en `/regalo.html`, que es la única página donde importa (abre la billetera).
+
+### 16. API documentada y agentes en tono informativo
+- **Qué:** `/api/` documenta `/api/cielo` y el embebido. `/agentes/` se reescribió: explica cómo leer el estado de la obra y cómo describirla con precisión, y dice que no le pide a nadie que envíe nada.
+- **Por qué:** límite nuevo del encargo. La versión anterior (decisión 4) invitaba a los agentes a regalar; eso se retiró. Lo mismo en `llms.txt`.
+
+### 17. Prensa, README, licencias y comunidades
+- **Qué:** `/prensa/` y `/en/press/` con textos, materiales y condiciones de uso; kit descargable (`/prensa/sin-motivo-kit.zip`: textos es/en, dos capturas, una estela, un video). `README.md`, `LICENSE` (MIT para el código) y `LICENSE-OBRA.md` (CC BY-NC-SA 4.0 para la obra). `COMUNIDADES.md` con textos listos por comunidad.
+- **Capturas y video reales:** tomados con Chrome headless sobre el sitio con el cielo vacío, como está.
+- **Contacto de prensa:** no había uno público; puse las "issues" del repositorio de GitHub. Si Pedro quiere otro, se cambia en cuatro archivos (buscar `github.com/salehoyrevista/salehoy/issues`).
+
+### 18. Guía para quien nunca usó cripto — `48c4afc`
+- En `/regalo.html`, desplegable "Nunca usé cripto": cinco pasos y cinco avisos, en los 8 idiomas (`public/guia.js`). Dice que el envío es irreversible, que no se recibe nada y que está bien no regalar.
+
+### Lo que quedó sin hacer o sin verificar
+- **GIF para el README:** usa una captura fija. Hacer un GIF es un pendiente menor.
+- **Página propia por estrella:** es `/?n=N` o `/?tx=0x…` (con su vista previa), no una dirección aparte tipo `/estrella/N`. Alcanza para compartir; una página estática por estrella tendría sentido cuando haya estrellas.
+- **Sonido, inclinación y video en celulares reales:** no probados fuera de Chrome headless. En iPhone el video depende de que Safari grabe mp4.
+- **Un regalo real:** sigue sin probarse el circuito completo con una billetera real.
+- **Registro verificado:** se completa cuando una visita ve el regalo. Si nadie visita, el primer regalo aparece en la API cuando alguien entre.
 
 ### 11. Registro verificado contra la red y API pública — `e5d1c5d`
 - **Qué:** el servidor puede comprobar por su cuenta si una transacción es un regalo a la obra, preguntándole a la red Base por su acceso público (`netlify/lib/cadena.mjs`). `/api/avistar` recibe el hash que vio un navegador, lo verifica y recién entonces lo suma al registro (Netlify Blobs, store `cielo`). `/api/cielo` publica el estado del cielo: estrellas, fechas, dedicatorias y tiempo sin respuesta. El navegador lee primero ese registro (inmediato) y después Blockscout (al día).
