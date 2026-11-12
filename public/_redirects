@@ -6,6 +6,9 @@
 /articulos                  /                301
 /articulo/*                 /                301
 
+# Ícono
+/favicon.ico                /favicon.svg     301
+
 # Sitemaps viejos
 /sitemap-0.xml              /sitemap.xml     301
 /sitemap-index.xml          /sitemap.xml     301
