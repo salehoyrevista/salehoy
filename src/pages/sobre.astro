@@ -1,6 +1,6 @@
 ---
 import Pagina from "../layouts/Pagina.astro";
-import { SITIO, RUTAS, DIRECCION, USDC_BASE, RED } from "../lib/obra.js";
+import { SITIO, RUTAS, DIRECCION, USDC_BASE, RED, alternativas } from "../lib/obra.js";
 
 const r = RUTAS.es;
 const faq = [
@@ -26,7 +26,7 @@ const ld = [
   titulo="Sobre la obra"
   descripcion="Qué es Sin motivo, la obra de net art de Solzimer: un cielo donde cada regalo en blockchain se vuelve un asterisco permanente. Cómo funciona, qué cuenta y qué no es."
   ruta={r.sobre}
-  alternativas={[{ lang: "en", href: RUTAS.en.sobre }]}
+  alternativas={alternativas("sobre", "es")}
   ld={ld}
 >
   <h1>Sobre <em>Sin motivo</em></h1>

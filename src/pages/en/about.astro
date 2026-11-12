@@ -1,6 +1,6 @@
 ---
 import Pagina from "../../layouts/Pagina.astro";
-import { SITIO, RUTAS, DIRECCION, USDC_BASE, RED } from "../../lib/obra.js";
+import { SITIO, RUTAS, DIRECCION, USDC_BASE, RED, alternativas } from "../../lib/obra.js";
 
 const r = RUTAS.en;
 const faq = [
@@ -26,7 +26,7 @@ const ld = [
   titulo="About the work"
   descripcion="What Sin motivo is: a net art work by Solzimer, a sky where every blockchain gift becomes a permanent asterisk. How it works, what counts, and what it is not."
   ruta={r.sobre}
-  alternativas={[{ lang: "es", href: RUTAS.es.sobre }]}
+  alternativas={alternativas("sobre", "en")}
   ld={ld}
 >
   <h1>About <em>Sin motivo</em></h1>

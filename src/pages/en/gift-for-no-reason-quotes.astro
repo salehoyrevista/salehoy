@@ -1,7 +1,7 @@
 ---
 import Pagina from "../../layouts/Pagina.astro";
 import ListaFrases from "../../components/ListaFrases.astro";
-import { SITIO, RUTAS } from "../../lib/obra.js";
+import { SITIO, RUTAS, alternativas } from "../../lib/obra.js";
 
 const r = RUTAS.en;
 const frases = [
@@ -36,7 +36,7 @@ const ld = {
   titulo="Just-because gift quotes: words for a gift given for no reason"
   descripcion="18 short lines to go with a just-because gift: no birthday, no anniversary, no excuse. Original and free to use, for a card or a message."
   ruta={r.frases}
-  alternativas={[{ lang: "es", href: RUTAS.es.frases }, { lang: "pt", href: RUTAS.pt.frases }]}
+  alternativas={alternativas("frases", "en")}
   ld={ld}
 >
   <h1>Words for a gift given <em>for no reason</em></h1>

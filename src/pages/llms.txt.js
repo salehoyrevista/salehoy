@@ -1,10 +1,12 @@
 // /llms.txt — la obra explicada para modelos de lenguaje.
 // Se arma al construir: la dirección y los contratos salen de salehoy.js.
-import { SITIO, RUTAS, DIRECCION, USDC_BASE, RED, S } from "../lib/obra.js";
+import { SITIO, RUTAS, DIRECCION, USDC_BASE, RED, S, IDIOMAS_PAGINA } from "../lib/obra.js";
 
 export function GET() {
   const es = RUTAS.es, en = RUTAS.en, pt = RUTAS.pt;
   const u = (p) => SITIO + p;
+  // "[English](...), [Français](...)" con la página en los demás idiomas
+  const otras = (clave) => IDIOMAS_PAGINA[clave].filter((l) => l !== "es").map((l) => `[${S.T[l].nombre}](${u(RUTAS[l][clave])})`).join(", ");
   const txt = `# Sin motivo
 
 > ${S.T.es.desc}
@@ -30,7 +32,7 @@ Sin motivo es una obra de arte participativo de Solzimer, en curso desde el 29 d
 
 - Quien regala ETH puede escribir una dedicatoria de hasta ${S.DEDICATORIA_MAX} caracteres en el campo data de la transacción, como texto UTF-8 en hexadecimal.
 - Queda en la blockchain, pública y permanente. El sitio no la guarda: la lee. No se muestran textos con enlaces.
-- Sirve para regalarle una estrella a alguien: [Regalar una estrella](${u(es.estrella)}) ([English](${u(en.estrella)}), [Português](${u(pt.estrella)})).
+- Sirve para regalarle una estrella a alguien: [Regalar una estrella](${u(es.estrella)}). También en ${otras("estrella")}.
 
 ## Qué cuenta
 
@@ -48,7 +50,7 @@ Sin motivo es una obra de arte participativo de Solzimer, en curso desde el 29 d
 
 ## Más
 
-- [Frases para un regalo sin motivo](${u(es.frases)}): frases originales, de uso libre ([English](${u(en.frases)}), [Português](${u(pt.frases)})).
+- [Frases para un regalo sin motivo](${u(es.frases)}): frases originales, de uso libre. También en ${otras("frases")}.
 - Autor: Solzimer (seudónimo).
 - Privacidad: sin cookies ni datos personales; se cuentan visitas de forma anónima.
 

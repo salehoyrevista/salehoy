@@ -1,6 +1,6 @@
 ---
 import Pagina from "../../layouts/Pagina.astro";
-import { SITIO, RUTAS } from "../../lib/obra.js";
+import { SITIO, RUTAS, alternativas } from "../../lib/obra.js";
 
 const r = RUTAS.en;
 const faq = [
@@ -21,7 +21,7 @@ const ld = [
   titulo="Gift a star: what you can and can't really give"
   descripcion="Can you name a star as a gift? Not officially. What star registries actually sell, and another way: a permanent star in an artwork, with your own dedication."
   ruta={r.estrella}
-  alternativas={[{ lang: "es", href: RUTAS.es.estrella }, { lang: "pt", href: RUTAS.pt.estrella }]}
+  alternativas={alternativas("estrella", "en")}
   ld={ld}
 >
   <h1>Gift a star</h1>

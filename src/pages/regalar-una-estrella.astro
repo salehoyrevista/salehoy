@@ -1,6 +1,6 @@
 ---
 import Pagina from "../layouts/Pagina.astro";
-import { SITIO, RUTAS } from "../lib/obra.js";
+import { SITIO, RUTAS, alternativas } from "../lib/obra.js";
 
 const r = RUTAS.es;
 const faq = [
@@ -21,7 +21,7 @@ const ld = [
   titulo="Regalar una estrella: lo que se puede y lo que no"
   descripcion="¿Se puede regalar una estrella con nombre? Oficialmente no. Qué venden los registros de estrellas, y otra manera: una estrella permanente en una obra de arte, con tu dedicatoria."
   ruta={r.estrella}
-  alternativas={[{ lang: "en", href: RUTAS.en.estrella }, { lang: "pt", href: RUTAS.pt.estrella }]}
+  alternativas={alternativas("estrella", "es")}
   ld={ld}
 >
   <h1>Regalar una estrella</h1>

@@ -1,14 +1,15 @@
 // /sitemap.xml — se arma al construir, con las alternativas por idioma.
-import { SITIO, RUTAS, S } from "../lib/obra.js";
+import { SITIO, RUTAS, S, IDIOMAS_PAGINA } from "../lib/obra.js";
 
 const ruta = (l) => (l === "es" ? "/" : `/${l}/`);
 
 // Cada grupo es una misma página en varios idiomas.
 const grupos = [
   { defecto: "es", paginas: Object.fromEntries(S.IDIOMAS.map((l) => [l, ruta(l)])) },
-  { defecto: "en", paginas: { es: RUTAS.es.estrella, en: RUTAS.en.estrella, pt: RUTAS.pt.estrella } },
-  { defecto: "en", paginas: { es: RUTAS.es.frases, en: RUTAS.en.frases, pt: RUTAS.pt.frases } },
-  { defecto: "en", paginas: { es: RUTAS.es.sobre, en: RUTAS.en.sobre } },
+  ...["estrella", "frases", "sobre"].map((clave) => ({
+    defecto: "en",
+    paginas: Object.fromEntries(IDIOMAS_PAGINA[clave].map((l) => [l, RUTAS[l][clave]]))
+  })),
   { defecto: "en", paginas: { en: "/agentes/" } },
   { defecto: "es", paginas: { es: "/regalo.html" } }
 ];

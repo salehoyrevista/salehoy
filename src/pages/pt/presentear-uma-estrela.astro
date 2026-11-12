@@ -1,6 +1,6 @@
 ---
 import Pagina from "../../layouts/Pagina.astro";
-import { SITIO, RUTAS } from "../../lib/obra.js";
+import { SITIO, RUTAS, alternativas } from "../../lib/obra.js";
 
 const r = RUTAS.pt;
 const faq = [
@@ -21,7 +21,7 @@ const ld = [
   titulo="Presentear uma estrela: o que dá e o que não dá"
   descripcion="Dá para presentear uma estrela com nome? Oficialmente, não. O que os registros de estrelas vendem, e outro jeito: uma estrela permanente numa obra de arte, com a sua dedicatória."
   ruta={r.estrella}
-  alternativas={[{ lang: "es", href: RUTAS.es.estrella }, { lang: "en", href: RUTAS.en.estrella }]}
+  alternativas={alternativas("estrella", "pt")}
   ld={ld}
 >
   <h1>Presentear uma estrela</h1>
