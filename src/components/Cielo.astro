@@ -105,6 +105,7 @@ const ld = {
         </h1>
         <p class="lema" data-t="lema">{t.lema}</p>
         <a class="enlace" id="regalar" href={`/regalo.html?lang=${lang}`} data-t="regalar">{t.regalar}</a>
+        <button class="enlace mi-estela" id="miEstela" type="button" data-t="miEstela" hidden>{t.miEstela}</button>
       </main>
 
       <p class="esperando" id="esperando" data-t="esperando">{t.esperando}</p>
@@ -139,6 +140,21 @@ const ld = {
       </section>
     </div>
 
+    <div class="nota estela-panel" id="estelaPanel" hidden>
+      <section class="nota-panel" role="dialog" aria-modal="true" aria-label={t.miEstela}>
+        <button class="cerrar" id="cerrarEstela" type="button" data-t-aria="cerrar" aria-label={t.cerrar}>✕</button>
+        <p class="estela-leyenda" id="estelaLeyenda" data-t="estAjena" hidden>{t.estAjena}</p>
+        <canvas class="estela-vista" id="estelaVista" width="540" height="960"></canvas>
+        <ul class="nota-enlaces">
+          <li><button class="enlace" id="estImagen" type="button" data-t="estImagen">{t.estImagen}</button></li>
+          <li><button class="enlace" id="estVideo" type="button" data-t="estVideo">{t.estVideo}</button></li>
+          <li><button class="enlace" id="estEnlace" type="button" data-t="estEnlace">{t.estEnlace}</button></li>
+          <li><button class="enlace" id="estEntrar" type="button" data-t="estEntrar" hidden>{t.estEntrar}</button></li>
+        </ul>
+        <p class="estela-estado" id="estelaEstado" aria-live="polite"></p>
+      </section>
+    </div>
+
     <div class="prologo" id="prologo" hidden>
       <div class="prologo-frases" id="prologoFrases" aria-live="polite"></div>
       <button class="prologo-boton" id="prologoBoton" type="button"></button>
@@ -148,6 +164,7 @@ const ld = {
     <script is:inline src="/salehoy.js"></script>
     <script is:inline src="/cielo-gl.js"></script>
     <script is:inline src="/sonido.js"></script>
+    <script is:inline src="/estela.js"></script>
     <script is:inline>
       (function () {
         var S = window.SaleHoy;
@@ -166,6 +183,11 @@ const ld = {
         var paralaje = { x: 0, y: 0 };           // suavizado
         var energia = 0;                         // cuánto se movió el visitante recién
         var ultimoX = null, ultimoY = null;
+        var E = window.SaleHoyEstela || null;    // la estela del visitante, para llevársela
+        var botonEstela = document.getElementById("miEstela");
+        var panelEstela = document.getElementById("estelaPanel");
+        var inicioVisita = Date.now();
+        if (E) E.iniciar(Math.floor(inicioVisita / 1000));
         var estadoGL = { ahora: 0, giro: 0, px: null, py: null, incX: 0, incY: 0, energia: 0, hora: 0, dia: 0, estacion: 0, luna: 0.25 };
         var ctx = lienzo.getContext("2d");
         var titulo = document.getElementById("titulo");
@@ -385,6 +407,7 @@ const ld = {
           // regalo se sale de la pantalla
           polo = { x: ancho * 0.5, y: alto * 0.5, ax: ancho * 0.5 - 22, ay: alto * 0.5 - 22 };
           if (hayGL) SaleHoyGL.medir(ancho, alto, dpr);
+          if (E) E.ventana(ancho, alto);
           medirTitulo();
           if (!esperando.hidden) ubicarEsperando();
           if (abierta) mostrarEtiqueta(abierta, fijada);
@@ -496,6 +519,7 @@ const ld = {
           pedirCuadro();
         }
         function cortar() {
+          if (E && ultimoX !== null) E.registrar(ultimoX, ultimoY, performance.now(), true);
           if (estela.length && estela[estela.length - 1]) estela.push(null);
           puntero = null;
         }
@@ -699,13 +723,17 @@ const ld = {
         });
 
         function interactivo(el) {
-          return el && el.closest && el.closest("a, button, .etiqueta, .nota, .prologo");
+          return el && el.closest && el.closest("a, button, canvas.estela-vista, .etiqueta, .nota, .prologo");
         }
 
         window.addEventListener("pointermove", function (ev) {
           if (!prologo.hidden) return;
           puntero = { x: ev.clientX, y: ev.clientY };
           sumarPunto(ev.clientX, ev.clientY);
+          if (E && panelEstela.hidden) {
+            E.registrar(ev.clientX, ev.clientY, performance.now(), false);
+            if (botonEstela.hidden && E.cantidad() > 30) botonEstela.hidden = false;
+          }
           var vel = ultimoX === null ? 0 : Math.min(1, Math.hypot(ev.clientX - ultimoX, ev.clientY - ultimoY) / 60);
           ultimoX = ev.clientX; ultimoY = ev.clientY;
           energia = Math.min(1, energia + vel * 0.25);
@@ -1067,6 +1095,114 @@ const ld = {
           if (estela.length && estela[estela.length - 1]) estela.push(null);
         }
 
+        // ---------- la estela que se lleva el visitante ----------
+
+        var vistaEstela = document.getElementById("estelaVista");
+        var estadoEstela = document.getElementById("estelaEstado");
+        var leyendaEstela = document.getElementById("estelaLeyenda");
+        var entrarEstela = document.getElementById("estEntrar");
+        var semillaAjena = null;     // segundos Unix de una estela abierta desde un enlace
+
+        function textosEstela() {
+          var momentoMs = semillaAjena !== null ? semillaAjena * 1000 : inicioVisita;
+          return {
+            titulo: "Sin motivo",
+            frase: S.T[actual].estFrase,
+            momento: S.momento(momentoMs, actual),
+            marca: "salehoy.com.ar",
+            firma: "Solzimer",
+            semilla: Math.floor(momentoMs / 1000)
+          };
+        }
+
+        function enlaceEstela() {
+          var e = E.codificar();
+          return e ? "https://salehoy.com.ar" + (actual === "es" ? "/" : "/" + actual + "/") + "?e=" + e : null;
+        }
+
+        function abrirEstela() {
+          panelEstela.hidden = false;
+          document.body.classList.add("con-nota");
+          estadoEstela.textContent = "";
+          document.getElementById("estVideo").hidden = !E.soportaVideo();
+          var t0 = null, textos = textosEstela();
+          function paso(ahora) {
+            if (panelEstela.hidden) return;
+            if (t0 === null) t0 = ahora;
+            var u = quieto ? 1 : Math.min(1, (ahora - t0) / 2600);
+            try { E.dibujar(vistaEstela, textos, u); } catch (e) {}
+            if (u < 1) requestAnimationFrame(paso);
+          }
+          requestAnimationFrame(paso);
+          document.getElementById("cerrarEstela").focus();
+        }
+        function cerrarEstela() {
+          panelEstela.hidden = true;
+          document.body.classList.remove("con-nota");
+          if (semillaAjena !== null) {       // vuelve a la estela propia
+            semillaAjena = null;
+            E.volver();
+            leyendaEstela.hidden = true;
+            entrarEstela.hidden = true;
+          }
+        }
+
+        function hito(nombre) { if (window.SaleHoyVisita) SaleHoyVisita.evento(nombre); }
+
+        if (E) {
+          botonEstela.addEventListener("click", abrirEstela);
+          document.getElementById("cerrarEstela").addEventListener("click", cerrarEstela);
+          entrarEstela.addEventListener("click", cerrarEstela);
+          panelEstela.addEventListener("click", function (ev) { if (ev.target === panelEstela) cerrarEstela(); });
+          document.addEventListener("keydown", function (ev) { if (ev.key === "Escape" && !panelEstela.hidden) cerrarEstela(); });
+
+          document.getElementById("estImagen").addEventListener("click", function () {
+            estadoEstela.textContent = S.T[actual].estHaciendo;
+            hito("estela-imagen");
+            E.imagen(textosEstela()).then(function (blob) {
+              estadoEstela.textContent = "";
+              return E.compartir(blob, "sin-motivo-estela." + (blob.extension || "jpg"), S.T[actual].estFrase, enlaceEstela());
+            }).catch(function () { estadoEstela.textContent = ""; });
+          });
+
+          var grabando = false;
+          document.getElementById("estVideo").addEventListener("click", function () {
+            if (grabando) return;
+            grabando = true;
+            hito("estela-video");
+            var t = S.T[actual];
+            E.video(textosEstela(), function (p) {
+              estadoEstela.textContent = t.estHaciendo + " " + Math.round(p * 100) + "%";
+            }).then(function (blob) {
+              grabando = false;
+              estadoEstela.textContent = "";
+              return E.compartir(blob, "sin-motivo-estela." + (blob.extension || "webm"), t.estFrase, enlaceEstela());
+            }).catch(function () { grabando = false; estadoEstela.textContent = ""; });
+          });
+
+          document.getElementById("estEnlace").addEventListener("click", function () {
+            var url = enlaceEstela();
+            if (!url) return;
+            hito("estela-enlace");
+            var b = this, t = S.T[actual];
+            function ok() { b.textContent = t.copiado; setTimeout(function () { b.textContent = S.T[actual].estEnlace; }, 1800); }
+            if (navigator.clipboard) navigator.clipboard.writeText(url).then(ok, function () { prompt("", url); });
+            else prompt("", url);
+          });
+
+          // Un enlace con ?e= abre el sitio mostrando primero esa estela.
+          var pedida = S.parametro("e");
+          if (pedida && E.cargar(pedida)) {
+            try {
+              var bin = atob(pedida.replace(/-/g, "+").replace(/_/g, "/"));
+              semillaAjena = ((bin.charCodeAt(1) << 24) | (bin.charCodeAt(2) << 16) | (bin.charCodeAt(3) << 8) | bin.charCodeAt(4)) >>> 0;
+            } catch (e) { semillaAjena = Math.floor(inicioVisita / 1000); }
+            leyendaEstela.hidden = false;
+            entrarEstela.hidden = false;
+            setTimeout(abrirEstela, quieto ? 0 : 900);
+          }
+        }
+
         // ---------- arranque ----------
 
         window.addEventListener("resize", medir);
@@ -1123,6 +1259,14 @@ const ld = {
   #fondo[hidden] { display: none; }
   #cielo { position: fixed; inset: 0; z-index: 0; display: block; }
   body.abriendo .ui { opacity: 0; }
+  .mi-estela { display: block; margin-top: .9rem; font-family: var(--mono); font-size: .8rem; color: var(--tenue); animation: aparecer 1.6s ease; }
+  .mi-estela:hover { color: var(--crema); }
+  .mi-estela[hidden] { display: none; }
+  .estela-panel { padding-top: 5vh; }
+  .estela-panel .nota-panel { max-width: 24rem; }
+  .estela-vista { display: block; height: min(52vh, 30rem); width: auto; max-width: 100%; aspect-ratio: 9 / 16; background: var(--tinta); border: 1px solid rgba(242, 233, 216, .12); }
+  .estela-leyenda { margin: 0 2.5rem 1rem 0; font-size: 1.2rem; font-style: italic; line-height: 1.3; }
+  .estela-estado { min-height: 1.4em; margin: .8rem 0 0; font-family: var(--mono); font-size: .7rem; color: var(--tenue); }
   button.a-sobre { background: none; border: 0; padding: 0; font: inherit; cursor: pointer; }
 
   .ui {

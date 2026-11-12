@@ -20,7 +20,8 @@
     p: location.pathname,
     l: document.documentElement.lang || "",
     r: origen,
-    n: /[?&]n=\d+/.test(location.search) ? 1 : 0
+    n: /[?&]n=\d+/.test(location.search) ? 1 : 0,
+    s: /[?&]e=[\w-]+/.test(location.search) ? 1 : 0     // llegó por el enlace de una estela
   });
 
   // Hitos del camino al regalo (sin montos ni direcciones).
