@@ -1,0 +1,6 @@
+{
+  "semana": "2026-45",
+  "consultado": "2026-11-12",
+  "sesiones": "[2]{date,city,deviceCategory,sessionDefaultChannelGrouping,sessionSource,sessions,engagedSessions,userEngagementDuration}:\n  2026-11-03,Cordoba,desktop,Direct,(direct),1,1,25\n  2026-11-03,Cordoba,mobile,Organic Search,google,1,1,21",
+  "eventos": "[8]{eventName,city,deviceCategory,sessionDefaultChannelGrouping,eventCount}:\n  user_engagement,Cordoba,desktop,Direct,3\n  page_view,Cordoba,desktop,Direct,2\n  page_view,Cordoba,mobile,Organic Search,2\n  scroll,Cordoba,mobile,Organic Search,2\n  user_engagement,Cordoba,mobile,Organic Search,2\n  scroll,Cordoba,desktop,Direct,1\n  session_start,Cordoba,desktop,Direct,1\n  session_start,Cordoba,mobile,Organic Search,1"
+}

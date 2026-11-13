@@ -1,0 +1,6 @@
+{
+  "semana": "2026-46",
+  "consultado": "2026-11-12",
+  "sesiones": "[5]{date,city,deviceCategory,sessionDefaultChannelGrouping,sessionSource,sessions,engagedSessions,userEngagementDuration}:\n  2026-11-11,Cordoba,desktop,Direct,(direct),2,2,99\n  2026-11-11,Cordoba,desktop,Unassigned,(not set),1,0,1\n  2026-11-12,\"\",mobile,Direct,(direct),2,0,0\n  2026-11-12,Cordoba,desktop,Direct,(direct),2,2,108\n  2026-11-12,Washington,mobile,Direct,(direct),1,0,0",
+  "eventos": "[15]{eventName,city,deviceCategory,sessionDefaultChannelGrouping,eventCount}:\n  page_view,Cordoba,desktop,Direct,11\n  scroll,Cordoba,desktop,Direct,10\n  user_engagement,Cordoba,desktop,Direct,9\n  session_start,Cordoba,desktop,Direct,4\n  first_visit,\"\",mobile,Direct,2\n  page_view,\"\",mobile,Direct,2\n  scroll,\"\",mobile,Direct,2\n  session_start,\"\",mobile,Direct,2\n  first_visit,Cordoba,desktop,Direct,1\n  first_visit,Washington,mobile,Direct,1\n  page_view,Cordoba,desktop,Unassigned,1\n  page_view,Washington,mobile,Direct,1\n  scroll,Washington,mobile,Direct,1\n  session_start,Washington,mobile,Direct,1\n  user_engagement,Cordoba,desktop,Unassigned,1"
+}
