@@ -87,7 +87,7 @@ public/
   salehoy.js          núcleo de la obra: dirección, contrato, textos en 8 idiomas,
                       filtro de regalos y dedicatorias. Única fuente de esos datos
   sonido.js           capa sonora opcional (Web Audio)
-  visita.js           aviso anónimo de visita, sin cookies
+  visita.js           visitas y eventos: contador propio y Google Analytics
   regalo.html         página para regalar
   fonts/              tipografías (Instrument Serif, IBM Plex Mono)
   prensa/             kit de prensa: textos, imágenes y video
@@ -131,9 +131,9 @@ netlify.toml
 
 ## Privacidad
 
-- Sin cookies.
-- Sin datos personales y sin cuentas.
-- El cielo no carga scripts de terceros. La página para regalar carga una biblioteca de códigos QR desde un CDN público (cdnjs).
+- Usa Google Analytics (con cookies) para contar visitas y eventos en números agregados. La etiqueta la inserta Netlify al publicar; no está en este repositorio.
+- No pide ni guarda nombres, correos ni direcciones de billetera, y no hay cuentas.
+- Fuera de la etiqueta de Google, el cielo no carga scripts de terceros. La página para regalar carga una biblioteca de códigos QR desde un CDN público (cdnjs).
 - Las estelas no se guardan en ningún lado, salvo que el visitante decida guardar la suya.
 - Se cuentan visitas de forma anónima: un número por día, por página, por idioma y por dominio de origen. Las cifras son públicas en [`/estadisticas/`](https://salehoy.com.ar/estadisticas/).
 - El idioma elegido se recuerda en el propio navegador (`localStorage`). No sale de ahí.
@@ -174,7 +174,7 @@ What may be worth reading in the code:
 - **Real sidereal rotation.** The sky's angle is computed from the wall clock and the length of the sidereal day. No looped animation; everyone sees the same sky at the same moment.
 - **A record verified against the network.** The server checks every gift directly against Base through a public RPC node. No API keys, no paid services. The public read-only API at `/api/cielo` comes from that record.
 - **Dedications in calldata.** An ETH gift can carry up to 80 characters as hex-encoded UTF-8 in the transaction's `data` field. No database: the site reads it from the chain and renders it as plain text.
-- **No cookies, no UI framework.** Plain JavaScript; Astro only generates the static HTML. Optional generated sound (Web Audio) that never starts on its own.
+- **No UI framework.** Plain JavaScript; Astro only generates the static HTML. Optional generated sound (Web Audio) that never starts on its own.
 
 Run it with `npm install`, then `npm run dev` or `npm run build` (Node.js 20 or newer).
 

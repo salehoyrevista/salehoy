@@ -24,7 +24,7 @@ Texto actualizado al 12 de noviembre de 2026. Todo lo que sigue puede copiarse t
 | Idiomas | Español, inglés, portugués, francés, italiano, alemán, chino, japonés |
 | Técnica | JavaScript sin frameworks de interfaz. Sitio estático generado con Astro, alojado en Netlify |
 | Sonido | Capa sonora generada, opcional. Nunca arranca sola |
-| Datos personales | Sin cookies ni datos personales |
+| Datos personales | Google Analytics (con cookies) para contar visitas; sin nombres, correos ni direcciones de billetera |
 | Estado del cielo | API pública de solo lectura: https://salehoy.com.ar/api/cielo |
 | Verificación pública | https://base.blockscout.com/address/0x791F5cEfb1778fFa31Af8e8A33F49cf35F41dB36 |
 | Dimensiones | Variables |
@@ -58,7 +58,7 @@ El regalo suele entenderse como un intercambio: se da, se recibe y se devuelve. 
 
 En el arte, la blockchain se usó sobre todo como mercado: escasez, propiedad, reventa. Aquí se usa como registro público. No hay nada que comprar ni que revender. La cadena hace una sola cosa: dejar constancia, verificable por cualquiera, de que un regalo ocurrió. El servidor comprueba cada regalo directamente contra la red, sin claves ni servicios pagos, y publica el estado del cielo en una API de solo lectura.
 
-La obra pertenece a la tradición del net art: no es una imagen subida a la web, sino algo que solo existe en la red y con quienes pasan por ella. El cielo es una escena en tiempo real, con profundidad, que responde al toque, al mouse y a la inclinación del celular. Tiene una capa sonora generada, opcional, que nunca arranca sola. Cada visitante puede guardar su estela como imagen o como video y compartirla con un enlace propio. El sitio no usa cookies ni guarda datos personales.
+La obra pertenece a la tradición del net art: no es una imagen subida a la web, sino algo que solo existe en la red y con quienes pasan por ella. El cielo es una escena en tiempo real, con profundidad, que responde al toque, al mouse y a la inclinación del celular. Tiene una capa sonora generada, opcional, que nunca arranca sola. Cada visitante puede guardar su estela como imagen o como video y compartirla con un enlace propio. El sitio usa Google Analytics para contar visitas y no pide ni guarda nombres, correos ni direcciones de billetera.
 
 Al 12 de noviembre de 2026 no hay ningún regalo. El cielo está vacío. La obra no lo disimula: cuenta el silencio. Si nadie responde, esa también es una respuesta.
 
@@ -95,7 +95,7 @@ En el sitio, nunca. Tampoco quién. La forma del asterisco sale del identificado
 Es el seudónimo del autor de la obra. No hay otros datos públicos.
 
 **8. ¿El sitio guarda datos de quienes lo visitan?**
-No usa cookies ni guarda datos personales. Cuenta visitas de forma anónima: un número por día y por página. Las estelas no se guardan en ningún lado, salvo que el propio visitante decida guardar la suya.
+Usa Google Analytics, que pone cookies, para contar visitas y saber de dónde llegan, en números agregados. El sitio no pide ni guarda nombres, correos ni direcciones de billetera. Las estelas no se guardan en ningún lado, salvo que el propio visitante decida guardar la suya.
 
 ## Cómo citar la obra
 

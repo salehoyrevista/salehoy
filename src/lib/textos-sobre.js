@@ -34,7 +34,7 @@ export const SOBRE = {
       ["O que é a dedicatória?", "Um texto de até 80 caracteres que quem presenteia pode escrever dentro da própria transação (só com ETH). Fica na blockchain, pública e para sempre. O site não a guarda: só a lê."],
       ["Quais presentes contam?", "Só os da rede Base: ETH nativo e USDC oficial. Qualquer outro token é ignorado, para que o céu não se encha de lixo."],
       ["Quem é Solzimer?", "É o pseudônimo do autor da obra."],
-      ["O site me rastreia?", "Não usa cookies nem guarda dados pessoais. Conta as visitas de forma anônima: um número por dia, por página. Os rastros que você deixa no céu não ficam guardados em lugar nenhum."]
+      ["O site me rastreia?", "Usa o Google Analytics, que coloca cookies, para contar visitas e saber de onde chegam, em números agregados. O site não pede nem guarda nomes, e-mails ou endereços de carteira. Os rastros que você deixa no céu não ficam guardados em lugar nenhum."]
     ],
     verCielo: "ver o céu →", regalar: "presentear →",
     cita: "Para citar a obra: Solzimer, <em>Sin motivo</em>, 2026–em curso, net art, salehoy.com.ar. Versão para máquinas: <a href=\"/llms.txt\">llms.txt</a>, <a href=\"/obra.json\">obra.json</a>, <a href=\"/agentes/\">para agentes de IA</a>."
@@ -70,7 +70,7 @@ export const SOBRE = {
       ["Qu’est-ce que la dédicace ?", "Un texte de 80 caractères maximum que la personne qui offre peut écrire dans la transaction elle-même (seulement en ETH). Il reste sur la blockchain, public et pour toujours. Le site ne le garde pas : il le lit."],
       ["Quels cadeaux comptent ?", "Seulement ceux du réseau Base : ETH natif et USDC officiel. Tout autre token est ignoré, pour que le ciel ne se remplisse pas de déchets."],
       ["Qui est Solzimer ?", "C’est le pseudonyme de l’auteur de l’œuvre."],
-      ["Le site me suit-il ?", "Il n’utilise pas de cookies et ne garde aucune donnée personnelle. Il compte les visites de façon anonyme : un nombre par jour et par page. Les traînées que tu laisses dans le ciel ne sont gardées nulle part."]
+      ["Le site me suit-il ?", "Il utilise Google Analytics, qui dépose des cookies, pour compter les visites et savoir d’où elles viennent, en chiffres agrégés. Le site ne demande ni ne garde de noms, d’e-mails ou d’adresses de portefeuille. Les traînées que tu laisses dans le ciel ne sont gardées nulle part."]
     ],
     verCielo: "voir le ciel →", regalar: "offrir →",
     cita: "Pour citer l’œuvre : Solzimer, <em>Sin motivo</em>, 2026–en cours, net art, salehoy.com.ar. Version pour les machines : <a href=\"/llms.txt\">llms.txt</a>, <a href=\"/obra.json\">obra.json</a>, <a href=\"/agentes/\">pour les agents IA</a>."
@@ -106,7 +106,7 @@ export const SOBRE = {
       ["Cos’è la dedica?", "Un testo fino a 80 caratteri che chi regala può scrivere dentro la transazione stessa (solo con ETH). Resta sulla blockchain, pubblico e per sempre. Il sito non lo conserva: lo legge."],
       ["Quali regali contano?", "Solo quelli sulla rete Base: ETH nativo e USDC ufficiale. Qualsiasi altro token viene ignorato, perché il cielo non si riempia di spazzatura."],
       ["Chi è Solzimer?", "È lo pseudonimo dell’autore dell’opera."],
-      ["Il sito mi traccia?", "Non usa cookie e non conserva dati personali. Conta le visite in modo anonimo: un numero al giorno, per pagina. Le scie che lasci nel cielo non vengono salvate da nessuna parte."]
+      ["Il sito mi traccia?", "Usa Google Analytics, che imposta dei cookie, per contare le visite e sapere da dove arrivano, in numeri aggregati. Il sito non chiede né conserva nomi, e-mail o indirizzi di portafoglio. Le scie che lasci nel cielo non vengono salvate da nessuna parte."]
     ],
     verCielo: "vedi il cielo →", regalar: "regala →",
     cita: "Per citare l’opera: Solzimer, <em>Sin motivo</em>, 2026–in corso, net art, salehoy.com.ar. Versione per le macchine: <a href=\"/llms.txt\">llms.txt</a>, <a href=\"/obra.json\">obra.json</a>, <a href=\"/agentes/\">per agenti IA</a>."
@@ -142,7 +142,7 @@ export const SOBRE = {
       ["Was ist die Widmung?", "Ein Text mit bis zu 80 Zeichen, den die schenkende Person in die Transaktion selbst schreiben kann (nur mit ETH). Er bleibt in der Blockchain, öffentlich und für immer. Die Website speichert ihn nicht, sie liest ihn nur."],
       ["Welche Geschenke zählen?", "Nur die im Base-Netzwerk: natives ETH und offizielles USDC. Jeder andere Token wird ignoriert, damit sich der Himmel nicht mit Müll füllt."],
       ["Wer ist Solzimer?", "Das ist das Pseudonym des Autors."],
-      ["Verfolgt mich die Website?", "Sie nutzt keine Cookies und speichert keine personenbezogenen Daten. Besuche werden anonym gezählt: eine Zahl pro Tag und Seite. Die Spuren, die du am Himmel hinterlässt, werden nirgends gespeichert."]
+      ["Verfolgt mich die Website?", "Sie nutzt Google Analytics, das Cookies setzt, um Besuche zu zählen und zu sehen, woher sie kommen, in zusammengefassten Zahlen. Die Website fragt weder nach Namen, E-Mail-Adressen oder Wallet-Adressen, noch speichert sie sie. Die Spuren, die du am Himmel hinterlässt, werden nirgends gespeichert."]
     ],
     verCielo: "zum Himmel →", regalar: "schenken →",
     cita: "Zitiervorschlag: Solzimer, <em>Sin motivo</em>, 2026–fortlaufend, Net Art, salehoy.com.ar. Für Maschinen: <a href=\"/llms.txt\">llms.txt</a>, <a href=\"/obra.json\">obra.json</a>, <a href=\"/agentes/\">für KI-Agenten</a>."
@@ -178,7 +178,7 @@ export const SOBRE = {
       ["题词是什么？", "送礼的人可以在交易本身里写下的一段文字，最多 80 个字符（仅限 ETH）。它会留在区块链上，公开且永久。网站不保存它，只是读取它。"],
       ["哪些礼物计入？", "只有 Base 网络上的礼物：原生 ETH 和官方 USDC。其他代币一律忽略，以免天空被垃圾填满。"],
       ["Solzimer 是谁？", "是这件作品作者的笔名。"],
-      ["网站会追踪我吗？", "不使用 Cookie，也不保存个人数据。来访只做匿名计数：每天、每个页面一个数字。你在天空中留下的痕迹不会被保存在任何地方。"]
+      ["网站会追踪我吗？", "本站使用 Google Analytics（会设置 Cookie）来统计来访数量和来源，只看汇总数字。网站不索取也不保存姓名、邮箱或钱包地址。你在天空中留下的痕迹不会被保存在任何地方。"]
     ],
     verCielo: "去看天空 →", regalar: "送礼 →",
     cita: "引用方式：Solzimer，《Sin motivo》，2026 年至今，网络艺术，salehoy.com.ar。给机器读的版本：<a href=\"/llms.txt\">llms.txt</a>、<a href=\"/obra.json\">obra.json</a>、<a href=\"/agentes/\">给 AI 智能体</a>。"
@@ -214,7 +214,7 @@ export const SOBRE = {
       ["献辞とは何ですか？", "贈る人が取引そのものに書き込める、80 文字までの言葉です（ETH のみ）。ブロックチェーンに公開されたまま永久に残ります。サイトは保存せず、読むだけです。"],
       ["どの贈り物が数えられますか？", "Base ネットワークのものだけです。ネイティブ ETH と公式 USDC。ほかのトークンは無視されます。空がごみで埋まらないように。"],
       ["Solzimer とは誰ですか？", "作品の作者のペンネームです。"],
-      ["サイトは私を追跡しますか？", "Cookie は使わず、個人データも保存しません。訪問は匿名で数えるだけです。1 日ごと、ページごとにひとつの数字。あなたが空に残す軌跡は、どこにも保存されません。"]
+      ["サイトは私を追跡しますか？", "訪問数とその流入元を集計した数字で把握するために、Cookie を設定する Google Analytics を使っています。サイトが名前、メールアドレス、ウォレットアドレスを尋ねたり保存したりすることはありません。あなたが空に残す軌跡は、どこにも保存されません。"]
     ],
     verCielo: "空を見る →", regalar: "贈る →",
     cita: "引用するとき：Solzimer『Sin motivo』2026 年–継続中、ネットアート、salehoy.com.ar。機械向け：<a href=\"/llms.txt\">llms.txt</a>、<a href=\"/obra.json\">obra.json</a>、<a href=\"/agentes/\">AI エージェント向け</a>。"

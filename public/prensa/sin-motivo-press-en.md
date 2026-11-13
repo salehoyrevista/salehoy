@@ -26,7 +26,7 @@ Text current as of 12 November 2026. Everything below may be copied as is.
 | Languages | Spanish, English, Portuguese, French, Italian, German, Chinese, Japanese |
 | Technique | JavaScript with no UI framework. Static site built with Astro, hosted on Netlify |
 | Sound | Generated sound layer, optional. It never starts on its own |
-| Personal data | No cookies, no personal data |
+| Personal data | Google Analytics (with cookies) to count visits; no names, emails or wallet addresses |
 | State of the sky | Public read-only API: https://salehoy.com.ar/api/cielo |
 | Public verification | https://base.blockscout.com/address/0x791F5cEfb1778fFa31Af8e8A33F49cf35F41dB36 |
 | Dimensions | Variable |
@@ -60,7 +60,7 @@ A gift is usually understood as an exchange: something is given, received and re
 
 In art, blockchains have mostly been used as a market: scarcity, ownership, resale. Here the chain is used as a public record. There is nothing to buy and nothing to resell. It does one thing: keep proof, checkable by anyone, that a gift took place. The server verifies every gift directly against the network, with no keys and no paid services, and publishes the state of the sky through a read-only API.
 
-The work belongs to the tradition of net art: not an image uploaded to the web, but something that exists only on the network and with the people who pass through it. The sky is a real-time scene with depth that responds to touch, to the mouse and to the tilt of a phone. It has a generated sound layer, optional, that never starts on its own. Visitors can save their own trail as an image or a video and share it with a link of its own. The site uses no cookies and stores no personal data.
+The work belongs to the tradition of net art: not an image uploaded to the web, but something that exists only on the network and with the people who pass through it. The sky is a real-time scene with depth that responds to touch, to the mouse and to the tilt of a phone. It has a generated sound layer, optional, that never starts on its own. Visitors can save their own trail as an image or a video and share it with a link of its own. The site uses Google Analytics to count visits and does not ask for or store names, emails or wallet addresses.
 
 As of 12 November 2026 there are no gifts. The sky is empty. The work does not hide it: it counts the silence. If no one answers, that is an answer too.
 
@@ -97,7 +97,7 @@ On the site, never. Nor who gave it. The asterisk's shape comes from the transac
 It is the pseudonym of the work's author. No other details are public.
 
 **8. Does the site keep data about visitors?**
-It uses no cookies and stores no personal data. It counts visits anonymously: one number per day, per page. Trails are not stored anywhere, unless visitors choose to save their own.
+It uses Google Analytics, which sets cookies, to count visits and see where they come from, in aggregate numbers. The site does not ask for or store names, emails or wallet addresses. Trails are not stored anywhere, unless visitors choose to save their own.
 
 ## How to cite the work
 

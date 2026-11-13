@@ -55,7 +55,7 @@ Sin motivo es una obra de arte participativo de Solzimer, en curso desde el 29 d
 
 - [Frases para un regalo sin motivo](${u(es.frases)}): frases originales, de uso libre. También en ${otras("frases")}.
 - Autor: Solzimer (seudónimo).
-- Privacidad: sin cookies ni datos personales; se cuentan visitas de forma anónima.
+- Privacidad: usa Google Analytics (con cookies) para contar visitas en números agregados; no pide ni guarda nombres, correos ni direcciones de billetera.
 
 ## English
 
