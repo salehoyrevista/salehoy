@@ -31,8 +31,13 @@ Pedido: medir en serio un sitio con muy poco tráfico. Reglas permanentes en `CL
 - **Primeros reportes:** `2026-45` (2 sesiones: 1 mía, 1 real) y `2026-46`, en curso (8 sesiones: 4 sin interacción, 4 mías, 0 reales).
 - **El repositorio es público:** los reportes muestran ciudades y cantidades agregadas, ninguna persona. Si Pedro prefiere que no se publiquen, se agrega `REPORTES/` a `.gitignore`.
 
-### Queda abierto: los textos que dicen "sin cookies"
-Google Analytics usa cookies y varias páginas dicen que el sitio no. No lo corregí: es un cambio al sitio y espera la aprobación de Pedro (`PENDIENTES_PEDRO.md`, punto 9).
+### 23. Los textos dicen que el sitio usa Google Analytics — `df595f3` (2026-11-13)
+- **Qué:** donde decía "sin cookies" ahora dice que el sitio usa Google Analytics, que pone cookies, para contar visitas en números agregados, y que no pide ni guarda nombres, correos ni direcciones de billetera. Cambió en Sobre la obra (8 idiomas), prensa en español e inglés y su kit (`.md` y `.zip`), la página de la API, estadísticas, `llms.txt` y el README.
+- **Por qué:** Google Analytics queda como fuente de la medición y usa cookies; el texto anterior era falso.
+- **Aprobado por Pedro** ("Sí, corregilos").
+- **Se mantiene:** el contador propio sigue sin cookies, y así lo dicen la página de estadísticas y los comentarios del código.
+- **No hecho:** no hay aviso de consentimiento de cookies. Para visitantes de la Unión Europea puede corresponder uno; es una decisión de Pedro.
+- **Revertir:** `git revert df595f3` (solo tiene sentido si además se saca la etiqueta de Google en Netlify).
 
 ## 2026-11-12 — Sesión "director creativo": la obra como experiencia que se comparte
 

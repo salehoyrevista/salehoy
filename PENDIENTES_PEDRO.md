@@ -61,12 +61,8 @@ El filtro no borra lo anterior: las sesiones tuyas de antes quedan en los datos 
 
 **Opcional, si tu IP es fija:** Administrar → Flujos de datos → el flujo web → **Configurar ajustes de etiquetas → Mostrar todo → Definir tráfico interno → Crear**, y cargar tu IP (la ves en https://www.whatismyip.com). Sirve como segunda red; con el paso A alcanza.
 
-## 9. Decidir qué dice el sitio sobre cookies
-Google Analytics usa cookies. Varias páginas dicen "sin cookies" (Sobre la obra en los 8 idiomas, prensa, la página de la API, `llms.txt`, el README y el kit de prensa). Eso era cierto del contador propio, pero no del sitio completo mientras la etiqueta de Google esté puesta. No lo cambié porque es un cambio al sitio: necesito tu sí. Las dos salidas:
-- **Dejar Google Analytics y corregir los textos** a algo como "Usa Google Analytics para contar visitas de forma agregada; no guarda nombres ni direcciones de billetera". Es lo coherente con esta medición.
-- **Sacar la etiqueta de Google** (Netlify → Site configuration → Build & deploy → Post processing → Snippet injection → borrar el snippet) y medir solo con el contador propio. Los textos quedan ciertos, pero se pierde el reporte semanal por Supermetrics.
-
 ## Ya no hace falta
+- **Los textos sobre cookies.** Corregidos el 13 de noviembre de 2026: ahora dicen que el sitio usa Google Analytics.
 - **La clave de Blockscout.** El servidor ahora verifica los regalos directamente contra la red Base, sin claves.
 
 ## Moderar dedicatorias (solo si hace falta)
