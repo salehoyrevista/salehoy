@@ -47,6 +47,7 @@ const ld = {
     <meta name="color-scheme" content="dark" />
     <meta name="theme-color" content="#0e0d12" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline src="/interno.js"></script>
     <title>{titulo}</title>
     <meta name="description" content={t.desc} />
     <meta name="author" content="Solzimer" />
@@ -1064,7 +1065,7 @@ const ld = {
               marcarSonido();
             } else {
               var r = SaleHoySonido.activar();
-              var listo = function (ok) { sonidoActivo = ok === true; marcarSonido(); };
+              var listo = function (ok) { sonidoActivo = ok === true; marcarSonido(); if (sonidoActivo) hito("sonido"); };
               if (r && r.then) r.then(listo, function () { listo(false); }); else listo(r);
             }
           });
@@ -1155,7 +1156,7 @@ const ld = {
         function hito(nombre) { if (window.SaleHoyVisita) SaleHoyVisita.evento(nombre); }
 
         if (E) {
-          botonEstela.addEventListener("click", abrirEstela);
+          botonEstela.addEventListener("click", function () { hito("estela-abrir"); abrirEstela(); });
           document.getElementById("cerrarEstela").addEventListener("click", cerrarEstela);
           entrarEstela.addEventListener("click", cerrarEstela);
           panelEstela.addEventListener("click", function (ev) { if (ev.target === panelEstela) cerrarEstela(); });
@@ -1167,7 +1168,7 @@ const ld = {
             E.imagen(textosEstela()).then(function (blob) {
               estadoEstela.textContent = "";
               return E.compartir(blob, "sin-motivo-estela." + (blob.extension || "jpg"), S.T[actual].estFrase, enlaceEstela());
-            }).catch(function () { estadoEstela.textContent = ""; });
+            }).then(function (r) { if (r === "compartido") hito("estela-compartida"); }).catch(function () { estadoEstela.textContent = ""; });
           });
 
           var grabando = false;
@@ -1182,7 +1183,7 @@ const ld = {
               grabando = false;
               estadoEstela.textContent = "";
               return E.compartir(blob, "sin-motivo-estela." + (blob.extension || "webm"), t.estFrase, enlaceEstela());
-            }).catch(function () { grabando = false; estadoEstela.textContent = ""; });
+            }).then(function (r) { if (r === "compartido") hito("estela-compartida"); }).catch(function () { grabando = false; estadoEstela.textContent = ""; });
           });
 
           document.getElementById("estEnlace").addEventListener("click", function () {
