@@ -3,6 +3,37 @@
 Cada decisión, por qué se tomó y cómo revertirla. La más reciente arriba.
 Para deshacer un cambio: `git revert <commit>` y `git push origin master` (Netlify publica solo).
 
+## 2026-11-12 — Método de medición
+
+Pedido: medir en serio un sitio con muy poco tráfico. Reglas permanentes en `CLAUDE.md`, definiciones y metas en `MEDICION.md`.
+
+### 19. Reglas permanentes en `CLAUDE.md` — `9eee250`
+- **Qué:** tasas desde totales, denominador siempre, menos de 30 sesiones reales = solo describir, bots y tráfico de Pedro separados, y **ningún cambio al sitio sin aprobación explícita de Pedro**. Esta última reemplaza el mandato de "decidir sin preguntar" de las sesiones anteriores.
+- **Revertir:** editar o borrar `CLAUDE.md`.
+
+### 20. Se mide con Google Analytics, además del contador propio — `9dd3da3`
+- **Qué:** `public/visita.js` manda cada hito a los dos destinos. Eventos: `regalar_toque`, `regalo_llegada`, `direccion_copiada`, `regalo_billetera_abierta`, `regalo_enviado`, `ya_regale`, `estela_generada`, `estela_guardada`, `estela_compartida`, `estela_vista`, `sonido_activado`, `estrella_vista`, `estrella_enlace_copiado`. Parámetros: solo la ruta y, en dos casos, formato o vía. Nada que identifique a una persona.
+- **Por qué Google Analytics:** la etiqueta ya estaba (la inserta Netlify, no el repositorio) y es lo que lee Supermetrics. El contador propio queda como segunda fuente.
+- **Verificado:** en el build local (los 7 eventos que se pueden provocar sin billetera) y en producción, mirando los pedidos a `google-analytics.com/g/collect`: salieron `sonido_activado`, `estela_generada`, `estela_guardada`, `estela_compartida`, `estrella_vista`, `regalar_toque`, `regalo_llegada` y `direccion_copiada`.
+- **Sin verificar:** la pantalla DebugView de Google Analytics (requiere la sesión de Pedro; pasos en `PENDIENTES_PEDRO.md`, punto 8). `estela_vista` salió en local pero no la provoqué en producción. Los eventos de billetera (`regalo_billetera_abierta`, `regalo_enviado`) no se probaron: necesitan una billetera real.
+- **Revertir:** `git revert 9dd3da3`.
+
+### 21. Marca de tráfico propio — `4f02e7d`
+- **Qué:** `/?interno=1` guarda una marca en ese navegador (`public/interno.js`). Con la marca, las visitas van a Google Analytics con `traffic_type = internal` y no suman al contador propio. `/?interno=0` la quita.
+- **Por qué no por IP:** la IP de una conexión hogareña cambia, y así también quedan fuera mis pruebas automáticas.
+- **Falta:** que Pedro marque sus dispositivos y active el filtro en Google Analytics. Hasta entonces la marca viaja pero no excluye nada.
+- **Revertir:** `git revert 4f02e7d`.
+
+### 22. Reporte semanal — `scripts/reporte.mjs` y `/reporte-semanal`
+- **Qué:** el comando trae sesiones y eventos de la semana ISO por Supermetrics, guarda los datos crudos en `REPORTES/datos/AAAA-SS.json` y el script escribe `REPORTES/AAAA-SS.md`. Si no hubo sesiones reales ni eventos de visitantes, una sola línea.
+- **Aproximaciones, dichas:** "bots" son las sesiones sin interacción de Google Analytics (umbral de 10 s, no los 5 s pedidos: el conector no da la duración por sesión). "Mías" se decide por fila agregada (Córdoba + escritorio + directo, 20 s o más de promedio), no sesión por sesión.
+- **No se ejecuta solo:** hay que correr `/reporte-semanal` cada lunes. No lo programé porque nadie lo pidió.
+- **Primeros reportes:** `2026-45` (2 sesiones: 1 mía, 1 real) y `2026-46`, en curso (8 sesiones: 4 sin interacción, 4 mías, 0 reales).
+- **El repositorio es público:** los reportes muestran ciudades y cantidades agregadas, ninguna persona. Si Pedro prefiere que no se publiquen, se agrega `REPORTES/` a `.gitignore`.
+
+### Queda abierto: los textos que dicen "sin cookies"
+Google Analytics usa cookies y varias páginas dicen que el sitio no. No lo corregí: es un cambio al sitio y espera la aprobación de Pedro (`PENDIENTES_PEDRO.md`, punto 9).
+
 ## 2026-11-12 — Sesión "director creativo": la obra como experiencia que se comparte
 
 Pedido completo en el historial de la sesión. Objetivo: visitas que traen visitas. Sin más foco en SEO ni idiomas.
