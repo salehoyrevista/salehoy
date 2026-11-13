@@ -31,6 +31,41 @@ No había un contacto público, así que en la página de prensa y en el kit pus
 ## 7. Google Search Console (5 minutos)
 Enviar `https://salehoy.com.ar/sitemap.xml` (ahora tiene 37 páginas). Sigue siendo la forma más rápida de que Google vea lo nuevo.
 
+## 8. Sacar tu propio tráfico de Google Analytics (10 minutos)
+Hoy la mayoría de las sesiones que ve Google Analytics son tuyas. Son dos partes: marcar tus dispositivos y encender el filtro.
+
+**A. Marcar cada dispositivo tuyo (una vez por navegador)**
+1. En la computadora, abrí `https://salehoy.com.ar/?interno=1`. No se ve nada distinto: queda guardado en ese navegador.
+2. Hacé lo mismo en el celular y en cualquier otro navegador que uses.
+3. Si borrás los datos de navegación o usás una ventana privada, hay que repetirlo. Para desmarcar: `https://salehoy.com.ar/?interno=0`.
+
+Desde ese momento tus visitas viajan a Google Analytics con la marca `traffic_type = internal` y no suman al contador propio del sitio. Uso esta marca y no tu IP porque la IP de una conexión de casa cambia.
+
+**B. Encender el filtro en Google Analytics**
+1. Entrá a https://analytics.google.com y elegí la propiedad **Salehoy**.
+2. Abajo a la izquierda, **Administrar** (el engranaje).
+3. En la columna de la propiedad: **Recopilación y modificación de datos → Filtros de datos**.
+4. Vas a ver un filtro llamado **Internal Traffic** en estado *Prueba*. Abrilo.
+5. Comprobá que diga: tipo de filtro *Tráfico interno*, operación *Excluir*, valor del parámetro `internal`.
+6. Cambiá el estado a **Activo** y guardá. Google avisa que el cambio es permanente para los datos nuevos: aceptá.
+
+Si en el paso 4 no hay ningún filtro: **Crear filtro → Tráfico interno**, nombre "Internal Traffic", operación *Excluir*, valor `internal`, estado *Activo*.
+
+**C. Comprobar que funciona**
+1. En Google Analytics: **Administrar → Visualización de datos → DebugView**.
+2. En otra pestaña abrí `https://salehoy.com.ar/?depurar=1`, activá el sonido y tocá "mi estela".
+3. En DebugView tienen que aparecer `sonido_activado` y `estela_generada` en unos segundos. Es además la comprobación de que los eventos nuevos llegan: yo vi salir los pedidos desde el sitio, pero esa pantalla solo la podés abrir vos.
+4. Al día siguiente, en **Informes → Tiempo real**, entrá al sitio desde un dispositivo marcado: no tenés que aparecer.
+
+El filtro no borra lo anterior: las sesiones tuyas de antes quedan en los datos viejos. El reporte semanal las sigue separando por ciudad, dispositivo y canal.
+
+**Opcional, si tu IP es fija:** Administrar → Flujos de datos → el flujo web → **Configurar ajustes de etiquetas → Mostrar todo → Definir tráfico interno → Crear**, y cargar tu IP (la ves en https://www.whatismyip.com). Sirve como segunda red; con el paso A alcanza.
+
+## 9. Decidir qué dice el sitio sobre cookies
+Google Analytics usa cookies. Varias páginas dicen "sin cookies" (Sobre la obra en los 8 idiomas, prensa, la página de la API, `llms.txt`, el README y el kit de prensa). Eso era cierto del contador propio, pero no del sitio completo mientras la etiqueta de Google esté puesta. No lo cambié porque es un cambio al sitio: necesito tu sí. Las dos salidas:
+- **Dejar Google Analytics y corregir los textos** a algo como "Usa Google Analytics para contar visitas de forma agregada; no guarda nombres ni direcciones de billetera". Es lo coherente con esta medición.
+- **Sacar la etiqueta de Google** (Netlify → Site configuration → Build & deploy → Post processing → Snippet injection → borrar el snippet) y medir solo con el contador propio. Los textos quedan ciertos, pero se pierde el reporte semanal por Supermetrics.
+
 ## Ya no hace falta
 - **La clave de Blockscout.** El servidor ahora verifica los regalos directamente contra la red Base, sin claves.
 
