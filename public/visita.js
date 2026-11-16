@@ -8,6 +8,8 @@
 // Privacy Control. Los dispositivos marcados como propios (/interno.js) no
 // suman al contador propio.
 (function () {
+  if (/^\/admin(\/|$)/.test(location.pathname)) return;   // la administración no se mide
+
   // nombre del hito en el contador propio -> evento y parámetros en Google Analytics
   var EVENTOS_GA = {
     "regalar-toque":      ["regalar_toque", null],
