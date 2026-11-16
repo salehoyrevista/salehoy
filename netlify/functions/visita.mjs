@@ -8,7 +8,8 @@ import { getStore } from "@netlify/blobs";
 
 const BOT = /bot|crawl|spider|slurp|preview|headless|lighthouse|monitor|curl|wget|python|scrapy|httpclient/i;
 const EVENTOS = ["regalar-toque", "regalo-llegada", "clic-regalar", "regalo-enviado", "ya-regale", "copiar-direccion", "copiar-enlace",
-  "estela-abrir", "estela-imagen", "estela-video", "estela-enlace", "estela-compartida", "estela-vista", "estrella-vista", "sonido"];
+  "estela-abrir", "estela-imagen", "estela-video", "estela-enlace", "estela-compartida", "estela-vista", "estrella-vista", "sonido",
+  "interruptor-toque", "huella-compartida", "minuto-compra-inicio", "minuto-metamask", "minuto-pagado", "minuto-en-vivo"];
 const TOPE = 150;   // claves distintas por día en cada tabla
 
 function sumar(tabla, clave) {

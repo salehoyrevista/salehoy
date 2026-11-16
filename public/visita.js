@@ -24,7 +24,14 @@
     "clic-regalar":       ["regalo_billetera_abierta", null],
     "regalo-enviado":     ["regalo_enviado", null],
     "ya-regale":          ["ya_regale", null],
-    "copiar-enlace":      ["estrella_enlace_copiado", null]
+    "copiar-enlace":      ["estrella_enlace_copiado", null],
+    // obras nuevas
+    "interruptor-toque":      ["interruptor_toque", null],
+    "huella-compartida":      ["huella_compartida", null],
+    "minuto-compra-inicio":   ["minuto_compra_inicio", null],
+    "minuto-metamask":        ["minuto_metamask_conectada", null],
+    "minuto-pagado":          ["minuto_pagado", null],
+    "minuto-en-vivo":         ["minuto_en_vivo", null]
   };
 
   function sinRastreo() {

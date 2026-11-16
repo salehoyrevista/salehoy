@@ -1,0 +1,23 @@
+---
+// Navegación mínima entre las tres obras. Una línea, en mono, sin peso visual.
+import { RUTAS_OBRAS, NOMBRES_OBRAS } from "../lib/obras.js";
+const { lang = "es", actual = "" } = Astro.props;   // actual: "sinMotivo" | "interruptor" | "minuto"
+const l = lang === "en" ? "en" : "es";
+const r = RUTAS_OBRAS[l];
+const n = NOMBRES_OBRAS[l];
+const obras = ["sinMotivo", "interruptor", "minuto"];
+---
+<nav class="nav-obras" aria-label={n.obras}>
+  {obras.map((o) => <a href={r[o]} aria-current={o === actual ? "page" : undefined}>{n[o]}</a>)}
+</nav>
+
+<style>
+  .nav-obras {
+    display: flex; flex-wrap: wrap; gap: 2px 16px;
+    font-family: var(--mono, "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace);
+    font-size: .68rem; letter-spacing: .04em; line-height: 2;
+  }
+  .nav-obras a { color: var(--tenue, rgba(242, 233, 216, .6)); text-decoration: none; }
+  .nav-obras a:hover { color: var(--crema, #f2e9d8); }
+  .nav-obras a[aria-current="page"] { color: var(--crema, #f2e9d8); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+</style>
