@@ -1,7 +1,7 @@
 // Portada de "El minuto" (/minuto/, /en/minute/). Marcado y estilos: src/components/MinutoPortada.astro.
 //
 // Un reloj con la hora local del visitante, corregida con la hora del servidor. Cuando el minuto
-// actual es de alguien (vendido), su dedicatoria ocupa la pantalla sus 60 segundos; si la
+// actual es de alguien (alguien lo pidió), su dedicatoria ocupa la pantalla sus 60 segundos; si la
 // dedicatoria no está aprobada, un mensaje neutro. Después vuelve el reloj.
 //
 // Pregunta a GET /api/minuto/ahora al cargar, cada 20 s y justo al cambiar de minuto; con la
@@ -64,7 +64,7 @@
         minuto = d.minuto && typeof d.minuto.desde === "number" && typeof d.minuto.hasta === "number" ? d.minuto : null;
         proximos = Array.isArray(d.proximos) ? d.proximos.filter(function (p) { return p && typeof p.desde === "number"; }) : [];
         proximos.sort(function (a, b) { return a.desde - b.desde; });
-        // Si se esperaba un minuto vendido y el servidor todavía no lo informa, se vuelve a preguntar enseguida.
+        // Si se esperaba un minuto de alguien y el servidor todavía no lo informa, se vuelve a preguntar enseguida.
         var esperado = proximos.some(function (p) { var x = ahora(); return p.desde <= x && x < p.desde + 60000; });
         if (esperado && !minuto && reintentos < 3) { reintentos++; setTimeout(pedir, 1500); } else reintentos = 0;
         programar();
@@ -74,7 +74,7 @@
       .then(function () { pidiendo = false; });
   }
 
-  // Programa una pregunta justo cuando empieza el próximo minuto vendido.
+  // Programa una pregunta justo cuando empieza el próximo minuto de alguien.
   function programar() {
     if (programado) { clearTimeout(programado); programado = null; }
     var x = ahora();

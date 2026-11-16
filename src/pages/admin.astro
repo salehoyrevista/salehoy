@@ -1,6 +1,5 @@
 ---
-// /admin/ — administración de "El minuto": aprobar o rechazar dedicatorias, anotar reembolsos y
-// borrar los minutos de prueba.
+// /admin/ — administración de "El minuto": aprobar o rechazar dedicatorias.
 //
 // Esta página no contiene secretos: es un formulario y un script (/minuto-admin.js). La contraseña
 // la escribe quien administra, queda solo en sessionStorage de esa pestaña y viaja en la cabecera
@@ -29,13 +28,6 @@ import Obra from "../layouts/Obra.astro";
         <button class="enlace tenue" type="button" id="salir">salir</button>
       </p>
       <ol class="ad-lista" id="lista" aria-live="polite"></ol>
-
-      <section class="ad-pruebas">
-        <h2>Salir del modo prueba</h2>
-        <p>Antes de abrir las ventas de verdad, borrá los minutos marcados como prueba. No toca los minutos reales.</p>
-        <p class="ad-acciones"><button class="enlace" type="button" id="borrarPruebas">borrar minutos de prueba</button></p>
-        <p class="ad-estado" id="estadoPruebas" aria-live="polite"></p>
-      </section>
     </div>
   </main>
 
@@ -71,5 +63,4 @@ import Obra from "../layouts/Obra.astro";
   .ad-dato { margin: 0 !important; font-family: var(--mono); font-size: .76rem !important; line-height: 1.8 !important; color: var(--tenue); overflow-wrap: anywhere; }
   .ad-etiqueta { display: inline-block; margin-right: .6rem; padding: 0 6px; font-family: var(--mono); font-size: .68rem; letter-spacing: .06em; border: 1px solid var(--linea); color: var(--crema); }
   .ad-etiqueta.prueba, .ad-etiqueta.pendiente { border-color: var(--bermellon); color: var(--bermellon); }
-  .ad-pruebas { margin-top: 4rem; padding-top: 1rem; border-top: 1px solid var(--linea); }
 </style>

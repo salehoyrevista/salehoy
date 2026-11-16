@@ -1,9 +1,11 @@
 ---
-// /minuto/elegir/ — elegir un minuto, escribir la dedicatoria, reservar y pagar. Una sola página
-// por pasos, sin recargar; todo lo que cambia lo mueve /minuto-elegir.js.
+// /minuto/elegir/ — elegir un minuto, escribir la dedicatoria y pedirlo. Pedir un minuto es gratis.
+// Una sola página por pasos, sin recargar; todo lo que cambia lo mueve /minuto-elegir.js.
 // La versión en inglés (/en/minute/choose/) usa este mismo archivo como componente con lang="en".
 //
-// Nunca se piden ni se manejan claves privadas ni frases semilla: el pago lo firma la persona en
+// Después de pedirlo, aparte y opcional, se puede aportar a la obra en USDC (solo si el autor cargó
+// su dirección: /api/minuto/config -> aporte). El minuto no depende del aporte.
+// Nunca se piden ni se manejan claves privadas ni frases semilla: el aporte lo firma la persona en
 // su propia billetera (MetaMask), y solo como una transferencia de USDC.
 import Obra from "../../layouts/Obra.astro";
 import { RUTAS_OBRAS, NOMBRES_OBRAS, SITIO } from "../../lib/obras.js";
@@ -18,11 +20,10 @@ const nombre = NOMBRES_OBRAS[l];
 const t = {
   es: {
     titulo: "Regalar un minuto",
-    descripcion: "Elegí una fecha y un minuto exactos, por ejemplo el minuto en que nació alguien, y escribí una dedicatoria. Cuando llegue, ocupa la portada de El minuto para todos durante 60 segundos.",
-    h1: ["Regalar", "un minuto"],
-    entrada: "Elegí un minuto exacto y escribí una dedicatoria corta. Cuando llegue ese minuto, la dedicatoria ocupa la portada de El minuto para todos durante 60 segundos.",
-    pasos: "Pasos",
-    p1: "1 · El minuto", p2: "2 · La dedicatoria", p3: "3 · Antes de pagar", p4: "4 · Pagar", p5: "5 · El pago",
+    descripcion: "Elegí una fecha y un minuto exactos, por ejemplo el minuto en que nació alguien, y escribí una dedicatoria. Pedirlo es gratis. Cuando llega, ocupa la portada de El minuto para todos durante 60 segundos.",
+    h1: ["Elegí un minuto", "para regalar"],
+    entrada: "Elegí un minuto exacto y escribí una dedicatoria corta. Pedirlo es gratis. Cuando llegue ese minuto, la dedicatoria ocupa la portada de El minuto para todos durante 60 segundos.",
+    p1: "1 · El minuto", p2: "2 · La dedicatoria", p3: "El minuto",
     fecha: "Fecha", hora: "Hora", zona: "Zona horaria",
     ayuda: "Por ejemplo, el minuto en que nació alguien.",
     zonaAyuda: "La hora se toma en esta zona. Viene elegida la de tu dispositivo.",
@@ -32,40 +33,40 @@ const t = {
     vista: "Así se va a ver en la portada:",
     acepto: ["Leí los ", "términos", "."],
     cambiar: "← cambiar el minuto",
-    reservar: "reservar el minuto →",
-    vence: "La reserva vence en ",
-    venceNota: "Mientras tanto, nadie más puede tomar este minuto.",
-    rMinuto: "Minuto", rDedicatoria: "Dedicatoria", rRed: "Red", rToken: "Token", rMonto: "Monto exacto", rComision: "Comisión de red", rDestino: "Dirección de destino",
-    centesimos: "El monto lleva unos centésimos propios que identifican tu reserva. Hay que pagar exactamente ese monto: con otro, el pago no se reconoce.",
-    irreversible: "Los pagos en blockchain no se pueden revertir. Si la dedicatoria se rechaza, el reembolso es manual, como dicen los ",
-    irreversible2: ".",
-    otroMinuto: "elegir otro minuto",
-    sinBilletera: "Para pagar hace falta MetaMask, una billetera que se instala en el navegador o en el celular. Desde acá nunca se te va a pedir tu frase secreta ni tus claves.",
-    instalar: "instalar MetaMask ↗",
-    enCelular: "en el celular: abrir esta página en MetaMask ↗",
-    enCelularNota: "Si la abrís en la app de MetaMask, empezá ahí desde el paso 1: la reserva de este navegador no pasa a la app.",
-    conectar: "conectar MetaMask",
-    pagar: "pagar",
-    simular: "simular el pago",
-    seguridad: "MetaMask te va a mostrar una transferencia de USDC. No firmes nada más: esta página nunca pide firmar mensajes ni aprobar permisos.",
+    pedir: "pedir este minuto →",
     listo: "El minuto es tuyo.",
+    revision: "La dedicatoria se revisa antes de mostrarse.",
     paginaMinuto: "la página de tu minuto →",
     certificado: "descargar certificado",
-    certNota: "La dedicatoria se revisa antes de mostrarse. Cuando esté aprobada, el certificado de la página del minuto la incluye.",
-    llave: "Durante tu minuto vas a controlar la luz de El interruptor. Esta llave se muestra una sola vez: guardala.",
+    certNota: "Cuando la dedicatoria esté aprobada, el certificado de la página del minuto la incluye.",
+    llave: "Durante tu minuto, si la dedicatoria está aprobada, vas a controlar la luz de El interruptor. Esta llave se muestra una sola vez: guardala.",
     llaveEtiqueta: "Enlace con tu llave",
     copiar: "copiar",
-    otroRegalo: "regalar otro minuto",
+    // aporte (opcional)
+    aTitulo: "Aportar a la obra (opcional)",
+    aEntrada: "El minuto ya es tuyo. Si querés, podés aportar a la obra; no cambia nada de tu minuto.",
+    aMonto: "Monto en USD",
+    aOtro: "otro monto",
+    aRed: "Red", aToken: "Token", aComision: "Comisión de red", aDestino: "Dirección de destino",
+    aComisionTexto: "en Base normalmente menos de 0,01 USD, que se paga en ETH: hace falta un poco de ETH en Base en la misma billetera.",
+    aIrreversible: "Un pago en blockchain no se puede revertir y un aporte no se devuelve. Ver los ",
+    aIrreversible2: ".",
+    sinBilletera: "Para aportar hace falta MetaMask, una billetera que se instala en el navegador o en el celular. Desde acá nunca se te va a pedir tu frase secreta ni tus claves.",
+    instalar: "instalar MetaMask ↗",
+    enCelular: "en el celular: abrir esta página en MetaMask ↗",
+    enCelularNota: "Tu minuto ya está pedido: en la app de MetaMask se abre esta misma sección para aportar, sin pedirlo de nuevo.",
+    conectar: "conectar MetaMask",
+    seguridad: "MetaMask te va a mostrar una transferencia de USDC. No firmes nada más: esta página nunca pide firmar mensajes ni aprobar permisos.",
+    gracias: "Gracias.",
     archivo: "archivo", terminos: "términos", idioma: "English", portada: "El minuto",
-    sinJs: "Para elegir y pagar un minuto hace falta JavaScript."
+    sinJs: "Para elegir y pedir un minuto hace falta JavaScript."
   },
   en: {
     titulo: "Give a minute",
-    descripcion: "Choose an exact date and minute, like the minute someone was born, and write a dedication. When it arrives, it takes over the front page of The Minute for everyone for 60 seconds.",
-    h1: ["Give", "a minute"],
-    entrada: "Choose an exact minute and write a short dedication. When that minute arrives, the dedication takes over the front page of The Minute for everyone for 60 seconds.",
-    pasos: "Steps",
-    p1: "1 · The minute", p2: "2 · The dedication", p3: "3 · Before paying", p4: "4 · Pay", p5: "5 · The payment",
+    descripcion: "Choose an exact date and minute, like the minute someone was born, and write a dedication. Asking for it is free. When it arrives, it takes over the front page of The Minute for everyone for 60 seconds.",
+    h1: ["Choose a minute", "to give"],
+    entrada: "Choose an exact minute and write a short dedication. Asking for it is free. When that minute arrives, the dedication takes over the front page of The Minute for everyone for 60 seconds.",
+    p1: "1 · The minute", p2: "2 · The dedication", p3: "The minute",
     fecha: "Date", hora: "Time", zona: "Time zone",
     ayuda: "For example, the minute someone was born.",
     zonaAyuda: "The time is taken in this zone. Your device's zone comes selected.",
@@ -75,32 +76,32 @@ const t = {
     vista: "This is how it will look on the front page:",
     acepto: ["I have read the ", "terms", "."],
     cambiar: "← change the minute",
-    reservar: "reserve the minute →",
-    vence: "The reservation expires in ",
-    venceNota: "Meanwhile, nobody else can take this minute.",
-    rMinuto: "Minute", rDedicatoria: "Dedication", rRed: "Network", rToken: "Token", rMonto: "Exact amount", rComision: "Network fee", rDestino: "Destination address",
-    centesimos: "The amount carries a few hundredths of its own that identify your reservation. You must pay exactly that amount: with any other, the payment is not recognised.",
-    irreversible: "Blockchain payments cannot be reversed. If the dedication is rejected, the refund is manual, as the ",
-    irreversible2: " explain.",
-    otroMinuto: "choose another minute",
-    sinBilletera: "To pay you need MetaMask, a wallet you install in your browser or phone. This page will never ask for your secret phrase or your keys.",
-    instalar: "install MetaMask ↗",
-    enCelular: "on a phone: open this page in MetaMask ↗",
-    enCelularNota: "If you open it in the MetaMask app, start there from step 1: this browser's reservation does not move to the app.",
-    conectar: "connect MetaMask",
-    pagar: "pay",
-    simular: "simulate the payment",
-    seguridad: "MetaMask will show you a USDC transfer. Do not sign anything else: this page never asks you to sign messages or approve permissions.",
+    pedir: "ask for this minute →",
     listo: "The minute is yours.",
+    revision: "The dedication is reviewed before it is shown.",
     paginaMinuto: "your minute's page →",
     certificado: "download certificate",
-    certNota: "The dedication is reviewed before it is shown. Once it is approved, the certificate on the minute's page includes it.",
-    llave: "During your minute you will control the light of The Switch. This key is shown only once: keep it.",
+    certNota: "Once the dedication is approved, the certificate on the minute's page includes it.",
+    llave: "During your minute, if the dedication is approved, you will control the light of The Switch. This key is shown only once: keep it.",
     llaveEtiqueta: "Link with your key",
     copiar: "copy",
-    otroRegalo: "give another minute",
+    aTitulo: "Support the work (optional)",
+    aEntrada: "The minute is already yours. If you like, you can support the work; it changes nothing about your minute.",
+    aMonto: "Amount in USD",
+    aOtro: "other amount",
+    aRed: "Network", aToken: "Token", aComision: "Network fee", aDestino: "Destination address",
+    aComisionTexto: "on Base usually under 0.01 USD, paid in ETH: you need a little ETH on Base in the same wallet.",
+    aIrreversible: "A blockchain payment cannot be reversed and a contribution is not returned. See the ",
+    aIrreversible2: ".",
+    sinBilletera: "To contribute you need MetaMask, a wallet you install in your browser or phone. This page will never ask for your secret phrase or your keys.",
+    instalar: "install MetaMask ↗",
+    enCelular: "on a phone: open this page in MetaMask ↗",
+    enCelularNota: "Your minute is already yours: in the MetaMask app this same section opens so you can contribute, without asking for it again.",
+    conectar: "connect MetaMask",
+    seguridad: "MetaMask will show you a USDC transfer. Do not sign anything else: this page never asks you to sign messages or approve permissions.",
+    gracias: "Thank you.",
     archivo: "archive", terminos: "terms", idioma: "Español", portada: "The Minute",
-    sinJs: "Choosing and paying for a minute needs JavaScript."
+    sinJs: "Choosing and asking for a minute needs JavaScript."
   }
 }[l];
 
@@ -108,7 +109,8 @@ const ld = {
   "@context": "https://schema.org", "@type": "WebPage", name: t.titulo, inLanguage: l, url: SITIO + r.minutoElegir,
   isPartOf: { "@type": "VisualArtwork", name: nombre.minuto, artform: "Net art", creator: { "@type": "Person", name: "Solzimer" }, url: SITIO + r.minuto }
 };
-const metamaskApp = "https://metamask.app.link/dapp/salehoy.com.ar" + r.minutoElegir;
+// En la app de MetaMask se abre directo la sección de aporte (#aportar).
+const metamaskApp = "https://metamask.app.link/dapp/salehoy.com.ar" + r.minutoElegir + "#aportar";
 ---
 <Obra lang={l} obra="minuto" titulo={t.titulo} descripcion={t.descripcion} ruta={r.minutoElegir} alterna={{ lang: otro, href: o.minutoElegir }} texto={true} ld={ld}>
   <main class="el" id="el" data-terminos={r.minutoTerminos} data-portada={r.minuto} data-interruptor={r.interruptor}>
@@ -116,7 +118,6 @@ const metamaskApp = "https://metamask.app.link/dapp/salehoy.com.ar" + r.minutoEl
     <h1>{t.h1[0]} <em>{t.h1[1]}</em></h1>
     <p class="entrada">{t.entrada}</p>
 
-    <p class="el-modo" id="elModo" role="note" hidden></p>
     <noscript><p class="el-error">{t.sinJs}</p></noscript>
 
     <!-- 1 · el minuto -->
@@ -133,7 +134,7 @@ const metamaskApp = "https://metamask.app.link/dapp/salehoy.com.ar" + r.minutoEl
       </label>
       <p class="mono el-ayuda">{t.zonaAyuda}</p>
       <p class="el-sugerencia"><em>{t.ayuda}</em></p>
-      <div class="el-precio" id="precio" aria-live="polite"></div>
+      <div class="el-disponible" id="disponible" aria-live="polite"></div>
       <p class="el-acciones"><button class="enlace" type="button" id="seguir1" disabled>{t.seguir}</button></p>
     </section>
 
@@ -158,32 +159,51 @@ const metamaskApp = "https://metamask.app.link/dapp/salehoy.com.ar" + r.minutoEl
       </label>
       <p class="el-error" id="error2" role="alert"></p>
       <p class="el-acciones">
-        <button class="enlace" type="button" id="seguir2">{t.reservar}</button>
+        <button class="enlace el-pedir" type="button" id="pedir">{t.pedir}</button>
         <button class="enlace tenue" type="button" id="volver2">{t.cambiar}</button>
       </p>
     </section>
 
-    <!-- 3 · antes de pagar -->
+    <!-- 3 · el minuto es tuyo -->
     <section class="el-paso" id="paso3" aria-labelledby="t3" hidden>
-      <h2 id="t3">{t.p3}</h2>
-      <p class="el-vence" role="timer">{t.vence}<span id="vence">15:00</span></p>
-      <p class="mono el-ayuda">{t.venceNota}</p>
-      <dl class="el-resumen">
-        <div><dt>{t.rMinuto}</dt><dd id="rMinuto"></dd></div>
-        <div><dt>{t.rDedicatoria}</dt><dd id="rDedicatoria" class="el-r-ded"></dd></div>
-        <div><dt>{t.rRed}</dt><dd id="rRed"></dd></div>
-        <div><dt>{t.rToken}</dt><dd id="rToken">USDC</dd></div>
-        <div><dt>{t.rMonto}</dt><dd id="rMonto" class="el-monto"></dd></div>
-        <div><dt>{t.rComision}</dt><dd id="rComision"></dd></div>
-        <div><dt>{t.rDestino}</dt><dd id="rDestino" class="el-direccion"></dd></div>
-      </dl>
-      <p class="el-nota" id="notaCentesimos">{t.centesimos}</p>
-      <p class="el-advertencia">{t.irreversible}<a href={r.minutoTerminos} target="_blank" rel="noopener">{t.terminos}</a>{t.irreversible2}</p>
+      <h2 id="t3" class="el-solo-lectores">{t.p3}</h2>
+      <p class="el-listo">{t.listo}</p>
+      <p class="mono el-elegido" id="elegido3"></p>
+      <p>{t.revision}</p>
+      <p class="el-acciones el-columna">
+        <a id="enlacePagina" href={r.minuto}>{t.paginaMinuto}</a>
+        <button class="enlace" type="button" id="certificado">{t.certificado}</button>
+      </p>
+      <p class="mono el-ayuda">{t.certNota}</p>
+      <p class="mono el-ayuda" id="avisoCert" aria-live="polite"></p>
+      <div class="el-llave" id="bloqueLlave" hidden>
+        <p>{t.llave}</p>
+        <label class="el-campo"><span class="el-rotulo">{t.llaveEtiqueta}</span>
+          <input type="text" id="llaveEnlace" readonly spellcheck="false" />
+        </label>
+        <p class="el-acciones"><button class="enlace" type="button" id="copiarLlave">{t.copiar}</button> <span class="mono el-ayuda" id="avisoLlave" aria-live="polite"></span></p>
+      </div>
     </section>
 
-    <!-- 4 · pagar -->
-    <section class="el-paso" id="paso4" aria-labelledby="t4" hidden>
-      <h2 id="t4">{t.p4}</h2>
+    <!-- aparte y opcional: aportar a la obra. Solo si /api/minuto/config trae "aporte". -->
+    <section class="el-aporte" id="aportar" aria-labelledby="tA" hidden>
+      <h2 id="tA">{t.aTitulo}</h2>
+      <p>{t.aEntrada}</p>
+
+      <p class="el-rotulo">{t.aMonto}</p>
+      <p class="el-montos" id="montos" role="group" aria-label={t.aMonto}></p>
+      <label class="el-campo el-monto-libre"><span class="el-rotulo">{t.aOtro}</span>
+        <input type="text" id="montoLibre" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="0" />
+      </label>
+
+      <dl class="el-resumen">
+        <div><dt>{t.aRed}</dt><dd id="aRed">Base</dd></div>
+        <div><dt>{t.aToken}</dt><dd>USDC</dd></div>
+        <div><dt>{t.aComision}</dt><dd>{t.aComisionTexto}</dd></div>
+        <div><dt>{t.aDestino}</dt><dd id="aDestino" class="el-direccion"></dd></div>
+      </dl>
+      <p class="el-advertencia">{t.aIrreversible}<a href={r.minutoTerminos} target="_blank" rel="noopener">{t.terminos}</a>{t.aIrreversible2}</p>
+
       <div id="sinBilletera" hidden>
         <p>{t.sinBilletera}</p>
         <p class="el-acciones el-columna">
@@ -194,43 +214,14 @@ const metamaskApp = "https://metamask.app.link/dapp/salehoy.com.ar" + r.minutoEl
       </div>
       <div id="conBilletera" hidden>
         <p class="mono el-ayuda">{t.seguridad}</p>
-        <p class="el-acciones">
-          <button class="enlace" type="button" id="conectar">{t.conectar}</button>
-        </p>
+        <p class="el-acciones"><button class="enlace" type="button" id="conectar">{t.conectar}</button></p>
         <p class="mono el-cuenta" id="cuenta" aria-live="polite"></p>
-        <p class="el-acciones">
-          <button class="enlace el-pagar" type="button" id="pagar" hidden>{t.pagar}</button>
-        </p>
+        <p class="el-acciones"><button class="enlace" type="button" id="aportarBoton" hidden></button></p>
       </div>
-      <div id="simulado" hidden>
-        <p class="el-acciones"><button class="enlace el-pagar" type="button" id="simular">{t.simular}</button></p>
-      </div>
-      <p class="el-estado" id="estado4" aria-live="polite"></p>
-      <p class="el-acciones"><button class="enlace tenue" type="button" id="otroMinuto">{t.otroMinuto}</button></p>
-    </section>
-
-    <!-- 5 · verificación y entrega -->
-    <section class="el-paso" id="paso5" aria-labelledby="t5" hidden>
-      <h2 id="t5">{t.p5}</h2>
-      <p class="el-estado" id="estado5" aria-live="polite"></p>
-      <p class="mono el-ayuda" id="transaccion"></p>
-      <div id="vendido" hidden>
-        <p class="el-listo">{t.listo}</p>
-        <p class="mono el-elegido" id="elegido5"></p>
-        <p class="el-acciones el-columna">
-          <a id="enlacePagina" href={r.minuto}>{t.paginaMinuto}</a>
-          <button class="enlace" type="button" id="certificado">{t.certificado}</button>
-        </p>
-        <p class="mono el-ayuda">{t.certNota}</p>
-        <p class="mono el-ayuda" id="avisoCert" aria-live="polite"></p>
-        <div class="el-llave" id="bloqueLlave" hidden>
-          <p>{t.llave}</p>
-          <label class="el-campo"><span class="el-rotulo">{t.llaveEtiqueta}</span>
-            <input type="text" id="llaveEnlace" readonly spellcheck="false" />
-          </label>
-          <p class="el-acciones"><button class="enlace" type="button" id="copiarLlave">{t.copiar}</button> <span class="mono el-ayuda" id="avisoLlave" aria-live="polite"></span></p>
-        </div>
-        <p class="el-acciones"><button class="enlace tenue" type="button" id="otroRegalo">{t.otroRegalo}</button></p>
+      <p class="el-estado" id="estadoAporte" aria-live="polite"></p>
+      <div id="gracias" hidden>
+        <p class="el-gracias">{t.gracias}</p>
+        <p class="mono el-ayuda" id="transaccion"></p>
       </div>
     </section>
 
@@ -252,16 +243,15 @@ const metamaskApp = "https://metamask.app.link/dapp/salehoy.com.ar" + r.minutoEl
   .el-sobre a { color: inherit; }
   .el h2 { margin-top: 2.4rem; }
   .el .mono { font-family: var(--mono); font-size: .76rem; line-height: 1.7; color: var(--tenue); }
-
-  .el-modo {
-    margin: 1.6rem 0 0; padding: .2rem 0 .2rem .9rem; border-left: 1px solid var(--bermellon);
-    font-family: var(--mono); font-size: .76rem !important; line-height: 1.7 !important; color: var(--crema);
+  .el-solo-lectores {
+    position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0;
   }
 
   /* formularios: una línea abajo, nada de cajas */
   .el-campos { display: flex; flex-wrap: wrap; gap: 0 2rem; }
   .el-campo { display: block; margin: 0 0 1.2rem; min-width: 0; flex: 1 1 9rem; }
-  .el-rotulo { display: block; font-family: var(--mono); font-size: .72rem; letter-spacing: .04em; color: var(--tenue); }
+  .el-rotulo { display: block; font-family: var(--mono); font-size: .72rem !important; letter-spacing: .04em; color: var(--tenue); }
   .el input[type="date"], .el input[type="time"], .el input[type="text"], .el select, .el textarea {
     display: block; width: 100%; min-height: 48px; margin: 0; padding: 6px 0;
     background: transparent; color: var(--crema); color-scheme: dark;
@@ -277,10 +267,10 @@ const metamaskApp = "https://metamask.app.link/dapp/salehoy.com.ar" + r.minutoEl
   .el-ayuda { margin: -.6rem 0 1rem !important; }
   .el-sugerencia { color: var(--tenue); }
 
-  .el-precio { min-height: 3.5rem; margin: 1.2rem 0 0; }
-  .el-precio p { margin: 0 0 .3rem; }
-  .el-precio .el-cifra { font-size: 2rem; line-height: 1.1; }
-  .el-precio .mono { margin: 0; }
+  .el-disponible { min-height: 3.5rem; margin: 1.2rem 0 0; }
+  .el-disponible p { margin: 0 0 .3rem; }
+  .el-disponible .el-libre { font-size: 1.7rem; line-height: 1.15; }
+  .el-disponible .mono { margin: 0; }
 
   .el-contador { margin: -.8rem 0 .4rem !important; text-align: right; font-variant-numeric: tabular-nums; }
   .el-contador.cerca { color: var(--bermellon) !important; }
@@ -297,34 +287,40 @@ const metamaskApp = "https://metamask.app.link/dapp/salehoy.com.ar" + r.minutoEl
 
   .el-acciones { display: flex; flex-wrap: wrap; align-items: center; gap: .2rem 1.8rem; margin: 1.4rem 0 0 !important; }
   .el-columna { flex-direction: column; align-items: flex-start; }
+  .el-columna a { height: auto; padding: .55rem 0; line-height: 1.5; }
+  .el-columna + .el-ayuda { margin-top: .8rem !important; }
   .el-acciones a, .el .enlace { display: inline-flex; align-items: center; min-height: 44px; font-family: var(--mono); font-size: .86rem; }
   .el .enlace { background: none; border: 0; padding: 0; cursor: pointer; color: var(--bermellon); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
   .el .enlace:hover { text-decoration-thickness: 2px; }
   .el .enlace.tenue { color: var(--tenue); }
   .el .enlace:disabled { color: var(--linea); cursor: default; text-decoration: none; }
-  .el .el-pagar { font-family: var(--serif); font-size: 1.9rem; }
+  .el .el-pedir { font-family: var(--serif); font-size: 1.9rem; }
 
   .el-error { min-height: 1.5em; margin: 1rem 0 0 !important; color: var(--bermellon); font-size: 1.15rem !important; }
   .el-error:empty { min-height: 0; margin: 0 !important; }
-  .el-estado { min-height: 1.5em; font-size: 1.25rem; }
+  .el-estado { min-height: 1.5em; font-size: 1.15rem; }
   .el-estado.mal { color: var(--bermellon); }
 
-  .el-vence { font-size: 1.5rem !important; font-variant-numeric: tabular-nums; }
-  .el-vence span { font-family: var(--mono); font-size: 1.3rem; }
-  .el-vence.poco span { color: var(--bermellon); }
-  .el-resumen { margin: 1.6rem 0; border-top: 1px solid var(--linea); }
-  .el-resumen div { padding: .7rem 0; border-bottom: 1px solid var(--linea); }
-  .el-resumen dt { font-family: var(--mono); font-size: .72rem; color: var(--tenue); }
-  .el-resumen dd { margin: .15rem 0 0; font-size: 1.3rem; line-height: 1.35; overflow-wrap: anywhere; }
-  .el-r-ded { font-style: italic; }
-  .el-monto { font-size: 2.2rem !important; }
-  .el-direccion { font-family: var(--mono); font-size: .82rem !important; word-break: break-all; }
-  .el-nota { color: var(--tenue); }
-  .el-advertencia { padding-left: .9rem; border-left: 1px solid var(--bermellon); }
-
-  .el-cuenta { margin-top: .4rem !important; }
-  .el-listo { font-size: clamp(2.2rem, 8vw, 3.4rem) !important; line-height: 1.02 !important; margin: .6rem 0 .4rem !important; }
+  .el-listo { font-size: clamp(2.2rem, 8vw, 3.4rem) !important; line-height: 1.02 !important; margin: 2.4rem 0 .4rem !important; }
   .el-llave { margin: 2.2rem 0 0; padding-top: 1.2rem; border-top: 1px solid var(--linea); }
+
+  /* aporte: aparte, más chico y más callado que el resto */
+  .el-aporte { margin: 5rem 0 0; padding-top: 1.2rem; border-top: 1px solid var(--linea); }
+  .el-aporte h2 { margin-top: 0; font-size: 1.5rem; color: var(--tenue); }
+  .el-aporte > p { font-size: 1.1rem; }
+  .el-montos { display: flex; flex-wrap: wrap; gap: 0 1.6rem; margin: .2rem 0 .6rem !important; }
+  .el-montos .enlace { color: var(--tenue); }
+  .el-montos .enlace[aria-pressed="true"] { color: var(--crema); text-decoration-color: var(--bermellon); }
+  .el-monto-libre { max-width: 12rem; }
+  .el-monto-libre input { font-size: 1.2rem !important; }
+  .el-resumen { margin: 1.4rem 0; border-top: 1px solid var(--linea); }
+  .el-resumen div { padding: .6rem 0; border-bottom: 1px solid var(--linea); }
+  .el-resumen dt { font-family: var(--mono); font-size: .72rem; color: var(--tenue); }
+  .el-resumen dd { margin: .15rem 0 0; font-size: 1.1rem; line-height: 1.35; overflow-wrap: anywhere; }
+  .el-direccion { font-family: var(--mono); font-size: .8rem !important; word-break: break-all; }
+  .el-advertencia { padding-left: .9rem; border-left: 1px solid var(--bermellon); font-size: 1.1rem !important; }
+  .el-cuenta { margin-top: .4rem !important; }
+  .el-gracias { font-size: clamp(1.8rem, 6vw, 2.4rem) !important; line-height: 1.1 !important; margin: 1rem 0 .4rem !important; }
 
   .el .mas { margin-top: 4rem; font-family: var(--mono); font-size: .72rem; line-height: 2.4; color: var(--tenue); display: flex; flex-wrap: wrap; gap: 0 1.2rem; }
   .el .mas a { display: inline-block; padding: 8px 0; }

@@ -6,8 +6,8 @@
 //
 //   GET  /api/admin/minutos?estado=pendiente|todas
 //   POST /api/admin/moderar        { id, decision: "aprobar" | "rechazar", nota? }
-//   POST /api/admin/reembolso      { id, hash }
-//   POST /api/admin/borrar-pruebas {}
+//
+// Pedir un minuto es gratis: acá no hay precios, pagos ni reembolsos.
 (function () {
   "use strict";
   var CLAVE = "minuto-admin";
@@ -19,7 +19,6 @@
   var clave = "";
   try { clave = sessionStorage.getItem(CLAVE) || ""; } catch (e) {}
   var filtro = "pendiente";
-  var explorador = "";
 
   function decir(nodo, texto, mal) { nodo.textContent = texto || ""; nodo.classList.toggle("mal", !!mal); }
 
@@ -94,20 +93,6 @@
     if (texto != null) n.textContent = texto;
     return n;
   }
-  function enlaceTx(hash, rotulo) {
-    if (!hash) return null;
-    var a = nodo("a", null, rotulo || hash.slice(0, 10) + "…");
-    a.href = (explorador || "https://basescan.org").replace(/\/+$/, "") + "/tx/" + encodeURIComponent(hash);
-    a.rel = "noopener"; a.target = "_blank";
-    return a;
-  }
-
-  function hashDeReembolso(m) {
-    if (m.reembolso && typeof m.reembolso === "object") return m.reembolso.hash || null;
-    if (typeof m.reembolso === "string") return m.reembolso;
-    return m.reembolsoHash || null;
-  }
-
   function fila(m) {
     var li = nodo("li");
     var instante = instanteDe(m);
@@ -125,13 +110,6 @@
     var ded = typeof m.dedicatoria === "string" && m.dedicatoria.trim() ? m.dedicatoria : "";
     li.appendChild(nodo("p", "ad-ded" + (ded ? "" : " vacia"), ded || "(sin dedicatoria)"));   // textContent
 
-    var plata = [];
-    if (typeof m.precioUsd === "number") plata.push("precio " + m.precioUsd + " USD");
-    if (m.montoUsdc) plata.push("monto " + m.montoUsdc + " USDC");
-    var datoPlata = nodo("p", "ad-dato", plata.join(" · "));
-    var tx = enlaceTx(m.hash || (m.pago && m.pago.hash), "ver pago ↗");
-    if (tx) { if (plata.length) datoPlata.appendChild(document.createTextNode(" · ")); datoPlata.appendChild(tx); }
-    if (plata.length || tx) li.appendChild(datoPlata);
     if (m.nota) li.appendChild(nodo("p", "ad-dato", "nota: " + m.nota));
 
     // moderar
@@ -150,7 +128,7 @@
       li.appendChild(etiquetaNota);
     }
     function moderar(decision) {
-      if (decision === "rechazar" && !window.confirm("¿Rechazar esta dedicatoria? En la página del minuto se va a ver el texto neutro.")) return;
+      if (decision === "rechazar" && !window.confirm("¿Rechazar esta dedicatoria? No se va a mostrar.")) return;
       var botones = acciones.querySelectorAll("button");
       for (var i = 0; i < botones.length; i++) botones[i].disabled = true;
       decir(aviso, decision === "aprobar" ? "aprobando…" : "rechazando…");
@@ -180,72 +158,7 @@
       acciones.appendChild(rechazar);
     }
     li.appendChild(acciones);
-
-    // reembolso de los rechazados
-    if (est === "rechazada") {
-      var hecho = hashDeReembolso(m);
-      var r = nodo("p", "ad-dato");
-      if (hecho) {
-        r.textContent = "reembolso anotado: ";
-        r.appendChild(enlaceTx(hecho));
-      } else {
-        r.textContent = "reembolso: " + (m.prueba ? "no corresponde (prueba)" : "pendiente si lo pidieron · " + (m.montoUsdc ? m.montoUsdc + " USDC" : "monto pagado") + " menos la comisión de red, a la dirección que pagó, dentro de los 14 días");
-      }
-      li.appendChild(r);
-      if (!hecho && !m.prueba) {
-        var campo = nodo("input");
-        campo.type = "text"; campo.placeholder = "hash del reembolso (0x…)"; campo.spellcheck = false;
-        campo.setAttribute("aria-label", "Hash de la transacción de reembolso");
-        var lab = nodo("label", "ad-campo"); lab.appendChild(campo);
-        li.appendChild(lab);
-        var anotar = nodo("button", "enlace", "anotar reembolso");
-        anotar.type = "button";
-        var filaR = nodo("p", "ad-acciones"); filaR.appendChild(anotar);
-        li.appendChild(filaR);
-        anotar.addEventListener("click", function () {
-          var hash = campo.value.trim();
-          if (!/^0x[0-9a-fA-F]{64}$/.test(hash)) { decir(aviso, "Ese no es un hash de transacción (0x y 64 caracteres).", true); return; }
-          anotar.disabled = true;
-          api("POST", "/api/admin/reembolso", { id: m.id, hash: hash }).then(function (res) {
-            if (sinPermiso(res)) return;
-            if (res.status >= 200 && res.status < 300) { decir(aviso, "reembolso anotado"); setTimeout(cargar, 700); return; }
-            decir(aviso, mensajeDe(res) + (res.datos && res.datos.error ? " " + res.datos.error : ""), true);
-            anotar.disabled = false;
-          }, function () { decir(aviso, MENSAJES.red, true); anotar.disabled = false; });
-        });
-      }
-    }
     li.appendChild(aviso);
-    return li;
-  }
-
-  function filaHuerfano(h) {
-    var li = nodo("li", "ad-minuto");
-    li.appendChild(nodo("p", "ad-etiquetas", "pago sin minuto · reembolsar"));
-    li.appendChild(nodo("p", "ad-dato", "Llegó cuando la reserva de " + String(h.id || "?") + " ya era de otra persona. Devolvé el monto a la dirección que pagó (se ve en el explorador)."));
-    var dato = nodo("p", "ad-dato", "");
-    var tx = enlaceTx(h.hash, "ver pago ↗");
-    if (tx) dato.appendChild(tx);
-    li.appendChild(dato);
-    var hecho = h.reembolso && h.reembolso.estado === "hecho";
-    if (hecho) { li.appendChild(nodo("p", "ad-dato", "reembolso hecho: " + String(h.reembolso.hash || ""))); return li; }
-    var campo = nodo("input");
-    campo.type = "text"; campo.placeholder = "hash del reembolso (0x…)"; campo.setAttribute("aria-label", "Hash del reembolso");
-    var boton = nodo("button", null, "anotar reembolso");
-    boton.type = "button";
-    var aviso = nodo("p", "ad-estado");
-    aviso.setAttribute("aria-live", "polite");
-    boton.addEventListener("click", function () {
-      var hash = campo.value.trim();
-      if (!/^0x[0-9a-fA-F]{64}$/.test(hash)) { decir(aviso, "Ese hash no tiene la forma 0x + 64 caracteres.", true); return; }
-      api("POST", "/api/admin/reembolso", { id: h.hash, hash: hash }).then(function (r) {
-        if (sinPermiso(r)) return;
-        if (r.status === 200) cargar(); else decir(aviso, mensajeDe(r), true);
-      }, function () { decir(aviso, MENSAJES.red, true); });
-    });
-    var acciones = nodo("p", "ad-acciones");
-    acciones.appendChild(campo); acciones.appendChild(boton);
-    li.appendChild(acciones); li.appendChild(aviso);
     return li;
   }
 
@@ -266,10 +179,7 @@
       });
       lista.textContent = "";
       for (var i = 0; i < minutos.length; i++) lista.appendChild(fila(minutos[i]));
-      // Pagos que llegaron cuando su reserva ya era de otro: no compraron nada y hay que devolverlos.
-      var huerfanos = r.datos && Array.isArray(r.datos.huerfanos) ? r.datos.huerfanos : [];
-      for (var j = 0; j < huerfanos.length; j++) lista.appendChild(filaHuerfano(huerfanos[j]));
-      decir(estado, minutos.length ? minutos.length + (filtro === "pendiente" ? " pendientes" : " minutos") : (filtro === "pendiente" ? "No hay dedicatorias pendientes." : "No hay minutos vendidos."));
+      decir(estado, minutos.length ? minutos.length + (filtro === "pendiente" ? " pendientes" : " minutos") : (filtro === "pendiente" ? "No hay dedicatorias pendientes." : "No hay minutos pedidos."));
     }, function () { decir(estado, MENSAJES.red, true); });
   }
 
@@ -300,25 +210,6 @@
     claveEl.value = "";
     cargar();
   });
-
-  var borrar = $("borrarPruebas"), estadoPruebas = $("estadoPruebas");
-  borrar.addEventListener("click", function () {
-    if (!window.confirm("¿Borrar todos los minutos marcados como prueba? No se puede deshacer. Los minutos reales no se tocan.")) return;
-    borrar.disabled = true;
-    decir(estadoPruebas, "borrando…");
-    api("POST", "/api/admin/borrar-pruebas", {}).then(function (r) {
-      if (sinPermiso(r)) return;
-      if (r.status >= 200 && r.status < 300) {
-        var n = r.datos && typeof r.datos.borrados === "number" ? r.datos.borrados : null;
-        decir(estadoPruebas, n === null ? "Listo: minutos de prueba borrados." : "Listo: " + n + " minutos de prueba borrados.");
-        cargar();
-      } else decir(estadoPruebas, mensajeDe(r), true);
-    }, function () { decir(estadoPruebas, MENSAJES.red, true); }).then(function () { borrar.disabled = false; });
-  });
-
-  // El explorador de la red activa, para los enlaces a las transacciones (no requiere contraseña).
-  fetch("/api/minuto/config", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; })
-    .then(function (d) { if (d && d.red && d.red.explorador) explorador = d.red.explorador; }).catch(function () {});
 
   if (clave) cargar();
 })();

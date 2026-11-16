@@ -154,7 +154,7 @@ export const T = {
     horaDe: "hora de",
     pendiente: "La dedicatoria está esperando aprobación.",
     neutro: "Este minuto es de alguien.",
-    rechazadaNota: "La dedicatoria no fue aprobada. Si este minuto es tuyo, en los términos dice qué podés pedir.",
+    rechazadaNota: "La dedicatoria no fue aprobada. Si este minuto era tuyo, podés pedirlo de nuevo con otro texto. Más en los",
     juntos: ["Para verlo juntos: abran ", " a esa hora."],
     calendario: "agregar al calendario →",
     ahora: "Está pasando ahora →",
@@ -192,7 +192,7 @@ export const T = {
     horaDe: "time in",
     pendiente: "The dedication is waiting for approval.",
     neutro: "This minute belongs to someone.",
-    rechazadaNota: "The dedication was not approved. If this minute is yours, the terms say what you can ask for.",
+    rechazadaNota: "The dedication was not approved. If this minute was yours, you can ask for it again with another text. More in the",
     juntos: ["To watch it together: open ", " at that time."],
     calendario: "add to calendar →",
     ahora: "It is happening now →",
@@ -468,7 +468,7 @@ export function paginaMinuto({ minuto, lang, ahora = Date.now() }) {
   if (dedicatoria) texto = `<blockquote class="pm-dedicatoria">${esc(dedicatoria)}</blockquote>`;
   else if (minuto.estado === "pendiente") texto = `<p class="pm-neutro">${esc(t.pendiente)}</p>`;
   else if (minuto.estado === "rechazada") {
-    texto = `<p class="pm-neutro">${esc(t.neutro)}</p>\n  <p class="mono pm-nota">${esc(t.rechazadaNota)} <a href="${r.terminos}">${esc(t.terminos)}</a></p>`;
+    texto = `<p class="pm-neutro">${esc(t.neutro)}</p>\n  <p class="mono pm-nota">${esc(t.rechazadaNota)} <a href="${r.terminos}#${l === "en" ? "dedications" : "dedicatorias"}">${esc(t.terminos)}</a>.</p>`;
   } else texto = `<p class="pm-neutro">${esc(t.neutro)}</p>`;
 
   const oculto = (m) => (m === momento ? "" : " hidden");
@@ -519,7 +519,7 @@ export function paginaMinuto({ minuto, lang, ahora = Date.now() }) {
   });
 }
 
-/** Página mínima: el minuto no existe o no está vendido (404), o no se pudo leer (error). */
+/** Página mínima: el minuto no existe o no es de nadie (404), o no se pudo leer (error). */
 export function paginaAviso({ lang, tipo = "no-esta" }) {
   const l = idioma(lang), t = T[l], r = RUTAS[l];
   const lineas = tipo === "error" ? t.error : t.noEsta;
