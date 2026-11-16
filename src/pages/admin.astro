@@ -1,0 +1,75 @@
+---
+// /admin/ — administración de "El minuto": aprobar o rechazar dedicatorias, anotar reembolsos y
+// borrar los minutos de prueba.
+//
+// Esta página no contiene secretos: es un formulario y un script (/minuto-admin.js). La contraseña
+// la escribe quien administra, queda solo en sessionStorage de esa pestaña y viaja en la cabecera
+// x-admin. Todo se valida en el servidor (ADMIN_PASSWORD en Netlify); sin ella, nada responde.
+import Obra from "../layouts/Obra.astro";
+---
+<Obra lang="es" obra="minuto" titulo="Administración" descripcion="Administración de El minuto." ruta="/admin/" indexar={false} nav={false} texto={true}>
+  <main class="ad" id="ad">
+    <p class="mono">El minuto · administración</p>
+    <h1>Dedicatorias <em>por revisar</em></h1>
+
+    <form class="ad-entrar" id="entrar" autocomplete="off">
+      <label class="ad-campo"><span class="ad-rotulo">Contraseña</span>
+        <input type="password" id="clave" autocomplete="current-password" required />
+      </label>
+      <p class="ad-acciones"><button class="enlace" type="submit">entrar →</button></p>
+    </form>
+
+    <p class="ad-estado" id="estado" role="status" aria-live="polite"></p>
+
+    <div id="panel" hidden>
+      <p class="ad-acciones ad-pestanas" role="group" aria-label="Qué mostrar">
+        <button class="enlace" type="button" id="verPendientes" aria-pressed="true">pendientes</button>
+        <button class="enlace" type="button" id="verTodas" aria-pressed="false">todas</button>
+        <button class="enlace tenue" type="button" id="recargar">recargar</button>
+        <button class="enlace tenue" type="button" id="salir">salir</button>
+      </p>
+      <ol class="ad-lista" id="lista" aria-live="polite"></ol>
+
+      <section class="ad-pruebas">
+        <h2>Salir del modo prueba</h2>
+        <p>Antes de abrir las ventas de verdad, borrá los minutos marcados como prueba. No toca los minutos reales.</p>
+        <p class="ad-acciones"><button class="enlace" type="button" id="borrarPruebas">borrar minutos de prueba</button></p>
+        <p class="ad-estado" id="estadoPruebas" aria-live="polite"></p>
+      </section>
+    </div>
+  </main>
+
+  <script is:inline src="/minuto-admin.js" defer></script>
+</Obra>
+
+<style is:global>
+  body.texto main.ad { max-width: 48rem; }
+  .ad .mono { font-family: var(--mono); font-size: .76rem; color: var(--tenue); }
+  .ad-campo { display: block; margin: 0 0 1rem; max-width: 22rem; }
+  .ad-rotulo { display: block; font-family: var(--mono); font-size: .72rem; color: var(--tenue); }
+  .ad input[type="password"], .ad input[type="text"] {
+    display: block; width: 100%; min-height: 48px; padding: 6px 0; margin: 0;
+    background: transparent; color: var(--crema); color-scheme: dark;
+    border: 0; border-bottom: 1px solid var(--linea); border-radius: 0;
+    font-family: var(--mono); font-size: .95rem;
+  }
+  .ad input:focus { outline: none; border-bottom-color: var(--bermellon); }
+  .ad input:focus-visible { outline: 1px solid var(--bermellon); outline-offset: 4px; }
+  .ad-acciones { display: flex; flex-wrap: wrap; align-items: center; gap: .2rem 1.6rem; margin: .8rem 0 0 !important; }
+  .ad .enlace { display: inline-flex; align-items: center; min-height: 44px; padding: 0; background: none; border: 0; cursor: pointer; font-family: var(--mono); font-size: .86rem; color: var(--bermellon); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+  .ad .enlace.tenue { color: var(--tenue); }
+  .ad .enlace[aria-pressed="true"] { color: var(--crema); }
+  .ad .enlace:disabled { color: var(--linea); cursor: default; }
+  .ad-estado { min-height: 1.5em; font-family: var(--mono); font-size: .8rem !important; color: var(--tenue); }
+  .ad-estado.mal { color: var(--bermellon); }
+
+  .ad-lista { list-style: none; margin: 2rem 0 0 !important; padding: 0 !important; border-top: 1px solid var(--linea); }
+  .ad-lista > li { padding: 1.6rem 0; border-bottom: 1px solid var(--linea); }
+  .ad-hora { margin: 0 !important; font-size: 1.6rem !important; line-height: 1.2 !important; }
+  .ad-ded { margin: .9rem 0 .6rem !important; font-style: italic; font-size: clamp(1.8rem, 6vw, 2.6rem) !important; line-height: 1.08 !important; overflow-wrap: anywhere; }
+  .ad-ded.vacia { color: var(--tenue); font-size: 1.2rem !important; }
+  .ad-dato { margin: 0 !important; font-family: var(--mono); font-size: .76rem !important; line-height: 1.8 !important; color: var(--tenue); overflow-wrap: anywhere; }
+  .ad-etiqueta { display: inline-block; margin-right: .6rem; padding: 0 6px; font-family: var(--mono); font-size: .68rem; letter-spacing: .06em; border: 1px solid var(--linea); color: var(--crema); }
+  .ad-etiqueta.prueba, .ad-etiqueta.pendiente { border-color: var(--bermellon); color: var(--bermellon); }
+  .ad-pruebas { margin-top: 4rem; padding-top: 1rem; border-top: 1px solid var(--linea); }
+</style>

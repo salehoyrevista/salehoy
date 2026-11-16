@@ -1,0 +1,136 @@
+---
+// /minuto/terminos/ — términos de "El minuto", cortos y en segunda persona.
+// La versión en inglés (/en/minute/terms/) usa este mismo archivo como componente con lang="en".
+// El texto que vale es el español; el inglés es una traducción.
+import Obra from "../../layouts/Obra.astro";
+import { RUTAS_OBRAS, SITIO } from "../../lib/obras.js";
+
+const { lang = "es" } = Astro.props;
+const l = lang === "en" ? "en" : "es";
+const otro = l === "en" ? "es" : "en";
+const r = RUTAS_OBRAS[l];
+const o = RUTAS_OBRAS[otro];
+const CONTACTO = "https://github.com/salehoyrevista/salehoy/issues";
+const es = l === "es";
+
+const titulo = es ? "Términos de El minuto" : "Terms of The Minute";
+const descripcion = es
+  ? "Qué comprás cuando regalás un minuto en El minuto, la obra de Solzimer: precio y pago en USDC, dedicatorias, rechazos y reembolsos, fallas y privacidad."
+  : "What you buy when you give a minute in The Minute, a work by Solzimer: price and payment in USDC, dedications, rejections and refunds, failures and privacy.";
+const ld = { "@context": "https://schema.org", "@type": "WebPage", name: titulo, inLanguage: l, url: SITIO + r.minutoTerminos, author: { "@type": "Person", name: "Solzimer" } };
+---
+<Obra lang={l} obra="minuto" titulo={titulo} descripcion={descripcion} ruta={r.minutoTerminos} alterna={{ lang: otro, href: o.minutoTerminos }} texto={true} ld={ld}>
+  <main>
+    {es ? (
+      <Fragment>
+        <h1>Términos <em>de El minuto</em></h1>
+        <p class="entrada">Cortos y claros. Si algo no se entiende, preguntá antes de pagar.</p>
+
+        <h2>Qué comprás</h2>
+        <p>Comprás una dedicatoria que se muestra durante un minuto exacto, el que elegiste, en la portada de <a href={r.minuto}>salehoy.com.ar/minuto</a>, para cualquiera que la esté mirando. Con eso vienen una página permanente de ese minuto y un certificado en imagen.</p>
+        <p>Es un regalo simbólico. No es un bien, un título, una inversión ni publicidad, y no te da ningún derecho sobre el tiempo, sobre la obra ni sobre el sitio.</p>
+
+        <h2>Precio y pago</h2>
+        <ul>
+          <li>Se paga solo en USDC en la red Base, desde tu billetera (MetaMask). Nunca se te va a pedir tu frase secreta ni tus claves.</li>
+          <li>Pagás exactamente el monto que se muestra en el resumen, con sus centésimos propios: es lo que ata tu pago a tu reserva.</li>
+          <li>Las comisiones de la red corren por tu cuenta.</li>
+          <li><strong>Los pagos en blockchain no se pueden revertir.</strong> Nadie, tampoco el sitio, puede deshacer una transacción.</li>
+          <li>El minuto es tuyo recién cuando el sitio verifica el pago. La reserva dura unos 15 minutos.</li>
+        </ul>
+
+        <h2>Dedicatorias</h2>
+        <p>Hasta 80 caracteres. Sin enlaces, sin datos personales de otras personas (nombres completos, teléfonos, direcciones, correos), sin insultos, sin publicidad y sin nada ilegal. Todas se revisan antes de mostrarse.</p>
+
+        <h2 id="rechazo">Si la dedicatoria se rechaza</h2>
+        <ul>
+          <li>Se avisa en la página de tu minuto.</li>
+          <li>Podés elegir que tu minuto se muestre con un texto neutro («Este minuto es de alguien.») o pedir el <strong>reembolso manual en USDC a la dirección desde la que pagaste, dentro de los 14 días desde el rechazo, por el monto pagado menos la comisión de red del envío</strong>.</li>
+          <li>Si tu minuto llega sin que la dedicatoria esté aprobada, se muestra el texto neutro, y vale lo mismo.</li>
+          <li>No hay reembolso por arrepentimiento ni por minutos que ya ocurrieron.</li>
+        </ul>
+
+        <h2>Si algo falla</h2>
+        <p>Si el sitio no está disponible durante tu minuto, podés elegir otro minuto libre del mismo precio o pedir el reembolso, en las mismas condiciones de arriba.</p>
+
+        <h2>Privacidad</h2>
+        <p>El sitio no guarda tu nombre, tu correo ni la dirección de tu billetera. La transacción, como toda transacción en blockchain, es pública. El sitio cuenta visitas en números agregados, sin nada que te identifique.</p>
+
+        <h2>La obra puede cambiar</h2>
+        <p>El minuto es una obra de arte y puede cambiar o terminar. Los minutos que ya ocurrieron quedan en el <a href={r.minutoArchivo}>archivo</a> mientras exista el sitio. Si la obra termina, los minutos vendidos que todavía no ocurrieron se reembolsan.</p>
+
+        <h2>Modo prueba</h2>
+        <p>Mientras la página de compra diga «modo prueba», no se cobra dinero real: el pago se simula o se hace con USDC de prueba, sin valor. Esos minutos llevan la etiqueta «prueba» y se borran cuando se abren las ventas.</p>
+
+        <h2>Contacto</h2>
+        <p>Para reembolsos, reclamos o preguntas: <a href={CONTACTO} rel="noopener">los issues del repositorio de la obra</a>. Para un reembolso, incluí el enlace de la transacción; no hace falta tu nombre.</p>
+
+        <p class="dato">Jurisdicción y datos del responsable: pendientes de completar por Solzimer.</p>
+        {/* PENDIENTE PEDRO: jurisdicción y datos del responsable */}
+        <p class="dato">Vigentes desde el 16 de noviembre de 2026. — Solzimer</p>
+      </Fragment>
+    ) : (
+      <Fragment>
+        <h1>Terms <em>of The Minute</em></h1>
+        <p class="entrada">Short and clear. If something is unclear, ask before you pay. The Spanish version is the one that applies; this is a translation.</p>
+
+        <h2>What you buy</h2>
+        <p>You buy a dedication shown for one exact minute, the one you chose, on the front page of <a href={r.minuto}>salehoy.com.ar/en/minute</a>, to anyone who is looking. It comes with a permanent page for that minute and a certificate image.</p>
+        <p>It is a symbolic gift. It is not a good, a title, an investment or advertising, and it gives you no rights over time, over the work or over the site.</p>
+
+        <h2>Price and payment</h2>
+        <ul>
+          <li>Payment is only in USDC on the Base network, from your wallet (MetaMask). You will never be asked for your secret phrase or your keys.</li>
+          <li>You pay exactly the amount shown in the summary, with its own hundredths: that is what ties your payment to your reservation.</li>
+          <li>Network fees are paid by you.</li>
+          <li><strong>Blockchain payments cannot be reversed.</strong> Nobody, including the site, can undo a transaction.</li>
+          <li>The minute is yours only once the site verifies the payment. The reservation lasts about 15 minutes.</li>
+        </ul>
+
+        <h2>Dedications</h2>
+        <p>Up to 80 characters. No links, no other people's personal data (full names, phone numbers, addresses, emails), no insults, no advertising and nothing illegal. Every dedication is reviewed before it is shown.</p>
+
+        <h2 id="rejection">If the dedication is rejected</h2>
+        <ul>
+          <li>It is noted on your minute's page.</li>
+          <li>You can choose to have your minute shown with a neutral text ("This minute belongs to someone.") or ask for a <strong>manual refund in USDC to the address you paid from, within 14 days of the rejection, for the amount paid minus the network fee of sending it</strong>.</li>
+          <li>If your minute arrives before the dedication is approved, the neutral text is shown, and the same applies.</li>
+          <li>There is no refund for a change of mind or for minutes that have already happened.</li>
+        </ul>
+
+        <h2>If something fails</h2>
+        <p>If the site is unavailable during your minute, you can choose another free minute of the same price or ask for a refund, on the same terms as above.</p>
+
+        <h2>Privacy</h2>
+        <p>The site does not keep your name, your email or your wallet address. The transaction, like every blockchain transaction, is public. The site counts visits in aggregate numbers, with nothing that identifies you.</p>
+
+        <h2>The work may change</h2>
+        <p>The Minute is a work of art and may change or end. Minutes that have already happened stay in the <a href={r.minutoArchivo}>archive</a> for as long as the site exists. If the work ends, sold minutes that have not happened yet are refunded.</p>
+
+        <h2>Test mode</h2>
+        <p>While the purchase page says "test mode", no real money is charged: the payment is simulated or made with test USDC, worth nothing. Those minutes carry the label "test" and are deleted when sales open.</p>
+
+        <h2>Contact</h2>
+        <p>For refunds, complaints or questions: <a href={CONTACTO} rel="noopener">the issues of the work's repository</a>. For a refund, include the transaction link; your name is not needed.</p>
+
+        <p class="dato">Jurisdiction and details of the person responsible: pending, to be completed by Solzimer.</p>
+        {/* PENDIENTE PEDRO: jurisdicción y datos del responsable */}
+        <p class="dato">In force since 16 November 2026. — Solzimer</p>
+      </Fragment>
+    )}
+
+    <!-- PENDIENTE PEDRO: jurisdicción y datos del responsable (razón social, domicilio, jurisdicción) -->
+    <p class="dato terminos-mas">
+      <a href={r.minuto}>{es ? "El minuto" : "The Minute"}</a> ·
+      <a href={r.minutoElegir}>{es ? "regalar un minuto" : "give a minute"}</a> ·
+      <a href={r.minutoArchivo}>{es ? "archivo" : "archive"}</a> ·
+      <a href={o.minutoTerminos} hreflang={otro} lang={otro}>{es ? "English" : "Español"}</a>
+    </p>
+  </main>
+</Obra>
+
+<style is:global>
+  body.texto .terminos-mas { margin-top: 3rem; }
+  body.texto .terminos-mas a { display: inline-block; padding: 10px 0; }
+  body.texto strong { font-weight: 400; color: var(--crema); text-decoration: underline; text-decoration-color: var(--bermellon); text-decoration-thickness: 1px; text-underline-offset: 4px; }
+</style>

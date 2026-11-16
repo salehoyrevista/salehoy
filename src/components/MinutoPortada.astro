@@ -1,0 +1,160 @@
+---
+// Portada de "El minuto": un reloj y una frase. Cuando el minuto actual es de alguien, su
+// dedicatoria ocupa la pantalla durante 60 segundos. Todo lo que cambia lo mueve /minuto.js.
+import Obra from "../layouts/Obra.astro";
+import { RUTAS_OBRAS, SITIO } from "../lib/obras.js";
+
+const { lang = "es" } = Astro.props;
+const l = lang === "en" ? "en" : "es";
+const otro = l === "en" ? "es" : "en";
+const r = RUTAS_OBRAS[l];
+const o = RUTAS_OBRAS[otro];
+
+const t = {
+  es: {
+    titulo: "El minuto",
+    descripcion: "El minuto, de Solzimer: se regala un minuto exacto. Cuando llega, su dedicatoria ocupa esta página para todo el mundo durante 60 segundos.",
+    nadie: "Este minuto no es de nadie.",
+    regalar: "regalar un minuto →",
+    luz: "la luz es suya →",
+    interruptor: "El interruptor",
+    prueba: "prueba",
+    que: "Un minuto se regala. Cuando llega, su dedicatoria ocupa esta página para todo el mundo durante 60 segundos.",
+    archivo: "archivo", terminos: "términos", idioma: "English",
+    reloj: "Hora actual",
+    sinJs: "Esta obra necesita JavaScript para mostrar la hora y los minutos regalados."
+  },
+  en: {
+    titulo: "The Minute",
+    descripcion: "The Minute, by Solzimer: an exact minute is given as a gift. When it arrives, its dedication takes over this page for everyone for 60 seconds.",
+    nadie: "This minute belongs to no one.",
+    regalar: "give a minute →",
+    luz: "the light is theirs →",
+    interruptor: "The Switch",
+    prueba: "test",
+    que: "A minute is given as a gift. When it arrives, its dedication takes over this page for everyone for 60 seconds.",
+    archivo: "archive", terminos: "terms", idioma: "Español",
+    reloj: "Current time",
+    sinJs: "This work needs JavaScript to show the time and the gifted minutes."
+  }
+}[l];
+
+const ld = {
+  "@context": "https://schema.org", "@type": "VisualArtwork", name: t.titulo, artform: "Net art",
+  creator: { "@type": "Person", name: "Solzimer" }, inLanguage: l, url: SITIO + r.minuto, description: t.descripcion
+};
+---
+<Obra lang={l} obra="minuto" titulo={t.titulo} descripcion={t.descripcion} ruta={r.minuto} alterna={{ lang: otro, href: o.minuto }} ld={ld}>
+  <main class="mn" id="mn" data-estado="reloj">
+    <h1 class="mn-solo-lectores">{t.titulo} — Solzimer</h1>
+
+    <!-- el reloj: grande cuando el minuto no es de nadie, chico cuando es de alguien -->
+    <p class="mn-reloj" id="mnReloj" role="timer" aria-label={t.reloj}>
+      <span class="mn-c">-</span><span class="mn-c">-</span><span class="mn-c mn-p">:</span><span class="mn-c">-</span><span class="mn-c">-</span><span class="mn-seg"><span class="mn-c mn-p">:</span><span class="mn-c">-</span><span class="mn-c">-</span></span>
+      <span class="mn-prueba" id="mnPrueba" hidden>{t.prueba}</span>
+    </p>
+
+    <!-- estado normal -->
+    <div class="mn-libre" id="mnLibre">
+      <p class="mn-frase">{t.nadie}</p>
+      <p class="mn-accion"><a href={r.minutoElegir}>{t.regalar}</a></p>
+      <p class="mn-proximo" id="mnProximo" aria-live="off" hidden></p>
+    </div>
+
+    <!-- el minuto de alguien -->
+    <div class="mn-suyo" id="mnSuyo" aria-live="polite" hidden>
+      <p class="mn-dedicatoria" id="mnDedicatoria"></p>
+      <div class="mn-hilo" aria-hidden="true"><span id="mnHilo"></span></div>
+      <p class="mn-luz">{t.luz} <a href={r.interruptor}>{t.interruptor}</a></p>
+    </div>
+
+    <noscript><p class="mn-que">{t.sinJs}</p></noscript>
+  </main>
+
+  <footer class="mn-pie">
+    <p class="mn-que">{t.que}</p>
+    <p class="mn-enlaces">
+      <a href={r.minutoArchivo}>{t.archivo}</a>
+      <a href={r.minutoTerminos}>{t.terminos}</a>
+      <a href={o.minuto} hreflang={otro} lang={otro}>{t.idioma}</a>
+    </p>
+  </footer>
+
+  <script is:inline src="/minuto.js" defer></script>
+</Obra>
+
+<style is:global>
+  body[data-obra="minuto"] { display: flex; flex-direction: column; }
+  /* grano de papel, como en el resto del sitio */
+  body[data-obra="minuto"]::after {
+    content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .07;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .95 0 0 0 0 .91 0 0 0 0 .85 0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>");
+  }
+
+  .mn {
+    position: relative; z-index: 1; flex: 1 1 auto;
+    display: flex; flex-direction: column; justify-content: center;
+    width: 100%; padding: 5vh 16px 5vh clamp(16px, 9vw, 10rem);
+  }
+  .mn-solo-lectores {
+    position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0;
+  }
+
+  /* cada cifra ocupa siempre lo mismo: el reloj no baila */
+  .mn-reloj {
+    margin: 0; white-space: nowrap; line-height: .86; letter-spacing: 0;
+    font-family: var(--serif); font-size: clamp(4rem, 22vw, 14rem);
+    transition: font-size .9s ease, color .9s ease;
+  }
+  .mn-c { display: inline-block; width: .5em; text-align: center; }
+  .mn-p { width: .25em; }
+  .mn-seg { color: var(--tenue); }
+  .mn-prueba {
+    display: inline-block; vertical-align: middle; margin-left: 1.2em; padding: 1px 6px;
+    font-family: var(--mono); font-size: .68rem; letter-spacing: .08em; line-height: 1.6;
+    color: var(--bermellon); border: 1px solid var(--bermellon);
+  }
+
+  .mn-frase {
+    margin: clamp(1.4rem, 4vh, 2.4rem) 0 0; font-style: italic; color: var(--tenue);
+    font-size: clamp(1.7rem, 5.4vw, 3rem); line-height: 1.08;
+  }
+  .mn-accion { margin: clamp(1.4rem, 4vh, 2.2rem) 0 0; font-family: var(--mono); font-size: .86rem; }
+  .mn-accion a { display: inline-block; padding: 12px 0; }
+  .mn-proximo { margin: .6rem 0 0; font-family: var(--mono); font-size: .7rem; line-height: 1.7; color: var(--tenue); }
+
+  /* el minuto de alguien: el reloj se achica y la dedicatoria ocupa la pantalla */
+  .mn[data-estado="suyo"] .mn-reloj { font-family: var(--mono); font-size: .8rem; line-height: 1.6; color: var(--tenue); }
+  .mn[data-estado="suyo"] .mn-c { width: auto; }
+  .mn[data-estado="suyo"] .mn-seg { color: inherit; }
+  .mn-suyo { opacity: 0; transform: translateY(10px); transition: opacity 1.4s ease, transform 1.4s ease; }
+  .mn-suyo.visible { opacity: 1; transform: none; }
+  .mn-dedicatoria {
+    margin: clamp(1.2rem, 4vh, 2.2rem) 0 0; max-width: 18em;
+    font-style: italic; font-size: clamp(2.5rem, 10.5vw, 7rem); line-height: 1; letter-spacing: -.012em;
+    overflow-wrap: anywhere;
+  }
+  .mn-dedicatoria[data-largo="medio"] { font-size: clamp(2.2rem, 8.4vw, 5.4rem); line-height: 1.03; }
+  .mn-dedicatoria[data-largo="largo"] { font-size: clamp(1.9rem, 6.8vw, 4.2rem); line-height: 1.06; }
+  .mn-dedicatoria.neutra { color: var(--tenue); }
+  .mn-hilo { margin: clamp(1.6rem, 5vh, 2.6rem) 0 0; height: 1px; max-width: 40rem; background: var(--linea); }
+  .mn-hilo span { display: block; height: 1px; background: var(--bermellon); transform-origin: left center; transition: transform 1s linear; }
+  .mn-luz { margin: 1rem 0 0; font-family: var(--mono); font-size: .72rem; line-height: 1.7; color: var(--tenue); }
+  .mn-luz a { display: inline-block; padding: 10px 0; }
+
+  .mn-pie {
+    position: relative; z-index: 1; flex: 0 0 auto;
+    padding: 0 16px max(18px, env(safe-area-inset-bottom)) clamp(16px, 9vw, 10rem);
+    font-family: var(--mono); font-size: .68rem; line-height: 1.7; color: var(--tenue);
+  }
+  .mn-que { margin: 0 0 .5rem; max-width: 30rem; font-family: var(--mono); font-size: .68rem; line-height: 1.7; color: var(--tenue); }
+  .mn-enlaces { margin: 0; display: flex; flex-wrap: wrap; gap: 0 20px; }
+  .mn-enlaces a { display: inline-block; padding: 12px 0; color: var(--tenue); }
+  .mn-enlaces a:hover { color: var(--crema); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mn-reloj, .mn-suyo, .mn-hilo span { transition: none; }
+    .mn-suyo { transform: none; }
+  }
+</style>
