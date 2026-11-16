@@ -3,6 +3,41 @@
 Cada decisión, por qué se tomó y cómo revertirla. La más reciente arriba.
 Para deshacer un cambio: `git revert <commit>` y `git push origin master` (Netlify publica solo).
 
+## 2026-11-16 — Dos obras nuevas: "El interruptor" y "El minuto" (en curso)
+
+Pedido de Pedro: sumar dos obras junto a "Sin motivo", que no se toca. Pedido completo en el historial de la sesión.
+
+### Estado para retomar
+- **Hecho y en el repositorio (sin publicar):** base compartida, texto en imágenes del servidor, enlaces desde el pie de "Sin motivo", sitemap, robots, `llms.txt`, cabeceras.
+- **En construcción:** El interruptor (lógica, funciones, página), servidor de El minuto (reservas, pago, moderación, vigía), páginas de El minuto (portada, compra, página de cada minuto, archivo, términos, administración). Contrato técnico entre las partes: rutas y formas de la API en la sección "API" de abajo.
+- **Falta después:** compilar, correr todos los tests, probar en navegador headless (celular y escritorio), publicar en modo prueba, `RESUMEN.md` y `PENDIENTES_PEDRO.md`.
+
+### 24. Base compartida — `9930044`
+- **Almacén con escrituras condicionales** (`netlify/lib/almacen.mjs`): sobre Netlify Blobs con consistencia fuerte. `crear` solo si la clave no existe y `reemplazar` solo si nadie la cambió desde que se leyó. Es lo que impide vender un instante dos veces o usar dos veces el mismo pago, sin una base de datos aparte. Tiene una versión en memoria para los tests.
+- **Ajustes por variables de entorno** (`netlify/lib/ajustes.mjs`): `SALES_ADDRESS`, `MINUTO_MODO`, `ADMIN_PASSWORD`, `FIREBASE_DB_URL`, `FIREBASE_SERVICE_ACCOUNT`, `AVISO_URL`. Ninguna es obligatoria: sin ellas todo queda en modo prueba. **Si `SALES_ADDRESS` fuera la dirección de "Sin motivo", se ignora**: un pago de un minuto nunca puede volverse estrella.
+- **Plantilla y navegación** (`src/layouts/Obra.astro`, `NavObras.astro`, `src/lib/obras.js`): una línea en mono que une las tres obras.
+- **Revertir:** `git revert 9930044` (antes hay que revertir lo que se apoya en esto).
+
+### 25. Texto en las imágenes del servidor — `letras.mjs`
+- **Qué:** las vistas previas de las obras nuevas escriben con Instrument Serif e IBM Plex Mono reales. Un atlas de glifos generado una vez con Chrome, sin dependencias en producción (311 KB, ~150 ms por imagen).
+- **Por qué:** la huella del interruptor y el certificado del minuto son texto; con el rasterizador de "Sin motivo" solo se podían dibujar trazos.
+
+### 26. Tiempo real: Netlify Blobs + Firebase Realtime Database como espejo
+- **Qué:** el estado de la luz vive en Netlify Blobs (la verdad). Si Pedro crea un proyecto gratuito de Firebase y carga dos variables, el servidor copia cada cambio a Firebase y los navegadores lo reciben al instante. Sin Firebase, los navegadores preguntan cada 4 segundos, con caché de 3 segundos en el CDN para no gastar invocaciones.
+- **Por qué Firebase:** plan gratuito sin tarjeta, no se pausa por inactividad (Supabase gratuito sí), se escucha desde el navegador sin librerías, y solo el servidor escribe. Netlify solo no tiene conexiones persistentes.
+- **Por qué no confiar en Firebase para la verdad:** si Firebase falla o no está, la obra sigue andando.
+
+### 27. Red y moneda de pago: USDC en Base
+- **Qué:** El minuto se cobra en USDC oficial en Base, la misma red que usa "Sin motivo".
+- **Por qué no otra red:** la comisión en Base ya es menor a un centavo de dólar por transferencia; otra red no la baja de forma que importe y obligaría al comprador a otra configuración en MetaMask.
+- **Cada reserva tiene un monto propio** (precio + entre 0,0001 y 0,0099 USDC). Así un pago queda atado a una reserva y nadie puede usar la transacción de otro para su minuto.
+- **Modo prueba:** sin `SALES_ADDRESS`, el pago es simulado (no se puede pagar). Con `SALES_ADDRESS` y sin `MINUTO_MODO=real`, se paga con USDC de prueba en Base Sepolia. Solo con `MINUTO_MODO=real` se cobra.
+
+### 28. Enlaces a las obras nuevas desde "Sin motivo" — `b7a0bb4`
+- **Qué:** una línea chica al pie del cielo ("El interruptor · El minuto"), oculta en la versión embebida. Además sitemap, `robots.txt` (`/admin/` fuera de buscadores; sitemap de minutos), `llms.txt` (aclara que los pagos de El minuto no van a la dirección de "Sin motivo") y cabeceras (`/minuto/elegir/` y `/admin/` nunca dentro de un marco ajeno).
+- **Lo que no cambió:** el cielo, la dirección, el concepto y la portada.
+- **Revertir:** `git revert b7a0bb4`.
+
 ## 2026-11-12 — Método de medición
 
 Pedido: medir en serio un sitio con muy poco tráfico. Reglas permanentes en `CLAUDE.md`, definiciones y metas en `MEDICION.md`.
