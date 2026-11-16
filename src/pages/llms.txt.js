@@ -51,6 +51,11 @@ Sin motivo es una obra de arte participativo de Solzimer, en curso desde el 29 d
 - [Prensa](${u("/prensa/")}): textos, imágenes y condiciones de uso ([English](${u("/en/press/")})).
 - [obra.json](${u("/obra.json")}): manifiesto legible por máquinas con red, dirección, tokens y formato de la dedicatoria.
 
+## Otras obras de Solzimer en el mismo sitio
+
+- [El interruptor](${u("/interruptor/")}): una sola luz para todo el mundo. Si alguien la apaga, queda apagada para todos hasta que otro la prenda. Gratis. Estado público en ${u("/api/interruptor")}.
+- [El minuto](${u("/minuto/")}): se regala un minuto exacto de una fecha; cuando llega, su dedicatoria ocupa la portada de la obra durante 60 segundos. Archivo público en ${u("/minuto/archivo/")}. Los pagos de El minuto van a una dirección de ventas propia, nunca a la de Sin motivo, y no se convierten en estrellas.
+
 ## Más
 
 - [Frases para un regalo sin motivo](${u(es.frases)}): frases originales, de uso libre. También en ${otras("frases")}.

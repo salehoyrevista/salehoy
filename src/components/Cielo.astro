@@ -21,6 +21,9 @@ const SITIO = "https://salehoy.com.ar";
 const ruta = (l) => (l === "es" ? "/" : `/${l}/`);
 const url = SITIO + ruta(lang);
 const sobre = RUTAS[lang].sobre;
+const otrasObras = lang === "es"
+  ? [["/interruptor/", "El interruptor"], ["/minuto/", "El minuto"]]
+  : [["/en/switch/", "The Switch"], ["/en/minute/", "The Minute"]];
 const sobres = JSON.stringify(Object.fromEntries(Object.keys(RUTAS).map((l) => [l, RUTAS[l].sobre])));
 const titulo = lang === "es" ? "Sin motivo — Solzimer" : `${t.corto} ${t.sinMotivo} · Sin motivo — Solzimer`;
 
@@ -118,6 +121,7 @@ const ld = {
           {S.IDIOMAS.map((l) => <a href={ruta(l)} lang={l} hreflang={l} aria-current={l === lang ? "true" : "false"}>{S.T[l].nombre}</a>)}
         </nav>
         <p class="cuenta" id="cuenta"><button class="a-sobre" id="sonido" type="button" aria-pressed="false" data-t="sonOn" hidden>{t.sonOn}</button><span id="sonidoSep" hidden> · </span><a class="a-sobre" href={sobre} data-t="sobre">{t.sobre}</a><span class="a-sobre-sep"> · </span><span id="cuentaN"></span><span data-t="enCurso">{t.enCurso}</span></p>
+        <nav class="otras-obras" aria-label={lang === "es" ? "Otras obras de Solzimer" : "Other works by Solzimer"}>{otrasObras.map(([href, nombre]) => <a href={href}>{nombre}</a>)}</nav>
       </footer>
     </div>
 
@@ -1375,6 +1379,10 @@ const ld = {
   .idiomas a:hover { color: var(--crema); }
   .idiomas a[aria-current="true"] { color: var(--crema); text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
   .cuenta { margin: 0; color: var(--tenue); }
+  .otras-obras { flex-basis: 100%; display: flex; gap: 2px 14px; flex-wrap: wrap; }
+  .otras-obras a { color: var(--tenue); opacity: .7; text-decoration: none; padding: 4px 0; }
+  .otras-obras a:hover { color: var(--crema); opacity: 1; }
+  [data-embebido] .otras-obras { display: none !important; }
 
   .etiqueta {
     position: fixed; left: 0; top: 0; z-index: 3;

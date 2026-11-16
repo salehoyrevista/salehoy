@@ -22,3 +22,21 @@
   for = "/regalo"
   [headers.values]
     X-Frame-Options = "DENY"
+
+# El minuto: la compra abre la billetera y la administración modera. Nunca en un marco ajeno.
+[[headers]]
+  for = "/minuto/elegir/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+
+[[headers]]
+  for = "/en/minute/choose/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"

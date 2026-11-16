@@ -12,7 +12,12 @@ const grupos = [
   })),
   { defecto: "en", paginas: { en: "/agentes/" } },
   { defecto: "es", paginas: { es: "/api/" } },
-  { defecto: "es", paginas: { es: "/regalo.html" } }
+  { defecto: "es", paginas: { es: "/regalo.html" } },
+  { defecto: "es", paginas: { es: "/interruptor/", en: "/en/switch/" } },
+  { defecto: "es", paginas: { es: "/minuto/", en: "/en/minute/" } },
+  { defecto: "es", paginas: { es: "/minuto/elegir/", en: "/en/minute/choose/" } },
+  { defecto: "es", paginas: { es: "/minuto/archivo/", en: "/en/minute/archive/" } },
+  { defecto: "es", paginas: { es: "/minuto/terminos/", en: "/en/minute/terms/" } }
 ];
 
 export function GET() {
