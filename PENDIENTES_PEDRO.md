@@ -4,7 +4,12 @@ Lo que solo vos podés hacer. Nada es urgente: el sitio funciona sin ninguno. Or
 
 ## Obras nuevas: lo que solo vos podés hacer
 
-Las dos obras ya están publicadas y funcionan sin nada de esto. El interruptor anda completo; El minuto está en **modo prueba**: se puede recorrer la compra entera, pero el pago es simulado y nadie paga nada. Todo lo de abajo se carga en Netlify → tu sitio → **Site configuration → Environment variables → Add a variable**. Después de cargar o cambiar una variable: **Deploys → Trigger deploy → Deploy site** (las funciones leen las variables al publicarse).
+### 0. Publicar la última versión (cuando vuelvan los créditos de Netlify) — importante
+El 17 de noviembre de 2026 El minuto pasó a ser **gratis** (ver `DECISIONES.md`, decisión 33). Ese cambio está en GitHub (`master`) pero **no está publicado**: Netlify se quedó sin créditos de compilación y no armó el sitio. Mientras tanto, salehoy.com.ar sigue mostrando la versión anterior de El minuto (la de venta en modo prueba). Esa versión no cobra nada y funciona, así que no hay apuro, pero no es la que querés.
+- **Opción 1, sin hacer nada:** cuando se renueven los créditos (al empezar el próximo ciclo de facturación de Netlify), entrá a Netlify → tu sitio → **Deploys → Trigger deploy → Deploy site**. Publica lo último de `master`.
+- **Opción 2, ahora:** subir el plan o comprar créditos en Netlify → **Billing**, y después Trigger deploy igual que arriba.
+- Cómo saber que salió: https://salehoy.com.ar/minuto/elegir/ tiene que decir "Pedirlo es gratis" y no mostrar precios.
+- **Ojo con los créditos:** cada `git push` a `master` intenta una compilación. Si los créditos son justos, conviene juntar cambios y publicar menos veces.
 
 ### A. Contraseña de administración (2 minutos) — hacelo primero
 Sin esto nadie puede aprobar dedicatorias.
@@ -14,10 +19,9 @@ Sin esto nadie puede aprobar dedicatorias.
 
 ### B. Aprobar dedicatorias
 1. https://salehoy.com.ar/admin/ → aparecen primero las pendientes, con la hora, la dedicatoria y cuánto falta.
-2. **Aprobar** o **Rechazar** (con una nota opcional, que solo ves vos).
-3. Si rechazás un minuto pagado, la persona tiene derecho a pedir el reembolso (lo dicen los términos). Mandale el monto en USDC desde tu billetera de ventas a la dirección que pagó (la ves en el enlace "ver pago ↗", campo *From*), y después pegá el hash de tu envío en "anotar reembolso".
-4. Si aparece un bloque "pago sin minuto · reembolsar": alguien pagó cuando su reserva ya había vencido y otra persona tomó ese minuto. No compró nada: devolvé el monto igual que arriba.
-5. Si una dedicatoria no está aprobada cuando llega su minuto, la portada muestra "Este minuto es de alguien." y no el texto.
+2. **Aprobar**: la dedicatoria se muestra cuando llega su minuto y la persona controla El interruptor durante ese minuto.
+3. **Rechazar**: el minuto vuelve a quedar libre y su página desaparece. No hay nada que devolver, porque pedirlo es gratis.
+4. Si una dedicatoria no está aprobada cuando llega su minuto, la portada muestra "Este minuto es de alguien." y la luz sigue siendo de todos.
 
 ### C. Avisos cuando hay algo para aprobar (opcional, 5 minutos)
 Sin esto tenés que entrar a /admin/ para ver si hay pendientes. Con esto te llega un aviso al teléfono.
@@ -38,27 +42,20 @@ Sin esto, cada navegador pregunta el estado cada 4 segundos: funciona, pero no e
 5. Engranaje → **Configuración del proyecto → Cuentas de servicio → Generar nueva clave privada**. Se baja un archivo `.json`. Abrilo con el Bloc de notas, copiá **todo** el contenido → variable `FIREBASE_SERVICE_ACCOUNT`. Después borrá ese archivo de tu computadora. (Esta clave solo sirve para escribir el estado de la luz en esa base; no tiene nada que ver con billeteras.)
 6. Volvé a publicar.
 
-### E. Dirección de ventas para El minuto (cuando quieras empezar a cobrar)
-Los pagos de El minuto **nunca** pueden ir a la dirección de Sin motivo (se volverían estrellas). Si por error cargaras esa, el sitio la ignora y sigue en modo prueba.
-1. En MetaMask: **Agregar cuenta** (o crear una billetera nueva) y ponele de nombre "SaleHoy ventas". Copiá su dirección (empieza con `0x`). **Nunca** compartas su frase secreta ni su clave privada: el sitio no las necesita ni las va a pedir.
-2. Variable `SALES_ADDRESS` = esa dirección. Volvé a publicar.
-3. Desde ese momento El minuto pasa a **prueba en Base Sepolia**: se paga de verdad con MetaMask, pero con USDC de prueba que no vale nada. Para probar una compra entera: en MetaMask activá las redes de prueba, conseguí ETH de prueba en Base Sepolia (por ejemplo en https://www.alchemy.com/faucets/base-sepolia) y USDC de prueba en https://faucet.circle.com (elegí Base Sepolia). Hacé una compra en https://salehoy.com.ar/minuto/elegir/ y aprobala en /admin/.
+### E. Dirección para aportes voluntarios (opcional)
+El minuto es gratis. Si cargás esta dirección, al final de cada pedido aparece, aparte y sin presión, "Aportar a la obra (opcional)", con USDC en Base. Sin ella, no se muestra nada de aportes.
+1. En MetaMask: **Agregar cuenta** y ponele de nombre "SaleHoy aportes". Copiá su dirección (empieza con `0x`). **Nunca** compartas su frase secreta ni su clave privada: el sitio no las necesita ni las va a pedir.
+2. Variable `SALES_ADDRESS` = esa dirección. Tiene que ser distinta de la de Sin motivo: si cargaras esa, el sitio la ignora (un aporte se volvería estrella).
+3. Volvé a publicar.
+4. Para probarlo: pedí un minuto vos y mandá un aporte de 1 USD. Necesitás USDC y un poco de ETH en la red Base en MetaMask.
 
-### F. Salir del modo prueba y cobrar de verdad
-Solo cuando hayas hecho al menos una compra completa en Base Sepolia.
-1. En /admin/, abajo: **borrar minutos de prueba**. Borra todos los minutos marcados como prueba, para que no ocupen horarios reales.
-2. Variable `MINUTO_MODO` = `real`. Volvé a publicar.
-3. Entrá a /minuto/elegir/: el cartel de modo prueba tiene que haber desaparecido y la red tiene que decir **Base**.
-4. Para volver a prueba: borrá la variable `MINUTO_MODO` y volvé a publicar.
+La variable `MINUTO_MODO` ya no se usa: no hay modo prueba ni venta.
 
-### G. Completar los términos
-En https://salehoy.com.ar/minuto/terminos/ hay una línea "Jurisdicción y datos del responsable: pendientes de completar". Antes de cobrar de verdad conviene que la completes (quién vende, desde dónde y qué ley aplica). No lo inventé. Pasame los datos y lo agrego, o consultalo con alguien que sepa de comercio electrónico en Argentina.
-
-### H. Una variable más, recomendada
+### F. Una variable más, recomendada
 `OBRAS_SECRETO` = cualquier texto largo al azar (30 caracteres o más). Lo usan las firmas antibots y los límites por persona. Sin ella, cada obra genera la suya y la guarda; con ella quedan fijas aunque se borren datos.
 
-### I. Revisar los precios
-Están en `netlify/lib/precios.mjs`: 5 USD un minuto común; 15 los especiales (11:11, 22:22, 12:34, 00:00, 23:59, 12:00 y parecidos); 10 los triples de madrugada (03:33, 02:22…); 50 el primer y el último minuto del año; +5 cualquier minuto del 14 de febrero. Si querés otros valores, decime cuáles.
+### G. Si llegan demasiados pedidos
+Hoy: un minuto por persona cada 7 días y como mucho 50 pedidos por día en todo el sitio. Si se llena de pedidos basura, decime y lo bajo (`ESPERA_PERSONA` y `TOPE_DIARIO` en `netlify/lib/minuto.mjs`).
 
 ## Sin motivo
 

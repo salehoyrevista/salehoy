@@ -3,6 +3,24 @@
 Cada decisión, por qué se tomó y cómo revertirla. La más reciente arriba.
 Para deshacer un cambio: `git revert <commit>` y `git push origin master` (Netlify publica solo).
 
+## 2026-11-17 — El minuto deja de ser una venta
+
+### 33. El minuto es gratis; el aporte es aparte y voluntario — `90d9278`, `1933720`
+- **Pedido de Pedro:** que no sea una venta (eligió la opción 1 de tres).
+- **Por qué:** si el pago es condición para recibir el minuto, es una venta aunque se llame regalo o donación, con obligaciones de vendedor (identificarse, jurisdicción, reembolsos). Separando el minuto del aporte, cero es una opción real y no hay venta.
+- **Qué cambió:**
+  - `POST /api/minuto/pedir` reemplaza `reservar` y `pagar` (borrados). El minuto queda de quien lo pidió en el acto, con la dedicatoria pendiente.
+  - Contra abuso, ahora que no cuesta: un minuto por persona cada 7 días (firma de IP + semana; la IP no se guarda), 50 pedidos por día en todo el sitio, y las mismas protecciones contra bots que El interruptor (origen del sitio, JSON, navegador no automático).
+  - **El interruptor solo obedece a minutos aprobados.** Antes alcanzaba con pagar; ahora tu aprobación es lo que da el control de la luz.
+  - **Rechazar libera el minuto** (se borra). No hay reembolsos.
+  - **Aporte voluntario** al final del pedido, solo con `SALES_ADDRESS`, siempre en Base. El servidor no lo verifica ni lo registra: no cambia nada.
+  - Términos nuevos (vigentes desde el 17/11/2026): no es una compra; aportes voluntarios que no se devuelven. Se sacó la línea de jurisdicción pendiente.
+  - /admin/ sin precios, reembolsos, pagos huérfanos ni modo prueba. `MINUTO_MODO` ya no se usa.
+  - Se conservan `netlify/lib/pago.mjs` y `precios.mjs`: el primero verifica pagos en la cadena y sirve para un posible candado pago (decisión 31); del segundo solo se usa el nombre de los minutos especiales ("11:11").
+- **Verificado en local** (servidor de Netlify, celular y escritorio): pedir gratis, llave guardada, aporte con todas las advertencias, ninguna palabra de compra o venta en la página, límite semanal, aprobación, rechazo que libera el minuto (su página da 404), bloqueos de bots, de otros sitios y sin contraseña. 77 pruebas automáticas.
+- **No publicado:** Netlify se quedó sin créditos de compilación. Ver `PENDIENTES_PEDRO.md`, punto 0.
+- **Revertir:** `git revert 1933720 90d9278`.
+
 ## 2026-11-16 — Dos obras nuevas: "El interruptor" y "El minuto"
 
 Pedido de Pedro: sumar dos obras junto a "Sin motivo", que no se toca. Pedido completo en el historial de la sesión.

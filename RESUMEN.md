@@ -3,7 +3,7 @@
 El resumen anterior (sesión "director creativo", 12 de noviembre) está en el historial de git: `git show 46acd9f:RESUMEN.md`.
 
 ## En una línea
-salehoy.com.ar ahora tiene tres obras de Solzimer: **Sin motivo** (sin cambios), **El interruptor** (una sola luz para todo el mundo, gratis) y **El minuto** (se regala un minuto exacto; cuando llega, su dedicatoria ocupa la portada para todos). Las dos nuevas están publicadas; El minuto está en modo prueba y no cobra nada hasta que vos lo actives.
+salehoy.com.ar ahora tiene tres obras de Solzimer: **Sin motivo** (sin cambios), **El interruptor** (una sola luz para todo el mundo, gratis) y **El minuto** (se regala un minuto exacto; cuando llega, su dedicatoria ocupa la portada para todos). El 17 de noviembre El minuto pasó a ser **gratis**: se pide un minuto sin pagar y, aparte, se puede aportar a la obra si uno quiere. **Ese cambio está en GitHub pero no publicado**, porque Netlify se quedó sin créditos; el sitio en vivo sigue con la versión anterior (venta en modo prueba, sin cobrar nada). Ver `PENDIENTES_PEDRO.md`, punto 0.
 
 ## Qué construí
 
@@ -15,30 +15,15 @@ salehoy.com.ar ahora tiene tres obras de Solzimer: **Sin motivo** (sin cambios),
 - **Antiabuso sin captcha:** un toque por persona cada 5 minutos, un mínimo de 1,5 segundos entre dos toques cualquiera, una ficha que se pide al cargar la página (un bot que llama directo a la API no la tiene) y rechazo de navegadores automáticos. "Persona" se reconoce por una huella cifrada de la conexión que cambia cada día y no se puede revertir.
 
 ### El minuto — https://salehoy.com.ar/minuto/ · /en/minute/
-- **La portada es un reloj.** "Este minuto no es de nadie." Cuando llega un minuto regalado, su dedicatoria ocupa la pantalla durante 60 segundos para todos, con un hilo que se consume, y debajo "la luz es suya → El interruptor".
-- **Comprar** (/minuto/elegir/): fecha, hora, zona horaria, dedicatoria de hasta 80 caracteres, reserva de 15 minutos, resumen claro antes de pagar (red, token, monto exacto, comisión, que no se puede revertir), MetaMask, verificación en la blockchain y final con certificado y llave.
-- **Quien compra recibe** una página permanente del minuto con cuenta regresiva ("Para verlo juntos: abran salehoy.com.ar/minuto a esa hora"), botón de calendario, un certificado vertical para mandar por WhatsApp y una **llave**: durante su minuto controla El interruptor y nadie más puede tocarlo.
+- **La portada es un reloj.** "Este minuto no es de nadie." Cuando llega un minuto regalado y aprobado, su dedicatoria ocupa la pantalla durante 60 segundos para todos, con un hilo que se consume, y debajo "la luz es suya → El interruptor".
+- **Pedir es gratis** (/minuto/elegir/): fecha, hora, zona horaria, dedicatoria de hasta 80 caracteres, "pedir este minuto". Queda de esa persona en el acto, con la dedicatoria pendiente de tu aprobación.
+- **Quien pide recibe** una página permanente del minuto con cuenta regresiva ("Para verlo juntos: abran salehoy.com.ar/minuto a esa hora"), calendario, un certificado vertical para WhatsApp y una **llave**: durante su minuto, si aprobaste la dedicatoria, controla El interruptor y nadie más puede tocarlo.
+- **Límites:** un minuto por persona cada 7 días; como mucho 50 pedidos por día en todo el sitio.
+- **Aporte voluntario, aparte:** solo si cargás `SALES_ADDRESS`. "El minuto ya es tuyo. Si querés, podés aportar a la obra; no cambia nada de tu minuto." Montos 1, 5, 15 USD u otro; USDC en Base con MetaMask. Antes de pagar se explica red, token, comisión, destino y que no se puede revertir ni se devuelve.
+- **Moderación:** filtro automático (sin enlaces, correos, teléfonos, documentos ni insultos) y tu aprobación en /admin/. Rechazar libera el minuto.
 - **Archivo público** (/minuto/archivo/) con una página indexable por minuto pasado, y sitemap propio.
-- **Moderación:** toda dedicatoria pasa un filtro automático (sin enlaces, correos, teléfonos, documentos ni insultos) y queda pendiente hasta que la aprobás en /admin/. Si llega su minuto sin aprobar, se muestra "Este minuto es de alguien."
-- **Términos** cortos en /minuto/terminos/, con la política de reembolso: si rechazás una dedicatoria, la persona elige texto neutro o reembolso manual en USDC dentro de 14 días.
-
-### Precios (en `netlify/lib/precios.mjs`, se cambian ahí)
-| Minuto | USD |
-|---|---|
-| Cualquiera | 5 |
-| 11:11, 22:22, 12:12, 21:21, 10:10, 20:20, 23:23, 12:34, 01:23, 00:00, 23:59, 12:00 | 15 |
-| 01:11, 02:22, 03:33, 04:44, 05:55 | 10 |
-| 00:00 del 1 de enero y 23:59 del 31 de diciembre | 50 |
-| Cualquier minuto del 14 de febrero | +5 |
-
-La hora que cuenta es la del comprador: 11:11 es 11:11 donde vive.
-
-### Pago
-- **USDC en Base**, la misma red que Sin motivo: comisión de menos de un centavo de dólar. No encontré razón para otra red.
-- **Va a una dirección de ventas propia** (`SALES_ADDRESS`), nunca a la de Sin motivo. Si alguien cargara la de Sin motivo, el sitio la ignora.
-- **Cada reserva tiene un monto propio** (por ejemplo 5,0074 USDC): así un pago queda atado a una sola reserva.
-- **El servidor verifica en la blockchain** destino, token, monto exacto, confirmaciones y que el hash no se haya usado antes. Recién ahí el minuto pasa a vendido.
-- El sitio nunca pide, guarda ni usa claves privadas ni frases semilla.
+- **Términos** cortos en /minuto/terminos/: no es una compra ni una venta; los aportes son voluntarios y no se devuelven.
+- **Por qué gratis:** si la persona paga y recibe el minuto a cambio, es una venta aunque se llame regalo, con obligaciones de vendedor. Separando el minuto del aporte, no hay venta, no hay reembolsos y encaja con Sin motivo.
 
 ### Navegación
 Una línea en mono arriba de las páginas nuevas (Sin motivo · El interruptor · El minuto) y una línea chica al pie del cielo de Sin motivo. El cielo, la dirección y la portada de Sin motivo no cambiaron.
@@ -54,7 +39,8 @@ Una línea en mono arriba de las páginas nuevas (Sin motivo · El interruptor �
 - **En producción**, sin dejar rastro público: dos reservas simultáneas del mismo minuto (una ganó, la otra recibió "ocupado": las escrituras atómicas funcionan en el Netlify real), dedicatoria con enlace rechazada, pago falso rechazado, toque sin ficha rechazado, todas las páginas en celular y escritorio sin desbordes ni errores de consola.
 
 ## Qué NO pude verificar
-- **Un pago con MetaMask**, ni de prueba ni real: requiere una billetera. Lo podés probar en Base Sepolia (PENDIENTES, punto E).
+- **Un aporte con MetaMask**: requiere una billetera. Lo podés probar con 1 USD cuando cargues `SALES_ADDRESS` (PENDIENTES, punto E).
+- **La versión gratis de El minuto en producción**: está probada en local pero no publicada (Netlify sin créditos).
 - **El tiempo real con Firebase**: hace falta tu cuenta.
 - **Un toque real del interruptor en producción.** No toqué la luz en el sitio en vivo porque quedaría en la historia pública como actividad. El primer toque va a ser el tuyo o el de un visitante.
 - **El sonido**, la vibración, compartir y guardar imágenes en un celular real (sobre todo iPhone).
@@ -66,9 +52,9 @@ Todo está en `PENDIENTES_PEDRO.md`, sección "Obras nuevas", paso a paso:
 1. **`ADMIN_PASSWORD`** en Netlify (2 minutos). Sin esto no podés aprobar dedicatorias.
 2. **Firebase** para que la luz cambie al instante en todo el mundo (15 minutos, gratis, recomendado).
 3. **`AVISO_URL`** con ntfy para enterarte en el teléfono cuando hay algo para aprobar (opcional).
-4. **Cuando quieras cobrar:** crear una cuenta "SaleHoy ventas" en MetaMask y cargar su dirección en **`SALES_ADDRESS`** → pasa a prueba en Base Sepolia → hacer una compra de prueba → en /admin/ "borrar minutos de prueba" → **`MINUTO_MODO=real`**.
-5. **Completar en los términos** quién vende y qué jurisdicción aplica (no lo inventé).
-6. **Tocar la luz.** Y mandarla a alguien.
+0. **Publicar la versión gratis de El minuto** cuando vuelvan los créditos de Netlify (Trigger deploy).
+4. **Si querés recibir aportes:** cuenta "SaleHoy aportes" en MetaMask y su dirección en **`SALES_ADDRESS`**.
+5. **Tocar la luz.** Y mandarla a alguien.
 
 ## Qué medir en las primeras dos semanas
 Las reglas de `CLAUDE.md` siguen: sesiones reales separadas de bots y de las tuyas, siempre con denominador, y con menos de 30 sesiones reales solo se describe. Los eventos nuevos ya llegan a Google Analytics:
@@ -78,15 +64,15 @@ Las reglas de `CLAUDE.md` siguen: sesiones reales separadas de bots y de las tuy
 | `interruptor_toque` | alguien cambió la luz | la obra se entiende y da ganas de tocar |
 | `huella_compartida` | guardó, compartió o copió su huella | el motor de tráfico funciona o no |
 | visitas a `/interruptor/?h=` | alguien llegó por la huella de otro | **la métrica principal**: visitas que traen visitas |
-| `minuto_compra_inicio` | reservó un minuto | interés real en El minuto |
-| `minuto_metamask_conectada` | conectó la billetera | dónde se cae la compra |
-| `minuto_pagado` | compró | ventas (también se ven en /admin/) |
+| `minuto_compra_inicio` | pidió un minuto (gratis) | interés real en El minuto |
+| `minuto_metamask_conectada` | conectó la billetera para aportar | cuántos llegan a aportar |
+| `minuto_pagado` | mandó un aporte | aportes voluntarios |
 | `minuto_en_vivo` | alguien vio un minuto regalado mientras ocurría | si la gente "lo ve junta" |
 
 Preguntas concretas para el 30 de noviembre:
 1. **De las sesiones reales en /interruptor/, ¿cuántas tocaron?** (toques ÷ sesiones reales en esa página). Si casi nadie toca, la página no se entiende en tres segundos.
 2. **¿Cuántas huellas se compartieron y cuántas visitas llegaron por `?h=`?** Si se comparten y no llega nadie, la vista previa no convence. Si no se comparten, "tu huella →" está escondido.
-3. **¿Alguien empezó una compra de El minuto?** Mientras esté en modo prueba no puede haber ventas; sí reservas.
+3. **¿Cuántos minutos se pidieron y cuántos se aprobaron?** (se ve en /admin/). ¿Alguien aportó?
 
 ## Lo que dejé documentado y sin hacer
 - **Un "candado" pago para El interruptor** (dejar la luz fija por un tiempo a cambio de un pago): diseño y riesgos en `DECISIONES.md`, decisión 31. No está implementado.
