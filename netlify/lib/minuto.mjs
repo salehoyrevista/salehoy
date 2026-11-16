@@ -1,47 +1,43 @@
-// "El minuto": la lógica de venta, sin red ni reloj propios.
+// "El minuto": la lógica de la obra, sin red ni reloj propios.
 //
-// Se vende un minuto como regalo. Quien compra elige una fecha y una hora en su zona, escribe una
-// dedicatoria corta y paga en USDC. Cuando llega ese minuto, la dedicatoria (si el dueño la aprobó)
-// ocupa la portada para todos durante 60 segundos.
+// Un minuto se pide gratis, como regalo. Quien lo pide elige una fecha y una hora en su zona y escribe
+// una dedicatoria corta. Cuando llega ese minuto, la dedicatoria (si el autor la aprobó) ocupa la
+// portada para todos durante 60 segundos. No hay venta: el aporte a la obra es aparte, voluntario, y
+// no pasa por acá (ver ajustes.mjs, aporte()).
 //
 // Todas las funciones reciben el almacén (`almacen("minuto")` o `almacenEnMemoria()`) y la hora
 // actual como parámetros: así se prueban sin red y sin esperar.
 //
 // Claves del almacén:
-//   m/<idurl>              un registro por instante (reservado o vendido). Se crea con crear(): atómico.
-//   tx/<hash>              hash de pago ya usado. Se crea ANTES de marcar vendido: un pago, un minuto.
-//   monto/<unidades>       reserva vigente que tiene ese monto exacto (ata un pago a una reserva).
-//   vencidas/<ficha>       reserva vencida que otra persona retomó (para registrar un pago tardío).
-//   huerfanos/<hash>       pago verificado que llegó tarde: se devuelve a mano.
-//   indice/vendidos        lista ordenada { id, instante } de los minutos vendidos.
-//   limite/<firma>         reservas recientes de una persona (firma de IP + día; la IP no se guarda).
+//   m/<idurl>              un registro por instante. Se crea con crear(): atómico. "vendido" = ya es de alguien.
+//   indice/vendidos        lista ordenada { id, instante } de los minutos que ya son de alguien.
+//   pedidos/<firma>        último pedido de una persona (firma de IP + semana; la IP no se guarda).
+//   diario/<AAAA-MM-DD>    cuántos minutos se pidieron ese día (tope global).
+//   tx/, monto/, vencidas/, huerfanos/, limite/   de cuando El minuto se vendía (hasta el 17/11/2026).
 //   admin-fallos/<firma>   intentos fallidos de contraseña de administración.
 //   avisos/<idurl>-<tipo>  avisos ya enviados al dueño (ver avisos.mjs).
 //
-// Nada de lo que se guarda identifica a quien compra: ni su dirección, ni su IP, ni su nombre.
-import { createHash, randomBytes, randomInt, timingSafeEqual } from "node:crypto";
+// Nada de lo que se guarda identifica a quien pide: ni su IP, ni su nombre, ni una billetera.
+import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { actualizar } from "./almacen.mjs";
 import { REDES } from "./ajustes.mjs";
 import { aInstante, aLocal, zonaValida } from "./zonas.mjs";
 import { precioDe } from "./precios.mjs";
 import { revisar, normalizar } from "./filtro.mjs";
-import { verificarPago, crearRpc, HASH_VALIDO } from "./pago.mjs";
+import { HASH_VALIDO } from "./pago.mjs";
 
 export const MINUTO = 60 * 1000;
 export const HORA = 60 * MINUTO;
 export const DIA = 24 * HORA;
-export const RESERVA_MS = 15 * MINUTO;          // lo que dura una reserva sin pagar
-export const ANTICIPO_MIN = 5 * MINUTO;         // no se vende un minuto que empieza en menos de 5 min
+export const ANTICIPO_MIN = 5 * MINUTO;         // no se pide un minuto que empieza en menos de 5 min
 export const HORIZONTE = 730 * DIA;             // ni uno que está a más de 2 años
-export const MAX_VIGENTES = 3;                  // reservas vigentes por persona
-export const MAX_POR_HORA = 10;                 // reservas por persona en una hora
-export const TOLERANCIA_RELOJ = 30 * 1000;      // el bloque del pago puede marcar hasta 30 s antes de la reserva
+export const ESPERA_PERSONA = 7 * DIA;          // un minuto por persona cada 7 días
+export const TOPE_DIARIO = 50;                  // minutos pedidos por día en todo el mundo (contra avalanchas)
 export const ADMIN_FALLOS = 10;                 // intentos fallidos…
 export const ADMIN_VENTANA = 10 * MINUTO;       // …en 10 minutos bloquean…
 export const ADMIN_BLOQUEO = 10 * MINUTO;       // …durante 10 minutos
 
 const RE_ID = /^(\d{4})-(\d{2})-(\d{2})T(\d{2})[:-](\d{2})Z$/;
-const RE_RESERVA = /^(\d{4}-\d{2}-\d{2}T\d{2}-\d{2}Z)\.([0-9a-f]{64})$/;
 const INDICE = "indice/vendidos";
 
 const sha = (t) => createHash("sha256").update(String(t)).digest("hex");
@@ -95,8 +91,6 @@ export function redPublica(red) {
   return { nombre, chainId, chainIdHex, usdc, explorador, rpcs: [...(rpcs || [])], confirmaciones };
 }
 
-const claveRed = (red) => (red && red.chainId === REDES.real.chainId ? "real" : "prueba");
-
 // ---------------------------------------------------------------- consultar
 
 const reservaVigente = (v, ahora) => v && v.estado === "reservado" && v.reserva && v.reserva.vence > ahora;
@@ -125,14 +119,14 @@ function motivoTiempo(instante, ahora) {
 }
 
 /**
- * GET /api/minuto/precio
+ * GET /api/minuto/precio (el nombre quedó de cuando se vendía: ya no hay precio, solo disponibilidad)
  * @returns {Promise<{ status: number, cuerpo: object }>}
  */
 export async function consultar(alm, { fecha, hora, zona, ahora }) {
   const c = convertir({ fecha, hora, zona });
   if (c.error) return { status: 422, cuerpo: { error: c.error } };
   const id = idDeInstante(c.instante);
-  const { precioUsd, especial } = precioDe({ fecha, hora });
+  const { especial } = precioDe({ fecha, hora });
   let motivo = motivoTiempo(c.instante, ahora);
   if (!motivo) {
     const r = await alm.leer(claveDe(id));
@@ -142,69 +136,62 @@ export async function consultar(alm, { fecha, hora, zona, ahora }) {
     status: 200,
     cuerpo: {
       id, instante: c.instante, utc: utcDe(c.instante), zona: c.zona, local: { fecha, hora },
-      precioUsd, especial, disponible: !motivo, motivo, ambigua: c.ambigua
+      especial, disponible: !motivo, motivo, ambigua: c.ambigua
     }
   };
 }
 
-// ---------------------------------------------------------------- reservar
+// ---------------------------------------------------------------- pedir
 
-async function revisarLimite(alm, persona, ahora) {
-  if (!persona) return null;
-  const r = await alm.leer("limite/" + persona);
-  const lista = (r && Array.isArray(r.valor.reservas)) ? r.valor.reservas : [];
-  const vigentes = lista.filter((x) => x.vence > ahora).length;
-  const enLaHora = lista.filter((x) => x.t > ahora - HORA).length;
-  if (vigentes >= MAX_VIGENTES) return { error: "espera", motivo: "reservas", hasta: Math.min(...lista.filter((x) => x.vence > ahora).map((x) => x.vence)) };
-  if (enLaHora >= MAX_POR_HORA) return { error: "espera", motivo: "hora", hasta: Math.min(...lista.filter((x) => x.t > ahora - HORA).map((x) => x.t)) + HORA };
-  return null;
-}
-
-async function anotarLimite(alm, persona, ahora, vence) {
-  if (!persona) return;
-  try {
-    await actualizar(alm, "limite/" + persona, (v) => {
-      const viejas = (v && Array.isArray(v.reservas)) ? v.reservas : [];
-      const reservas = viejas.filter((x) => x.vence > ahora || x.t > ahora - HORA);
-      reservas.push({ t: ahora, vence });
-      return { reservas, t: ahora };
-    });
-  } catch (e) { /* el límite es una cortesía: si no se pudo anotar, la reserva vale igual */ }
-}
-
-/** Toma un monto libre: precio + n centésimos de centavo (n de 1 a 99). null si no queda ninguno. */
-async function tomarMonto(alm, precioUsd, valor, ahora) {
-  const inicio = randomInt(99);
-  for (let k = 0; k < 99; k++) {
-    const n = ((inicio + k) % 99) + 1;
-    const unidades = precioUsd * 1_000_000 + n * 100;
-    const clave = "monto/" + unidades;
-    if (await alm.crear(clave, valor)) return unidades;
-    const ex = await alm.leer(clave);
-    if (ex && !(ex.valor && ex.valor.vence > ahora) && await alm.reemplazar(clave, valor, ex.etag)) return unidades;
+/**
+ * Lugar de una persona para pedir: un minuto cada 7 días. Se toma ANTES de crear el minuto, con
+ * escritura condicional, para que dos pedidos simultáneos de la misma persona no pasen los dos.
+ * Devuelve null si lo tomó, o la respuesta de rechazo. `persona` es una firma (IP + semana): la IP
+ * no se guarda.
+ */
+async function tomarLugar(alm, persona, ahora) {
+  if (!persona) return { ok: true, soltar: async () => {} };
+  const clave = "pedidos/" + persona;
+  const valor = { t: ahora };
+  if (await alm.crear(clave, valor)) return { ok: true, soltar: () => alm.borrar(clave).catch(() => {}) };
+  const ex = await alm.leer(clave);
+  if (ex && ex.valor && ex.valor.t > ahora - ESPERA_PERSONA) {
+    return { ok: false, respuesta: { status: 429, cuerpo: { error: "espera", motivo: "semana", hasta: ex.valor.t + ESPERA_PERSONA } } };
   }
-  return null;
-}
-
-async function soltarMonto(alm, unidades, ficha) {
-  try {
-    const clave = "monto/" + unidades;
-    const ex = await alm.leer(clave);
-    if (ex && ex.valor && ex.valor.ficha === ficha) await alm.borrar(clave);
-  } catch (e) { /* si queda, vence solo */ }
+  if (ex && await alm.reemplazar(clave, valor, ex.etag)) return { ok: true, soltar: () => alm.borrar(clave).catch(() => {}) };
+  return { ok: false, respuesta: { status: 429, cuerpo: { error: "espera", motivo: "semana", hasta: ahora + ESPERA_PERSONA } } };
 }
 
 /**
- * POST /api/minuto/reservar
+ * Tope global de pedidos por día (UTC). Es un freno contra avalanchas, no una cuenta exacta: se lee
+ * antes de pedir y se suma solo si el pedido salió bien (dos pedidos simultáneos pueden pasarlo por uno).
+ */
+async function diaLleno(alm, ahora) {
+  const d = new Date(ahora);
+  const r = await alm.leer("diario/" + d.toISOString().slice(0, 10));
+  if (!(r && r.valor && r.valor.n >= TOPE_DIARIO)) return null;
+  return { status: 429, cuerpo: { error: "espera", motivo: "dia", hasta: Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() + 1) } };
+}
+
+async function sumarAlDia(alm, ahora) {
+  const dia = new Date(ahora).toISOString().slice(0, 10);
+  try { await actualizar(alm, "diario/" + dia, (v) => ({ n: ((v && v.n) || 0) + 1 }), 20); } catch (e) { /* el tope es aproximado */ }
+}
+
+/**
+ * POST /api/minuto/pedir — el minuto se pide gratis y queda de quien lo pidió en el acto.
+ * La dedicatoria queda pendiente hasta que el autor la apruebe. No hay pago: el aporte a la obra es
+ * aparte y voluntario, y no cambia nada del minuto.
+ * Internamente el registro sigue usando `estado: "vendido"` (= ya es de alguien) para no tocar las
+ * lecturas; no hay ninguna venta.
  * @param {object} p
  * @param {string} p.fecha  @param {string} p.hora  @param {string} p.zona
  * @param {string} p.dedicatoria  @param {string} [p.lang]
  * @param {number} p.ahora
- * @param {string|null} [p.persona]  firma de IP + día (nunca la IP); null: sin límite (tests)
- * @param {{ modo: string, direccion: string, red: object }} p.ventas  lo que devuelve ventas()
+ * @param {string|null} [p.persona]  firma de IP + semana (nunca la IP); null: sin límite (tests)
  * @returns {Promise<{ status: number, cuerpo: object }>}
  */
-export async function reservar(alm, { fecha, hora, zona, dedicatoria, lang, ahora, persona = null, ventas }) {
+export async function pedir(alm, { fecha, hora, zona, dedicatoria, lang, ahora, persona = null }) {
   const rev = revisar(dedicatoria);
   if (!rev.ok) return { status: 422, cuerpo: { error: "dedicatoria", detalle: rev.detalle } };
 
@@ -217,184 +204,49 @@ export async function reservar(alm, { fecha, hora, zona, dedicatoria, lang, ahor
   const tiempo = motivoTiempo(instante, ahora);
   if (tiempo) return { status: 409, cuerpo: { error: "ocupado", motivo: tiempo } };
 
-  const limite = await revisarLimite(alm, persona, ahora);
-  if (limite) return { status: 429, cuerpo: limite };
-
   const previo = await alm.leer(clave);
   const ocupado = motivoOcupado(previo && previo.valor, ahora);
   if (ocupado) return { status: 409, cuerpo: { error: "ocupado", motivo: ocupado } };
 
-  const secretoReserva = randomBytes(32).toString("hex");
-  const ficha = sha(secretoReserva);
-  const vence = ahora + RESERVA_MS;
-  const { precioUsd } = precioDe({ fecha, hora });
+  const lleno = await diaLleno(alm, ahora);
+  if (lleno) return lleno;
+  const lugar = await tomarLugar(alm, persona, ahora);
+  if (!lugar.ok) return lugar.respuesta;
 
-  const unidades = await tomarMonto(alm, precioUsd, { id, ficha, vence }, ahora);
-  if (unidades === null) return { status: 429, cuerpo: { error: "espera", motivo: "montos", hasta: ahora + MINUTO } };
-
+  const llave = randomBytes(24).toString("base64url");
+  const local = { fecha, hora };
   const registro = {
-    id, instante, zona: c.zona, local: { fecha, hora },
-    estado: "reservado",
-    reserva: { ficha, vence, montoUnidades: unidades },
+    id, instante, zona: c.zona, local,
+    estado: "vendido",            // = ya es de alguien (ver arriba)
     dedicatoria: rev.texto,
     lang: lang === "en" ? "en" : "es",
-    precioUsd,
-    creado: ahora
+    creado: ahora,
+    vendido: ahora,
+    pago: { gratis: true },
+    moderacion: "pendiente",
+    llaveHash: sha(llave),
+    prueba: false
   };
 
-  let ok;
-  if (previo) {
-    // Reserva vencida de otra persona: se retoma sin pisar a nadie (etag). Se guarda lo justo de la
-    // anterior para que, si igual pagó tarde, el pago quede registrado para devolverlo.
-    ok = await alm.reemplazar(clave, registro, previo.etag);
-    if (ok && previo.valor && previo.valor.reserva) {
-      const v = previo.valor;
-      try {
-        await alm.crear("vencidas/" + v.reserva.ficha, { id, montoUnidades: v.reserva.montoUnidades, creado: v.creado, t: ahora });
-      } catch (e) {}
-    }
-  } else {
-    ok = await alm.crear(clave, registro);
-  }
+  // Un instante, un dueño: crear() es atómico; si había un registro viejo libre, se reemplaza con etag.
+  const ok = previo ? await alm.reemplazar(clave, registro, previo.etag) : await alm.crear(clave, registro);
   if (!ok) {
-    await soltarMonto(alm, unidades, ficha);
-    const ahoraHay = await alm.leer(clave);
-    return { status: 409, cuerpo: { error: "ocupado", motivo: motivoOcupado(ahoraHay && ahoraHay.valor, ahora) || "reservado" } };
+    await lugar.soltar();
+    return { status: 409, cuerpo: { error: "ocupado", motivo: "vendido" } };
   }
 
-  await anotarLimite(alm, persona, ahora, vence);
+  await sumarAlDia(alm, ahora);
+  await actualizar(alm, INDICE, (lista) => {
+    const l = Array.isArray(lista) ? lista.filter((x) => x.id !== id) : [];
+    l.push({ id, instante });
+    l.sort((a, b) => a.instante - b.instante);
+    return l;
+  }, 30);
 
   return {
     status: 200,
-    cuerpo: {
-      reserva: idUrl(id) + "." + secretoReserva,
-      id, instante, zona: c.zona, local: { fecha, hora }, ambigua: c.ambigua,
-      precioUsd,
-      montoUsdc: montoUsdc(unidades),
-      montoUnidades: String(unidades),
-      vence,
-      pago: { modo: ventas.modo, red: redPublica(ventas.red), direccion: ventas.direccion || "" }
-    }
+    cuerpo: { estado: "vendido", id, llave, pagina: paginaDe(id, registro.lang), local, zona: c.zona, utc: utcDe(instante) }
   };
-}
-
-// ---------------------------------------------------------------- pagar
-
-const TEXTO_HUERFANO = {
-  texto: "La reserva venció y otra persona tomó el minuto. El pago quedó registrado para reembolso.",
-  textoEn: "The reservation expired and someone else took the minute. Your payment was recorded for a refund."
-};
-
-async function registrarHuerfano(alm, { hash, id, ahora }) {
-  const h = hash.toLowerCase();
-  try { await alm.guardar("tx/" + h, { id, huerfano: true, t: ahora }); } catch (e) {}
-  try { await alm.crear("huerfanos/" + h, { hash: h, id, t: ahora, reembolso: { estado: "pendiente" } }); } catch (e) {}
-  return { status: 409, cuerpo: { error: "reserva-vencida", huerfano: true, ...TEXTO_HUERFANO } };
-}
-
-function respuestaVerificacion(r) {
-  if (r.esperando) return { status: 202, cuerpo: { estado: "esperando", confirmaciones: r.confirmaciones, necesarias: r.necesarias } };
-  return { status: 422, cuerpo: { error: "pago-invalido", detalle: r.detalle } };
-}
-
-/**
- * POST /api/minuto/pagar
- * @param {object} p
- * @param {string} p.reserva   token devuelto por reservar
- * @param {string} [p.hash]    hash de la transacción (testnet / real)
- * @param {boolean} [p.simulado]  solo en modo "simulado"
- * @param {number} p.ahora
- * @param {{ modo: string, prueba: boolean, direccion: string, red: object }} p.ventas
- * @param {Function} [p.rpc]      cliente RPC (tests); por omisión, el real de la red del modo
- * @returns {Promise<{ status: number, cuerpo: object, vendido?: object }>}
- */
-export async function confirmarPago(alm, { reserva, hash, simulado, ahora, ventas, rpc }) {
-  const m = typeof reserva === "string" && RE_RESERVA.exec(reserva);
-  if (!m) return { status: 409, cuerpo: { error: "reserva-vencida" } };
-  const id = canonico(m[1]);
-  if (!id) return { status: 409, cuerpo: { error: "reserva-vencida" } };
-  const ficha = sha(m[2]);
-  const clave = claveDe(id);
-
-  const esSimulado = simulado === true;
-  if (esSimulado !== (ventas.modo === "simulado")) {
-    // En "simulado" no hay a dónde pagar; en testnet/real no se simula.
-    return { status: 422, cuerpo: { error: "pago-invalido", detalle: esSimulado ? "simulado" : "no-encontrada" } };
-  }
-  const h = esSimulado ? null : (typeof hash === "string" && HASH_VALIDO.test(hash) ? hash.toLowerCase() : "");
-  if (h === "") return { status: 422, cuerpo: { error: "pago-invalido", detalle: "no-encontrada" } };
-
-  const actual = await alm.leer(clave);
-  const v = actual && actual.valor;
-  const esMia = v && v.reserva && iguales(v.reserva.ficha, ficha);
-
-  if (!esMia) {
-    if (esSimulado) return { status: 409, cuerpo: { error: "reserva-vencida" } };
-    // ¿Era una reserva que venció y retomó otra persona? Si pagó igual, se registra para devolver.
-    const vieja = await alm.leer("vencidas/" + ficha);
-    if (!vieja) return { status: 409, cuerpo: { error: "reserva-vencida" } };
-    if (await alm.leer("tx/" + h)) return { status: 409, cuerpo: { error: "hash-usado" } };
-    const r = await verificar({ rpc, ventas, hash: h, montoUnidades: vieja.valor.montoUnidades, desde: vieja.valor.creado });
-    if (!r.ok) return respuestaVerificacion(r);
-    if (!(await alm.crear("tx/" + h, { id, t: ahora }))) return { status: 409, cuerpo: { error: "hash-usado" } };
-    return registrarHuerfano(alm, { hash: h, id, ahora });
-  }
-  if (v.estado === "vendido") return { status: 409, cuerpo: { error: "ya-vendido" } };
-
-  let pago;
-  if (esSimulado) {
-    pago = { hash: null, red: null, bloque: null, simulado: true };
-  } else {
-    if (await alm.leer("tx/" + h)) return { status: 409, cuerpo: { error: "hash-usado" } };
-    const r = await verificar({ rpc, ventas, hash: h, montoUnidades: v.reserva.montoUnidades, desde: v.creado });
-    if (!r.ok) return respuestaVerificacion(r);
-    // Un pago, un minuto: el hash se anota antes de vender. Si ya estaba, otro llegó primero.
-    if (!(await alm.crear("tx/" + h, { id, t: ahora }))) return { status: 409, cuerpo: { error: "hash-usado" } };
-    pago = { hash: h, red: claveRed(ventas.red), bloque: r.bloque, simulado: false };
-  }
-
-  const llave = randomBytes(24).toString("base64url");
-  for (let i = 0; i < 4; i++) {
-    const act = i === 0 ? actual : await alm.leer(clave);
-    const w = act && act.valor;
-    if (!w || !w.reserva || !iguales(w.reserva.ficha, ficha) || w.estado === "vendido") {
-      if (w && w.estado === "vendido" && w.reserva && iguales(w.reserva.ficha, ficha) && !h) return { status: 409, cuerpo: { error: "ya-vendido" } };
-      if (h) return registrarHuerfano(alm, { hash: h, id, ahora });
-      return { status: 409, cuerpo: { error: "reserva-vencida" } };
-    }
-    const vendido = {
-      ...w,
-      estado: "vendido",
-      vendido: ahora,
-      pago,
-      moderacion: "pendiente",
-      llaveHash: sha(llave),
-      prueba: ventas.modo !== "real"
-    };
-    if (await alm.reemplazar(clave, vendido, act.etag)) {
-      await soltarMonto(alm, w.reserva.montoUnidades, ficha);
-      await actualizar(alm, INDICE, (lista) => {
-        const l = Array.isArray(lista) ? lista.filter((x) => x.id !== id) : [];
-        l.push({ id, instante: w.instante });
-        l.sort((a, b) => a.instante - b.instante);
-        return l;
-      });
-      return { status: 200, cuerpo: { estado: "vendido", id, llave, pagina: paginaDe(id, w.lang) }, vendido };
-    }
-  }
-  if (h) return registrarHuerfano(alm, { hash: h, id, ahora });
-  return { status: 409, cuerpo: { error: "reserva-vencida" } };
-}
-
-async function verificar({ rpc, ventas, hash, montoUnidades, desde }) {
-  return verificarPago({
-    rpc: rpc || crearRpc(ventas.red),
-    red: ventas.red,
-    direccion: ventas.direccion,
-    hash,
-    montoUnidades,
-    desde: Number(desde) - TOLERANCIA_RELOJ
-  });
 }
 
 // ---------------------------------------------------------------- lecturas públicas
@@ -448,7 +300,7 @@ export async function listarArchivo(alm, { antes = null, n = 50, ahora = Date.no
 }
 
 /** GET /api/minuto/ahora */
-export async function ahoraPublico(alm, { ahora, modo }) {
+export async function ahoraPublico(alm, { ahora }) {
   const indice = await leerIndice(alm);
   let minuto = null;
   const actual = indice.find((x) => x.instante <= ahora && ahora < x.instante + MINUTO);
@@ -468,18 +320,22 @@ export async function ahoraPublico(alm, { ahora, modo }) {
     .filter((x) => x.instante > ahora && x.instante <= ahora + DIA)
     .slice(0, 20)
     .map((x) => ({ id: x.id, desde: x.instante }));
-  return { ahora, modo, minuto, proximos };
+  return { ahora, minuto, proximos };
 }
 
 // ---------------------------------------------------------------- conexión con "El interruptor"
 
-/** El minuto vendido que contiene `ahora` (aprobado o no, de prueba o no), o null. */
+/**
+ * El minuto que contiene `ahora`, si su dedicatoria está aprobada; si no, null. Como pedir un minuto
+ * es gratis, la aprobación del autor es lo que da el control de El interruptor: un minuto sin
+ * aprobar no le quita la luz a nadie.
+ */
 export async function vigenteEn(alm, ahora) {
   const indice = await leerIndice(alm);
   const x = indice.find((e) => e.instante <= ahora && ahora < e.instante + MINUTO);
   if (!x) return null;
   const v = await leerVendido(alm, x.id);
-  return v ? { id: x.id, desde: v.instante, hasta: v.instante + MINUTO } : null;
+  return v && aprobada(v) ? { id: x.id, desde: v.instante, hasta: v.instante + MINUTO } : null;
 }
 
 /** true si `llave` es la llave que recibió quien compró ese minuto. */
@@ -548,29 +404,39 @@ export async function listarParaAdmin(alm, { estado = "pendiente", ahora = Date.
   return { minutos, huerfanos };
 }
 
-/** POST /api/admin/moderar { id, decision: "aprobar" | "rechazar", nota? } */
+/**
+ * POST /api/admin/moderar { id, decision: "aprobar" | "rechazar", nota? }
+ * Aprobar: la dedicatoria se muestra y la llave controla El interruptor durante ese minuto.
+ * Rechazar: el minuto vuelve a quedar libre (se borra el registro). Quien lo pidió puede pedirlo de
+ * nuevo con otro texto cuando pase su semana. No hay nada que devolver: pedir es gratis.
+ */
 export async function moderar(alm, { id, decision, nota, ahora = Date.now() }) {
   const c = canonico(id);
   if (!c) return { status: 404, cuerpo: { error: "no-existe" } };
   if (decision !== "aprobar" && decision !== "rechazar") return { status: 422, cuerpo: { error: "decision" } };
-  let existe = true;
-  const final = await actualizar(alm, claveDe(c), (v) => {
-    if (!v || v.estado !== "vendido") { existe = false; return undefined; }
-    const n = { ...v, moderado: ahora };
-    if (decision === "aprobar") {
-      n.moderacion = "aprobada";
-      delete n.nota;
-      if (n.reembolso && n.reembolso.estado === "pendiente") delete n.reembolso;
-    } else {
-      n.moderacion = "rechazada";
-      const t = normalizar(typeof nota === "string" ? nota : "").slice(0, 300);
-      if (t) n.nota = t; else delete n.nota;
-      if (!n.reembolso || n.reembolso.estado !== "hecho") n.reembolso = { estado: "pendiente" };
+  const actual = await alm.leer(claveDe(c));
+  if (!actual || !actual.valor || actual.valor.estado !== "vendido") return { status: 404, cuerpo: { error: "no-existe" } };
+
+  if (decision === "rechazar") {
+    if (!(await alm.reemplazar(claveDe(c), { ...actual.valor, estado: "liberado", moderacion: "rechazada", moderado: ahora }, actual.etag))) {
+      return { status: 409, cuerpo: { error: "cambio" } };
     }
+    await alm.borrar(claveDe(c));
+    await actualizar(alm, INDICE, (l) => (Array.isArray(l) ? l.filter((x) => x.id !== c) : []));
+    for (const tipo of ["vendido", "pronto", "neutro"]) await alm.borrar(`avisos/${idUrl(c)}-${tipo}`).catch(() => {});
+    const t = normalizar(typeof nota === "string" ? nota : "").slice(0, 300);
+    return { status: 200, cuerpo: { id: c, estado: "rechazada", liberado: true, nota: t || null } };
+  }
+
+  const final = await actualizar(alm, claveDe(c), (v) => {
+    if (!v || v.estado !== "vendido") return undefined;
+    const n = { ...v, moderacion: "aprobada", moderado: ahora };
+    delete n.nota;
+    if (n.reembolso && n.reembolso.estado === "pendiente") delete n.reembolso;
     return n;
   });
-  if (!existe) return { status: 404, cuerpo: { error: "no-existe" } };
-  return { status: 200, cuerpo: { id: c, estado: final.moderacion, nota: final.nota || null, reembolso: final.reembolso || null } };
+  if (!final || final.moderacion !== "aprobada") return { status: 404, cuerpo: { error: "no-existe" } };
+  return { status: 200, cuerpo: { id: c, estado: "aprobada", nota: null } };
 }
 
 /**
@@ -642,6 +508,15 @@ export async function limpiar(alm, ahora, tope = 200) {
     if (n >= tope) break;
     const r = await alm.leer(k);
     if (r && !(r.valor && r.valor.t > ahora - 2 * DIA)) { await alm.borrar(k); n++; }
+  }
+  for (const k of await alm.listar("pedidos/")) {
+    if (n >= tope) break;
+    const r = await alm.leer(k);
+    if (r && !(r.valor && r.valor.t > ahora - ESPERA_PERSONA)) { await alm.borrar(k); n++; }
+  }
+  for (const k of await alm.listar("diario/")) {
+    if (n >= tope) break;
+    if (k.slice(7) < new Date(ahora - 3 * DIA).toISOString().slice(0, 10)) { await alm.borrar(k); n++; }
   }
   for (const k of await alm.listar("admin-fallos/")) {
     if (n >= tope) break;

@@ -1,8 +1,8 @@
 // Ajustes de las obras nuevas, leídos de variables de entorno de Netlify.
 // Ninguna es obligatoria: sin ellas todo funciona en modo prueba.
 //
-//   SALES_ADDRESS             dirección que recibe los pagos de "El minuto". NUNCA la de "Sin motivo".
-//   MINUTO_MODO               "real" para cobrar de verdad (Base). Cualquier otro valor: modo prueba.
+//   SALES_ADDRESS             dirección que recibe los aportes voluntarios a "El minuto". NUNCA la de "Sin motivo".
+//   MINUTO_MODO               ya no se usa (era para cobrar; el minuto ahora es gratis).
 //   ADMIN_PASSWORD            contraseña de la página de administración.
 //   OBRAS_SECRETO             (opcional) secreto para firmas; si falta se genera uno y se guarda en el almacén.
 //   FIREBASE_DB_URL           (opcional) https://<proyecto>-default-rtdb.firebaseio.com  — tiempo real.
@@ -49,6 +49,16 @@ export function ventas() {
   if (!DIRECCION_VALIDA.test(direccion) || direccion.toLowerCase() === DIRECCION_SIN_MOTIVO.toLowerCase()) direccion = "";
   const modo = !direccion ? "simulado" : env("MINUTO_MODO").trim().toLowerCase() === "real" ? "real" : "testnet";
   return { modo, prueba: modo !== "real", direccion, red: modo === "real" ? REDES.real : REDES.prueba };
+}
+
+/**
+ * Aporte voluntario a "El minuto" (desde el 17/11/2026 el minuto es gratis y no se vende).
+ * null si no hay SALES_ADDRESS válida: entonces no se muestra nada de aportes. Siempre en Base, la
+ * red real: un aporte de prueba no tiene sentido. Nunca la dirección de "Sin motivo".
+ */
+export function aporte() {
+  const v = ventas();
+  return v.direccion ? { direccion: v.direccion, red: REDES.real, sugeridos: [1, 5, 15] } : null;
 }
 
 export function tiempoReal() {
