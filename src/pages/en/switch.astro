@@ -1,0 +1,33 @@
+---
+// The Switch — one light for the whole world. (En español: /interruptor/)
+// With ?h=<id> it is the link to a mark: the preview is rewritten by netlify/edge-functions/vista-huella.js.
+import Obra from "../../layouts/Obra.astro";
+import Interruptor from "../../components/Interruptor.astro";
+import { SITIO } from "../../lib/obras.js";
+
+const descripcion = "One light for the whole world. If you turn it off, it goes off for everyone until someone turns it back on.";
+const ld = {
+  "@context": "https://schema.org",
+  "@type": "VisualArtwork",
+  name: "The Switch",
+  alternateName: "El interruptor",
+  description: descripcion,
+  url: SITIO + "/en/switch/",
+  inLanguage: "en",
+  artform: "Net art",
+  creator: { "@type": "Person", name: "Solzimer" }
+};
+---
+<Obra
+  lang="en"
+  obra="interruptor"
+  titulo="The Switch"
+  descripcion={descripcion}
+  ruta="/en/switch/"
+  alterna={{ lang: "es", href: "/interruptor/" }}
+  imagen="/og/huella.png?lang=en"
+  nav={false}
+  ld={ld}
+>
+  <Interruptor lang="en" />
+</Obra>

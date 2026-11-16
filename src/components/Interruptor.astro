@@ -1,0 +1,291 @@
+---
+// "El interruptor": una sola luz para todo el mundo.
+// La página y el interruptor dibujado. La lógica (estado en vivo, toque, sonido, huella) está en
+// /interruptor.js; acá va el HTML que se ve aunque ese guion no cargue, y los estilos.
+import NavObras from "./NavObras.astro";
+import { RUTAS_OBRAS } from "../lib/obras.js";
+
+const { lang = "es" } = Astro.props;
+const en = lang === "en";
+const otro = en ? "es" : "en";
+
+const T = {
+  es: {
+    frase: "Una sola luz para todo el mundo.",
+    sigue: "Si la apagás, se apaga para todos.",
+    tecla: "La luz del mundo",
+    cargando: "mirando la luz…",
+    sinJs: "Para tocar la luz hace falta JavaScript.",
+    historia: "Historia",
+    ultimas: "Últimas ciudades que la tocaron",
+    minuto: "el minuto →",
+    tuHuella: "tu huella →",
+    guardar: "guardar imagen",
+    compartir: "compartir",
+    copiar: "copiar enlace",
+    idioma: "English",
+    firma: "El interruptor — Solzimer"
+  },
+  en: {
+    frase: "One light for the whole world.",
+    sigue: "If you turn it off, it goes off for everyone.",
+    tecla: "The light of the world",
+    cargando: "looking at the light…",
+    sinJs: "Touching the light needs JavaScript.",
+    historia: "History",
+    ultimas: "Last cities that touched it",
+    minuto: "the minute →",
+    tuHuella: "your mark →",
+    guardar: "save image",
+    compartir: "share",
+    copiar: "copy link",
+    idioma: "Español",
+    firma: "The Switch — Solzimer"
+  }
+};
+const t = T[en ? "en" : "es"];
+const rutas = RUTAS_OBRAS[en ? "en" : "es"];
+const alterna = RUTAS_OBRAS[otro].interruptor;
+---
+<script is:inline>document.documentElement.classList.add("ix-doc", "ix-quieto");</script>
+<div class="ix-velo" aria-hidden="true"></div>
+<div class="ix-rescoldo" aria-hidden="true"></div>
+
+<div class="ix-pagina" id="ix" data-lang={en ? "en" : "es"} data-ruta={rutas.interruptor}>
+  <header class="ix-arriba">
+    <NavObras lang={lang} actual="interruptor" />
+    <a class="ix-idioma" id="ix-idioma" href={alterna} hreflang={otro} lang={otro}>{t.idioma}</a>
+  </header>
+
+  <p class="ix-visita" id="ix-visita" hidden></p>
+
+  <main class="ix-centro">
+    <button class="ix-tecla" id="ix-tecla" type="button" role="switch" aria-checked="false" aria-label={t.tecla} disabled>
+      <span class="ix-placa" aria-hidden="true">
+        <span class="ix-tornillo"></span>
+        <span class="ix-marco">
+          <span class="ix-basculante">
+            <span class="ix-mitad ix-mitad-arriba"></span>
+            <span class="ix-mitad ix-mitad-abajo"><span class="ix-piloto"></span></span>
+          </span>
+        </span>
+        <span class="ix-tornillo"></span>
+      </span>
+    </button>
+
+    <h1 class="ix-frase">{t.frase} <span class="ix-tenue">{t.sigue}</span></h1>
+
+    <p class="ix-estado" id="ix-estado">{t.cargando}</p>
+    <p class="ix-aviso" id="ix-aviso" aria-live="polite"></p>
+    <p class="ix-minuto" id="ix-minuto" hidden><span id="ix-minuto-texto"></span> <a href={rutas.minuto}>{t.minuto}</a></p>
+
+    <div class="ix-huella" id="ix-huella" hidden>
+      <button class="ix-boton" id="ix-huella-abrir" type="button" aria-expanded="false" aria-controls="ix-huella-opciones">{t.tuHuella}</button>
+      <div class="ix-huella-opciones" id="ix-huella-opciones" hidden>
+        <p class="ix-huella-frase" id="ix-huella-frase"></p>
+        <p class="ix-huella-acciones">
+          <button class="ix-boton" type="button" data-huella="guardar">{t.guardar}</button>
+          <button class="ix-boton" type="button" data-huella="compartir" hidden>{t.compartir}</button>
+          <button class="ix-boton" type="button" data-huella="copiar">{t.copiar}</button>
+        </p>
+      </div>
+    </div>
+
+    <noscript><p class="ix-aviso">{t.sinJs}</p></noscript>
+    <p class="ix-oculto" id="ix-anuncio" aria-live="polite"></p>
+  </main>
+
+  <section class="ix-datos" aria-label={t.historia}>
+    <p class="ix-records" id="ix-records"></p>
+    <ol class="ix-ultimas" id="ix-ultimas" aria-label={t.ultimas}></ol>
+    <p class="ix-firma">{t.firma}</p>
+  </section>
+</div>
+
+<script is:inline src="/interruptor.js" defer></script>
+
+<style is:global>
+  /* Dos estados. Apagada: lo de siempre del sitio (tinta, crema tenue). Prendida: crema y tinta.
+     Las variables de Obra.astro se dan vuelta, así la navegación entre obras sigue al estado. */
+  /* El fondo es siempre crema; la oscuridad es el velo, una capa fija que solo cambia de opacidad
+     (barato en cualquier celular). Sin JavaScript no hay clase ix-doc: queda el fondo tinta de siempre. */
+  /* --ix-giro: cuánto se inclina la tecla. Positivo: la mitad de arriba hundida (prendida). */
+  html.ix-doc {
+    --ix-giro: -15deg;
+    --crema: rgba(242, 233, 216, 0.84); --tenue: rgba(242, 233, 216, 0.5); --linea: rgba(242, 233, 216, 0.2);
+    background: #f2e9d8;
+  }
+  html.ix-doc body { background: transparent; }
+  html.ix-doc.ix-luz {
+    --ix-giro: 15deg;
+    --crema: #0e0d12; --tenue: rgba(14, 13, 18, 0.58); --linea: rgba(14, 13, 18, 0.2);
+  }
+
+  .ix-velo {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background: #0e0d12; opacity: 1; will-change: opacity;
+  }
+  html.ix-luz .ix-velo { opacity: 0; }
+  /* lo que queda de la lámpara un instante después de apagarse */
+  .ix-rescoldo {
+    position: fixed; left: 50%; top: 38%; z-index: 0; pointer-events: none;
+    width: 90vmin; height: 90vmin; margin: -45vmin 0 0 -45vmin; border-radius: 50%;
+    background: radial-gradient(circle, rgba(226, 85, 58, 0.34) 0%, rgba(226, 85, 58, 0.12) 32%, rgba(226, 85, 58, 0) 62%);
+    opacity: 0; will-change: opacity;
+  }
+
+  html.ix-apagando .ix-velo { animation: ix-cae 190ms cubic-bezier(.55, 0, .9, .45) both; }
+  html.ix-apagando .ix-rescoldo { animation: ix-rescoldo 1500ms cubic-bezier(.2, .6, .3, 1) both; }
+  html.ix-prendiendo .ix-velo { animation: ix-parpadeo 560ms linear both; }
+  html.ix-suave .ix-velo { transition: opacity .8s ease; }
+  html.ix-quieto .ix-velo, html.ix-quieto .ix-pagina, html.ix-quieto .ix-basculante, html.ix-quieto .ix-piloto { transition: none !important; animation: none !important; }
+
+  @keyframes ix-cae { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes ix-rescoldo { 0% { opacity: 0; } 10% { opacity: 1; } 100% { opacity: 0; } }
+  @keyframes ix-parpadeo {
+    0% { opacity: 1; } 8% { opacity: .5; } 14% { opacity: .95; } 26% { opacity: .2; }
+    33% { opacity: .75; } 46% { opacity: .05; } 54% { opacity: .3; } 100% { opacity: 0; }
+  }
+
+  .ix-pagina {
+    position: relative; z-index: 1;
+    min-height: 100vh; min-height: 100svh;
+    display: flex; flex-direction: column;
+    padding: max(16px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
+    color: var(--crema); transition: color .25s ease;
+  }
+  html.ix-luz .ix-pagina { transition-duration: .4s; }
+  .ix-minuto a { color: #e2553a; }
+  html.ix-luz .ix-minuto a { color: #b8381f; }   /* el bermellón, un punto más hondo para leerse sobre crema */
+
+  .ix-arriba { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px 16px; }
+  .ix-idioma {
+    flex: none; font-family: var(--mono); font-size: .68rem; letter-spacing: .04em; line-height: 2;
+    color: var(--tenue) !important; text-decoration: none !important;
+  }
+  .ix-idioma:hover { color: var(--crema) !important; }
+
+  .ix-visita {
+    margin: 2.2rem auto 0; max-width: 30rem; text-align: center;
+    font-style: italic; font-size: 1.12rem; line-height: 1.4; color: var(--tenue);
+    overflow-wrap: break-word;
+  }
+
+  .ix-centro {
+    /* arriba fijo: lo que aparece después (avisos, tu huella) empuja hacia abajo, la tecla no salta */
+    flex: 1 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+    padding: clamp(40px, 12vh, 140px) 0 6vh; text-align: center;
+  }
+
+  /* ── el interruptor ── */
+  .ix-tecla {
+    display: block; margin: 0; padding: 14px; border: 0; background: none; color: inherit;
+    cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; user-select: none;
+    border-radius: 18px;
+  }
+  .ix-tecla:disabled { cursor: default; opacity: .45; }
+  .ix-tecla:focus-visible { outline: 1px solid #e2553a; outline-offset: 2px; }
+  .ix-placa {
+    display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+    width: clamp(132px, 36vw, 172px); aspect-ratio: 3 / 4.3; padding: 12px 0;
+    border: 1.5px solid var(--linea); border-radius: 14px;
+    transition: transform .12s ease;
+  }
+  .ix-tecla:active .ix-placa { transform: scale(.985); }
+  .ix-tornillo { width: 7px; height: 7px; border: 1px solid var(--linea); border-radius: 50%; }
+  .ix-marco {
+    display: block; width: 62%; height: 70%; padding: 4px;
+    border: 1px solid var(--linea); border-radius: 8px;
+    perspective: 340px;
+  }
+  .ix-basculante {
+    display: flex; flex-direction: column; width: 100%; height: 100%;
+    border: 1.5px solid currentColor; border-radius: 5px; overflow: hidden;
+    transform: rotateX(var(--ix-giro)); transform-origin: 50% 50%;
+    transition: transform 150ms cubic-bezier(.3, 1.7, .5, 1);
+    will-change: transform;
+  }
+  .ix-mitad { position: relative; flex: 1; display: block; }
+  .ix-mitad-arriba { border-bottom: 1px solid var(--linea); }
+  /* la mitad hundida queda en sombra (un velo del mismo color del texto, no una sombra) */
+  html.ix-doc .ix-mitad-abajo { background: rgba(242, 233, 216, .1); }
+  html.ix-luz .ix-mitad-abajo { background: none; }
+  html.ix-luz .ix-mitad-arriba { background: rgba(14, 13, 18, .09); }
+  .ix-tecla.ix-apretando .ix-basculante { transform: rotateX(calc(var(--ix-giro) * -.35)); transition-duration: 90ms; transition-timing-function: ease-out; }
+  .ix-tecla.ix-niega .ix-basculante { animation: ix-niega 340ms ease-out; }
+  @keyframes ix-niega {
+    0% { transform: rotateX(var(--ix-giro)); } 35% { transform: rotateX(calc(var(--ix-giro) * -.25)); }
+    65% { transform: rotateX(calc(var(--ix-giro) * 1.15)); } 100% { transform: rotateX(var(--ix-giro)); }
+  }
+  /* luz piloto: con la luz apagada se ve, como en las teclas de pasillo */
+  .ix-piloto {
+    position: absolute; left: 50%; bottom: 22%; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%;
+    border: 1px solid var(--linea); transition: background-color .3s ease, border-color .3s ease;
+  }
+  html.ix-doc:not(.ix-luz) .ix-piloto { background: #e2553a; border-color: #e2553a; }
+
+  /* ── textos ── */
+  .ix-frase {
+    margin: clamp(1.6rem, 5vh, 2.6rem) 0 0; max-width: 30rem; text-wrap: balance;
+    font-weight: 400; font-size: clamp(1.45rem, 5.4vw, 2.1rem); line-height: 1.12; letter-spacing: -.005em;
+  }
+  .ix-tenue { display: block; font-style: italic; color: var(--tenue); }
+  .ix-estado {
+    margin: 1.2rem 0 0; min-height: 1.7em;
+    font-family: var(--mono); font-size: .8rem; letter-spacing: .02em; line-height: 1.7;
+    font-variant-numeric: tabular-nums;
+  }
+  .ix-aviso {
+    margin: .35rem 0 0; min-height: 1.5em; max-width: 26rem;
+    font-style: italic; font-size: 1.08rem; line-height: 1.35; color: var(--tenue);
+  }
+  .ix-minuto { margin: .3rem 0 0; max-width: 26rem; font-style: italic; font-size: 1.08rem; line-height: 1.35; }
+  .ix-minuto a { font-family: var(--mono); font-style: normal; font-size: .76rem; }
+
+  .ix-boton {
+    display: inline-block; margin: 0; padding: 6px 2px; border: 0; background: none; cursor: pointer;
+    font-family: var(--mono); font-size: .78rem; letter-spacing: .02em;
+    color: #e2553a; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px;
+  }
+  html.ix-luz .ix-boton { color: #b8381f; }
+  .ix-boton:hover { text-decoration-thickness: 2px; }
+  .ix-huella { margin-top: .6rem; }
+  .ix-huella-frase { margin: .5rem 0 .1rem; font-size: 1.15rem; line-height: 1.3; }
+  .ix-huella-frase em { color: var(--tenue); }
+  .ix-huella-acciones { margin: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 0 18px; }
+
+  /* ── historia ── */
+  .ix-datos {
+    font-family: var(--mono); font-size: .7rem; letter-spacing: .02em; line-height: 1.8; color: var(--tenue);
+    font-variant-numeric: tabular-nums;
+  }
+  .ix-records { margin: 0 0 .5rem; overflow-wrap: break-word; }
+  .ix-ultimas { list-style: none; margin: 0; padding: 0; }
+  .ix-ultimas li { overflow-wrap: break-word; }
+  .ix-ultimas li:nth-child(n+6) { display: none; }
+  .ix-ultimas li.ix-nueva { color: var(--crema); }
+  .ix-firma { margin: 1.1rem 0 0; }
+
+  .ix-oculto {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0;
+  }
+
+  @media (min-width: 760px) {
+    .ix-datos { display: grid; grid-template-columns: 1fr 1fr; gap: 0 32px; align-items: end; }
+    .ix-records { grid-column: 1; grid-row: 1; margin: 0; }
+    .ix-ultimas { grid-column: 2; grid-row: 1 / span 2; text-align: right; }
+    .ix-ultimas li:nth-child(n+6) { display: list-item; }
+    .ix-ultimas li:nth-child(n+9) { display: none; }
+    .ix-firma { grid-column: 1; grid-row: 2; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html.ix-apagando .ix-velo, html.ix-prendiendo .ix-velo { animation: none; }
+    html.ix-apagando .ix-rescoldo { animation: none; }
+    .ix-velo { transition: opacity .25s linear; }
+    .ix-basculante { transition-duration: 1ms; }
+    .ix-tecla.ix-niega .ix-basculante { animation: none; }
+    .ix-pagina { transition: none; }
+  }
+</style>

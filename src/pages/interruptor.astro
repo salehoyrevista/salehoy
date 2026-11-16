@@ -1,0 +1,32 @@
+---
+// El interruptor — una sola luz para todo el mundo. (En inglés: /en/switch/)
+// Con ?h=<id> es el enlace de una huella: la vista previa la cambia netlify/edge-functions/vista-huella.js.
+import Obra from "../layouts/Obra.astro";
+import Interruptor from "../components/Interruptor.astro";
+import { SITIO } from "../lib/obras.js";
+
+const descripcion = "Una sola luz para todo el mundo. Si la apagás, se apaga para todos hasta que alguien la prenda.";
+const ld = {
+  "@context": "https://schema.org",
+  "@type": "VisualArtwork",
+  name: "El interruptor",
+  description: descripcion,
+  url: SITIO + "/interruptor/",
+  inLanguage: "es",
+  artform: "Net art",
+  creator: { "@type": "Person", name: "Solzimer" }
+};
+---
+<Obra
+  lang="es"
+  obra="interruptor"
+  titulo="El interruptor"
+  descripcion={descripcion}
+  ruta="/interruptor/"
+  alterna={{ lang: "en", href: "/en/switch/" }}
+  imagen="/og/huella.png"
+  nav={false}
+  ld={ld}
+>
+  <Interruptor lang="es" />
+</Obra>
