@@ -34,7 +34,13 @@ const EVENTOS = [
   ["estela_vista", "visita por el enlace de una estela"],
   ["sonido_activado", "activó el sonido"],
   ["estrella_vista", "visita a la página de una estrella"],
-  ["estrella_enlace_copiado", "copió el enlace de una estrella"]
+  ["estrella_enlace_copiado", "copió el enlace de una estrella"],
+  ["interruptor_toque", "El interruptor: tocó la luz"],
+  ["huella_compartida", "El interruptor: compartió su huella"],
+  ["minuto_compra_inicio", "El minuto: reservó un minuto"],
+  ["minuto_metamask_conectada", "El minuto: conectó MetaMask"],
+  ["minuto_pagado", "El minuto: pagó"],
+  ["minuto_en_vivo", "El minuto: vio un minuto regalado en vivo"]
 ];
 
 // ---------- semanas ISO ----------

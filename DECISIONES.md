@@ -3,14 +3,14 @@
 Cada decisión, por qué se tomó y cómo revertirla. La más reciente arriba.
 Para deshacer un cambio: `git revert <commit>` y `git push origin master` (Netlify publica solo).
 
-## 2026-11-16 — Dos obras nuevas: "El interruptor" y "El minuto" (en curso)
+## 2026-11-16 — Dos obras nuevas: "El interruptor" y "El minuto"
 
 Pedido de Pedro: sumar dos obras junto a "Sin motivo", que no se toca. Pedido completo en el historial de la sesión.
 
-### Estado para retomar
-- **Hecho y en el repositorio (sin publicar):** base compartida, texto en imágenes del servidor, enlaces desde el pie de "Sin motivo", sitemap, robots, `llms.txt`, cabeceras.
-- **En construcción:** El interruptor (lógica, funciones, página), servidor de El minuto (reservas, pago, moderación, vigía), páginas de El minuto (portada, compra, página de cada minuto, archivo, términos, administración). Contrato técnico entre las partes: rutas y formas de la API en la sección "API" de abajo.
-- **Falta después:** compilar, correr todos los tests, probar en navegador headless (celular y escritorio), publicar en modo prueba, `RESUMEN.md` y `PENDIENTES_PEDRO.md`.
+### Estado al cierre: publicado, El minuto en modo prueba
+- **Publicado y verificado:** las dos obras, en español e inglés. Commits `a76b758` (El interruptor), `34f79cb` (El minuto, servidor), `dbbb021` (El minuto, páginas), `46acd9f` (medición).
+- **Modo prueba:** sin `SALES_ADDRESS` el pago de El minuto es simulado. Ver `PENDIENTES_PEDRO.md`, sección "Obras nuevas".
+- **Cómo se construyó:** tres agentes en paralelo (El interruptor; servidor de El minuto; páginas de El minuto) contra un contrato fijo de rutas y formas de respuesta, y la integración, las pruebas de punta a punta y la publicación en esta sesión. Los primeros tres agentes se cortaron por límite de uso y se relanzaron con otro modelo sobre lo que ya estaba escrito.
 
 ### 24. Base compartida — `9930044`
 - **Almacén con escrituras condicionales** (`netlify/lib/almacen.mjs`): sobre Netlify Blobs con consistencia fuerte. `crear` solo si la clave no existe y `reemplazar` solo si nadie la cambió desde que se leyó. Es lo que impide vender un instante dos veces o usar dos veces el mismo pago, sin una base de datos aparte. Tiene una versión en memoria para los tests.
@@ -37,6 +37,36 @@ Pedido de Pedro: sumar dos obras junto a "Sin motivo", que no se toca. Pedido co
 - **Qué:** una línea chica al pie del cielo ("El interruptor · El minuto"), oculta en la versión embebida. Además sitemap, `robots.txt` (`/admin/` fuera de buscadores; sitemap de minutos), `llms.txt` (aclara que los pagos de El minuto no van a la dirección de "Sin motivo") y cabeceras (`/minuto/elegir/` y `/admin/` nunca dentro de un marco ajeno).
 - **Lo que no cambió:** el cielo, la dirección, el concepto y la portada.
 - **Revertir:** `git revert b7a0bb4`.
+
+
+### 29. El interruptor: reglas de uso — `a76b758`
+- **Un toque por persona cada 5 minutos** y 1,5 s como mínimo entre dos toques de cualquiera. Cinco minutos alcanzan para que una persona sola no pueda pelear la luz contra otra, y son cortos para quien vuelve.
+- **"Persona" sin guardar datos:** una firma de la conexión y el día (HMAC con un secreto del sitio), recortada. No se guarda la IP, se renueva cada día y no se puede revertir. Si Netlify no informa la IP, todas las personas comparten el límite (queda global, más estricto, nunca más laxo).
+- **Contra bots, sin captcha:** ficha firmada que se pide al cargar la página y vale de 1,2 s a 10 min, origen del propio sitio, y rechazo de navegadores automáticos ("HeadlessChrome" incluido; por eso las pruebas automáticas se hacen con otro agente de usuario).
+- **Ciudad y país** salen de la geolocalización de Netlify. Se guardan las últimas 12, sin nada más.
+- **Revertir:** `git revert a76b758` (saca la obra; el enlace del pie queda roto hasta revertir también `b7a0bb4`).
+
+### 30. El minuto: venta, moderación y reembolsos — `34f79cb`, `dbbb021`
+- **Precios** (en `netlify/lib/precios.mjs`): 5 USD base; 15 los espejos, escaleras y bordes del día; 10 los triples de madrugada; 50 el primer y el último minuto del año; +5 el 14 de febrero. Se calculan con la hora local del comprador. Cinco dólares es lo que cuesta una tarjeta: un regalo, no una inversión.
+- **Se vende** desde 5 minutos en el futuro hasta 2 años. Reserva de 15 minutos; máximo 3 reservas vigentes y 10 por hora por persona.
+- **Un pago se acepta solo si:** es USDC de la red activa, va a `SALES_ADDRESS`, por el monto exacto de esa reserva, la transacción salió bien, tiene 12 confirmaciones en Base (3 en prueba), es posterior a la reserva y su hash no se usó. Si llega cuando la reserva ya era de otro, queda anotado como "pago sin minuto" para reembolso manual.
+- **Moderación:** filtro automático + aprobación en /admin/. Sin aprobar, la portada muestra "Este minuto es de alguien."
+- **Reembolsos** (escrito en los términos): si rechazás una dedicatoria, la persona elige texto neutro o reembolso en USDC a la dirección que pagó, dentro de 14 días, menos la comisión del envío. Sin reembolso por arrepentimiento ni por minutos ya ocurridos. Si el sitio no anda durante un minuto: otro minuto de igual precio o reembolso. Los reembolsos los hace Pedro a mano desde su billetera; el sitio solo anota el hash.
+- **Privacidad:** no se guarda la dirección del comprador (se ve en la blockchain si hace falta reembolsar), ni nombres, ni correos.
+- **Pendiente de Pedro:** jurisdicción y datos del responsable en los términos.
+- **Revertir:** `git revert dbbb021 34f79cb`.
+
+### 31. Posible paso siguiente, NO implementado: un "candado" pago para El interruptor
+- **Idea:** pagar para dejar la luz fija (prendida o apagada) durante un tiempo, por ejemplo una hora, con una dedicatoria corta que se vea en la página mientras dura.
+- **Cómo se haría con lo que ya existe:** es un minuto más largo. La misma reserva, el mismo pago verificado en USDC, la misma moderación y la misma llave; `minutoVigente` pasaría a devolver también los candados vigentes, y El interruptor ya rechaza los toques ajenos con `423` durante ese tiempo.
+- **Precio sugerido para empezar:** 10 USD la hora, máximo 6 horas seguidas por compra, y nunca dos candados encimados.
+- **Riesgos:** convierte la obra gratuita en algo que se compra y puede desanimar a quien llega a tocar. Por eso conviene esperar a ver cuánto se usa el interruptor gratis (al menos un mes de datos) antes de decidir.
+
+### 32. Verificación antes de publicar
+- 79 pruebas automáticas (`node --test tests/*.test.mjs`).
+- Recorrido completo con el servidor local de Netlify (`netlify dev`, instalado fuera del repositorio): toque y límite, huella y su vista previa, compra simulada, aprobación, minuto en vivo, llave controlando la luz y otro visitante bloqueado.
+- En producción, sin rastro público: reservas simultáneas (una gana), filtro, pago falso, toque sin ficha, páginas en celular y escritorio sin desbordes ni errores.
+- **No se tocó la luz en producción** para no dejar una ciudad falsa en la historia. **No se probó ningún pago con billetera.**
 
 ## 2026-11-12 — Método de medición
 

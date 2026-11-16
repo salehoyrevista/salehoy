@@ -43,8 +43,14 @@ Los manda `public/visita.js`. Ninguno lleva datos de la persona: solo el nombre 
 | `sonido_activado` | activó el sonido |
 | `estrella_vista` | visita a la página de una estrella (`?n=` o `?tx=`) |
 | `estrella_enlace_copiado` | copió el enlace de una estrella |
+| `interruptor_toque` | El interruptor: cambió la luz (solo toques aceptados) |
+| `huella_compartida` | El interruptor: guardó, compartió o copió su huella |
+| `minuto_compra_inicio` | El minuto: reservó un minuto |
+| `minuto_metamask_conectada` | El minuto: conectó la billetera |
+| `minuto_pagado` | El minuto: el servidor confirmó la venta |
+| `minuto_en_vivo` | El minuto: vio un minuto regalado mientras ocurría |
 
-Empezaron a medirse el **12 de noviembre de 2026**. Antes de esa fecha no hay datos de estos eventos.
+Empezaron a medirse el **12 de noviembre de 2026**; los de El interruptor y El minuto, el **16 de noviembre de 2026**. Para esas dos obras, la métrica principal es cuántas visitas llegan a `/interruptor/?h=` (por la huella de otra persona): ver `RESUMEN.md`. Antes de esa fecha no hay datos de estos eventos.
 
 ## Punto de partida
 
